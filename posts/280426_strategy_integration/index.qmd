@@ -1,0 +1,96 @@
+---
+title: "Strategies for Numerical Integration"
+description: "How to apply strategy design pattern to decouple integration problem from method it's solved with."
+author: "bwrob"
+
+date: "2024-04-28"
+
+categories: [Pythonic Distractions, Patterns]
+---
+
+
+This is a post with executable code.
+
+## Code Cell
+
+Abstract schema:
+
+```{python}
+from abc import ABC, abstractmethod
+from typing import Callable
+
+class IntegrationSchema(ABC):
+    """Abstract base class for integration schemas."""
+
+    @abstractmethod
+    def integrate(
+        self,
+        integrand: Callable[[float], float],
+        *,
+        start: float,
+        end: float,
+    ) -> float:
+        """Abstract method for integrating a function."""
+```
+
+Integrator
+```{python}
+"""An integrator class that allows to perform integration using different schemas."""
+from typing import Callable
+
+class Integrator:
+    """An integrator class that allows to perform integration using different
+    schemas as strategies."""
+
+    def __init__(
+        self,
+        integrand: Callable[[float], float],
+        interval_start: float,
+        interval_end: float,
+    ) -> None:
+        """Initializes the integrator class."""
+        if interval_start >= interval_end:
+            raise ValueError("Start value must be less than end value.")
+        self.__integrand = integrand
+        self.__interval_start = interval_start
+        self.__interval_end = interval_end
+
+    def __call__(
+        self,
+        schema: IntegrationSchema,
+    ) -> float:
+        """
+        Calculates the definite integral value of a function.
+
+        Args:
+            schema: integration schema
+        """
+        print(f"Using {schema} integration schema.")
+        return schema.integrate(
+            self.__integrand,
+            start=self.__interval_start,
+            end=self.__interval_end,
+        )
+```
+
+## Equation
+
+Use $\LaTeX$ to write equations:
+
+$$
+\chi' = \sum_{i=1}^n k_i s_i^2
+$$
+
+## Lower level example
+
+This is C++ code that is not executable.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+  cout << "Hello World!";
+  return 0;
+}
+```
