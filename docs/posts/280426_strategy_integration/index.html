@@ -106,6 +106,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="bwrob blog">
@@ -188,7 +217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </div>
                           <div class="quarto-categories">
                 <div class="quarto-category">Pythonic Distractions</div>
-                <div class="quarto-category">Patterns</div>
+                <div class="quarto-category">Design Patterns</div>
               </div>
                   </div>
   </div>
@@ -225,13 +254,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#numerical-integration" id="toc-numerical-integration" class="nav-link active" data-scroll-target="#numerical-integration">Numerical integration</a></li>
   <li><a href="#design-patterns" id="toc-design-patterns" class="nav-link" data-scroll-target="#design-patterns">Design patterns</a></li>
   <li><a href="#strategy-pattern" id="toc-strategy-pattern" class="nav-link" data-scroll-target="#strategy-pattern">Strategy pattern</a></li>
-  <li><a href="#abstract-schema" id="toc-abstract-schema" class="nav-link" data-scroll-target="#abstract-schema">Abstract schema:</a></li>
-  <li><a href="#integrator" id="toc-integrator" class="nav-link" data-scroll-target="#integrator">Integrator</a></li>
+  <li><a href="#abstract-schema" id="toc-abstract-schema" class="nav-link" data-scroll-target="#abstract-schema">Abstract schema</a></li>
   <li><a href="#concrete-schema-implementations" id="toc-concrete-schema-implementations" class="nav-link" data-scroll-target="#concrete-schema-implementations">Concrete schema implementations</a>
   <ul class="collapse">
   <li><a href="#rectangle-rule" id="toc-rectangle-rule" class="nav-link" data-scroll-target="#rectangle-rule">Rectangle Rule</a></li>
   <li><a href="#simple-monte-carlo" id="toc-simple-monte-carlo" class="nav-link" data-scroll-target="#simple-monte-carlo">Simple Monte Carlo</a></li>
   </ul></li>
+  <li><a href="#integrator" id="toc-integrator" class="nav-link" data-scroll-target="#integrator">Integrator</a></li>
   <li><a href="#lets-integrate" id="toc-lets-integrate" class="nav-link" data-scroll-target="#lets-integrate">Let’s integrate!</a></li>
   </ul>
 </nav>
@@ -245,28 +274,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="numerical-integration" class="level2">
 <h2 class="anchored" data-anchor-id="numerical-integration">Numerical integration</h2>
-<p>Calculation of many financial methods or metrics rely on a mathematical tool called numerical integration. In simple terms, numerical integration takes a function that represents a continuous process (like the changing value of an investment over time) and approximates the area under its curve. This area can then be used to calculate important quantities, like the total return of the investment or price of a derivative instrument.</p>
-<p>For quantitative analysts, the choice of the integration method matters. Different integration schemes offer varying levels of accuracy and efficiency. Unfortunatlelly there’s no ‘best technique’. Same algorithm can be perfect for problems with certain characteristics, but unusable for others. And then there is the old as time performance vs.&nbsp;accuracy trade-off.</p>
+<p>Calculation of many financial methods or metrics relies on a mathematical tool called numerical integration. In simple terms, numerical integration takes a function that represents a continuous process (like the changing value of an investment over time) and approximates the area under its curve. This area can then be used to calculate important quantities, like the total return of the investment or price of a derivative instrument.</p>
+<p>So we are tasked with a problem, and one that has many different ways of solving, or rather approximating the solution. You most likely (taking into account you’re still reading this) encountered rectangle rule, or Riemann summation in your Calculus 101 course/self-learning. But there are many other techniques, which we call schemes.</p>
+<p>For quantitative analysts, the choice of the integration method matters. Different integration schemes offer varying levels of accuracy and efficiency. Unfortunately there’s no <em>best technique</em>. Same algorithm can be a perfect fit for problems with certain characteristics, but unusable for others. And then there is the old as time performance vs.&nbsp;accuracy trade-off.</p>
 <p>As programmers working in finance, we need to be adaptable and leverage solutions that allow us to switch between these methods seamlessly.</p>
 </section>
 <section id="design-patterns" class="level2">
 <h2 class="anchored" data-anchor-id="design-patterns">Design patterns</h2>
-<p>This is where design patterns come in. Design patterns are reusable solutions to common programming problems. The widespread adoption of design patterns in software development is largely attributed to the publication of the book <a href="https://www.oreilly.com/library/view/design-patterns-elements/0201633612/">Design Patterns: Elements of Reusable Object-Oriented Software</a> in 1994. Authored by Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides (often referred to as the “Gang of Four” or GoF), this book cataloged 23 essential software design patterns. These patterns provided solutions to common design problems in object-oriented programming, promoting code reusability, maintainability, and flexibility.</p>
-<p>Some design patterns can feel clunky or inelegant when implemented in Python. The language itself often has built-in features or idioms that achieve the same result in a more Pythonic way (meaning it follows Python’s style and conventions). Sometimes, design patterns can be seen as overcomplicating simple problems. On the other hand, usage of well-known and understood patterns may enhance your engineering skills and imove code readability.</p>
-<p>Ultimately, the decision of whether or not to use design patterns in Python depends on the specific context of your project and your coding style. There’s no right or wrong answer. But you first need to know the classics to diss the classics.</p>
+<p>This is where design patterns come in. Design patterns are reusable solutions to common programming problems. Their widespread adoption in software development is largely attributed to the publication of <a href="https://www.oreilly.com/library/view/design-patterns-elements/0201633612/">Design Patterns: Elements of Reusable Object-Oriented Software</a> in 1994. Authored by E. Gamma, R. Helm, R. Johnson, and J. Vlissides (often referred to as the “Gang of Four” or GoF), this book cataloged 23 essential software design patterns. These patterns provided solutions to common design problems in object-oriented programming, promoting code reusability, maintainability, and flexibility.</p>
+<p>Some design patterns can feel clunky or inelegant when implemented in Python. The language itself often has built-in features or idioms that achieve the same result in a more Pythonic way (meaning it follows Python’s style and conventions). Sometimes, design patterns can be seen as overcomplicating simple problems. On the other hand, usage of well-known and understood patterns may enhance your engineering skills and improve code readability.</p>
+<p>Ultimately, the decision of whether or not to use design patterns in Python depends on the specific context of your project and your coding style. There’s no right or wrong answer. But first, you need to know the classics to diss the classics. We’ll hold on with the dissing for now, cause in the example below chosen design pattern makes for a very clean implementation. You’ll see for yourself.</p>
 </section>
 <section id="strategy-pattern" class="level2">
 <h2 class="anchored" data-anchor-id="strategy-pattern">Strategy pattern</h2>
-<p>In this blog post, we’ll explore how the Strategy Design Pattern (<em>SDP</em>) can be used to create a flexible and maintainable numerical integrator that works with different integration schemes. We want to</p>
-<p>I will show you this patter through example, if you prefer more generic setup see Refactoring Guru’s <a href="https://refactoring.guru/design-patterns/strategy/python/example">implementation</a>.</p>
+<p>We know the stage now — one problem statement, multiple strategies to tackle. Important observation here is that we don’t actually care which one is used. When you substitute the integral value to client code — a formula or further algorithm — it’s irrelevant how it was computed, as long its correct to required level of accuracy. This means that the problem should be decoupled from algorithms to solve it. We should target a implementation where you can state a problem <em>Calculate the integral of</em> <span class="math inline">\(\sin(x)\)</span> <em>from</em> <span class="math inline">\(0\)</span> <em>to</em> <span class="math inline">\(\pi\)</span> and then just throw different algorithms at it to obtain a solution. So let’s get coding!</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>I will show you this pattern through an example. If you prefer more generic setup see Refactoring Guru’s <a href="https://refactoring.guru/design-patterns/strategy/python/example">implementation</a>. The customary ‘software engineering’ example used to present the SDP is sorting a list of integers using different sorting algorithms.</p>
+</div>
+</div>
 </section>
 <section id="abstract-schema" class="level2">
-<h2 class="anchored" data-anchor-id="abstract-schema">Abstract schema:</h2>
-<div id="a73b37c6" class="cell" data-execution_count="1">
+<h2 class="anchored" data-anchor-id="abstract-schema">Abstract schema</h2>
+<p>Each scheme that we’d come up with, even the most complex ones, would have the same main purpose — ‘integrate’. To make the implementation for it, we create a template class that all concrete schemes will inherit from.</p>
+<div id="8d723697" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Callable</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> IntegrationSchema(ABC):</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> IntegrationScheme(ABC):</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Abstract base class for integration schemas."""</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
@@ -279,138 +322,182 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Abstract method for integrating a function."""</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="integrator" class="level2">
-<h2 class="anchored" data-anchor-id="integrator">Integrator</h2>
-<div id="6c266b94" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">"""An integrator class that allows to perform integration using different schemas."""</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Callable</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Integrator:</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""An integrator class that allows to perform integration using different</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">    schemas as strategies."""</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        integrand: Callable[[<span class="bu">float</span>], <span class="bu">float</span>],</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        interval_start: <span class="bu">float</span>,</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        interval_end: <span class="bu">float</span>,</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Initializes the integrator class."""</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> interval_start <span class="op">&gt;=</span> interval_end:</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Start value must be less than end value."</span>)</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.__integrand <span class="op">=</span> integrand</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.__interval_start <span class="op">=</span> interval_start</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.__interval_end <span class="op">=</span> interval_end</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        schema: IntegrationSchema,</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">        Calculates the definite integral value of a function.</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co">            schema: integration schema</span></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Using </span><span class="sc">{</span>schema<span class="sc">}</span><span class="ss">."</span>)</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> schema.integrate(</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.__integrand,</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>            start<span class="op">=</span><span class="va">self</span>.__interval_start,</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>            end<span class="op">=</span><span class="va">self</span>.__interval_end,</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>        )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<p>Unpacking this, we already used some nifty Pythonic tricks in those few lines:</p>
+<ul>
+<li><code>ABC</code> is a way of defining abstract classes. If you try to create an object of a class inheriting from <code>ABC</code> you’d get an error. It is used as a base class for concrete subclasses and serves as a template. Think of an example of <em>animal</em> and <em>cat</em> from the real world. You’ve never seen an abstract animal being in your life (that would be a truly transcendental experience). But you’ve hopefully seen many cats.</li>
+<li>Decorator <code>@abstractmethod</code> signifies that the method is just a mock-up. It needs to be present and overridden in all concrete classes that inherit from <code>IntegrationScheme</code></li>
+<li>Type annotations like <code>start: float</code> don’t affect the script behavior in any way. Those are only for us to not get lost in Python’s dynamic typing magic. They can also be leveraged by static type checkers like <a href="https://mypy.readthedocs.io/en/stable/#">mypy</a> to flag problems with your code before you run it — just like in compiled languages.</li>
+<li><code>Callable</code> annotation signifies a function-like object something you can <em>call</em> through <code>()</code>, like <code>some_func(one, second=two)</code>’ — here <code>some_func</code> is a callable. Calls to an object can be implemented by writing the <code>__call__</code> method for the class.</li>
+</ul>
 </section>
 <section id="concrete-schema-implementations" class="level2">
 <h2 class="anchored" data-anchor-id="concrete-schema-implementations">Concrete schema implementations</h2>
 <section id="rectangle-rule" class="level3">
 <h3 class="anchored" data-anchor-id="rectangle-rule">Rectangle Rule</h3>
-<div id="b1874849" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Optional</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RectangleSchema(IntegrationSchema):</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Schema for rectangle integration."""</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        steps: <span class="bu">int</span>,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Initializes the rectangle integration config."""</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> steps <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Steps must be greater than 0."</span>)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.__steps <span class="op">=</span> steps</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Returns the string representation of the schema."""</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"Rectangle schema with </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>__steps<span class="sc">}</span><span class="ss"> steps."</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> integrate(</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        integrand: Callable[[<span class="bu">float</span>], <span class="bu">float</span>],</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>,</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        start: <span class="bu">float</span>,</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        end: <span class="bu">float</span>,</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Integrates a function using rectangle integration."""</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        x_points <span class="op">=</span> np.linspace(start, end, <span class="va">self</span>.__steps)</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>        values <span class="op">=</span> integrand(x_points)</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>        dx <span class="op">=</span> (end <span class="op">-</span> start) <span class="op">/</span> np.float64(<span class="va">self</span>.__steps)</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.<span class="bu">sum</span>(values) <span class="op">*</span> dx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>It’s the simplest way of estimating the area under a curve you can think of — cover it with smaller and smaller rectangles with the value of a function at the leftmost point as height constant width.</p>
+<p><a href="https://en.wikipedia.org/wiki/File:Rectangle_rule.gif"><img src="Rectangle_rule.gif" class="img-fluid" style="width:100.0%"></a></p>
+<p>Implementing this idea is trivial when using <a href="https://numpy.org/">numpy</a>, but let’s add some syntactic sugar so the class is sweeter to work with.</p>
+<div id="d9770415" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RectangleScheme(IntegrationScheme):</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Schema for rectangle integration."""</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        steps: <span class="bu">int</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Initializes the rectangle integration config."""</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> steps <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Steps must be greater than 0."</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._steps <span class="op">=</span> steps</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Returns the string representation of the schema."""</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"Rectangle schema with </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>_steps<span class="sc">}</span><span class="ss"> steps"</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> integrate(</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        integrand: Callable[[<span class="bu">float</span>], <span class="bu">float</span>],</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        start: <span class="bu">float</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        end: <span class="bu">float</span>,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Integrates a function using rectangle integration."""</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        x_points <span class="op">=</span> np.linspace(start, end, <span class="va">self</span>._steps)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        values <span class="op">=</span> integrand(x_points)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        dx <span class="op">=</span> (end <span class="op">-</span> start) <span class="op">/</span> np.float64(<span class="va">self</span>._steps)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.<span class="bu">sum</span>(values) <span class="op">*</span> dx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<ul>
+<li><code>RectangleScheme</code> subclasses <code>IntegrationScheme</code> so we need to implement the <code>integrate</code> method.</li>
+<li><code>__init__</code> method is run each time object of this class is requested. It sets the stage — in this case all we need is the number of rectangles we are to use. To be cautious, we check if the <code>steps</code> number is positive.</li>
+<li><code>__str__</code> is called when we try to represent the object as string — ex. in f-strings or directly calling <code>str()</code>. We just taught our class objects to introduce themselves nicely.</li>
+<li><code>integrate</code> is as simple as the idea behind it:
+<ul>
+<li>get the equaly spaced x values,</li>
+<li>calculate <code>integrand</code> values at the points,</li>
+<li>sum it up,</li>
+<li>multiply the sum by the distance between two consecutive points.</li>
+</ul></li>
+</ul>
 </section>
 <section id="simple-monte-carlo" class="level3">
 <h3 class="anchored" data-anchor-id="simple-monte-carlo">Simple Monte Carlo</h3>
-<div id="e0c6841d" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MonteCarloSchema(IntegrationSchema):</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Schema for Monte Carlo integration."""</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        random_points: <span class="bu">int</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        random_seed: Optional[<span class="bu">int</span>] <span class="op">=</span> <span class="va">None</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Initializes the rectangle integration config."""</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> random_points <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Points must be greater than 0."</span>)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.__random_points <span class="op">=</span> random_points</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.__random_seed <span class="op">=</span> random_seed</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Returns the string representation of the schema."""</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        points_msg <span class="op">=</span> <span class="ss">f"Monte Carlo schema with </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>__random_points<span class="sc">}</span><span class="ss"> random points"</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        seed_msg <span class="op">=</span> <span class="ss">f" and seed </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>__random_seed<span class="sc">}</span><span class="ss">"</span> <span class="cf">if</span> <span class="va">self</span>.__random_seed <span class="cf">else</span> <span class="st">""</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>points_msg<span class="sc">}{</span>seed_msg<span class="sc">}</span><span class="ss">."</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> integrate(</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        integrand: Callable[[<span class="bu">float</span>], <span class="bu">float</span>],</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>,</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        start: <span class="bu">float</span>,</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        end: <span class="bu">float</span>,</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Integrates a function using Monte Carlo integration."""</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>        np.random.seed(seed<span class="op">=</span><span class="va">self</span>.__random_seed)</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        x_points <span class="op">=</span> np.random.uniform(start, end, <span class="va">self</span>.__random_points)</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        values <span class="op">=</span> integrand(x_points)</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        average_dx <span class="op">=</span> (end <span class="op">-</span> start) <span class="op">/</span> np.float64(<span class="va">self</span>.__random_points)</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.<span class="bu">sum</span>(values) <span class="op">*</span> average_dx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This guy sounds fancy with its luxurious Monaco vibes, but it’s just a peasant in a nice suit. Instead of looking at equaly-spaced points, we shuffle them from uniform distribution on the interval of integration. We calculate the integrand function values at those points and sum them up. Then multiply the sum by the average distance between points and through the magic of probability theory (and not opening actual probability textbook in 10 years) you get a good probabilistic estimator of the integral value. The implementation is analogous to the <code>RectangleScheme</code>.</p>
+<div id="ebdb9068" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Optional</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MonteCarloScheme(IntegrationScheme):</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Schema for Monte Carlo integration."""</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        random_points: <span class="bu">int</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        random_seed: Optional[<span class="bu">int</span>] <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Initializes the rectangle integration config."""</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> random_points <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Points must be greater than 0."</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.__random_points <span class="op">=</span> random_points</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.__random_seed <span class="op">=</span> random_seed</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Returns the string representation of the schema."""</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        points_msg <span class="op">=</span> <span class="ss">f"Monte Carlo schema with </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>__random_points<span class="sc">}</span><span class="ss"> random points"</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        seed_msg <span class="op">=</span> <span class="ss">f" and seed </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>__random_seed<span class="sc">}</span><span class="ss">"</span> <span class="cf">if</span> <span class="va">self</span>.__random_seed <span class="cf">else</span> <span class="st">""</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>points_msg<span class="sc">}{</span>seed_msg<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> integrate(</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        integrand: Callable[[<span class="bu">float</span>], <span class="bu">float</span>],</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>,</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        start: <span class="bu">float</span>,</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        end: <span class="bu">float</span>,</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Integrates a function using Monte Carlo integration."""</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>        np.random.seed(seed<span class="op">=</span><span class="va">self</span>.__random_seed)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>        x_points <span class="op">=</span> np.random.uniform(start, end, <span class="va">self</span>.__random_points)</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>        values <span class="op">=</span> integrand(x_points)</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>        average_dx <span class="op">=</span> (end <span class="op">-</span> start) <span class="op">/</span> np.float64(<span class="va">self</span>.__random_points)</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.<span class="bu">sum</span>(values) <span class="op">*</span> average_dx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><code>Optional[int]</code> annotation means that the value of <code>random_seed</code> can be a <code>float</code> or <code>None</code>. With a set seed we get a reproducable results — good for testing but not for actual usage. Hence the default value here is <code>None</code>.</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>Optional</code> stands for <em>could be <code>None</code> as well</em>, it doesn’t affect if the input is mandatory or not. In our case it’s not, but thats stated by the <code>= None</code> part. In Python 3.11 onwards it’s recommended to use <code>int | None</code> instead.</p>
+</div>
 </div>
 </section>
 </section>
+<section id="integrator" class="level2">
+<h2 class="anchored" data-anchor-id="integrator">Integrator</h2>
+<p>What’s left is to have a way of defining the problem to solve and define how our schemes (strategies) interact with it.</p>
+<div id="134f1c55" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">"""An integrator class that allows to perform integration using different schemas."""</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Callable</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Integrator:</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""An integrator class that allows to perform integration using different</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">    schemas as strategies."""</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        integrand: Callable[[<span class="bu">float</span>], <span class="bu">float</span>],</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        interval_start: <span class="bu">float</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        interval_end: <span class="bu">float</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Initializes the integrator class."""</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> interval_start <span class="op">&gt;=</span> interval_end:</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Start value must be less than end value."</span>)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.__integrand <span class="op">=</span> integrand</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.__interval_start <span class="op">=</span> interval_start</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.__interval_end <span class="op">=</span> interval_end</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        schema: IntegrationScheme,</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co">        Calculates the definite integral value of a function.</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co">            schema: integration schema</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Using </span><span class="sc">{</span>schema<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> schema.integrate(</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.__integrand,</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>            start<span class="op">=</span><span class="va">self</span>.__interval_start,</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>            end<span class="op">=</span><span class="va">self</span>.__interval_end,</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>The <code>__init__</code> takes in the obvious parameters — function to integrate, start and end of the interval. It also checks if it’s a proper integral.</li>
+<li>We get to implement our own <code>__call__</code> method now. It’s clear what <code>Integrator</code> class does. No need to have a method with a descriptive name like <code>Integrator.integrate</code>. To use it you pass through the integration scheme into the integrator — notice annotation of the abstract <code>IntegrationScheme</code>. It prints the info on strategy used (using the <code>__str__</code> methods) and calls <code>integrate</code> method of the scheme. No care in the world on how the value is actually calculated.</li>
+</ul>
+</section>
 <section id="lets-integrate" class="level2">
 <h2 class="anchored" data-anchor-id="lets-integrate">Let’s integrate!</h2>
-<p>Ok, now to the integrating. Let’s set up the scene.</p>
-<div id="ba43c477" class="cell" data-execution_count="5">
+<p>Ok, now to the integrating! Let’s set up the stage:</p>
+<div id="a11b5f26" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>start, end <span class="op">=</span> <span class="dv">0</span>, np.pi <span class="op">/</span> <span class="fl">2.0</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.sin(x) <span class="op">+</span> np.cos(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Excited? Don’t be… The performance and convergence of those schemas is gonna be terrible. Like anything in Python, if you want robust and performant code you need to implement it with C or use any/all of the enhancement frameworks that Python provides (see Numba). Additionally, the simple methods we implemented are very naïve. The standard numerical packages use sophisticated algorithms honed for many decades.</p>
-<p>Maybe then we should get some benchmark value first. As none of us would bother to integrate this by hand, we’ll use SciPy. Unexpectedly (SciPy uses C and Fortran underneath), we get the result in a breeze and it is very close to actual value of 2.0.</p>
-<div id="8ded04a4" class="cell" data-execution_count="6">
+<p>Excited? Don’t be… yet.</p>
+<p>We should get some benchmark value first. As none of us would bother to integrate this by hand, we’ll use SciPy. Unexpectedly (SciPy uses C and Fortran underneath), we get the result in a breeze and it is very close to <a href="https://www.wolframalpha.com/input?i=integrate+sin%28x%29+%2B+cos%28x%29+over+0+to+pi%2F2">actual value of 2.0</a>.</p>
+<div id="c9308583" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.integrate <span class="im">import</span> quad</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>scipy_quad, err <span class="op">=</span> quad(f, start, end)</span>
@@ -419,8 +506,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>1.9999999999999998</code></pre>
 </div>
 </div>
-<p>Now, lets use our <code>Integrator</code> class and see</p>
-<div id="1a3b4eb6" class="cell" data-execution_count="7">
+<p>Now let’s use our <code>Integrator</code> class and see.</p>
+<div id="57b3692f" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>integrator <span class="op">=</span> Integrator(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    f,</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    interval_start<span class="op">=</span>start,</span>
@@ -428,30 +515,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>iterations <span class="op">=</span> [<span class="dv">2</span><span class="op">**</span>i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">21</span>,<span class="dv">5</span>)]</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>rectangle_results <span class="op">=</span> [integrator(RectangleSchema(steps<span class="op">=</span>i)) <span class="cf">for</span> i <span class="kw">in</span> iterations]</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>mc_results <span class="op">=</span> [integrator(MonteCarloSchema(random_points<span class="op">=</span>i)) <span class="cf">for</span> i <span class="kw">in</span> iterations]</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>rectangle_results <span class="op">=</span> [integrator(RectangleScheme(steps<span class="op">=</span>i)) <span class="cf">for</span> i <span class="kw">in</span> iterations]</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>mc_results <span class="op">=</span> [integrator(MonteCarloScheme(random_points<span class="op">=</span>i)) <span class="cf">for</span> i <span class="kw">in</span> iterations]</span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rectangle schema results:</span><span class="ch">\n</span><span class="sc">{</span>rectangle_results<span class="sc">}</span><span class="ss">."</span>)</span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Monte Carlo schema results:</span><span class="ch">\n</span><span class="sc">{</span>mc_results<span class="sc">}</span><span class="ss">."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Using Rectangle schema with 1 steps..
-Using Rectangle schema with 32 steps..
-Using Rectangle schema with 1024 steps..
-Using Rectangle schema with 32768 steps..
-Using Rectangle schema with 1048576 steps..
-Using Monte Carlo schema with 1 random points..
-Using Monte Carlo schema with 32 random points..
-Using Monte Carlo schema with 1024 random points..
-Using Monte Carlo schema with 32768 random points..
-Using Monte Carlo schema with 1048576 random points..
+<pre><code>Using Rectangle schema with 1 steps.
+Using Rectangle schema with 32 steps.
+Using Rectangle schema with 1024 steps.
+Using Rectangle schema with 32768 steps.
+Using Rectangle schema with 1048576 steps.
+Using Monte Carlo schema with 1 random points.
+Using Monte Carlo schema with 32 random points.
+Using Monte Carlo schema with 1024 random points.
+Using Monte Carlo schema with 32768 random points.
+Using Monte Carlo schema with 1048576 random points.
 Rectangle schema results:
 [1.5707963267948966, 1.986172817555692, 1.9995804632216618, 1.9999869013603688, 1.9999995906791057].
 Monte Carlo schema results:
-[2.115044415975735, 1.9752901067765187, 2.008650450563558, 2.0001172611040547, 2.0002601026808255].</code></pre>
+[2.1745847319663483, 1.9834803268360817, 1.9997296570582257, 1.9978756367376629, 1.9998878735260959].</code></pre>
 </div>
 </div>
-<p>But I was wrong! You <em>should</em> be excited! We just learned new approach for setting up extensible and readable code! Look how cleanly the pproblem statement is separated form approaches to solve it.</p>
-<p>If you are now wondering how much we could improve by using more advanced technique (like <a href="http://proceedings.mlr.press/v28/carpentier13.pdf">stratified Monte Carlo</a> or <a href="https://www.wikiwand.com/en/Adaptive_quadrature">adaptive quadrature</a>) you just need to implement new subclass of `IntegrationSchema’ and you’re done. No changes to the existing code are need, just simple extension. And that’s the idea behind strategy pattern.</p>
+<p>The performance and convergence of those schemes is terrible. Like anything in Python, if you want robust and performing code, you need to implement it with C or use any/all of the enhancement frameworks that Python provides (see Numba). Additionally, the simple methods we implemented are very naive. The standard numerical packages use sophisticated algorithms honed for many decades.</p>
+<p>But I was wrong! You <em>should</em> be excited! We just learned new approach for setting up extensible and readable code! Look how cleanly the problem statement is separated form different strategies to solve it.</p>
+<p>If you are now wondering how much we could improve by using more advanced techniques (like <a href="http://proceedings.mlr.press/v28/carpentier13.pdf">stratified Monte Carlo</a> or <a href="https://www.wikiwand.com/en/Adaptive_quadrature">adaptive quadrature</a>) you just need to implement new subclass of `IntegrationSchema’ and you’re done. No changes to the existing code are needed, just simple extension. And that’s the idea behind strategy pattern.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Download the whole code <a href="integration.py">here</a>.</p>
+</div>
+</div>
 
 
 </section>
