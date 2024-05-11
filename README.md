@@ -33,43 +33,11 @@ Configure Deployment: There are two main options:
 Manual Deployment: Alternatively, you can render your content locally and push the generated HTML files to a gh-pages branch in your GitHub repository.
 Here are some resources for further guidance:
 
-### Quarto Documentation: The official Quarto documentation has detailed instructions on creating projects, writing content, and [deploying to GitHub Pages](https://quarto.org/docs/publishing/github-pages.html).
+### Quarto Documentation
+
+The official Quarto documentation has detailed instructions on creating projects, writing content, and [deploying to GitHub Pages](https://quarto.org/docs/publishing/github-pages.html).
 
 
 ### Additional Tips:
 Customize Your Blog: Explore Quarto's theming options and CSS customization to personalize your blog's look and feel.
 Version Control Best Practices: Familiarize yourself with Git version control practices to manage your blog content effectively.
-
-
-# Future post ideas
-
-## Pythonic Distractions
-
-* python Windows startup script
-* parallelize pandas apply
-* implied volatility function
-* fast IV calculation on milions of options
-* Intro to Python data model
-
-## Lower Level
-
-* *Ancient way of satisfying your trader: C++ in Excel via COM*
-* Navier-Stokes with shaders
-
-## Matematical Meanders
-
-* what is anomalous diffusion?
-* how to start learning maths?
-
-## Divergent Paths
-
-* Twists and turns of modern career
-
-## Book Reviews
-
-* Fluent Python
-* Out of Crisis
-
-## Links
-
-* <https://www.youtube.com/watch?v=uimdXPZc40I>

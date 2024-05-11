@@ -53,35 +53,7 @@
     "href": "posts/280426_strategy_integration/index.html#lets-integrate",
     "title": "Strategies for Numerical Integration",
     "section": "Let’s integrate!",
-    "text": "Let’s integrate!\nOk, now to the integrating! Let’s set up the stage:\n\nstart, end = 0, np.pi / 2.0\n\ndef f(x: float) -&gt; float:\n    return np.sin(x) + np.cos(x)\n\nExcited? Don’t be… yet.\nWe should get some benchmark value first. As none of us would bother to integrate this by hand, we’ll use SciPy. Unexpectedly (SciPy uses C and Fortran underneath), we get the result in a breeze and it is very close to actual value of 2.0.\n\nfrom scipy.integrate import quad\n\nscipy_quad, err = quad(f, start, end)\nprint(scipy_quad)\n\n1.9999999999999998\n\n\nNow let’s use our Integrator class and see.\n\nintegrator = Integrator(\n    f,\n    interval_start=start,\n    interval_end=end,\n)\n\niterations = [2**i for i in range(0,21,5)]\nrectangle_results = [integrator(RectangleScheme(steps=i)) for i in iterations]\nmc_results = [integrator(MonteCarloScheme(random_points=i)) for i in iterations]\n\nprint(f\"Rectangle schema results:\\n{rectangle_results}.\")\nprint(f\"Monte Carlo schema results:\\n{mc_results}.\")\n\nUsing Rectangle schema with 1 steps.\nUsing Rectangle schema with 32 steps.\nUsing Rectangle schema with 1024 steps.\nUsing Rectangle schema with 32768 steps.\nUsing Rectangle schema with 1048576 steps.\nUsing Monte Carlo schema with 1 random points.\nUsing Monte Carlo schema with 32 random points.\nUsing Monte Carlo schema with 1024 random points.\nUsing Monte Carlo schema with 32768 random points.\nUsing Monte Carlo schema with 1048576 random points.\nRectangle schema results:\n[1.5707963267948966, 1.986172817555692, 1.9995804632216618, 1.9999869013603688, 1.9999995906791057].\nMonte Carlo schema results:\n[2.1745847319663483, 1.9834803268360817, 1.9997296570582257, 1.9978756367376629, 1.9998878735260959].\n\n\nThe performance and convergence of those schemes is terrible. Like anything in Python, if you want robust and performing code, you need to implement it with C or use any/all of the enhancement frameworks that Python provides (see Numba). Additionally, the simple methods we implemented are very naive. The standard numerical packages use sophisticated algorithms honed for many decades.\nBut I was wrong! You should be excited! We just learned new approach for setting up extensible and readable code! Look how cleanly the problem statement is separated form different strategies to solve it.\nIf you are now wondering how much we could improve by using more advanced techniques (like stratified Monte Carlo or adaptive quadrature) you just need to implement new subclass of `IntegrationSchema’ and you’re done. No changes to the existing code are needed, just simple extension. And that’s the idea behind strategy pattern.\n\n\n\n\n\n\nNote\n\n\n\nDownload the whole code here."
-  },
-  {
-    "objectID": "pages/hobbies.html",
-    "href": "pages/hobbies.html",
-    "title": "Fueling the Mind & Body: My Off-Duty Explorations.",
-    "section": "",
-    "text": "Supprisingly, I still have some hobbies outside technology and finance. This list is meant to be aspirational – i.e. sort of Instagram take on my interests to motivate me to invest more time into things I like. Too often I find myself in a work-sleep-work cycle that leaves little time for enjoyment.\n\n\nI have a PS5, a NS and a gaming PC. I play only single-player games, enjoy rouge-likes and open-worlds the most. My favorite games are God of War (2018), Hades and Trackmania. If your life’s companion is also a gamer (or just plays a little bit) i highly recommend It Takes Two.\n\n\n\n\nGot two cameras, old big hog Canon 450D and compact and sleek Sony A6000. I can make a decent portrait or Instagram ‘location photo’ but mosty interested in nature and urban settings. Would like to learn more on light and exposure usage, for now I am looking for contrasts and interesting compositions in my photos.\n\n\n\n\nClever ideas that fill and fuel natural sciences are often intimidating. Sure, there are occasional outliers – genius individuals that make history with revolutionary inventions. But most of the progress is achieved by a tectonic creep of incremental small wins and observations. All of those geniuses stood on the shoulders of giants that came before. The history of how those ideas and meanders of knowledge happened can be thrilling and educating.\n\n\n\n\nMaster chef of making tasty meal from leftovers. Specializing in Asian fusion cuisine. Fried rice with pulled tofu? Sushi with beetroot? Korean beef with sauerkraut? Yes, those are all delicious!\n\n\n\n\nI am a proud owner of 90’s vintage road bike. It was recently refurbished and looks smashing! It even has chipset print and binary code on the handles (photo pre-renovation)!\n\n\n\n\nYes, just strolling, but with a philosophy. No headphones, no distractions, no direction. Just observing what changed in the neighborhood I’ve lived in for the last 15 years, and what is happening inside. Think awareness meditation but while walking."
-  },
-  {
-    "objectID": "pages/hobbies.html#road-cycling",
-    "href": "pages/hobbies.html#road-cycling",
-    "title": "Fueling the Mind & Body: My Off-Duty Explorations.",
-    "section": "",
-    "text": "I am a proud owner of 90’s vintage road bike. It was recently refurbished and looks smashing! It even has chipset print and binary code on the handles (photo pre-renovation)!"
-  },
-  {
-    "objectID": "pages/hobbies.html#strolling.",
-    "href": "pages/hobbies.html#strolling.",
-    "title": "Fueling the Mind & Body: My Off-Duty Explorations.",
-    "section": "",
-    "text": "Yes, just strolling, but with a philosophy. No headphones, no distractions, no direction. Just observing what changed in the neighborhood I’ve lived in for the last 15 years, and what is happening inside. Think awareness meditation but while walking."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "bwrob blog",
-    "section": "",
-    "text": "This blog is a battleground of sorts, but instead of swords and shields, we wield the weapons of Python and C++. I’m a mathematician turned quantitative analyst turned software engineer. You can expect high standard deviation of topics here.\nHere, I’ll document my coding conquests, from building practical and impractical tools, exploring financial concepts, to playing around with physics simulations.\nExpect a healthy dose of humor alongside the technical discussions. Let’s be honest, even the most complex problems are more enjoyable with a sprinkle of laughter. So, grab a cup of coffee and join me on this exploration – even if it’s just for one interested reader!\n\n\n\n\n\n\n\n\n\n   \n     \n     \n       Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\nStrategies for Numerical Integration\n\n\n\nPythonic Distractions\n\n\nDesign Patterns\n\n\n\nHow to apply strategy design pattern to decouple integration problem from method it’s solved with.\n\n\n\nbwrob\n\n\nApr 28, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nNews\n\n\n\nWarm welcome to enjoy the ride with me.\n\n\n\nbwrob\n\n\nApr 23, 2024\n\n\n\n\n\n\n\n\nNo matching items\n\n Back to top"
+    "text": "Let’s integrate!\nOk, now to the integrating! Let’s set up the stage:\n\nstart, end = 0, np.pi / 2.0\n\ndef f(x: float) -&gt; float:\n    return np.sin(x) + np.cos(x)\n\nExcited? Don’t be… yet.\nWe should get some benchmark value first. As none of us would bother to integrate this by hand, we’ll use SciPy. Unexpectedly (SciPy uses C and Fortran underneath), we get the result in a breeze and it is very close to actual value of 2.0.\n\nfrom scipy.integrate import quad\n\nscipy_quad, err = quad(f, start, end)\nprint(scipy_quad)\n\n1.9999999999999998\n\n\nNow let’s use our Integrator class and see.\n\nintegrator = Integrator(\n    f,\n    interval_start=start,\n    interval_end=end,\n)\n\niterations = [2**i for i in range(0,21,5)]\nrectangle_results = [integrator(RectangleScheme(steps=i)) for i in iterations]\nmc_results = [integrator(MonteCarloScheme(random_points=i)) for i in iterations]\n\nprint(f\"Rectangle schema results:\\n{rectangle_results}.\")\nprint(f\"Monte Carlo schema results:\\n{mc_results}.\")\n\nUsing Rectangle schema with 1 steps.\nUsing Rectangle schema with 32 steps.\nUsing Rectangle schema with 1024 steps.\nUsing Rectangle schema with 32768 steps.\nUsing Rectangle schema with 1048576 steps.\nUsing Monte Carlo schema with 1 random points.\nUsing Monte Carlo schema with 32 random points.\nUsing Monte Carlo schema with 1024 random points.\nUsing Monte Carlo schema with 32768 random points.\nUsing Monte Carlo schema with 1048576 random points.\nRectangle schema results:\n[1.5707963267948966, 1.986172817555692, 1.9995804632216618, 1.9999869013603688, 1.9999995906791057].\nMonte Carlo schema results:\n[1.994633216462226, 1.9979197399062845, 1.9973302222961413, 1.9998290594207229, 2.000013339623916].\n\n\nThe performance and convergence of those schemes is terrible. Like anything in Python, if you want robust and performing code, you need to implement it with C or use any/all of the enhancement frameworks that Python provides (see Numba). Additionally, the simple methods we implemented are very naive. The standard numerical packages use sophisticated algorithms honed for many decades.\nBut I was wrong! You should be excited! We just learned new approach for setting up extensible and readable code! Look how cleanly the problem statement is separated form different strategies to solve it.\nIf you are now wondering how much we could improve by using more advanced techniques (like stratified Monte Carlo or adaptive quadrature) you just need to implement new subclass of `IntegrationSchema’ and you’re done. No changes to the existing code are needed, just simple extension. And that’s the idea behind strategy pattern.\n\n\n\n\n\n\nNote\n\n\n\nDownload the whole code here."
   },
   {
     "objectID": "pages/resume.html",
@@ -119,10 +91,87 @@
     "text": "Personal Projects\n\nbwrob blog\nBlog on programming and finance. This blog is generated from .yaml and .qmd files using Quarto and deployed to GitHub Pages through Github Actions. To learn more see this post.\n\n\nxtb-sdk\nSoftware development kit for xStation API (xtb brokerage account). Allows for convenient fetching and persisting historical and live market data, trading and account management. Built with websockets, pydantic, pandera, docker… To learn more see this series of posts."
   },
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "bwrob blog",
+    "section": "",
+    "text": "This blog is a battleground of sorts, but instead of swords and shields, we wield the weapons of Python and C++. I’m a mathematician turned quantitative analyst turned software engineer. You can expect high standard deviation of topics here.\nHere, I’ll document my coding conquests, from building practical and impractical tools, exploring financial concepts, to playing around with physics simulations.\nExpect a healthy dose of humor alongside the technical discussions. Let’s be honest, even the most complex problems are more enjoyable with a sprinkle of laughter. So, grab a cup of coffee and join me on this exploration – even if it’s just for one interested reader!\n\n\n\n\n\n\n\n\n\n   \n     \n     \n       Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\nStrategies for Numerical Integration\n\n\n\nPythonic Distractions\n\n\nDesign Patterns\n\n\n\nHow to apply strategy design pattern to decouple integration problem from method it’s solved with.\n\n\n\nbwrob\n\n\nApr 28, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nNews\n\n\n\nWarm welcome to enjoy the ride with me.\n\n\n\nbwrob\n\n\nApr 23, 2024\n\n\n\n\n\n\n\n\nNo matching items\n\n Back to top"
+  },
+  {
+    "objectID": "pages/hobbies.html",
+    "href": "pages/hobbies.html",
+    "title": "Fueling the Mind & Body: My Off-Duty Explorations.",
+    "section": "",
+    "text": "Supprisingly, I still have some hobbies outside technology and finance. This list is meant to be aspirational – i.e. sort of Instagram take on my interests to motivate me to invest more time into things I like. Too often I find myself in a work-sleep-work cycle that leaves little time for enjoyment.\n\n\nI have a PS5, a NS and a gaming PC. I play only single-player games, enjoy rouge-likes and open-worlds the most. My favorite games are God of War (2018), Hades and Trackmania. If your life’s companion is also a gamer (or just plays a little bit) i highly recommend It Takes Two.\n\n\n\n\nGot two cameras, old big hog Canon 450D and compact and sleek Sony A6000. I can make a decent portrait or Instagram ‘location photo’ but mosty interested in nature and urban settings. Would like to learn more on light and exposure usage, for now I am looking for contrasts and interesting compositions in my photos.\n\n\n\n\nClever ideas that fill and fuel natural sciences are often intimidating. Sure, there are occasional outliers – genius individuals that make history with revolutionary inventions. But most of the progress is achieved by a tectonic creep of incremental small wins and observations. All of those geniuses stood on the shoulders of giants that came before. The history of how those ideas and meanders of knowledge happened can be thrilling and educating.\n\n\n\n\nMaster chef of making tasty meal from leftovers. Specializing in Asian fusion cuisine. Fried rice with pulled tofu? Sushi with beetroot? Korean beef with sauerkraut? Yes, those are all delicious!\n\n\n\n\nI am a proud owner of 90’s vintage road bike. It was recently refurbished and looks smashing! It even has chipset print and binary code on the handles (photo pre-renovation)!\n\n\n\n\nYes, just strolling, but with a philosophy. No headphones, no distractions, no direction. Just observing what changed in the neighborhood I’ve lived in for the last 15 years, and what is happening inside. Think awareness meditation but while walking."
+  },
+  {
+    "objectID": "pages/hobbies.html#road-cycling",
+    "href": "pages/hobbies.html#road-cycling",
+    "title": "Fueling the Mind & Body: My Off-Duty Explorations.",
+    "section": "",
+    "text": "I am a proud owner of 90’s vintage road bike. It was recently refurbished and looks smashing! It even has chipset print and binary code on the handles (photo pre-renovation)!"
+  },
+  {
+    "objectID": "pages/hobbies.html#strolling.",
+    "href": "pages/hobbies.html#strolling.",
+    "title": "Fueling the Mind & Body: My Off-Duty Explorations.",
+    "section": "",
+    "text": "Yes, just strolling, but with a philosophy. No headphones, no distractions, no direction. Just observing what changed in the neighborhood I’ve lived in for the last 15 years, and what is happening inside. Think awareness meditation but while walking."
+  },
+  {
     "objectID": "posts/240426_welcome/index.html",
     "href": "posts/240426_welcome/index.html",
     "title": "Welcome To My Blog",
     "section": "",
     "text": "This is the first post in the bwrob blog. Welcome!\nThis blog is a battleground of sorts, but instead of swords and shields, we wield the weapons of Python and C++. I’m a mathematician turned quantitative analyst turned software engineer. You can expect high standard deviation of topics here.\nHere, I’ll document my coding conquests, from building practical and impractical tools, exploring financial concepts, to playing around with physics simulations.\nExpect a healthy dose of humor alongside the technical discussions. Let’s be honest, even the most complex problems are more enjoyable with a sprinkle of laughter. So, grab a cup of coffee and join me on this exploration – even if it’s just for one interested reader!\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "ideas.html",
+    "href": "ideas.html",
+    "title": "Future post ideas",
+    "section": "",
+    "text": "see\n\n\n\n\n\nflowchart LR\n  A[Hard edge] --&gt; B(Round edge)\n  B --&gt; C{Decision}\n  C --&gt; D[Result one]\n  C --&gt; E[Result two]\n\n\n\n\n\n\n\n\n\n\n\nsequenceDiagram\n  participant Alice\n  participant Bob\n  Alice-&gt;&gt;John: Hello John, how are you?\n  loop Healthcheck\n    John-&gt;&gt;John: Fight against hypochondria\n  end\n  Note right of John: Rational thoughts &lt;br/&gt;prevail!\n  John--&gt;&gt;Alice: Great!\n  John-&gt;&gt;Bob: How about you?\n  Bob--&gt;&gt;John: Jolly good!\n\n\n\n\n\n\n\n\n\npython Windows startup script\nparallelize pandas apply\nimplied volatility function\nfast IV calculation on milions of options\nIntro to Python data model\n\n\n\n\n\nAncient way of satisfying your trader: C++ in Excel via COM\nNavier-Stokes with shaders\n\n\n\n\n\nwhat is anomalous diffusion?\nhow to start learning maths?\n\n\n\n\n\nTwists and turns of modern career\n\n\n\n\n\nFluent Python\nOut of Crisis\n\n\n\n\n\nhttps://www.youtube.com/watch?v=uimdXPZc40I"
+  },
+  {
+    "objectID": "ideas.html#pythonic-distractions",
+    "href": "ideas.html#pythonic-distractions",
+    "title": "Future post ideas",
+    "section": "",
+    "text": "python Windows startup script\nparallelize pandas apply\nimplied volatility function\nfast IV calculation on milions of options\nIntro to Python data model"
+  },
+  {
+    "objectID": "ideas.html#lower-level",
+    "href": "ideas.html#lower-level",
+    "title": "Future post ideas",
+    "section": "",
+    "text": "Ancient way of satisfying your trader: C++ in Excel via COM\nNavier-Stokes with shaders"
+  },
+  {
+    "objectID": "ideas.html#matematical-meanders",
+    "href": "ideas.html#matematical-meanders",
+    "title": "Future post ideas",
+    "section": "",
+    "text": "what is anomalous diffusion?\nhow to start learning maths?"
+  },
+  {
+    "objectID": "ideas.html#divergent-paths",
+    "href": "ideas.html#divergent-paths",
+    "title": "Future post ideas",
+    "section": "",
+    "text": "Twists and turns of modern career"
+  },
+  {
+    "objectID": "ideas.html#book-reviews",
+    "href": "ideas.html#book-reviews",
+    "title": "Future post ideas",
+    "section": "",
+    "text": "Fluent Python\nOut of Crisis"
+  },
+  {
+    "objectID": "ideas.html#links",
+    "href": "ideas.html#links",
+    "title": "Future post ideas",
+    "section": "",
+    "text": "https://www.youtube.com/watch?v=uimdXPZc40I"
   }
 ]

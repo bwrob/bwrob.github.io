@@ -16,7 +16,7 @@
 <height>144</height>
 <width>144</width>
 </image>
-<generator>quarto-1.4.553</generator>
+<generator>quarto-1.4.554</generator>
 <lastBuildDate>Sat, 27 Apr 2024 22:00:00 GMT</lastBuildDate>
 <item>
   <title>Strategies for Numerical Integration</title>
@@ -61,7 +61,7 @@ Note
 <section id="abstract-schema" class="level2">
 <h2 class="anchored" data-anchor-id="abstract-schema">Abstract schema</h2>
 <p>Each scheme that we’d come up with, even the most complex ones, would have the same main purpose — ‘integrate’. To make the implementation for it, we create a template class that all concrete schemes will inherit from.</p>
-<div id="8d723697" class="cell" data-execution_count="1">
+<div id="8b38feba" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> abc <span class="im" style="color: #00769E;
@@ -127,7 +127,7 @@ font-style: inherit;">"""Abstract method for integrating a function."""</span></
 <p>It’s the simplest way of estimating the area under a curve you can think of — cover it with smaller and smaller rectangles with the value of a function at the leftmost point as height constant width.</p>
 <p><a href="https://en.wikipedia.org/wiki/File:Rectangle_rule.gif"><img src="https://bwrob.github.io/posts/280426_strategy_integration/Rectangle_rule.gif" class="img-fluid" style="width:100.0%"></a></p>
 <p>Implementing this idea is trivial when using <a href="https://numpy.org/">numpy</a>, but let’s add some syntactic sugar so the class is sweeter to work with.</p>
-<div id="d9770415" class="cell" data-execution_count="2">
+<div id="d23869d2" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
@@ -279,7 +279,7 @@ font-style: inherit;">*</span> dx</span></code></pre></div>
 <section id="simple-monte-carlo" class="level3">
 <h3 class="anchored" data-anchor-id="simple-monte-carlo">Simple Monte Carlo</h3>
 <p>This guy sounds fancy with its luxurious Monaco vibes, but it’s just a peasant in a nice suit. Instead of looking at equaly-spaced points, we shuffle them from uniform distribution on the interval of integration. We calculate the integrand function values at those points and sum them up. Then multiply the sum by the average distance between points and through the magic of probability theory (and not opening actual probability textbook in 10 years) you get a good probabilistic estimator of the integral value. The implementation is analogous to the <code>RectangleScheme</code>.</p>
-<div id="ebdb9068" class="cell" data-execution_count="3">
+<div id="89b24b6d" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
@@ -489,7 +489,7 @@ Note
 <section id="integrator" class="level2">
 <h2 class="anchored" data-anchor-id="integrator">Integrator</h2>
 <p>What’s left is to have a way of defining the problem to solve and define how our schemes (strategies) interact with it.</p>
-<div id="134f1c55" class="cell" data-execution_count="4">
+<div id="d99bd6bd" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">"""An integrator class that allows to perform integration using different schemas."""</span></span>
@@ -631,7 +631,7 @@ font-style: inherit;">self</span>.__interval_end,</span>
 <section id="lets-integrate" class="level2">
 <h2 class="anchored" data-anchor-id="lets-integrate">Let’s integrate!</h2>
 <p>Ok, now to the integrating! Let’s set up the stage:</p>
-<div id="a11b5f26" class="cell" data-execution_count="5">
+<div id="e91905de" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">start, end <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
@@ -659,7 +659,7 @@ font-style: inherit;">+</span> np.cos(x)</span></code></pre></div>
 </div>
 <p>Excited? Don’t be… yet.</p>
 <p>We should get some benchmark value first. As none of us would bother to integrate this by hand, we’ll use SciPy. Unexpectedly (SciPy uses C and Fortran underneath), we get the result in a breeze and it is very close to <a href="https://www.wolframalpha.com/input?i=integrate+sin%28x%29+%2B+cos%28x%29+over+0+to+pi%2F2">actual value of 2.0</a>.</p>
-<div id="c9308583" class="cell" data-execution_count="6">
+<div id="1a03c14b" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> scipy.integrate <span class="im" style="color: #00769E;
@@ -677,7 +677,7 @@ font-style: inherit;">print</span>(scipy_quad)</span></code></pre></div>
 </div>
 </div>
 <p>Now let’s use our <code>Integrator</code> class and see.</p>
-<div id="57b3692f" class="cell" data-execution_count="7">
+<div id="ebdd03a3" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">integrator <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Integrator(</span>
@@ -768,7 +768,7 @@ Using Monte Carlo schema with 1048576 random points.
 Rectangle schema results:
 [1.5707963267948966, 1.986172817555692, 1.9995804632216618, 1.9999869013603688, 1.9999995906791057].
 Monte Carlo schema results:
-[2.1745847319663483, 1.9834803268360817, 1.9997296570582257, 1.9978756367376629, 1.9998878735260959].</code></pre>
+[1.994633216462226, 1.9979197399062845, 1.9973302222961413, 1.9998290594207229, 2.000013339623916].</code></pre>
 </div>
 </div>
 <p>The performance and convergence of those schemes is terrible. Like anything in Python, if you want robust and performing code, you need to implement it with C or use any/all of the enhancement frameworks that Python provides (see Numba). Additionally, the simple methods we implemented are very naive. The standard numerical packages use sophisticated algorithms honed for many decades.</p>
