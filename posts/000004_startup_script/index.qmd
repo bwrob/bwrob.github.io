@@ -1,0 +1,41 @@
+---
+title: "Start your day with coffee"
+description: "How to create a start up script in python and enjoy your coffee instead of opening the same apps all over again every morning."
+author: "bwrob"
+
+date: "2024-05-21"
+
+categories: [Pythonic Distractions]
+
+image: win_98.png
+
+format-links: [html]
+---
+
+## Why a start up script?
+
+If we know we're never going to use all of the resources, we should clean up the server artifacts after receving the results. So for each resource we should have a CM.
+
+### The setup
+
+The setup described above comes from a real-life situation I worked through. I can't show you the actual API usage or data (or even the name of RMS itself), so we need to define some mocker functions. Mocks like this are actually not an uncommon thing --- such approach is prevalent in testing API client code. In our case it would look like this:
+
+```{python}
+from enum import Enum
+```
+
+## The last bit of convinienvce
+
+We got it guys, the script works and the job is done. But.. do you recall the last time you googled a shortcut for a semi-frequently used functionality? Do you still remember the shortcut, or use it each time you need the functionality? 
+Convinience needs to be convinient (obviously). So let's apply this to our script. 
+
+For Windows OS, for me best way would be to have a shortcut that would run it on one click that is pinned to taskbar and start menu. To create one:
+
+* Go to any folder, right-click and select `New > Shortcut`.
+* In the guide that pops up paste in `%systemroot%\System32\cmd.exe /c "python.exe $1"` where `$1` should be replaced by the path to your script. You can also replace `python.exe` with interpreter path of any venv you wish.
+* Optionally, you can later change the icon for the shortcut (neweds to be `.ico` file). I choose Win-98 style `My Computer' icon.
+* Copy the shortcut to start menu dir. For Win11 it's `C:\ProgramData\Microsoft\Windows\Start Menu\Programs`. You should be able to see it in start menu already. Now you can pin it to taskbar.
+
+![](startup_shortcut.png){width="100%"}
+
+That's a good enough reminder and convinience tool for me. You might need some different setup, especially for another OS. For Linux, you might try to levarage `activate` or `bashrc` scripts in your working setup. Here you can download the [script](startup_script.py) and example Windows [shortcut](Startup!.lnk).
