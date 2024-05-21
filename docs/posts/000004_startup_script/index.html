@@ -230,6 +230,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#the-setup" id="toc-the-setup" class="nav-link" data-scroll-target="#the-setup">The setup</a></li>
   </ul></li>
   <li><a href="#the-last-bit-of-convinienvce" id="toc-the-last-bit-of-convinienvce" class="nav-link" data-scroll-target="#the-last-bit-of-convinienvce">The last bit of convinienvce</a></li>
+  <li><a href="#further-extensions" id="toc-further-extensions" class="nav-link" data-scroll-target="#further-extensions">Further extensions</a></li>
   </ul>
 </nav>
     </div>
@@ -242,13 +243,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="why-a-start-up-script" class="level2">
 <h2 class="anchored" data-anchor-id="why-a-start-up-script">Why a start up script?</h2>
-<p>If we know we’re never going to use all of the resources, we should clean up the server artifacts after receving the results. So for each resource we should have a CM.</p>
+<p>Confesion time. Pre-COVID I worked for a Swiss bank — it was the whole corporate package. Working from a crowded office, open space, dedicated desks, dedicated desktop PCs, hundreds of people. And we never turned the PC’s off, some of them were running constantly for months. Not very eco-friendly behaviour, either from the company side and from the employees. But there were legit reasons for this and the company had much <a href="https://www.wikiwand.com/en/Credit_Suisse#Controversies">bigger sins</a> on their books.</p>
+<p>As for the reasons for eternaly turned on machines — the propriaetary frameworks and tooling we used was awfully heavy and slow. If you were occasionally forced to kill all the processes once in a while due to an update or system crash getting them all up again would take an hour or more. Developer tools, pricing systems, connections to Monte Carlo farms, downloading trade data, analysis definitions.</p>
+<p>One tidbit to get this point across - in 2019 we still used 32-bit Win7, which had a cap on single-process memory consumption to 4Gb. We had a universally used hack to extend this to 8Gb for Excel, since the default wasn’t enough for many of our pricing sheets.</p>
+<p>When post-COVID I parted ways with the company, I got a work notebook from the new employer. The office was much sparser, quiter with ‘hot seats’ approach. I worked mostly remotely either way. This ment switching off the company machine each day, as the VPN connections woudnt last overnight either way. I was very annoyed with openning all of the usual setup day after day, after getting used to having it all waiting for me to jump right in.</p>
+<p>Hence the startup script to open all of the apps, tools and files programatically. It won’t cover everything, like authorizations or connections but stil a little helper to start the day.</p>
 <section id="the-setup" class="level3">
 <h3 class="anchored" data-anchor-id="the-setup">The setup</h3>
-<p>The setup described above comes from a real-life situation I worked through. I can’t show you the actual API usage or data (or even the name of RMS itself), so we need to define some mocker functions. Mocks like this are actually not an uncommon thing — such approach is prevalent in testing API client code. In our case it would look like this:</p>
-<div id="d656f4d4" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> enum <span class="im">import</span> Enum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s think about the design first – this is a good practice by the way. Imagine the code being split into two</p>
+<ul>
+<li>the hiddden logic layer, the worker that does stuff,</li>
+<li>and the public interface that integrates with the rest of the, the manager.</li>
+</ul>
+<p>We can write the public interface first to see what we want to achive and later deal with working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:</p>
+<div id="6f2bb0d6" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> run_startup_script():</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Runs the startup script.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Welcome!"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    start_programs(</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"powershell"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"notepad++"</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>            (<span class="st">"firefox"</span>, <span class="dv">8</span>),</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    start_work_files(<span class="st">".temp"</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    run_commands([<span class="st">'Write-Output "test"'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>We want the sc</p>
 </section>
 </section>
 <section id="the-last-bit-of-convinienvce" class="level2">
@@ -263,6 +287,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p><img src="startup_shortcut.png" class="img-fluid" style="width:100.0%"></p>
 <p>That’s a good enough reminder and convinience tool for me. You might need some different setup, especially for another OS. For Linux, you might try to levarage <code>activate</code> or <code>bashrc</code> scripts in your working setup. Here you can download the <a href="startup_script.py">script</a> and example Windows <a href="Startup!.lnk">shortcut</a>.</p>
+</section>
+<section id="further-extensions" class="level2">
+<h2 class="anchored" data-anchor-id="further-extensions">Further extensions</h2>
+<p>There are a couple more things I wish this guy could do for me still:</p>
+<ul>
+<li><strong>Changing Teams status to green</strong> - there’s a MS Graph API that could do this but we would need to manage Azure authorizations through the script. I am not up to that, especially on a work account. Might experiment on personal one in the future.</li>
+<li><strong>Display placement of opened processes</strong> – I have 2 displays (which you could count as 4, due to size format) and I am very particular about where each app should go. I would love the apps to open where they should. This is however OS specific, for Win it require to mingle with win32api. Yet another project for the future.</li>
+</ul>
 
 
 </section>

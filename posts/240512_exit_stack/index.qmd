@@ -4,29 +4,45 @@ description: "How to chain resource managers in elegant way."
 author: "bwrob"
 
 date: "2024-05-12"
+date-modified: "2024-05-21"
 
 categories: [Pythonic Distractions, Context Managers]
 
-image: python_mug.png
+image: flowchart.png
 
 format-links: [html]
 ---
 
 ## Working with risk managment systems
 
-As a quantitative finance professional you'll often find yourself with risk management systems (RMS). RMS's are extensive frameworks that let you properly define a book (portfolio) of your financial transactions and run varia of pricing and risk analysis on it. For big financial players, like investment banks, the RMS will be internal proprietary framework that is run in-house. For smaller enterprises or second-line reporting it's not feasable to tackle creating such vast framework. Hence, where there's a need, someone will try to make money on it. This leads us to third-party (or vendor) RMS, of which there are plenty (ex. Murex, Acadia).
+As a quantitative finance professional you'll often find yourself with risk management systems (RMS).
+RMS's are extensive frameworks that let you properly define a book (portfolio) of your financial transactions and run varia of pricing and risk analysis on it. 
+For big financial players, like investment banks, the RMS will be internal proprietary codbase that is run in-house.
+For smaller enterprises or second-line reporting it's not feasable to tackle creating such vast infrastructure.
+Hence, where there's a need, someone will try to make money on it. This leads us to third-party (or vendor) RMS, of which there are plenty (ex. Murex, Acadia).
 
-Working with vendor RMS, especially one that covers computations for you, entails juggling multiple resources to obtain your risk metrics. Defining OTC products, benchmarks, portfolios, and running risk analysis can involve numerous API calls, each requiring proper setup and cleanup. This can lead to messy code and potential errors or performance bottlenecks if resources aren't handled correctly.
+Working with vendor RMS, especially one that covers computations for you, entails juggling multiple resources to obtain your risk metrics.
+Defining OTC products, benchmarks, portfolios, and running risk analysis can involve numerous API calls, each requiring proper setup and cleanup.
+This can lead to messy code and potential errors or performance bottlenecks if resources aren't handled correctly.
 
-Thankfully, Python provides a powerful concept called context managers (**CM**) that streamline resource managment. True to the language's 'batteries included' philosophy, there's also a `contextlib` library that contains variety of tools for easing up your work with CMs. Today we'll look at a (mock-up) usage of `ExitStack` class in real-life scenario of running risk analysis on RMS. If you need a refresher on CMs, check out this [tutorial](https://realpython.com/python-with-statement/) by RealPython.
+Thankfully, Python provides a powerful concept called context managers (**CM**) that streamline resource managment.
+True to the language's 'batteries included' philosophy, there's also a `contextlib` library that contains variety of tools for easing up your work with CMs.
+Today we'll look at a (mock-up) usage of `ExitStack` class in real-life scenario of running risk analysis on RMS.
+If you need a refresher on CMs, check out this [tutorial](https://realpython.com/python-with-statement/) by RealPython.
 
 ## Setting the stage
 
-To run an analysis, the RMS first needs to know what our positions are. In case of tradable assets it's simple --- we provide a market identifier and how much of the instrument we are holding. What do we do if we have some bespoke agreement with specific counterparty (an over-the-counter transaction)? We will need to define it from scratch in the RMS using data from the term sheet (assuming this kind of agreement is covered).
+To run an analysis, the RMS first needs to know what our positions are.
+In case of tradable assets it's simple --- we provide a market identifier and how much of the instrument we are holding.
+What do we do if we have some bespoke agreement with specific counterparty (an over-the-counter transaction)? 
+We will need to define it from scratch in the RMS using data from the term sheet (assuming this kind of agreement is covered).
 
-Next, we need to specify the risk metrics we want to calculate --- define the analysis scope. Let's say we hold some equity options and we are intertested in their deltas and beta exposures. The betas are defined with respect to some benchmark --- ex. portfolio holding 1 stock in US500 ETF. So we define the benchmark and link it to our analysis.
+Next, we need to specify the risk metrics we want to calculate --- define the analysis scope.
+Let's say we hold some equity options and we are intertested in their deltas and beta exposures.
+The betas are defined with respect to some benchmark --- ex. portfolio holding 1 stock in US500 ETF. So we define the benchmark and link it to our analysis.
 
-Finally --- once portfolio and analysis are defined in RMS --- we call the API to start the calculation and respond with results. This is the control flow we execute to get to this point:
+Finally --- once portfolio and analysis are defined in RMS --- we call the API to start the calculation and respond with results. 
+This is the control flow we execute to get to this point:
 
 ```{mermaid}
 flowchart LR

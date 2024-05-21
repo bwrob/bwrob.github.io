@@ -51,7 +51,6 @@ def start_process(
             * executable files are run,
             * content files are opened with system default program,
             * folders are opened with system explorer.
-        * Waits for delay seconds afterwards.
 
     Args:
         name: Name of the process to start.
