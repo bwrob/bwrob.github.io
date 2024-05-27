@@ -35,17 +35,21 @@ The office was much sparser, quiter with 'hot seats' approach.  I worked mostly 
 This ment switching off the company machine each day, as the VPN connections woudnt last overnight either way.
 I was very annoyed with openning all of the usual setup day after day, after getting used to having it all waiting for me to jump right in.
 
-Hence the startup script to open all of the apps, tools and files programatically. It won't cover everything, like authorizations or connections but stil a little helper to start the day.
+Hence the startup script to open all of the apps, tools and files programatically. 
+It won't cover everything, like authorizations or connections but stil a little helper to start the day.
 
 
-### The setup
+## The startup script
 
-Let's think about the design first -- this is a good practice by the way. Imagine the code being split into two
+### Public interface
+
+Let's think about the design first, what we want to achive. Imagine the code being split into two:
 
 * the hiddden logic layer, the worker that does stuff,
-* and the public interface that integrates with the rest of the, the manager.
+* and the public interface that integrates with the rest of the codebase or is called at the top level, the manager.
 
-We can write the public interface first to see what we want to achive and later deal with working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:
+We can write the public interface first to see what we want to achive and later deal with filling in a working implementation. 
+You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:
 
 ```{python}
 #| eval: false
@@ -62,32 +66,118 @@ def run_startup_script():
             ("firefox", 8),
         ]
     )
-    start_work_files(".temp")
-    run_commands(['Write-Output "test"'])
+    start_work_files([".temp"])
+    run_commands([('login-to-cloud --user bwrob', 30)])
 
 ```
 
-We want the sc
+We want to specify programs to start, open all files in some temp folder, and run a list of shell commands.
+After each step there should be some delay not to spam system with process calls.
+Certain steps might be more time consuming, like cloud services authorization. Those need longer delay.
+On the other hand, specifying delay for each task would be cumbersome, most cases would be fine with some default value.
+We end up with a design that our soon-to-be workers `start_programs`, `start_work_files`, and `run_commands` 
+expect lists of either `task` or `(task, delay_seconds)`. 
+We could then start the implementation by figuring out how the delay time should be defaulted if not specified.
+
+### Decorator defaulting the time delays
+
+```{python}
+from functools import wraps
+from typing import Callable, TypeVar
+
+T = TypeVar("T")
+TaskListOptionalDelay = list[tuple[T, int] | T]
+TaskList = list[tuple[T, int]]
+
+def with_optional_delay(
+    task_worker: Callable[[TaskList[T]], None],
+) -> Callable[[TaskListOptionalDelay[T]], None]:
+    """Adds default delay to all non-tuple items.
+
+    Args:
+        mixed_list: mixed list of items T or tuples (T, int) with delays
+    """
+
+    @wraps(task_worker)
+    def task_defaulted_worker(task_list: TaskListOptionalDelay[T]) -> None:
+        tasks_with_defaulted_delays = [
+            item if isinstance(item, tuple) else (item, DEFAULT_DELAY_SECONDS)
+            for item in task_list
+        ]
+        return task_worker(tasks_with_defaulted_delays)
+
+    return task_defaulted_worker
+```
+
+```{python}
+class Program(Enum):
+    """Types of programs."""
+
+    POWERSHELL = Path(r"C:\windows\system32\windowspowershell\v1.0\powershell.exe")
+    NOTEPAD = Path(r"C:\Program Files\Notepad++\notepad++.exe")
+    FIREFOX = Path(r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Firefox.lnk")
+
+
+def start_process(
+    *,
+    name: str,
+    path: Path,
+    delay: int = DEFAULT_DELAY_SECONDS,
+) -> None:
+    """Given a path, starts the target.
+
+    Behavior:
+        * Minimizes all windows.
+        * Depending on the path target:
+            * executable files are run,
+            * content files are opened with system default program,
+            * folders are opened with system explorer.
+
+    Args:
+        name: Name of the process to start.
+        delay: Time to wait after starting the process.
+    """
+    if path.is_dir():
+        print(f"Opening folder {name}")
+    elif path.suffix in (".exe", ".lnk"):
+        print(f"Running app {name}")
+    else:
+        print(f"Opening file {name}")
+
+    os.startfile(path)
+    time.sleep(delay)
+```
 
 ## The last bit of convinienvce
 
-We got it guys, the script works and the job is done. But.. do you recall the last time you googled a shortcut for a semi-frequently used functionality? Do you still remember the shortcut, or use it each time you need the functionality? 
-Convinience needs to be convinient (obviously). So let's apply this to our script. 
+We got it guys, the script works and the job is done. 
+But.. do you recall the last time you googled a shortcut for a semi-frequently used functionality?
+Do you still remember the shortcut, or use it each time you need the functionality? 
+Convinience needs to be convinient (obviously). So let' make usage of our script as seemless as possible. 
 
-For Windows OS, for me best way would be to have a shortcut that would run it on one click that is pinned to taskbar and start menu. To create one:
+At Windows OS, for me best way would be to have a shortcut that would run it on one click that is pinned to taskbar and start menu. 
+To create one:
 
 * Go to any folder, right-click and select `New > Shortcut`.
-* In the guide that pops up paste in `%systemroot%\System32\cmd.exe /c "python.exe $1"` where `$1` should be replaced by the path to your script. You can also replace `python.exe` with interpreter path of any venv you wish.
-* Optionally, you can later change the icon for the shortcut (neweds to be `.ico` file). I choose Win-98 style `My Computer' icon.
-* Copy the shortcut to start menu dir. For Win11 it's `C:\ProgramData\Microsoft\Windows\Start Menu\Programs`. You should be able to see it in start menu already. Now you can pin it to taskbar.
+* In the guide that pops up paste in `%systemroot%\System32\cmd.exe /c "python.exe $1"` where `$1` should be replaced by the path to your script. 
+    You can also replace `python.exe` with interpreter path of any venv you wish.
+* Optionally, you can later change the icon for the shortcut (neweds to be `.ico` file).
+    I like to roll with Win-98 style `My Computer' icon.
+* Copy the shortcut to start menu dir. For Win11 it's `C:\ProgramData\Microsoft\Windows\Start Menu\Programs`.
+    You should be able to see it in start menu already. Now you can pin it to taskbar.
 
 ![](startup_shortcut.png){width="100%"}
 
-That's a good enough reminder and convinience tool for me. You might need some different setup, especially for another OS. For Linux, you might try to levarage `activate` or `bashrc` scripts in your working setup. Here you can download the [script](startup_script.py) and example Windows [shortcut](Startup!.lnk).
+That's a good enough reminder and convinience tool for me. 
+You might need some different setup, especially for another OS. 
+For Linux, you might try to levarage `activate` or `bashrc` scripts in your working setup. 
+Here you can download the [script](startup_script.py) and example Windows [shortcut](Startup!.lnk).
 
 ## Further extensions
 
 There are a couple more things I wish this guy could do for me still:
 
-* **Changing Teams status to green** - there's a MS Graph API that could do this but we would need to manage Azure authorizations through the script. I am not up to that, especially on a work account. Might experiment on personal one in the future.
-* **Display placement of opened processes** -- I have 2 displays (which you could count as 4, due to size format) and I am very particular about where each app should go. I would love the apps to open where they should. This is however OS specific, for Win it require to mingle with win32api. Yet another project for the future.
+* **Changing Teams status to green** - there's a MS Graph API that could do this but we would need to manage Azure authorizations through the script. 
+    I am not up to that, especially on a work account. Might experiment on personal one in the future.
+* **Display placement of opened processes** -- I have 2 displays (which you could count as 4, due to size format) and I am very particular about where each app should go. 
+    I would love the apps to open where they should. This is however OS specific, for Win it require to mingle with win32api. Yet another project for the future.

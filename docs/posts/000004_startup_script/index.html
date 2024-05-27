@@ -255,8 +255,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>the hiddden logic layer, the worker that does stuff,</li>
 <li>and the public interface that integrates with the rest of the, the manager.</li>
 </ul>
-<p>We can write the public interface first to see what we want to achive and later deal with working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:</p>
-<div id="6f2bb0d6" class="cell" data-execution_count="1">
+<p>We can write the public interface first to see what we want to achive and later deal with filling in a working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:</p>
+<div id="422fa3ab" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> run_startup_script():</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Runs the startup script.</span></span>
@@ -269,20 +269,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>            (<span class="st">"firefox"</span>, <span class="dv">8</span>),</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        ]</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    start_work_files(<span class="st">".temp"</span>)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    run_commands([<span class="st">'Write-Output "test"'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    start_work_files([<span class="st">".temp"</span>])</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    run_commands([(<span class="st">'login-to-cloud --user bwrob'</span>, <span class="dv">30</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We want the sc</p>
+<p>We want to specify programs to start, open all files in some temp folder, and run a list of shell commands. After each step there should be some delay not to spam system with process calls. Certain steps might be more time consuming, like cloud services authorization. Those need longer delay. On the other hand, specifying delay for each step is cumbersome, most cases would be fine with some default value.</p>
 </section>
 </section>
 <section id="the-last-bit-of-convinienvce" class="level2">
 <h2 class="anchored" data-anchor-id="the-last-bit-of-convinienvce">The last bit of convinienvce</h2>
-<p>We got it guys, the script works and the job is done. But.. do you recall the last time you googled a shortcut for a semi-frequently used functionality? Do you still remember the shortcut, or use it each time you need the functionality? Convinience needs to be convinient (obviously). So let’s apply this to our script.</p>
-<p>For Windows OS, for me best way would be to have a shortcut that would run it on one click that is pinned to taskbar and start menu. To create one:</p>
+<p>We got it guys, the script works and the job is done. But.. do you recall the last time you googled a shortcut for a semi-frequently used functionality? Do you still remember the shortcut, or use it each time you need the functionality? Convinience needs to be convinient (obviously). So let’ make usage of our script as seemless as possible.</p>
+<p>At Windows OS, for me best way would be to have a shortcut that would run it on one click that is pinned to taskbar and start menu. To create one:</p>
 <ul>
 <li>Go to any folder, right-click and select <code>New &gt; Shortcut</code>.</li>
 <li>In the guide that pops up paste in <code>%systemroot%\System32\cmd.exe /c "python.exe $1"</code> where <code>$1</code> should be replaced by the path to your script. You can also replace <code>python.exe</code> with interpreter path of any venv you wish.</li>
-<li>Optionally, you can later change the icon for the shortcut (neweds to be <code>.ico</code> file). I choose Win-98 style `My Computer’ icon.</li>
+<li>Optionally, you can later change the icon for the shortcut (neweds to be <code>.ico</code> file). I like to roll with Win-98 style `My Computer’ icon.</li>
 <li>Copy the shortcut to start menu dir. For Win11 it’s <code>C:\ProgramData\Microsoft\Windows\Start Menu\Programs</code>. You should be able to see it in start menu already. Now you can pin it to taskbar.</li>
 </ul>
 <p><img src="startup_shortcut.png" class="img-fluid" style="width:100.0%"></p>
