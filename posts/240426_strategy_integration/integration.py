@@ -1,7 +1,7 @@
 """An integrator class that allows to perform integration using different schemes."""
 
 from abc import ABC, abstractmethod
-from typing import Callable, Optional
+from typing import Callable, override
 
 import numpy as np
 
@@ -32,10 +32,12 @@ class RectangleScheme(IntegrationScheme):
             raise ValueError("Steps must be greater than 0.")
         self.__steps = steps
 
+    @override
     def __str__(self) -> str:
         """Returns the string representation of the scheme."""
         return f"Rectangle scheme with {self.__steps} steps"
 
+    @override
     def integrate(
         self,
         integrand: Callable[[float], float],
@@ -56,7 +58,7 @@ class MonteCarloScheme(IntegrationScheme):
     def __init__(
         self,
         random_points: int,
-        random_seed: Optional[int] = None,
+        random_seed: int | None = None,
     ) -> None:
         """Initializes the rectangle integration config."""
         if random_points <= 0:
@@ -64,12 +66,14 @@ class MonteCarloScheme(IntegrationScheme):
         self.__random_points = random_points
         self.__random_seed = random_seed
 
+    @override
     def __str__(self) -> str:
         """Returns the string representation of the scheme."""
         points_msg = f"Monte Carlo scheme with {self.__random_points} random points"
         seed_msg = f" and seed {self.__random_seed}" if self.__random_seed else ""
         return f"{points_msg}{seed_msg}"
 
+    @override
     def integrate(
         self,
         integrand: Callable[[float], float],

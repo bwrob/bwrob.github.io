@@ -1,7 +1,7 @@
 from contextlib import ExitStack, contextmanager
 from enum import StrEnum
-from typing import Generator
 from uuid import uuid4
+from collections.abc import Generator
 
 import pandas as pd
 

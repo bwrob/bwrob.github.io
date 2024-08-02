@@ -6,7 +6,8 @@ import time
 from enum import Enum
 from functools import wraps
 from pathlib import Path
-from typing import Callable, Generator, TypeVar
+from typing import Callable, TypeVar
+from collections.abc import Generator
 
 T = TypeVar("T")
 TaskListOptionalDelay = list[tuple[T, int] | T]
