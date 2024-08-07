@@ -88,15 +88,21 @@ brew install fzf
 echo 'source <(fzf --zsh)' >> .zshrc 
 ```
 
+eza ls replacment
 ```{bash}
 brew install eza 
 echo 'alias ls='eza -la --group-directories-first --icons'' >> .zshrc
 ```
 
+thefuck
 ```{bash}
 brew install thefuck
 echo 'eval $(thefuck --alias)' >> .zshrc
 ```
+
+tmux
+
+
 
 ## Git and github
 
@@ -117,69 +123,22 @@ brew install rust
 
 ```{bash}
 brew install python@3.12
+brew install pipx
+pipx ensurepath
+pipx install poetry poethepoet pre-commit pytest ruff basedpyright
+which poetry 
 ```
 
-## Setting Up Poetry for Python Environment Management
-
-### Understanding the Concerns
-You're right to be cautious about installing Poetry globally. It's generally recommended to avoid global installations of environment managers to prevent conflicts and maintain isolation between projects.
-
-### Recommended Setup
-
-Here's a step-by-step guide to a robust Poetry setup:
-
-#### 1. Install Poetry in a Virtual Environment
-* Create a temporary virtual environment:
-  ```bash
-  python3 -m venv poetry_install_env
-  ```
-* Activate the environment:
-  ```bash
-  source poetry_install_env/bin/activate  # or activate.bat on Windows
-  ```
-* Install Poetry:
-  ```bash
-  pip install poetry
-  ```
-
-#### 2. Create Project-Specific Virtual Environments
-* Navigate to your project directory:
-  ```bash
-  cd your_project_directory
-  ```
-* Initialize Poetry:
-  ```bash
-  poetry init
-  ```
-  Follow the prompts to configure your project.
-* Create the virtual environment:
-  ```bash
-  poetry install
-  ```
-  Poetry will create a virtual environment within your project directory (usually in a `.venv` folder) and install the specified dependencies.
-
-#### 3. Activate the Virtual Environment
-* Activate the environment:
-  ```bash
-  poetry shell
-  ```
-
-### Additional Considerations
-
-* **Using `pyenv` (Optional):** If you need to manage multiple Python versions, consider using `pyenv` to switch between them. Poetry can then leverage the active Python version.
-* **Poetry Configuration:** You can customize Poetry's behavior by creating a `pyproject.toml` file in your project root and adding configuration options. Refer to the Poetry documentation for details.
-* **Dependency Management:** Poetry excels at managing project dependencies. Use the `poetry add` and `poetry remove` commands to add or remove packages.
-
-### Benefits of This Approach
-* **Isolation:** Each project has its own isolated environment, preventing conflicts between dependencies.
-* **Reproducibility:** You can easily recreate the project environment on different machines.
-* **Efficiency:** Poetry optimizes the installation process and provides features like dependency resolution and locking.
-
-By following these steps, you'll have a well-structured Python development environment that effectively utilizes Poetry's capabilities.
-
-**Would you like to delve deeper into any specific aspect of this setup, such as configuring Poetry, managing dependencies, or using `pyenv`?**
-
-
+```{bash}
+# Instal dependencies
+poetry install
+# Install pre-commit
+pre-commit install
+# Update pre-commit
+pre-commit autoupdate
+# Run pre-commit to test setup
+pre-commit run --all-files
+```
 
 ## Rust setup
 
@@ -187,3 +146,5 @@ By following these steps, you'll have a well-structured Python development envir
 brew install rustup
 rustup toolchain install stable
 ```
+
+# Dotfiles managment via Stow
