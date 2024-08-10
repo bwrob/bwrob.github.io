@@ -11,18 +11,67 @@ image: image.jpg
 ---
 ![](image.jpg){width="95%" fig-align="center"}
 
-## Installing WSL
+## Windows, Linux, and You: A Dynamic Duo
 
-With administrative priviliges
+Tired of the age-old Windows vs. Linux debate among PC superusers?
+Well, get ready to toss that outdated script out the window! 
+I'll show you how to get the best of both world.
+
+### Pros and cons 
+
+Windows OS has long been the dominant platform for consumers and businesses alike.
+It offers superior hardware compatibility and gaming experiences, 
+However, Windows limitations in terms of system control and software development tools have been well-documented. 
+
+Linux, on the other hand, has carved a niche for itself as the preferred operating system for developers and system administrators. 
+Providing unparalleled flexibility and a vast array of open-source tools.
+But the learning curve is steep, the open-source projects often get abbandoned, and with great power (sudo) comes great responsibility.
+
+### Bridging the gap
+
+At this point, even Microsoft, a strong contrarian to Linux in the past, embraced the usefulness of Linux shell at your fingertips.
+Imagine having the sleek, user-friendly interface of Windows for your everyday tasks.
+Combine it with a the raw power and flexibility of Linux for when you need to dive deep into development or system administration. 
+And limited stakes once you (inevatibly) remove half of your file system with a bash script.
+Enter Windows Subsystem for Linux (WSL): a ticket to 10x-ing your Windows experience. 
+Let's explore how this dynamic duo can supercharge your digital life.
+
+###  WSL vs. Virtual Machines: What's the Difference?
+
+You might be wondering how WSL differs from a traditional virtual machine (VM). 
+While both provide a way to run Linux on Windows, they operate in fundamentally different ways. 
+A VM essentially emulates a virtual computer within your computer, complete with its own operating system and hardware resources.
+This makes VMs resource-intensive and can impact overall system performance.   
+They are also hard to set up and maintain.
+
+WSL, on the other hand, is a more lightweight approach. 
+It integrates Linux directly into the Windows kernel, allowing for faster boot times, better performance, and seamless file sharing between Windows and Linux environments.
+So, if you're looking for a powerful, efficient, and integrated way to harness the best of both Windows and Linux, WSL is the way to go.
+
+## Installing and setuping WSL
+
+First, we need to set up the WSL and install a chosen Linux distribution. 
+Fortunatelly, this is super easy, bearly an inconvinience. 
+You can choose from a list of distros pre-packaged by Microsoft, or download and build an image from scratch.
+You can even build Arch and be legally alowed to say `BTW, I use Arch (on Windows)`.
+Myself, I will go less involved route and choose Long Term Support version of Ubuntu.
+Now, open the Powershell with administrative priviliges and run:
 
 ```{shell}
 wsl --update
 wsl --version
-wsl -l - -o
+```
+![](1.png)
+```{shell}
+wsl -l -o
+```
+![](2.png)
+```{shell}
 wsl --install -d 'Ubuntu-24.04'
 ```
+![](3.png)
 
-Reboot system and see `Ubuntu' in programs
+Reboot the Windows system and you'll see `Ubuntu' among your applications.
 
 ## Base setup
 
