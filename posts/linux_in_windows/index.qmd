@@ -11,7 +11,7 @@ image: image.jpg
 ---
 ![](image.jpg){width="95%" fig-align="center"}
 
-## Windows, Linux, and You: A Dynamic Duo
+## Windows, Linux, and You: Ménage à trois
 
 Tired of the age-old Windows vs. Linux debate among PC superusers?
 Well, get ready to toss that outdated script out the window! 
@@ -54,18 +54,26 @@ First, we need to set up the WSL and install a chosen Linux distribution.
 Fortunatelly, this is super easy, bearly an inconvinience. 
 You can choose from a list of distros pre-packaged by Microsoft, or download and build an image from scratch.
 You can even build Arch and be legally alowed to say `BTW, I use Arch (on Windows)`.
-Myself, I will go less involved route and choose Long Term Support version of Ubuntu.
+For this guide, we'll take a more conventional approach and opt for the long-term support (LTS) version of Ubuntu.
 Now, open the Powershell with administrative priviliges and run:
 
 ```{shell}
 wsl --update
 wsl --version
 ```
+
+These commands ensure that WSL is up-to-date and displays the installed WSL version.
+
 ![](1.png)
+
 ```{shell}
 wsl -l -o
 ```
 ![](2.png)
+
+This yields a curated list of pre-packaged Linux distributions, that Microsoft provides, making the process almost effortless.
+For the instalation itself:
+
 ```{shell}
 wsl --install -d 'Ubuntu-24.04'
 ```
@@ -81,28 +89,32 @@ Reboot the Windows system and you'll see `Ubuntu' among your applications.
 There is additional benefit we can reap with just a bit of more work - a fully system-agnostic setup.
 By having Linux kernel run on Windows, we unified 2 out of 3 giants.
 The only pillar that is missing is the Mac OS.
-But wait, it's based on Unix as well! 
+But wait, it's based on Unix as well!
 It just uses differrent default shell and lacks a package manager, as Apple doesn't trust it's clients.
+zsh offers a more interactive and customizable shell experience compared to the default bash. 
+Homebrew, often referred to as the "missing package manager for macOS," provides a convenient way to install additional software on Linux systems.
 Let's change the terminal shell to `zsh` in our Ubuntu installation and compile a secondary (to `apt-get`) package manager -- `brew`.
 
 ### Brewing starts
 
-Install compilation utils first:
+Before we dive into installing Homebrew, we need to equip our system with essential tools. 
+The build-essential package provides a collection of compilers and libraries necessary for building software from source code.
+Git is a version control system used for managing code projects.
+
+Let's install these prerequisites using the following command:
 ```{bash}
-sudo apt-get upgrade -y
-sudo apt-get install build-essential git -y
+sudo apt-get upgrade -y && sudo apt-get install build-essential git -y
 ```
 
-Execute the installation script for `brew`:
+Execute the installation script for Homebrew:
 ```{bash}
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 ![](6.png)
 
-Enable `brew` to be visible by your shell and check if it works:
+To make Homebrew accessible from your shell, you need to load its environment variables. The following command achieves this and subsequently runs a diagnostic check:
 ```{bash}
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-brew doctor
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" && brew doctor
 ```
 ![](7.png)
 
@@ -113,7 +125,7 @@ echo 'export XDG_DATA_DIRS="/home/linuxbrew/.linuxbrew/share:$XDG_DATA_DIRS"' >>
 
 ## Z-shell --- sea-shell
 
-Now we can install `zsh`, it's trivial with `brew`:
+Homebrew makes package management a breeze. Let's install `zsh`, a powerful and customizable shell.
 ```{bash}
 brew install zsh
 zsh --version
@@ -125,23 +137,50 @@ The file contains commands that are run each time a shell is spawned.
 You can either generate empty file with `0` or go throug the interactive setup with `1`.
 ![](8.png)
 
-Check the default shell and set it to `zsh`:
-```{bash}
-echo $SHELL | sudo chsh -s $(which zsh) | echo $SHELL
-```
-
-Add the brew initialization to `.zshrc` file. 
-The file contains commands that are run each time a shell is spawned.
+Add the brew initialization to `.zshrc` file as well.
 This way `brew` will always be at your side!
 ```{bash}
 (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/bwrob/.zshrc
 ```
 
 
+Check the default shell and set it to `zsh`:
+```{bash}
+echo $SHELL &&  sudo chsh -s $(which zsh) &&  echo $SHELL
+```
+
+
+
 ## GitHub command line tool
 
-https://cis106.com/guides/Ubuntu%20Github%20Setup/
+Remember `git` != `GitHub`, we need a way to authenticate and use Github from CLI.
+There's a tool for that!
 
 ```{bash}
 brew install gh
+gh auth login
 ```
+![](9.png)
+
+Now create a convinient directory and copy your favourite `GitHub` repo:
+```{bash}
+mkdir repos && cd repos
+gh repo clone python_playground
+```
+
+## Connect to Visual Studio Code
+
+While WSL empowers us with the power of Linux, let's not forget the user-friendly interface of Windows. When it comes to software development, we can achieve the perfect blend by integrating Visual Studio Code (VSC) with our WSL environment.
+
+Here's how:
+
+**Install the WSL Extension in VSC**:  Fire up VSC on your Windows machine and head over to the Extensions tab. Search for "WSL" and install the official extension by Microsoft: [WSL extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl).
+
+**Launching VSC from WSL**: Within your WSL terminal, you can directly invoke VSC as if it were running natively on Windows. Use the following command:
+
+```{bash}
+code ~\repos\python_playground
+```
+![](10.png)
+
+In the [next post]() I will show you how to set up Python enviorment in Linux. Stay tuned.
