@@ -27,7 +27,7 @@ def mock_object(object_type: MockObject) -> str:
     return f"{object_type}_{uuid4()}"
 
 
-def mock_preparation(object_type: MockObject, **kwargs) -> None:
+def mock_preparation(object_type: MockObject, **kwargs: str) -> None:
     """Mock preparation of an object.
 
     Args:
@@ -244,13 +244,13 @@ def run_analysis_with_exit_stack_3(clean_up: bool = True):
 
 if __name__ == "__main__":
     print_title("Running analysis.")
-    run_analysis()
+    _ = run_analysis()
 
     print_title("Running analysis with exit stack.")
-    run_analysis_with_exit_stack()
+    _ = run_analysis_with_exit_stack()
 
     print_title("Running analysis with exit stack and no clean up.")
-    run_analysis_with_exit_stack_2(clean_up=False)
+    _ = run_analysis_with_exit_stack_2(clean_up=False)
 
     print_title("Running analysis with exit stack on multiple portfolios.")
-    run_analysis_with_exit_stack_3(clean_up=True)
+    _ = run_analysis_with_exit_stack_3(clean_up=True)
