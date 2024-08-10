@@ -1,7 +1,7 @@
+from collections.abc import Generator
 from contextlib import ExitStack, contextmanager
 from enum import StrEnum
 from uuid import uuid4
-from collections.abc import Generator
 
 import pandas as pd
 
@@ -139,20 +139,16 @@ def analysis_results(
 
 def run_analysis() -> pd.DataFrame:
     """Mock running the analysis using with clauses."""
-    with otc_products() as otc_uuid:
-        with benchmark() as benchmark_uuid:
-            with portfolio(
-                portfolio_name=PORTFOLIO,
-                otc_products_uuid=otc_uuid,
-            ) as portfolio_uuid:
-                with analysis(
-                    benchmark_uuid=benchmark_uuid,
-                ) as analysis_uuid:
-                    results = analysis_results(
-                        analysis_uuid=analysis_uuid,
-                        portfolio_uuid=portfolio_uuid,
-                    )
-    return results
+    with otc_products() as otc_uuid, benchmark() as benchmark_uuid, portfolio(
+        portfolio_name=PORTFOLIO,
+        otc_products_uuid=otc_uuid,
+    ) as portfolio_uuid, analysis(
+        benchmark_uuid=benchmark_uuid,
+    ) as analysis_uuid:
+        return analysis_results(
+            analysis_uuid=analysis_uuid,
+            portfolio_uuid=portfolio_uuid,
+        )
 
 
 def run_analysis_with_exit_stack():
@@ -164,18 +160,17 @@ def run_analysis_with_exit_stack():
             portfolio(
                 portfolio_name=PORTFOLIO,
                 otc_products_uuid=otc_uuid,
-            )
+            ),
         )
         analysis_uuid = stack.enter_context(
             analysis(
                 benchmark_uuid=benchmark_uuid,
-            )
+            ),
         )
-        results = analysis_results(
+        return analysis_results(
             analysis_uuid=analysis_uuid,
             portfolio_uuid=portfolio_uuid,
         )
-    return results
 
 
 def run_analysis_with_exit_stack_2(clean_up: bool = True):
@@ -192,12 +187,12 @@ def run_analysis_with_exit_stack_2(clean_up: bool = True):
             portfolio(
                 portfolio_name=PORTFOLIO,
                 otc_products_uuid=otc_uuid,
-            )
+            ),
         )
         analysis_uuid = stack.enter_context(
             analysis(
                 benchmark_uuid=benchmark_uuid,
-            )
+            ),
         )
         results = analysis_results(
             analysis_uuid=analysis_uuid,
@@ -224,14 +219,14 @@ def run_analysis_with_exit_stack_3(clean_up: bool = True):
                 portfolio(
                     portfolio_name=portfolio_name,
                     otc_products_uuid=otc_uuid,
-                )
+                ),
             )
             for portfolio_name in PORTFOLIOS
         ]
         analysis_uuid = stack.enter_context(
             analysis(
                 benchmark_uuid=benchmark_uuid,
-            )
+            ),
         )
         result_parts = [
             analysis_results(
