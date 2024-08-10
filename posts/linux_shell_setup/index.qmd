@@ -1,0 +1,64 @@
+---
+title: "Linux Shell to the MAX"
+description: "Great dev setup and still CS coffee break"
+author: "bwrob"
+
+date: "2024-08-18"
+date-modified: "2024-08-18"
+
+categories: [Dev Env]
+---
+
+## Install oh my posh!
+
+https://ohmyposh.dev/docs/installation/linux
+
+```{bash}
+brew install jandedobbeleer/oh-my-posh/oh-my-posh
+echo 'eval "$(oh-my-posh init zsh)"' >> .zshrc 
+```
+
+## Aliases
+
+```{bash}
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+alias zshconfig='nano ~/.zshrc'
+alias ls='eza -la --group-directories-first --icons'
+```
+
+## Minor packages
+
+### fzf
+```{bash}
+brew install fzf
+# Set up fzf key bindings and fuzzy completion
+echo 'source <(fzf --zsh)' >> .zshrc 
+```
+
+### eza 
+
+ls replacment
+```{bash}
+brew install eza 
+echo 'alias ls='eza -la --group-directories-first --icons'' >> .zshrc
+```
+
+### thefuck
+```{bash}
+brew install thefuck
+echo 'eval $(thefuck --alias)' >> .zshrc
+```
+
+### tmux
+
+### Stow
+
+dotfiles managment
