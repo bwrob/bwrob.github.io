@@ -16,7 +16,7 @@
 <height>144</height>
 <width>144</width>
 </image>
-<generator>quarto-1.4.553</generator>
+<generator>quarto-1.5.56</generator>
 <lastBuildDate>Sat, 11 May 2024 22:00:00 GMT</lastBuildDate>
 <item>
   <title>Exit stack to the rescue</title>
@@ -60,7 +60,7 @@
 <section id="mock-functions" class="level3">
 <h3 class="anchored" data-anchor-id="mock-functions">Mock functions</h3>
 <p>The setup described above comes from a real-life situation I worked through. I can’t show you the actual API usage or data (or even the name of RMS itself), so we need to define some mocker functions. Mocks like this are actually not an uncommon thing — such approach is prevalent in testing API client code. In our case it would look like this:</p>
-<div id="f602a6b4" class="cell" data-execution_count="1">
+<div id="7271dbbb" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
@@ -75,6 +75,7 @@ font-style: inherit;">import</span> uuid4</span>
 <span id="cb1-4"></span>
 <span id="cb1-5"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">class</span> MockObject(StrEnum):</span>
 <span id="cb1-6">    <span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -104,6 +105,7 @@ font-style: inherit;">"portfolio"</span></span>
 <span id="cb1-13"></span>
 <span id="cb1-14"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> mock_object(object_type: MockObject) <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-&gt;</span> <span class="bu" style="color: null;
@@ -124,6 +126,7 @@ background-color: null;
 font-style: inherit;">    """</span></span>
 <span id="cb1-20">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> <span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">f"</span><span class="sc" style="color: #5E5E5E;
@@ -143,6 +146,7 @@ font-style: inherit;">"</span></span>
 <span id="cb1-22"></span>
 <span id="cb1-23"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> mock_preparation(object_type: MockObject, <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">**</span>kwargs) <span class="op" style="color: #5E5E5E;
@@ -185,8 +189,10 @@ font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> kwargs <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">else</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"."</span>))</span>
@@ -194,6 +200,7 @@ font-style: inherit;">"."</span>))</span>
 <span id="cb1-31"></span>
 <span id="cb1-32"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> mock_clean_up(object_uuid: <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">str</span>) <span class="op" style="color: #5E5E5E;
@@ -231,7 +238,7 @@ font-style: inherit;">."</span>)</span></code></pre></div>
 <section id="context-managers" class="level3">
 <h3 class="anchored" data-anchor-id="context-managers">Context managers</h3>
 <p>Easiest way to define a CM is through <code>contextlib.contextmanager</code> decorator. To use it, you need a function that returns a generator. Code executed on enter should come before <code>yield</code> statement and the one for the exit afterwards. The generator yields the result of the CM (ex. handle to an opened file), the <code>y</code> in <code>with x(*args) as y:</code>.</p>
-<div id="eb4eb255" class="cell" data-execution_count="2">
+<div id="360d41fc" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> contextlib <span class="im" style="color: #00769E;
@@ -248,6 +255,7 @@ background-color: null;
 font-style: inherit;">@contextmanager</span></span>
 <span id="cb2-5"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> analysis(</span>
 <span id="cb2-6">    <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -292,17 +300,19 @@ background-color: null;
 font-style: inherit;">=</span> mock_object(MockObject.ANALYSIS)</span>
 <span id="cb2-21">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">yield</span> analysis_uuid</span>
 <span id="cb2-22">    mock_clean_up(analysis_uuid)</span></code></pre></div>
 </div>
 <p>Modern approach to Python development leans heavily towards type annotations. Dynamical typing is powerful but can lead to unwieldy code. To properly annotate the <code>analysis</code> function we need to import <code>Generator</code> from <code>typing</code> module. Remember, the <code>@contextmanager</code> decorator takes the function and turns it into CM — a class with <code>__enter__</code> and <code>__exit__</code> methods. The <code>Generator</code> needs three inputs but in our case only the first one is important — <code>YieldType</code>, here <code>str</code> (<a href="https://docs.python.org/3/library/typing.html#typing.Generator">see</a> for more).</p>
 <p>With this done implementing the 3 remaining CMs is easy, just remember our flow chart.</p>
-<div id="840e432f" class="cell" data-execution_count="3">
+<div id="1fc33da9" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">@contextmanager</span></span>
 <span id="cb3-2"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> benchmark() <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-&gt;</span> Generator[<span class="bu" style="color: null;
@@ -333,6 +343,7 @@ background-color: null;
 font-style: inherit;">=</span> mock_object(MockObject.BENCHMARK)</span>
 <span id="cb3-12">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">yield</span> benchmark_uuid</span>
 <span id="cb3-13">    mock_clean_up(benchmark_uuid)</span>
 <span id="cb3-14"></span>
@@ -342,6 +353,7 @@ background-color: null;
 font-style: inherit;">@contextmanager</span></span>
 <span id="cb3-17"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> otc_products() <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-&gt;</span> Generator[<span class="bu" style="color: null;
@@ -370,6 +382,7 @@ background-color: null;
 font-style: inherit;">=</span> mock_object(MockObject.OTC_PRODUCTS)</span>
 <span id="cb3-25">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">yield</span> otcs_uuid</span>
 <span id="cb3-26">    mock_clean_up(otcs_uuid)</span>
 <span id="cb3-27"></span>
@@ -379,6 +392,7 @@ background-color: null;
 font-style: inherit;">@contextmanager</span></span>
 <span id="cb3-30"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> portfolio(</span>
 <span id="cb3-31">    <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -425,6 +439,7 @@ background-color: null;
 font-style: inherit;">=</span> mock_object(MockObject.PORTFOLIO)</span>
 <span id="cb3-46">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">yield</span> portfolio_uuid</span>
 <span id="cb3-47">    mock_clean_up(portfolio_uuid)</span></code></pre></div>
 </div>
@@ -432,7 +447,7 @@ font-style: inherit;">yield</span> portfolio_uuid</span>
 <section id="analysis-results" class="level3">
 <h3 class="anchored" data-anchor-id="analysis-results">Analysis results</h3>
 <p>No stress or complexity here, to run the analysis we need to specify which analysis to run on which portfolio.</p>
-<div id="73a7fa42" class="cell" data-execution_count="4">
+<div id="42ea53a7" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
@@ -441,6 +456,7 @@ font-style: inherit;">as</span> pd</span>
 <span id="cb4-2"></span>
 <span id="cb4-3"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> analysis_results(</span>
 <span id="cb4-4">    <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -493,6 +509,7 @@ background-color: null;
 font-style: inherit;">."</span>)</span>
 <span id="cb4-17">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> pd.DataFrame()</span></code></pre></div>
 </div>
 </section>
@@ -503,7 +520,7 @@ font-style: inherit;">return</span> pd.DataFrame()</span></code></pre></div>
 <section id="using-contexts-directly" class="level3">
 <h3 class="anchored" data-anchor-id="using-contexts-directly">Using contexts directly</h3>
 <p>First, we use the managers directly through <code>with</code> clause, remembering the dependencies from our flow chart.</p>
-<div id="f29e95db" class="cell" data-execution_count="5">
+<div id="76974246" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">PORTFOLIO <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
@@ -512,6 +529,7 @@ font-style: inherit;">"portfolio_1"</span></span>
 <span id="cb5-2"></span>
 <span id="cb5-3"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> run_analysis() <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-&gt;</span> pd.DataFrame:</span>
@@ -520,16 +538,19 @@ background-color: null;
 font-style: inherit;">"""Mock running the analysis using with clauses."""</span></span>
 <span id="cb5-5">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">with</span> otc_products() <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> otc_uuid:</span>
 <span id="cb5-6">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">with</span> benchmark() <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> benchmark_uuid:</span>
 <span id="cb5-7">            <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">with</span> portfolio(</span>
 <span id="cb5-8">                portfolio_name<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -542,6 +563,7 @@ background-color: null;
 font-style: inherit;">as</span> portfolio_uuid:</span>
 <span id="cb5-11">                <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">with</span> analysis(</span>
 <span id="cb5-12">                    benchmark_uuid<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -561,12 +583,14 @@ font-style: inherit;">=</span>portfolio_uuid,</span>
 <span id="cb5-17">                    )</span>
 <span id="cb5-18">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> results</span></code></pre></div>
 </div>
 <p>This is terrible! I am already getting lost, needed few tries to get it right. We ended up with <strong>6</strong> levels of indentation, the code is confusing, the flow is obtuse. Let’s run it either way, to see if at least works.</p>
-<div id="4a2e9646" class="cell" data-execution_count="6">
+<div id="4b451069" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> print_title(title: <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">str</span>) <span class="op" style="color: #5E5E5E;
@@ -611,20 +635,19 @@ font-style: inherit;">"Running analysis."</span>)</span>
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_c0c9110f-7d02-441c-a512-e69ffc0af0af'}
-Preparing analysis using {'benchmark_name': 'benchmark_ebda2c59-e3f3-417f-b9a2-a7893934b8a8'}
-Running analysis analysis_dca84413-bf99-4620-9e1a-1f5f1d53149e on portfolio portfolio_5e64810d-d760-4cb4-8956-92d580e32d20.
-Cleaning up after analysis_dca84413-bf99-4620-9e1a-1f5f1d53149e.
-Cleaning up after portfolio_5e64810d-d760-4cb4-8956-92d580e32d20.
-Cleaning up after benchmark_ebda2c59-e3f3-417f-b9a2-a7893934b8a8.
-Cleaning up after otc_products_c0c9110f-7d02-441c-a512-e69ffc0af0af.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_e1fcda15-b88a-42b2-95a4-794e5790d6b2'}
+Preparing analysis using {'benchmark_name': 'benchmark_d0b03378-9b19-4726-b6da-1bd59fd35007'}
+Running analysis analysis_d05af6be-84e2-454c-a31c-88a1ea010540 on portfolio portfolio_d7563ede-5d69-4bab-87d5-7e191456dab8.
+Cleaning up after analysis_d05af6be-84e2-454c-a31c-88a1ea010540.
+Cleaning up after portfolio_d7563ede-5d69-4bab-87d5-7e191456dab8.
+Cleaning up after benchmark_d0b03378-9b19-4726-b6da-1bd59fd35007.
+Cleaning up after otc_products_e1fcda15-b88a-42b2-95a4-794e5790d6b2.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <div>
-<div>
 
 
-<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -634,7 +657,6 @@ Cleaning up after otc_products_c0c9110f-7d02-441c-a512-e69ffc0af0af.</code></pre
 </tbody>
 </table>
 
-</div>
 </div>
 </div>
 </div>
@@ -668,7 +690,7 @@ Cleaning up after otc_products_c0c9110f-7d02-441c-a512-e69ffc0af0af.</code></pre
 </div>
 </div>
 <p>So the flow is exactly the same as in our first attempt. Let’s try it!</p>
-<div id="adba493d" class="cell" data-execution_count="7">
+<div id="dbfd46e2" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> contextlib <span class="im" style="color: #00769E;
@@ -677,6 +699,7 @@ font-style: inherit;">import</span> ExitStack</span>
 <span id="cb8-2"></span>
 <span id="cb8-3"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> run_analysis_with_exit_stack() <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
@@ -687,6 +710,7 @@ background-color: null;
 font-style: inherit;">"""Mock running the analysis using exit stack."""</span></span>
 <span id="cb8-5">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">with</span> ExitStack() <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> stack:</span>
@@ -729,7 +753,7 @@ font-style: inherit;">=</span>portfolio_uuid,</span>
 <span id="cb8-22">        )</span></code></pre></div>
 </div>
 <p>That’s amazing (if the approach works)! In our code we end up with only single <code>with</code> clause and the outputs of CMs are defined just like the regular variables. We just need to wrap the CM calls in <code>stack.enter_context</code> method that pushes each CM to the stack.</p>
-<div id="ccab05eb" class="cell" data-execution_count="8">
+<div id="2819c36a" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">print_title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Running analysis with exit stack."</span>)</span>
@@ -740,22 +764,23 @@ font-style: inherit;">"Running analysis with exit stack."</span>)</span>
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_c79b78ad-92c1-47b1-9375-7070940fba58'}
-Preparing analysis using {'benchmark_name': 'benchmark_00f9de1a-d101-468f-83e1-ad585228ec1a'}
-Running analysis analysis_5b2fe299-b820-4756-839c-05cbcb11fa14 on portfolio portfolio_c000e923-f66c-4216-823b-1574d028db0c.
-Cleaning up after analysis_5b2fe299-b820-4756-839c-05cbcb11fa14.
-Cleaning up after portfolio_c000e923-f66c-4216-823b-1574d028db0c.
-Cleaning up after benchmark_00f9de1a-d101-468f-83e1-ad585228ec1a.
-Cleaning up after otc_products_c79b78ad-92c1-47b1-9375-7070940fba58.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_cf3a9ee1-1df4-43ed-a739-d49bd17a735c'}
+Preparing analysis using {'benchmark_name': 'benchmark_df54a672-0a46-458b-b777-2cadabc45c2b'}
+Running analysis analysis_213ebc8a-b394-4444-bb5f-689dc642c51a on portfolio portfolio_3bda6bed-9565-4daa-a11c-0af70d891cdd.
+Cleaning up after analysis_213ebc8a-b394-4444-bb5f-689dc642c51a.
+Cleaning up after portfolio_3bda6bed-9565-4daa-a11c-0af70d891cdd.
+Cleaning up after benchmark_df54a672-0a46-458b-b777-2cadabc45c2b.
+Cleaning up after otc_products_cf3a9ee1-1df4-43ed-a739-d49bd17a735c.</code></pre>
 </div>
 </div>
 <p>It works as well! We also get a package of benefits for free.</p>
 <section id="disabling-the-clean-up" class="level3">
 <h3 class="anchored" data-anchor-id="disabling-the-clean-up">Disabling the clean up</h3>
 <p>Working with API is tricky and debugging could be a painful experience. If we notice something iffy with the results we are reciving, it could be due to a bug at any of the stages. In such case disabling the artifact clean up and examining them is a good way to investigate. How do we do that? Comment out the exit code in our resource CMs? Nope, now we know better. With exit stack approach we just need to clean up the stack before exiting its context.</p>
-<div id="532f0865" class="cell" data-execution_count="9">
+<div id="607c97f4" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> run_analysis_with_exit_stack(</span>
 <span id="cb11-2">    clean_up: <span class="bu" style="color: null;
 background-color: null;
@@ -785,6 +810,7 @@ font-style: inherit;">    """</span></span>
 <span id="cb11-9"></span>
 <span id="cb11-10">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">with</span> ExitStack() <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> stack:</span>
@@ -828,18 +854,21 @@ font-style: inherit;">=</span>portfolio_uuid,</span>
 <span id="cb11-28"></span>
 <span id="cb11-29">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">not</span> clean_up:</span>
 <span id="cb11-30">            _ <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> stack.pop_all()</span>
 <span id="cb11-31">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> results</span></code></pre></div>
 </div>
 <p>The <code>_ = some_function()</code> is a Pythonic way of disregarding outputs of <code>some_function</code>. Method <code>pop_all</code> actually moves the stack contents to a new stack, but we don’t care about that. We just want to get rid of them from our current one.</p>
-<div id="bd76abf4" class="cell" data-execution_count="10">
+<div id="e05610cd" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1">print_title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Running analysis with exit stack and no clean up."</span>)</span>
@@ -854,16 +883,15 @@ font-style: inherit;">False</span>)</span></code></pre></div>
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_653803fa-c752-43e4-8bae-f60d9d61c73b'}
-Preparing analysis using {'benchmark_name': 'benchmark_41d5adba-c62d-432c-bf11-f6877bbaf5e4'}
-Running analysis analysis_b6bd4d19-79c3-4c90-8974-5313737ac762 on portfolio portfolio_546a2682-7149-4db7-8be9-04d71d0336e1.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_7c4015a7-84bb-474b-9cbe-11dee3c6865e'}
+Preparing analysis using {'benchmark_name': 'benchmark_87839988-ae81-4b1d-90b8-8be6fff775fb'}
+Running analysis analysis_f64682f0-edb9-4d89-8ff1-ea12ab98d85c on portfolio portfolio_fe856b6b-1ff4-4bd3-a03f-ed122c99cd68.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <div>
-<div>
 
 
-<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -876,12 +904,11 @@ Running analysis analysis_b6bd4d19-79c3-4c90-8974-5313737ac762 on portfolio port
 </div>
 </div>
 </div>
-</div>
 </section>
 <section id="multiple-portfolios" class="level3">
 <h3 class="anchored" data-anchor-id="multiple-portfolios">Multiple portfolios</h3>
 <p>Benefit #2 — what do we do if we have multiple managers and many portfolios to re-run for? Or — outside of the example scope — we want to held multiple files open at the same time? Easy, we just push to the stack in a loop or a list comprehension.</p>
-<div id="9874e1ea" class="cell" data-execution_count="11">
+<div id="9c339d79" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">PORTFOLIOS <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
@@ -894,6 +921,7 @@ font-style: inherit;">"portfolio_3"</span>]</span>
 <span id="cb14-2"></span>
 <span id="cb14-3"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> run_analysis_with_exit_stack(clean_up: <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">bool</span> <span class="op" style="color: #5E5E5E;
@@ -916,6 +944,7 @@ background-color: null;
 font-style: inherit;">    """</span></span>
 <span id="cb14-9">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">with</span> ExitStack() <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> stack:</span>
@@ -940,8 +969,10 @@ font-style: inherit;">=</span>otc_uuid,</span>
 <span id="cb14-18">            )</span>
 <span id="cb14-19">            <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> portfolio_name <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> PORTFOLIOS</span>
 <span id="cb14-20">        ]</span>
 <span id="cb14-21">        analysis_uuid <span class="op" style="color: #5E5E5E;
@@ -966,8 +997,10 @@ font-style: inherit;">=</span>portfolio_uuid,</span>
 <span id="cb14-30">            )</span>
 <span id="cb14-31">            <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> portfolio_uuid <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> portfolio_uuids</span>
 <span id="cb14-32">        ]</span>
 <span id="cb14-33">        results <span class="op" style="color: #5E5E5E;
@@ -976,14 +1009,17 @@ font-style: inherit;">=</span> pd.concat(result_parts)</span>
 <span id="cb14-34"></span>
 <span id="cb14-35">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">not</span> clean_up:</span>
 <span id="cb14-36">            _ <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> stack.pop_all()</span>
 <span id="cb14-37">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> results</span>
 <span id="cb14-38"></span>
 <span id="cb14-39">print_title(<span class="st" style="color: #20794D;
@@ -1000,26 +1036,25 @@ font-style: inherit;">True</span>)</span></code></pre></div>
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_7f75a23c-6821-48a1-8634-36db0f680572'}
-Preparing portfolio using {'portfolio_name': 'portfolio_2', 'otc_products_uuid': 'otc_products_7f75a23c-6821-48a1-8634-36db0f680572'}
-Preparing portfolio using {'portfolio_name': 'portfolio_3', 'otc_products_uuid': 'otc_products_7f75a23c-6821-48a1-8634-36db0f680572'}
-Preparing analysis using {'benchmark_name': 'benchmark_f827fb81-dde7-4aa0-be4d-37821e87541d'}
-Running analysis analysis_5dc36565-fa45-4aad-80a7-83da31e94c69 on portfolio portfolio_b687f086-6bb8-4ecf-87a0-def9d7862b89.
-Running analysis analysis_5dc36565-fa45-4aad-80a7-83da31e94c69 on portfolio portfolio_11077a0d-0f16-40d8-9aaf-e5c3f9c4ef3b.
-Running analysis analysis_5dc36565-fa45-4aad-80a7-83da31e94c69 on portfolio portfolio_eeabdd29-946d-45f9-abda-551e07813e12.
-Cleaning up after analysis_5dc36565-fa45-4aad-80a7-83da31e94c69.
-Cleaning up after portfolio_eeabdd29-946d-45f9-abda-551e07813e12.
-Cleaning up after portfolio_11077a0d-0f16-40d8-9aaf-e5c3f9c4ef3b.
-Cleaning up after portfolio_b687f086-6bb8-4ecf-87a0-def9d7862b89.
-Cleaning up after benchmark_f827fb81-dde7-4aa0-be4d-37821e87541d.
-Cleaning up after otc_products_7f75a23c-6821-48a1-8634-36db0f680572.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_b52fa3fd-16f9-4e0b-87fd-6db4bc19881d'}
+Preparing portfolio using {'portfolio_name': 'portfolio_2', 'otc_products_uuid': 'otc_products_b52fa3fd-16f9-4e0b-87fd-6db4bc19881d'}
+Preparing portfolio using {'portfolio_name': 'portfolio_3', 'otc_products_uuid': 'otc_products_b52fa3fd-16f9-4e0b-87fd-6db4bc19881d'}
+Preparing analysis using {'benchmark_name': 'benchmark_9b26806c-4cd4-430b-bfaa-e2700febddaa'}
+Running analysis analysis_025ff994-77c3-4ca8-a1c1-8a32a5dbd564 on portfolio portfolio_b0e4514e-c372-41b8-bf19-82e76ab226b5.
+Running analysis analysis_025ff994-77c3-4ca8-a1c1-8a32a5dbd564 on portfolio portfolio_afac1971-b00b-46ee-9bd5-1e2f26d882c6.
+Running analysis analysis_025ff994-77c3-4ca8-a1c1-8a32a5dbd564 on portfolio portfolio_13de2274-88bc-4f87-9855-d23fbce53107.
+Cleaning up after analysis_025ff994-77c3-4ca8-a1c1-8a32a5dbd564.
+Cleaning up after portfolio_13de2274-88bc-4f87-9855-d23fbce53107.
+Cleaning up after portfolio_afac1971-b00b-46ee-9bd5-1e2f26d882c6.
+Cleaning up after portfolio_b0e4514e-c372-41b8-bf19-82e76ab226b5.
+Cleaning up after benchmark_9b26806c-4cd4-430b-bfaa-e2700febddaa.
+Cleaning up after otc_products_b52fa3fd-16f9-4e0b-87fd-6db4bc19881d.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <div>
-<div>
 
 
-<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -1029,7 +1064,6 @@ Cleaning up after otc_products_7f75a23c-6821-48a1-8634-36db0f680572.</code></pre
 </tbody>
 </table>
 
-</div>
 </div>
 </div>
 </div>
@@ -1092,7 +1126,7 @@ Note
 <section id="abstract-schema" class="level2">
 <h2 class="anchored" data-anchor-id="abstract-schema">Abstract schema</h2>
 <p>Each scheme that we’d come up with, even the most complex ones, would have the same main purpose — ‘integrate’. To make the implementation for it, we create a template class that all concrete schemes will inherit from.</p>
-<div id="259a3cd6" class="cell" data-execution_count="1">
+<div id="13d71aeb" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> abc <span class="im" style="color: #00769E;
@@ -1106,6 +1140,7 @@ font-style: inherit;">import</span> Callable</span>
 <span id="cb1-3"></span>
 <span id="cb1-4"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">class</span> IntegrationScheme(ABC):</span>
 <span id="cb1-5">    <span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -1116,6 +1151,7 @@ background-color: null;
 font-style: inherit;">@abstractmethod</span></span>
 <span id="cb1-8">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> integrate(</span>
 <span id="cb1-9">        <span class="va" style="color: #111111;
 background-color: null;
@@ -1158,7 +1194,7 @@ font-style: inherit;">"""Abstract method for integrating a function."""</span></
 <p>It’s the simplest way of estimating the area under a curve you can think of — cover it with smaller and smaller rectangles with the value of a function at the leftmost point as height constant width.</p>
 <p><a href="https://en.wikipedia.org/wiki/File:Rectangle_rule.gif"><img src="https://bwrob.github.io/posts/240426_strategy_integration/Rectangle_rule.gif" class="img-fluid" style="width:100.0%"></a></p>
 <p>Implementing this idea is trivial when using <a href="https://numpy.org/">numpy</a>, but let’s add some syntactic sugar so the class is sweeter to work with.</p>
-<div id="3314636f" class="cell" data-execution_count="2">
+<div id="885f6bde" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
@@ -1167,6 +1203,7 @@ font-style: inherit;">as</span> np</span>
 <span id="cb2-2"></span>
 <span id="cb2-3"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">class</span> RectangleScheme(IntegrationScheme):</span>
 <span id="cb2-4">    <span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -1174,6 +1211,7 @@ font-style: inherit;">"""Schema for rectangle integration."""</span></span>
 <span id="cb2-5"></span>
 <span id="cb2-6">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__init__</span>(</span>
@@ -1193,6 +1231,7 @@ background-color: null;
 font-style: inherit;">"""Initializes the rectangle integration config."""</span></span>
 <span id="cb2-11">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> steps <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;=</span> <span class="dv" style="color: #AD0000;
@@ -1200,6 +1239,7 @@ background-color: null;
 font-style: inherit;">0</span>:</span>
 <span id="cb2-12">            <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">raise</span> <span class="pp" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">ValueError</span>(<span class="st" style="color: #20794D;
@@ -1213,6 +1253,7 @@ font-style: inherit;">=</span> steps</span>
 <span id="cb2-14"></span>
 <span id="cb2-15">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__str__</span>(<span class="va" style="color: #111111;
@@ -1227,6 +1268,7 @@ background-color: null;
 font-style: inherit;">"""Returns the string representation of the schema."""</span></span>
 <span id="cb2-17">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> <span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">f"Rectangle schema with </span><span class="sc" style="color: #5E5E5E;
@@ -1243,6 +1285,7 @@ font-style: inherit;"> steps"</span></span>
 <span id="cb2-18"></span>
 <span id="cb2-19">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> integrate(</span>
 <span id="cb2-20">        <span class="va" style="color: #111111;
 background-color: null;
@@ -1288,6 +1331,7 @@ background-color: null;
 font-style: inherit;">self</span>._steps)</span>
 <span id="cb2-30">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> np.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">sum</span>(values) <span class="op" style="color: #5E5E5E;
@@ -1310,7 +1354,7 @@ font-style: inherit;">*</span> dx</span></code></pre></div>
 <section id="simple-monte-carlo" class="level3">
 <h3 class="anchored" data-anchor-id="simple-monte-carlo">Simple Monte Carlo</h3>
 <p>This guy sounds fancy with its luxurious Monaco vibes, but it’s just a peasant in a nice suit. Instead of looking at equaly-spaced points, we shuffle them from uniform distribution on the interval of integration. We calculate the integrand function values at those points and sum them up. Then multiply the sum by the average distance between points and through the magic of probability theory (and not opening actual probability textbook in 10 years) you get a good probabilistic estimator of the integral value. The implementation is analogous to the <code>RectangleScheme</code>.</p>
-<div id="ae1dfaf8" class="cell" data-execution_count="3">
+<div id="b69fcf8d" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
@@ -1319,6 +1363,7 @@ font-style: inherit;">import</span> Optional</span>
 <span id="cb3-2"></span>
 <span id="cb3-3"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">class</span> MonteCarloScheme(IntegrationScheme):</span>
 <span id="cb3-4">    <span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -1326,6 +1371,7 @@ font-style: inherit;">"""Schema for Monte Carlo integration."""</span></span>
 <span id="cb3-5"></span>
 <span id="cb3-6">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__init__</span>(</span>
@@ -1352,6 +1398,7 @@ background-color: null;
 font-style: inherit;">"""Initializes the rectangle integration config."""</span></span>
 <span id="cb3-12">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> random_points <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;=</span> <span class="dv" style="color: #AD0000;
@@ -1359,6 +1406,7 @@ background-color: null;
 font-style: inherit;">0</span>:</span>
 <span id="cb3-13">            <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">raise</span> <span class="pp" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">ValueError</span>(<span class="st" style="color: #20794D;
@@ -1377,6 +1425,7 @@ font-style: inherit;">=</span> random_seed</span>
 <span id="cb3-16"></span>
 <span id="cb3-17">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__str__</span>(<span class="va" style="color: #111111;
@@ -1420,15 +1469,18 @@ font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>.__random_seed <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">else</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">""</span></span>
 <span id="cb3-21">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> <span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">f"</span><span class="sc" style="color: #5E5E5E;
@@ -1443,6 +1495,7 @@ font-style: inherit;">"</span></span>
 <span id="cb3-22"></span>
 <span id="cb3-23">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> integrate(</span>
 <span id="cb3-24">        <span class="va" style="color: #111111;
 background-color: null;
@@ -1493,6 +1546,7 @@ background-color: null;
 font-style: inherit;">self</span>.__random_points)</span>
 <span id="cb3-35">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> np.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">sum</span>(values) <span class="op" style="color: #5E5E5E;
@@ -1520,7 +1574,7 @@ Note
 <section id="integrator" class="level2">
 <h2 class="anchored" data-anchor-id="integrator">Integrator</h2>
 <p>What’s left is to have a way of defining the problem to solve and define how our schemes (strategies) interact with it.</p>
-<div id="d172780e" class="cell" data-execution_count="4">
+<div id="7e3ef893" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">"""An integrator class that allows to perform integration using different schemas."""</span></span>
@@ -1532,6 +1586,7 @@ font-style: inherit;">import</span> Callable</span>
 <span id="cb4-3"></span>
 <span id="cb4-4"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">class</span> Integrator:</span>
 <span id="cb4-5">    <span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -1542,6 +1597,7 @@ font-style: inherit;">    schemas as strategies."""</span></span>
 <span id="cb4-7"></span>
 <span id="cb4-8">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__init__</span>(</span>
@@ -1569,11 +1625,13 @@ background-color: null;
 font-style: inherit;">"""Initializes the integrator class."""</span></span>
 <span id="cb4-15">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> interval_start <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&gt;=</span> interval_end:</span>
 <span id="cb4-16">            <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">raise</span> <span class="pp" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">ValueError</span>(<span class="st" style="color: #20794D;
@@ -1597,6 +1655,7 @@ font-style: inherit;">=</span> interval_end</span>
 <span id="cb4-20"></span>
 <span id="cb4-21">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__call__</span>(</span>
@@ -1638,6 +1697,7 @@ background-color: null;
 font-style: inherit;">."</span>)</span>
 <span id="cb4-32">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> schema.integrate(</span>
 <span id="cb4-33">            <span class="va" style="color: #111111;
 background-color: null;
@@ -1662,7 +1722,7 @@ font-style: inherit;">self</span>.__interval_end,</span>
 <section id="lets-integrate" class="level2">
 <h2 class="anchored" data-anchor-id="lets-integrate">Let’s integrate!</h2>
 <p>Ok, now to the integrating! Let’s set up the stage:</p>
-<div id="af4a11fc" class="cell" data-execution_count="5">
+<div id="bbc06d5b" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">start, end <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
@@ -1675,6 +1735,7 @@ font-style: inherit;">2.0</span></span>
 <span id="cb5-2"></span>
 <span id="cb5-3"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> f(x: <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">float</span>) <span class="op" style="color: #5E5E5E;
@@ -1684,13 +1745,14 @@ background-color: null;
 font-style: inherit;">float</span>:</span>
 <span id="cb5-4">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> np.sin(x) <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span> np.cos(x)</span></code></pre></div>
 </div>
 <p>Excited? Don’t be… yet.</p>
 <p>We should get some benchmark value first. As none of us would bother to integrate this by hand, we’ll use SciPy. Unexpectedly (SciPy uses C and Fortran underneath), we get the result in a breeze and it is very close to <a href="https://www.wolframalpha.com/input?i=integrate+sin%28x%29+%2B+cos%28x%29+over+0+to+pi%2F2">actual value of 2.0</a>.</p>
-<div id="356d047c" class="cell" data-execution_count="6">
+<div id="4198f70f" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> scipy.integrate <span class="im" style="color: #00769E;
@@ -1708,7 +1770,7 @@ font-style: inherit;">print</span>(scipy_quad)</span></code></pre></div>
 </div>
 </div>
 <p>Now let’s use our <code>Integrator</code> class and see.</p>
-<div id="92b66fcb" class="cell" data-execution_count="7">
+<div id="065c6468" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">integrator <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Integrator(</span>
@@ -1729,8 +1791,10 @@ font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">**</span>i <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
@@ -1746,8 +1810,10 @@ font-style: inherit;">=</span> [integrator(RectangleScheme(steps<span class="op"
 background-color: null;
 font-style: inherit;">=</span>i)) <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> iterations]</span>
 <span id="cb8-9">mc_results <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1755,8 +1821,10 @@ font-style: inherit;">=</span> [integrator(MonteCarloScheme(random_points<span c
 background-color: null;
 font-style: inherit;">=</span>i)) <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> iterations]</span>
 <span id="cb8-10"></span>
 <span id="cb8-11"><span class="bu" style="color: null;
@@ -1799,7 +1867,7 @@ Using Monte Carlo schema with 1048576 random points.
 Rectangle schema results:
 [np.float64(1.5707963267948966), np.float64(1.986172817555692), np.float64(1.9995804632216618), np.float64(1.9999869013603688), np.float64(1.9999995906791057)].
 Monte Carlo schema results:
-[np.float64(2.21123995263817), np.float64(1.9556433041917831), np.float64(2.0012640622683904), np.float64(1.998081768235478), np.float64(1.9999157598464115)].</code></pre>
+[np.float64(1.8857365112055697), np.float64(1.9710854427337847), np.float64(2.0033651912001047), np.float64(2.0003136040220775), np.float64(1.9999535710613343)].</code></pre>
 </div>
 </div>
 <p>The performance and convergence of those schemes is terrible. Like anything in Python, if you want robust and performing code, you need to implement it with C or use any/all of the enhancement frameworks that Python provides (see Numba). Additionally, the simple methods we implemented are very naive. The standard numerical packages use sophisticated algorithms honed for many decades.</p>
