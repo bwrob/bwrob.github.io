@@ -1,10 +1,10 @@
 ---
-title: "Start your day with coffee"
-description: "How to create a start up script in python and enjoy your coffee 
-    instead of opening the same apps all over again every morning."
+title: " Windows Startup Python Script"
+description: "Start your day with a cup of coffee,
+    not opening the same apps all over again every morning."
 author: "bwrob"
-
-date: "2024-08-11"
+date: "2024-05-21"
+date-modified: "2024-08-11"
 
 categories: [Pythonic Distractions]
 
@@ -15,39 +15,28 @@ format-links: [html]
 
 ## Why a start up script?
 
-Confesion time. Pre-COVID I worked for a Swiss bank --- it was the whole corporate package. 
-Working from a crowded office, open space, dedicated desks, dedicated desktop PCs, hundreds of people.
-And we never turned the PC's off, some of them were running constantly for months. 
-Not very eco-friendly behaviour, either from the company side and from the employees. 
-But there were legit reasons for this and the company had much [bigger sins](https://www.wikiwand.com/en/Credit_Suisse#Controversies) on their books.
+Confession time. Pre-COVID I worked for a Swiss bank --- it was the whole corporate package. Working from a crowded office, open space, dedicated desks, dedicated desktop PCs, hundreds of people. And we never turned the PC's off, some of them were running constantly for months. Not very eco-friendly behavior, either from the company side and from the employees. But there were legit reasons for this and the company had much [bigger sins](https://www.wikiwand.com/en/Credit_Suisse#Controversies) on their books.
 
-As for the reasons for eternaly turned on machines --- the propriaetary frameworks and tooling we used was awfully heavy and slow. 
-If you were occasionally forced to kill all the processes once in a while due to an update or system crash getting them all up again would take an hour or more. 
-Developer tools, pricing systems, connections to Monte Carlo farms, downloading trade data, analysis definitions. 
+As for the reasons for eternally turned on machines --- the proprietary frameworks and tooling we used were awfully heavy and slow. If you were occasionally forced to kill all the processes once in a while due to an update or system crash getting them all up again would take an hour or more. Developer tools, pricing systems, connections to Monte Carlo farms, downloading trade data, analysis definitions.
 
-One tidbit to get this point across - in 2019 we still used 32-bit Win7, which had a cap on single-process memory consumption to 4Gb. 
-We had a universally used hack to extend this to 8Gb for Excel, since the default wasn't enough for many of our pricing sheets.
+One tidbit to get this point across - in 2019 we still used 32-bit Win7, which had a cap on single-process memory consumption to 4Gb. We had a universally used hack to extend this to 8Gb for Excel, since the default wasn't enough for many of our pricing sheets.
 
-When post-COVID I parted ways with the company, I got a work notebook from the new employer.
-The office was much sparser, quiter with 'hot seats' approach.  I worked mostly remotely either way. 
-This ment switching off the company machine each day, as the VPN connections woudnt last overnight either way.
-I was very annoyed with openning all of the usual setup day after day, after getting used to having it all waiting for me to jump right in.
+When post-COVID I parted ways with the company, I got a corporate laptop from the new employer. The office was much sparser, quieter with 'hot seats' approach. I worked mostly remotely either way. This meant switching off the company machine each day, as the VPN connections and certificates wouldn't last overnight. I was extremally annoyed with opening all of the daily tools again and again, after getting used to having it all waiting for me to jump right in.
 
-Hence the startup script to open all of the apps, tools and files programatically. 
-It won't cover everything, like authorizations or connections but stil a little helper to start the day.
+Hence the need for a startup script to open all of the apps, tools and files programatically. It won't cover everything, like authorizations or connections but still a little helper to start the day.
 
+To spice things up, we will overengineer the hell out of it and use generic typing, generators and decorators :D.
 
 ## The startup script
 
 ### Public interface
 
-Let's think about the design first, what we want to achive. Imagine the code being split into two:
+Let's think about the design first, what we want to achieve. Imagine the code being split into two:
 
-* the hiddden logic layer, the worker that does stuff,
-* and the public interface that integrates with the rest of the codebase or is called at the top level, the manager.
+-   the hidden logic layer, the worker that does stuff,
+-   and the public interface that integrates with the rest of the codebase or is called at the top level, the manager.
 
-We can write the public interface first to see what we want to achive and later deal with filling in a working implementation. 
-You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:
+We can start by creating the public interface, see what we want to achieve, and later deal with filling in a working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:
 
 ```{python}
 #| eval: false
@@ -69,13 +58,7 @@ def run_startup_script():
 
 ```
 
-We want to specify programs to start, open all files in some temp folder, and run a list of shell commands.
-After each step there should be some delay not to spam system with process calls.
-Certain steps might be more time consuming, like cloud services authorization. Those need longer delay.
-On the other hand, specifying delay for each task would be cumbersome, most cases would be fine with some default value.
-We end up with a design that our soon-to-be workers `start_programs`, `start_work_files`, and `run_commands` 
-expect lists of either `task` or `(task, delay_seconds)`. 
-We could then start the implementation by figuring out how the delay time should be defaulted if not specified.
+We specify programs to be launched, open all files in a chosesn temp folder, and run a list of shell commands. After each step there should be some delay not to spam system with process calls. Certain steps might be more time consuming, like cloud services authorization. Those need longer delay. On the other hand, specifying delay for each task would be cumbersome, most cases would be fine with some default value. We end up with a design that our soon-to-be workers `start_programs`, `start_work_files`, and `run_commands` expect lists of either `task` or `(task, delay_seconds)`. We can now start the implementation by figuring out how the delay time should be defaulted if not specified.
 
 ### Decorator defaulting the time delays
 
@@ -90,7 +73,6 @@ TaskList = list[tuple[T, int]]
 
 DEFAULT_DELAY_SECONDS = 4
 
-
 def with_optional_delay(
     task_worker: Callable[[TaskList[T]], None],
 ) -> Callable[[TaskListOptionalDelay[T]], None]:
@@ -102,7 +84,13 @@ def with_optional_delay(
 
     @wraps(task_worker)
     def task_defaulted_worker(task_list: TaskListOptionalDelay[T]) -> None:
-        tasks_with_defaulted_delays = [
+        """A decorator that adds a default delay to tasks in a task list
+        if no delay is specified.
+
+        Args:
+            task_list: A list of tasks with optional delays.
+        """
+        tasks_with_defaulted_delays: TaskList[T] = [
             item if isinstance(item, tuple) else (item, DEFAULT_DELAY_SECONDS)
             for item in task_list
         ]
@@ -111,7 +99,12 @@ def with_optional_delay(
     return task_defaulted_worker
 ```
 
+
+### Main workers
+
 ```{python}
+#| eval: false
+
 from enum import Enum
 from pathlib import Path
 
@@ -122,6 +115,100 @@ class Program(Enum):
     POWERSHELL = Path(r"C:\windows\system32\windowspowershell\v1.0\powershell.exe")
     NOTEPAD = Path(r"C:\Program Files\Notepad++\notepad++.exe")
     FIREFOX = Path(r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Firefox.lnk")
+
+
+
+@with_optional_delay
+def start_programs(
+    programs: TaskList[Program],
+) -> None:
+    """Starts listed programs.
+
+    Args:
+        programs: List of programs to start.
+            Can be a string or a tuple. If a tuple is given, the first
+            element is the name, the second is the delay.
+    """
+    for program, delay in programs:
+        start_process(
+            name=program.name,
+            path=program.value,
+            delay=delay,
+        )
+
+
+@with_optional_delay
+def start_work_files(
+    directory_tasks: TaskList[Path],
+) -> None:
+    """Starts all  files in the work folders.
+
+    Args:
+        directory_tasks: List of tasks with paths to work folders.
+    """
+    for path, delay in path_files(directory_tasks):
+        start_process(
+            name=path.name,
+            path=path,
+            delay=delay,
+        )
+
+
+@with_optional_delay
+def run_commands(
+    commands: TaskList[str],
+) -> None:
+    """Runs all commands in the command list.
+
+    Args:
+        commands: List of commands to run.
+    """
+    for command, delay in commands:
+        run_command(command, delay)
+
+```
+
+
+### List all files in list of directories
+
+```{python}
+
+def filter_excluded(
+    path: Path,
+) -> bool:
+    """Filter path based on name and extension exclude lists.
+
+    Args:
+        path: Path to filter.
+    """
+    return (path.stem not in NAME_EXCLUDES) and (path.suffix not in EXT_EXCLUDES)
+
+
+def path_files(
+    directory_tasks: TaskList[Path],
+) -> Generator[tuple[Path, int], None, None]:
+    """Generates all files in the work folder that are not excluded.
+
+    Yields the folder path at beginning of the generator.
+
+    Args:
+        temp_folder: Path to the work folder.
+    """
+    for folder, delay in directory_tasks:
+        yield folder, delay
+
+        all_files = folder.glob(FILES_IN_TREE_PATTERN)
+        filtered = filter(filter_excluded, all_files)
+
+        for file in filtered:
+            yield file, delay
+
+
+```
+
+### Interacting with the OS
+
+```{python}
 
 
 def start_process(
@@ -145,45 +232,55 @@ def start_process(
     """
     if path.is_dir():
         print(f"Opening folder {name}")
-    elif path.suffix in (".exe", ".lnk"):
+
+    if path.suffix in (".exe", ".lnk"):
         print(f"Running app {name}")
     else:
         print(f"Opening file {name}")
 
     os.startfile(path)
     time.sleep(delay)
+
+
+def run_command(
+    command: str,
+    delay: int,
+) -> None:
+    """Runs a powershell command.
+
+    Args:
+        command: Command to run.
+    """
+    _ = subprocess.call(
+        f"powershell.exe {command}",
+        shell=False,
+    )
+    time.sleep(delay)
+
 ```
 
-## The last bit of convinienvce
+## The last bit of convenience
 
-We got it guys, the script works and the job is done. 
-But.. do you recall the last time you googled a shortcut for a semi-frequently used functionality?
-Do you still remember the shortcut, or use it each time you need the functionality? 
-Convinience needs to be convinient (obviously). So let' make usage of our script as seemless as possible. 
+We got it guys, the script works and the job is done. But.. do you recall the last time you googled a shortcut for a semi-frequently used functionality? Do you still remember the shortcut, or use it each time you need the functionality? Convinience needs to be convenient (obviously). So let' make usage of our script as seamless as possible.
 
-At Windows OS, for me best way would be to have a shortcut that would run it on one click that is pinned to taskbar and start menu. 
-To create one:
+At Windows OS, for me best way would be to have a shortcut that would run it on one click that is pinned to taskbar and start menu. To create one:
 
-* Go to any folder, right-click and select `New > Shortcut`.
-* In the guide that pops up paste in `%systemroot%\System32\cmd.exe /c "python.exe $1"` where `$1` should be replaced by the path to your script. 
-    You can also replace `python.exe` with interpreter path of any venv you wish.
-* Optionally, you can later change the icon for the shortcut (neweds to be `.ico` file).
-    I like to roll with Win-98 style `My Computer' icon.
-* Copy the shortcut to start menu dir. For Win11 it's `C:\ProgramData\Microsoft\Windows\Start Menu\Programs`.
-    You should be able to see it in start menu already. Now you can pin it to taskbar.
+-   Go to any folder, right-click and select `New > Shortcut`.
+-   In the guide that pops up paste in `%systemroot%\System32\cmd.exe /c "python.exe $1"` where `$1` should be replaced by the path to your script. You can also replace `python.exe` with interpreter path of any venv you wish.
+-   Optionally, you can later change the icon for the shortcut (needs to be `.ico` file). I like to roll with Win-98 style \`My Computer' icon.
+-   Copy the shortcut to start menu directory. For Win11 it's `C:\ProgramData\Microsoft\Windows\Start Menu\Programs`. You should be able to see it in start menu already. Now you can pin it to taskbar.
 
 ![](startup_shortcut.png){width="100%"}
 
-That's a good enough reminder and convinience tool for me. 
-You might need some different setup, especially for another OS. 
-For Linux, you might try to levarage `activate` or `bashrc` scripts in your working setup. 
-Here you can download the [script](startup_script.py) and example Windows [shortcut](Startup!.lnk).
+That's a good enough reminder and convenience tool for me. You might need some different setup, especially for another OS. For Linux, you might try to leverage `activate` or `bashrc` scripts in your working setup.
 
 ## Further extensions
 
 There are a couple more things I wish this guy could do for me still:
 
-* **Changing Teams status to green** - there's a MS Graph API that could do this but we would need to manage Azure authorizations through the script. 
-    I am not up to that, especially on a work account. Might experiment on personal one in the future.
-* **Display placement of opened processes** -- I have 2 displays (which you could count as 4, due to size format) and I am very particular about where each app should go. 
-    I would love the apps to open where they should. This is however OS specific, for Win it require to mingle with win32api. Yet another project for the future.
+-   **Changing Teams status to green** - there's a MS Graph API that could do this but we would need to manage Azure authorizations through the script. I am not up to that, especially on a work account. Might experiment on personal one in the future.
+-   **Display placement of opened processes** -- I have 2 displays (which you could count as 4, due to size format) and I am very particular about where each app should go. I would love the apps to open where they should. This is however OS specific, for Win it require to mingle with win32api. Yet another project for the future.
+
+::: callout-note
+Download the startup [script](../../scripts/startup_script.py) and example Windows [shortcut](Startup!.lnk).
+:::

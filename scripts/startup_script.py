@@ -87,8 +87,7 @@ def run_command(
 
 
 def path_files(
-    folder: Path,
-    delay: int,
+    directory_tasks: TaskList[Path],
 ) -> Generator[tuple[Path, int], None, None]:
     """Generates all files in the work folder that are not excluded.
 
@@ -97,13 +96,14 @@ def path_files(
     Args:
         temp_folder: Path to the work folder.
     """
-    yield folder, delay
+    for folder, delay in directory_tasks:
+        yield folder, delay
 
-    all_files = folder.glob(FILES_IN_TREE_PATTERN)
-    filtered = filter(filter_excluded, all_files)
+        all_files = folder.glob(FILES_IN_TREE_PATTERN)
+        filtered = filter(filter_excluded, all_files)
 
-    for file in filtered:
-        yield file, delay
+        for file in filtered:
+            yield file, delay
 
 
 def with_optional_delay(
@@ -153,20 +153,19 @@ def start_programs(
 
 @with_optional_delay
 def start_work_files(
-    folders: TaskList[Path],
+    directory_tasks: TaskList[Path],
 ) -> None:
     """Starts all  files in the work folders.
 
     Args:
-        delay: Time to wait after starting the process.
+        directory_tasks: List of tasks with paths to work folders.
     """
-    for folder_path, folder_delay in folders:
-        for path, delay in path_files(folder_path, folder_delay):
-            start_process(
-                name=path.name,
-                path=path,
-                delay=delay,
-            )
+    for path, delay in path_files(directory_tasks):
+        start_process(
+            name=path.name,
+            path=path,
+            delay=delay,
+        )
 
 
 @with_optional_delay
