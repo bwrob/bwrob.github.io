@@ -80,13 +80,15 @@ Before we dive into installing Homebrew, we need to equip our system with the es
 Let's install these prerequisites using the following command:
 
 ```{bash}
-sudo apt-get upgrade -y && sudo apt-get install build-essential git -y
+sudo apt-get upgrade -y
+sudo apt-get install build-essential git -y
 ```
 
 Execute the installation script for Homebrew:
 
 ```{bash}
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+INSTALL_PATH="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+/bin/bash -c "$(curl -fsSL $INSTALL_PATH)"
 ```
 
 ![](6.png)
@@ -94,7 +96,8 @@ Execute the installation script for Homebrew:
 To make Homebrew accessible from your shell, you need to load its environment variables. The following command achieves this and subsequently runs a diagnostic check:
 
 ```{bash}
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" && brew doctor
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+brew doctor
 ```
 
 ![](7.png)
@@ -126,7 +129,9 @@ Add the brew initialization to `.zshrc` file as well. This way `brew` will alway
 Check the default shell and set it to `zsh`:
 
 ```{bash}
-echo $SHELL &&  sudo chsh -s $(which zsh) &&  echo $SHELL
+echo $SHELL
+sudo chsh -s $(which zsh)
+echo $SHELL
 ```
 
 ## GitHub command line tool
