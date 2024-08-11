@@ -17,7 +17,148 @@
 <width>144</width>
 </image>
 <generator>quarto-1.5.56</generator>
-<lastBuildDate>Sat, 11 May 2024 22:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sat, 10 Aug 2024 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>Linux in Windows via WSL</title>
+  <dc:creator>bwrob </dc:creator>
+  <link>https://bwrob.github.io/posts/linux_in_windows/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bwrob.github.io/posts/linux_in_windows/image.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%"></p>
+</figure>
+</div>
+<section id="windows-linux-and-you-ménage-à-trois" class="level2">
+<h2 class="anchored" data-anchor-id="windows-linux-and-you-ménage-à-trois">Windows, Linux, and You: Ménage à trois</h2>
+<p>Tired of the same old Windows vs.&nbsp;Linux beef among PC superusers? Well, get ready to become a mediator in this feud. I’ll show you how to get the best of both worlds.</p>
+<section id="pros-and-cons" class="level3">
+<h3 class="anchored" data-anchor-id="pros-and-cons">Pros and cons</h3>
+<p>Windows OS has long been the dominant platform for mainstream consumers and businesses. It offers good hardware compatibility, de facto <em>the</em> PC gaming experience and is friendly to the casual user. However, Windows has significant limitations in terms of system control and software development tools.</p>
+<p>Linux, on the other hand, is an operating system created by developers and for developers (and system administrators). It provides infinite flexibility and a deep pool of open-source tools. But the learning curve is steep, the open-source projects often get abandoned and with great power (<code>sudo</code>) comes great responsibility (and sometimes system reinstall).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Actually, to publish this post in the most convenient and elegant <a href="https://quarto.org/docs/publishing/github-pages.html#publish-command">way</a>, I needed to switch to Linux. The Windows <code>quarto</code> CLI fails with some certification errors, coming from <code>deno</code>, that I can’t be bothered to clean up. Discovered this while writing these words as <a href="https://quarto.org/docs/publishing/github-pages.html#render-to-docs">my previous approach</a> was much messier. Irony is the ambrosia of life (for me at least).</p>
+</div>
+</div>
+</section>
+<section id="bridging-the-gap" class="level3">
+<h3 class="anchored" data-anchor-id="bridging-the-gap">Bridging the gap</h3>
+<p>At this point even Microsoft — a strong contrarian to Linux in the past — embraced the usefulness of Linux shell at your fingertips. Imagine having the familiar interface of Windows for your everyday tasks. Combine it with a the raw power and controllability of Linux for when you need to dive deep into development or system administration. And limited stakes once you (inevitably) remove half of your file system with a bash script. Enter Windows Subsystem for Linux (WSL): a ticket to 10x-ing your software development on Windows.</p>
+</section>
+<section id="wsl-vs.-virtual-machines-whats-the-difference" class="level3">
+<h3 class="anchored" data-anchor-id="wsl-vs.-virtual-machines-whats-the-difference">WSL vs.&nbsp;Virtual Machines: What’s the Difference?</h3>
+<p>You might be wondering how WSL differs from a traditional virtual machine (VM). While both provide a way to run Linux on Windows, they operate in different ways. A VM emulates a virtual computer within your computer, complete with its own operating system and make-belive hardware resources. This makes VMs resource-intensive and can impact overall system performance. They are also hard to set up and maintain.</p>
+<p>WSL, on the other hand, is a more lightweight approach. It integrates Linux directly into the Windows kernel, allowing for faster boot times, better performance, and seamless file sharing between Windows and Linux environments.</p>
+</section>
+</section>
+<section id="installing-and-setting-up-wsl" class="level2">
+<h2 class="anchored" data-anchor-id="installing-and-setting-up-wsl">Installing and setting up WSL</h2>
+<p>First, we need to set up the WSL and install a chosen Linux distribution. Fortunately, this is “super easy, barely an inconvenience”. You can choose from a list of distros pre-packaged by Microsoft or download and build an image from scratch. You can even build Arch and be legally allowed to say <code>BTW, I use Arch (on Windows)</code>. For this guide, we’ll take a more conventional approach and opt for the long-term support (LTS) version of Ubuntu. Now, open the Powershell with administrative privileges and run:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1">wsl --update</span>
+<span id="cb1-2">wsl --version</span></code></pre></div>
+<p>These commands ensure that WSL is up-to-date and displays the installed WSL version.</p>
+<p><img src="https://bwrob.github.io/posts/linux_in_windows/1.png" class="img-fluid"></p>
+<p>Our next command will be:</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1">wsl -l -o</span></code></pre></div>
+<p>This yields a curated list of pre-packaged Linux distributions that Microsoft provides, making the process almost effortless.</p>
+<p><img src="https://bwrob.github.io/posts/linux_in_windows/2.png" class="img-fluid"></p>
+<p>For the installation itself:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1">wsl --install -d 'Ubuntu-24.04'</span></code></pre></div>
+<p><img src="https://bwrob.github.io/posts/linux_in_windows/3.png" class="img-fluid"></p>
+<p>Reboot the Windows system and you’ll see `Ubuntu’ among your applications. <img src="https://bwrob.github.io/posts/linux_in_windows/4.png" class="img-fluid"> <img src="https://bwrob.github.io/posts/linux_in_windows/5.png" class="img-fluid"></p>
+</section>
+<section id="base-setup-new-shell-and-package-manager" class="level2">
+<h2 class="anchored" data-anchor-id="base-setup-new-shell-and-package-manager">Base setup — new shell and package manager</h2>
+<p>There is an additional benefit we can reap with just a bit of more work — a fully system-agnostic setup. By having Linux kernel run on Windows, we unified 2 out of 3 giants. The only pillar that is missing is the Mac OS. But wait, it’s based on Unix as well! It just uses different default shell and lacks a package manager, as Apple doesn’t trust its clients. <code>zsh</code> offers a more interactive and customizable shell experience compared to the default bash. Homebrew, often referred to as the “missing package manager for macOS”, provides a convenient way to install additional software on Linux systems. Let’s change the terminal shell to <code>zsh</code> in our Ubuntu installation and compile a secondary (to <code>apt-get</code>) package manager – <code>brew</code>.</p>
+<section id="brewing-starts" class="level3">
+<h3 class="anchored" data-anchor-id="brewing-starts">Brewing starts</h3>
+<p>Before we dive into installing Homebrew, we need to equip our system with the essential tools. The build-essential package provides a collection of compilers and libraries necessary for building software from the source code. Git is a version control system used for managing code projects.</p>
+<p>Let’s install these prerequisites using the following command:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1">sudo apt-get upgrade -y</span>
+<span id="cb4-2">sudo apt-get install build-essential git -y</span></code></pre></div>
+<p>Execute the installation script for Homebrew:</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1">INSTALL_PATH="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"</span>
+<span id="cb5-2">/bin/bash -c "$(curl -fsSL $INSTALL_PATH)"</span></code></pre></div>
+<p><img src="https://bwrob.github.io/posts/linux_in_windows/6.png" class="img-fluid"></p>
+<p>To make Homebrew accessible from your shell, you need to load its environment variables. The following command achieves this and subsequently runs a diagnostic check:</p>
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1">eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"</span>
+<span id="cb6-2">brew doctor</span></code></pre></div>
+<p><img src="https://bwrob.github.io/posts/linux_in_windows/7.png" class="img-fluid"></p>
+<p>Doctor’s orders to append brew to some set of paths! Let’s do this then:</p>
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1">echo 'export XDG_DATA_DIRS="/home/linuxbrew/.linuxbrew/share:$XDG_DATA_DIRS"' &gt;&gt; ~/.profile</span></code></pre></div>
+</section>
+</section>
+<section id="z-shell-sea-shell" class="level2">
+<h2 class="anchored" data-anchor-id="z-shell-sea-shell">Z-shell — sea-shell</h2>
+<p>Homebrew makes package management a breeze. Let’s install <code>zsh</code>, a powerful and customizable shell.</p>
+<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1">brew install zsh</span>
+<span id="cb8-2">zsh --version</span>
+<span id="cb8-3">zsh</span></code></pre></div>
+<p>This will take you to interactive <code>.zshrc</code> file setup. The file contains commands that are run each time a shell is spawned. You can either generate empty file with <code>0</code> or go through the interactive setup with <code>1</code>. <img src="https://bwrob.github.io/posts/linux_in_windows/8.png" class="img-fluid"></p>
+<p>Add the brew initialization to <code>.zshrc</code> file as well. This way <code>brew</code> will always be by your side!</p>
+<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb9-1">(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') &gt;&gt; /home/bwrob/.zshrc</span></code></pre></div>
+<p>Check the default shell and set it to <code>zsh</code>:</p>
+<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb10-1">echo $SHELL</span>
+<span id="cb10-2">sudo chsh -s $(which zsh)</span>
+<span id="cb10-3">echo $SHELL</span></code></pre></div>
+</section>
+<section id="github-command-line-tool" class="level2">
+<h2 class="anchored" data-anchor-id="github-command-line-tool">GitHub command line tool</h2>
+<p>Remember <code>git != GitHub</code>, we need a way to authenticate and use Github from CLI. There’s a tool for that!</p>
+<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1">brew install gh</span>
+<span id="cb11-2">gh auth login</span></code></pre></div>
+<p><img src="https://bwrob.github.io/posts/linux_in_windows/9.png" class="img-fluid"></p>
+<p>Now create a convenient directory and copy your favourite <code>GitHub</code> repo:</p>
+<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb12-1">mkdir repos &amp;&amp; cd repos</span>
+<span id="cb12-2">gh repo clone python_playground</span></code></pre></div>
+</section>
+<section id="connect-to-visual-studio-code" class="level2">
+<h2 class="anchored" data-anchor-id="connect-to-visual-studio-code">Connect to Visual Studio Code</h2>
+<p>While WSL grants us the power of Linux, let’s not forget the user-friendly interface of Windows. When it comes to software development, we can achieve the perfect blend by integrating Visual Studio Code (VSC) with our WSL environment.</p>
+<p>Here’s how:</p>
+<ul>
+<li><p><strong>Install the WSL Extension in VSC</strong>: Fire up VSC on your Windows machine and head over to the Extensions tab. Search for “WSL” and install the official extension by Microsoft: <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl">WSL extension</a>.</p></li>
+<li><p><strong>Launching VSC from WSL</strong>: Within your WSL terminal, you can directly invoke VSC as if it were running natively on Windows. Use the following command:</p></li>
+</ul>
+<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1">code ~\repos\python_playground</span></code></pre></div>
+<p><img src="https://bwrob.github.io/posts/linux_in_windows/10.png" class="img-fluid"></p>
+<p>In the <a href="">next post</a> I will show you how to set up Python environment in Linux. Stay tuned :) .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Download the Ubuntu shell script <a href="../../scripts/wsl_setup.sh">here</a>.</p>
+</div>
+</div>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
+  <category>Dev setup</category>
+  <guid>https://bwrob.github.io/posts/linux_in_windows/</guid>
+  <pubDate>Sat, 10 Aug 2024 22:00:00 GMT</pubDate>
+  <media:content url="https://bwrob.github.io/posts/linux_in_windows/image.jpg" medium="image" type="image/jpeg"/>
+</item>
 <item>
   <title>Exit stack to the rescue</title>
   <dc:creator>bwrob </dc:creator>
@@ -61,7 +202,7 @@
 <h3 class="anchored" data-anchor-id="mock-functions">Mock functions</h3>
 <p>The setup described above comes from a real-life situation I worked through. I can’t show you the actual API usage or data (or even the name of RMS itself), so we need to define some mocker functions. Mocks like this are actually not an uncommon thing — such approach is prevalent in testing API client code. In our case it would look like this:</p>
 <div id="879c0c25" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
 background-color: null;
@@ -239,7 +380,7 @@ font-style: inherit;">."</span>)</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="context-managers">Context managers</h3>
 <p>Easiest way to define a CM is through <code>contextlib.contextmanager</code> decorator. To use it, you need a function that returns a generator. Code executed on enter should come before <code>yield</code> statement and the one for the exit afterwards. The generator yields the result of the CM (ex. handle to an opened file), the <code>y</code> in <code>with x(*args) as y:</code>.</p>
 <div id="dba92eb4" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> contextlib <span class="im" style="color: #00769E;
 background-color: null;
@@ -307,7 +448,7 @@ font-style: inherit;">yield</span> analysis_uuid</span>
 <p>Modern approach to Python development leans heavily towards type annotations. Dynamical typing is powerful but can lead to unwieldy code. To properly annotate the <code>analysis</code> function we need to import <code>Generator</code> from <code>typing</code> module. Remember, the <code>@contextmanager</code> decorator takes the function and turns it into CM — a class with <code>__enter__</code> and <code>__exit__</code> methods. The <code>Generator</code> needs three inputs but in our case only the first one is important — <code>YieldType</code>, here <code>str</code> (<a href="https://docs.python.org/3/library/typing.html#typing.Generator">see</a> for more).</p>
 <p>With this done implementing the 3 remaining CMs is easy, just remember our flow chart.</p>
 <div id="485ccfe5" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="at" style="color: #657422;
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">@contextmanager</span></span>
 <span id="cb3-2"><span class="kw" style="color: #003B4F;
@@ -448,7 +589,7 @@ font-style: inherit;">yield</span> portfolio_uuid</span>
 <h3 class="anchored" data-anchor-id="analysis-results">Analysis results</h3>
 <p>No stress or complexity here, to run the analysis we need to specify which analysis to run on which portfolio.</p>
 <div id="e2ea63cf" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
 background-color: null;
@@ -521,7 +662,7 @@ font-style: inherit;">return</span> pd.DataFrame()</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="using-contexts-directly">Using contexts directly</h3>
 <p>First, we use the managers directly through <code>with</code> clause, remembering the dependencies from our flow chart.</p>
 <div id="4b7697f2" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">PORTFOLIO <span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">PORTFOLIO <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
@@ -588,7 +729,7 @@ font-style: inherit;">return</span> results</span></code></pre></div>
 </div>
 <p>This is terrible! I am already getting lost, needed few tries to get it right. We ended up with <strong>6</strong> levels of indentation, the code is confusing, the flow is obtuse. Let’s run it either way, to see if at least works.</p>
 <div id="bcc5b381" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> print_title(title: <span class="bu" style="color: null;
@@ -691,7 +832,7 @@ Cleaning up after otc_products_ab94967b-57b8-4c42-850a-279e96aa4352.</code></pre
 </div>
 <p>So the flow is exactly the same as in our first attempt. Let’s try it!</p>
 <div id="f8e79cf2" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> contextlib <span class="im" style="color: #00769E;
 background-color: null;
@@ -754,7 +895,7 @@ font-style: inherit;">=</span>portfolio_uuid,</span>
 </div>
 <p>That’s amazing (if the approach works)! In our code we end up with only single <code>with</code> clause and the outputs of CMs are defined just like the regular variables. We just need to wrap the CM calls in <code>stack.enter_context</code> method that pushes each CM to the stack.</p>
 <div id="3637546f" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">print_title(<span class="st" style="color: #20794D;
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1">print_title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Running analysis with exit stack."</span>)</span>
 <span id="cb9-2">run_analysis_with_exit_stack()</span></code></pre></div>
@@ -778,7 +919,7 @@ Cleaning up after otc_products_333fcd8a-4b2f-4d25-8523-86857d3c5186.</code></pre
 <h3 class="anchored" data-anchor-id="disabling-the-clean-up">Disabling the clean up</h3>
 <p>Working with API is tricky and debugging could be a painful experience. If we notice something iffy with the results we are reciving, it could be due to a bug at any of the stages. In such case disabling the artifact clean up and examining them is a good way to investigate. How do we do that? Comment out the exit code in our resource CMs? Nope, now we know better. With exit stack approach we just need to clean up the stack before exiting its context.</p>
 <div id="5561f416" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="kw" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> run_analysis_with_exit_stack(</span>
@@ -869,7 +1010,7 @@ font-style: inherit;">return</span> results</span></code></pre></div>
 </div>
 <p>The <code>_ = some_function()</code> is a Pythonic way of disregarding outputs of <code>some_function</code>. Method <code>pop_all</code> actually moves the stack contents to a new stack, but we don’t care about that. We just want to get rid of them from our current one.</p>
 <div id="7b702001" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1">print_title(<span class="st" style="color: #20794D;
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1">print_title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Running analysis with exit stack and no clean up."</span>)</span>
 <span id="cb12-2">run_analysis_with_exit_stack(clean_up<span class="op" style="color: #5E5E5E;
@@ -909,7 +1050,7 @@ Running analysis analysis_5a5b9ab1-7794-4de9-b467-f52cd7b9a8ed on portfolio port
 <h3 class="anchored" data-anchor-id="multiple-portfolios">Multiple portfolios</h3>
 <p>Benefit #2 — what do we do if we have multiple managers and many portfolios to re-run for? Or — outside of the example scope — we want to held multiple files open at the same time? Easy, we just push to the stack in a loop or a list comprehension.</p>
 <div id="877a7587" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">PORTFOLIOS <span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1">PORTFOLIOS <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
 background-color: null;
@@ -1140,7 +1281,7 @@ Note
 <h2 class="anchored" data-anchor-id="abstract-schema">Abstract schema</h2>
 <p>Each scheme that we’d come up with, even the most complex ones, would have the same main purpose — ‘integrate’. To make the implementation for it, we create a template class that all concrete schemes will inherit from.</p>
 <div id="2cbacace" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> abc <span class="im" style="color: #00769E;
 background-color: null;
@@ -1208,7 +1349,7 @@ font-style: inherit;">"""Abstract method for integrating a function."""</span></
 <p><a href="https://en.wikipedia.org/wiki/File:Rectangle_rule.gif"><img src="https://bwrob.github.io/posts/strategy_pattern_integration/Rectangle_rule.gif" class="img-fluid" style="width:100.0%"></a></p>
 <p>Implementing this idea is trivial when using <a href="https://numpy.org/">numpy</a>, but let’s add some syntactic sugar so the class is sweeter to work with.</p>
 <div id="b138967e" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
 background-color: null;
@@ -1368,7 +1509,7 @@ font-style: inherit;">*</span> dx</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="simple-monte-carlo">Simple Monte Carlo</h3>
 <p>This guy sounds fancy with its luxurious Monaco vibes, but it’s just a peasant in a nice suit. Instead of looking at equaly-spaced points, we shuffle them from uniform distribution on the interval of integration. We calculate the integrand function values at those points and sum them up. Then multiply the sum by the average distance between points and through the magic of probability theory (and not opening actual probability textbook in 10 years) you get a good probabilistic estimator of the integral value. The implementation is analogous to the <code>RectangleScheme</code>.</p>
 <div id="c560b0ac" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
 background-color: null;
@@ -1588,7 +1729,7 @@ Note
 <h2 class="anchored" data-anchor-id="integrator">Integrator</h2>
 <p>What’s left is to have a way of defining the problem to solve and define how our schemes (strategies) interact with it.</p>
 <div id="a1aae1ec" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">"""An integrator class that allows to perform integration using different schemas."""</span></span>
 <span id="cb4-2"><span class="im" style="color: #00769E;
@@ -1736,7 +1877,7 @@ font-style: inherit;">self</span>.__interval_end,</span>
 <h2 class="anchored" data-anchor-id="lets-integrate">Let’s integrate!</h2>
 <p>Ok, now to the integrating! Let’s set up the stage:</p>
 <div id="2c483e83" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">start, end <span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">start, end <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -1766,7 +1907,7 @@ font-style: inherit;">+</span> np.cos(x)</span></code></pre></div>
 <p>Excited? Don’t be… yet.</p>
 <p>We should get some benchmark value first. As none of us would bother to integrate this by hand, we’ll use SciPy. Unexpectedly (SciPy uses C and Fortran underneath), we get the result in a breeze and it is very close to <a href="https://www.wolframalpha.com/input?i=integrate+sin%28x%29+%2B+cos%28x%29+over+0+to+pi%2F2">actual value of 2.0</a>.</p>
 <div id="5b149e80" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> scipy.integrate <span class="im" style="color: #00769E;
 background-color: null;
@@ -1784,7 +1925,7 @@ font-style: inherit;">print</span>(scipy_quad)</span></code></pre></div>
 </div>
 <p>Now let’s use our <code>Integrator</code> class and see.</p>
 <div id="d34fec4c" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">integrator <span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1">integrator <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Integrator(</span>
 <span id="cb8-2">    f,</span>

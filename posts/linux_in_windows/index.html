@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="bwrob">
+<meta name="dcterms.date" content="2024-08-11">
+<meta name="description" content="Great dev setup and still CS coffee break">
 
-<title>bwrob blog</title>
+<title>Linux in Windows via WSL – bwrob blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,29 +23,61 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./logo/python_mug.png" rel="icon" type="image/png">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../logo/python_mug.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,92 +105,30 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-title','listing-author','listing-date','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
-<link rel="alternate" type="application/rss+xml" title="bwrob blog" href="index.xml" data-external="1"><meta property="og:title" content="bwrob blog">
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="bwrob blog">
 <meta property="og:description" content="bwrob personal and professional blog">
-<meta property="og:image" content="https://bwrob.github.io/logo/python_mug.png">
+<meta property="og:image" content="https://bwrob.github.io/posts/linux_in_windows/image.jpg">
 <meta property="og:site_name" content="bwrob blog">
-<meta property="og:image:height" content="2048">
-<meta property="og:image:width" content="2048">
 <meta name="twitter:title" content="bwrob blog">
 <meta name="twitter:description" content="bwrob personal and professional blog">
-<meta name="twitter:image" content="https://bwrob.github.io/logo/python_mug.png">
+<meta name="twitter:image" content="https://bwrob.github.io/posts/linux_in_windows/image.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image-height" content="2048">
-<meta name="twitter:image-width" content="2048">
 </head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    <img src="./logo/python_mug.png" alt="" class="navbar-logo">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../logo/python_mug.png" alt="" class="navbar-logo">
     </a>
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">bwrob blog</span>
     </a>
   </div>
@@ -166,17 +139,17 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> <i class="bi bi-cpu" role="img">
+    <a class="nav-link" href="../../index.html"> <i class="bi bi-cpu" role="img">
 </i> 
 <span class="menu-text">Posts</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./pages/resume.html"> <i class="bi bi-file-earmark-text" role="img">
+    <a class="nav-link" href="../../pages/resume.html"> <i class="bi bi-file-earmark-text" role="img">
 </i> 
 <span class="menu-text">Resume</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./pages/hobbies.html"> <i class="bi bi-controller" role="img">
+    <a class="nav-link" href="../../pages/hobbies.html"> <i class="bi bi-controller" role="img">
 </i> 
 <span class="menu-text">Hobbies</span></a>
   </li>  
@@ -191,7 +164,7 @@ window.Quarto = {
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="./index.xml"> <i class="bi bi-rss" role="img">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -204,197 +177,206 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Linux in Windows via WSL</h1>
+                  <div>
+        <div class="description">
+          Great dev setup and still CS coffee break
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Dev setup</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>bwrob </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 11, 2024</p>
+      </div>
+    </div>
+    
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">August 11, 2024</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(4)</span></div><div class="category" data-category="Context Managers">Context Managers <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Design Patterns">Design Patterns <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Dev setup">Dev setup <span class="quarto-category-count">(1)</span></div><div class="category" data-category="News">News <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Pythonic Distractions">Pythonic Distractions <span class="quarto-category-count">(2)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#windows-linux-and-you-ménage-à-trois" id="toc-windows-linux-and-you-ménage-à-trois" class="nav-link active" data-scroll-target="#windows-linux-and-you-ménage-à-trois">Windows, Linux, and You: Ménage à trois</a>
+  <ul class="collapse">
+  <li><a href="#pros-and-cons" id="toc-pros-and-cons" class="nav-link" data-scroll-target="#pros-and-cons">Pros and cons</a></li>
+  <li><a href="#bridging-the-gap" id="toc-bridging-the-gap" class="nav-link" data-scroll-target="#bridging-the-gap">Bridging the gap</a></li>
+  <li><a href="#wsl-vs.-virtual-machines-whats-the-difference" id="toc-wsl-vs.-virtual-machines-whats-the-difference" class="nav-link" data-scroll-target="#wsl-vs.-virtual-machines-whats-the-difference">WSL vs.&nbsp;Virtual Machines: What’s the Difference?</a></li>
+  </ul></li>
+  <li><a href="#installing-and-setting-up-wsl" id="toc-installing-and-setting-up-wsl" class="nav-link" data-scroll-target="#installing-and-setting-up-wsl">Installing and setting up WSL</a></li>
+  <li><a href="#base-setup-new-shell-and-package-manager" id="toc-base-setup-new-shell-and-package-manager" class="nav-link" data-scroll-target="#base-setup-new-shell-and-package-manager">Base setup — new shell and package manager</a>
+  <ul class="collapse">
+  <li><a href="#brewing-starts" id="toc-brewing-starts" class="nav-link" data-scroll-target="#brewing-starts">Brewing starts</a></li>
+  </ul></li>
+  <li><a href="#z-shell-sea-shell" id="toc-z-shell-sea-shell" class="nav-link" data-scroll-target="#z-shell-sea-shell">Z-shell — sea-shell</a></li>
+  <li><a href="#github-command-line-tool" id="toc-github-command-line-tool" class="nav-link" data-scroll-target="#github-command-line-tool">GitHub command line tool</a></li>
+  <li><a href="#connect-to-visual-studio-code" id="toc-connect-to-visual-studio-code" class="nav-link" data-scroll-target="#connect-to-visual-studio-code">Connect to Visual Studio Code</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
-<div>
 
-</div>
-<div class="quarto-layout-panel" data-layout="[ 30, 70]">
-<div class="quarto-layout-row">
-<div id="first-column" class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-left">
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="logo/python_mug.png" class="img-fluid quarto-figure quarto-figure-left figure-img"></p>
+<p><img src="image.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%"></p>
 </figure>
 </div>
+<section id="windows-linux-and-you-ménage-à-trois" class="level2">
+<h2 class="anchored" data-anchor-id="windows-linux-and-you-ménage-à-trois">Windows, Linux, and You: Ménage à trois</h2>
+<p>Tired of the same old Windows vs.&nbsp;Linux beef among PC superusers? Well, get ready to become a mediator in this feud. I’ll show you how to get the best of both worlds.</p>
+<section id="pros-and-cons" class="level3">
+<h3 class="anchored" data-anchor-id="pros-and-cons">Pros and cons</h3>
+<p>Windows OS has long been the dominant platform for mainstream consumers and businesses. It offers good hardware compatibility, de facto <em>the</em> PC gaming experience and is friendly to the casual user. However, Windows has significant limitations in terms of system control and software development tools.</p>
+<p>Linux, on the other hand, is an operating system created by developers and for developers (and system administrators). It provides infinite flexibility and a deep pool of open-source tools. But the learning curve is steep, the open-source projects often get abandoned and with great power (<code>sudo</code>) comes great responsibility (and sometimes system reinstall).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<div id="second-column" class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
-<p>This blog is a battleground of sorts, but instead of swords and shields, we wield the weapons of Python and C++. I’m a mathematician turned quantitative analyst turned software engineer. You can expect high standard deviation of topics here.</p>
-<p>Here, I’ll document my coding conquests, from building practical and impractical tools, exploring financial concepts, to playing around with physics simulations.</p>
-<p>Expect a healthy dose of humor alongside the technical discussions. Let’s be honest, even the most complex problems are more enjoyable with a sprinkle of laughter. So, grab a cup of coffee and join me on this exploration – even if it’s just for one interested reader!</p>
+<div class="callout-title-container flex-fill">
+Note
 </div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Actually, to publish this post in the most convenient and elegant <a href="https://quarto.org/docs/publishing/github-pages.html#publish-command">way</a>, I needed to switch to Linux. The Windows <code>quarto</code> CLI fails with some certification errors, coming from <code>deno</code>, that I can’t be bothered to clean up. Discovered this while writing these words as <a href="https://quarto.org/docs/publishing/github-pages.html#render-to-docs">my previous approach</a> was much messier. Irony is the ambrosia of life (for me at least).</p>
+</div>
+</div>
+</section>
+<section id="bridging-the-gap" class="level3">
+<h3 class="anchored" data-anchor-id="bridging-the-gap">Bridging the gap</h3>
+<p>At this point even Microsoft — a strong contrarian to Linux in the past — embraced the usefulness of Linux shell at your fingertips. Imagine having the familiar interface of Windows for your everyday tasks. Combine it with a the raw power and controllability of Linux for when you need to dive deep into development or system administration. And limited stakes once you (inevitably) remove half of your file system with a bash script. Enter Windows Subsystem for Linux (WSL): a ticket to 10x-ing your software development on Windows.</p>
+</section>
+<section id="wsl-vs.-virtual-machines-whats-the-difference" class="level3">
+<h3 class="anchored" data-anchor-id="wsl-vs.-virtual-machines-whats-the-difference">WSL vs.&nbsp;Virtual Machines: What’s the Difference?</h3>
+<p>You might be wondering how WSL differs from a traditional virtual machine (VM). While both provide a way to run Linux on Windows, they operate in different ways. A VM emulates a virtual computer within your computer, complete with its own operating system and make-belive hardware resources. This makes VMs resource-intensive and can impact overall system performance. They are also hard to set up and maintain.</p>
+<p>WSL, on the other hand, is a more lightweight approach. It integrates Linux directly into the Windows kernel, allowing for faster boot times, better performance, and seamless file sharing between Windows and Linux environments.</p>
+</section>
+</section>
+<section id="installing-and-setting-up-wsl" class="level2">
+<h2 class="anchored" data-anchor-id="installing-and-setting-up-wsl">Installing and setting up WSL</h2>
+<p>First, we need to set up the WSL and install a chosen Linux distribution. Fortunately, this is “super easy, barely an inconvenience”. You can choose from a list of distros pre-packaged by Microsoft or download and build an image from scratch. You can even build Arch and be legally allowed to say <code>BTW, I use Arch (on Windows)</code>. For this guide, we’ll take a more conventional approach and opt for the long-term support (LTS) version of Ubuntu. Now, open the Powershell with administrative privileges and run:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1"></a>wsl --update</span>
+<span id="cb1-2"><a href="#cb1-2"></a>wsl --version</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>These commands ensure that WSL is up-to-date and displays the installed WSL version.</p>
+<p><img src="1.png" class="img-fluid"></p>
+<p>Our next command will be:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a href="#cb2-1"></a>wsl -l -o</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This yields a curated list of pre-packaged Linux distributions that Microsoft provides, making the process almost effortless.</p>
+<p><img src="2.png" class="img-fluid"></p>
+<p>For the installation itself:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1"><a href="#cb3-1"></a>wsl --install -d 'Ubuntu-24.04'</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="3.png" class="img-fluid"></p>
+<p>Reboot the Windows system and you’ll see `Ubuntu’ among your applications. <img src="4.png" class="img-fluid"> <img src="5.png" class="img-fluid"></p>
+</section>
+<section id="base-setup-new-shell-and-package-manager" class="level2">
+<h2 class="anchored" data-anchor-id="base-setup-new-shell-and-package-manager">Base setup — new shell and package manager</h2>
+<p>There is an additional benefit we can reap with just a bit of more work — a fully system-agnostic setup. By having Linux kernel run on Windows, we unified 2 out of 3 giants. The only pillar that is missing is the Mac OS. But wait, it’s based on Unix as well! It just uses different default shell and lacks a package manager, as Apple doesn’t trust its clients. <code>zsh</code> offers a more interactive and customizable shell experience compared to the default bash. Homebrew, often referred to as the “missing package manager for macOS”, provides a convenient way to install additional software on Linux systems. Let’s change the terminal shell to <code>zsh</code> in our Ubuntu installation and compile a secondary (to <code>apt-get</code>) package manager – <code>brew</code>.</p>
+<section id="brewing-starts" class="level3">
+<h3 class="anchored" data-anchor-id="brewing-starts">Brewing starts</h3>
+<p>Before we dive into installing Homebrew, we need to equip our system with the essential tools. The build-essential package provides a collection of compilers and libraries necessary for building software from the source code. Git is a version control system used for managing code projects.</p>
+<p>Let’s install these prerequisites using the following command:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a href="#cb4-1"></a>sudo apt-get upgrade -y</span>
+<span id="cb4-2"><a href="#cb4-2"></a>sudo apt-get install build-essential git -y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Execute the installation script for Homebrew:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1"><a href="#cb5-1"></a>INSTALL_PATH="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"</span>
+<span id="cb5-2"><a href="#cb5-2"></a>/bin/bash -c "$(curl -fsSL $INSTALL_PATH)"</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="6.png" class="img-fluid"></p>
+<p>To make Homebrew accessible from your shell, you need to load its environment variables. The following command achieves this and subsequently runs a diagnostic check:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a href="#cb6-1"></a>eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"</span>
+<span id="cb6-2"><a href="#cb6-2"></a>brew doctor</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="7.png" class="img-fluid"></p>
+<p>Doctor’s orders to append brew to some set of paths! Let’s do this then:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"><a href="#cb7-1"></a>echo 'export XDG_DATA_DIRS="/home/linuxbrew/.linuxbrew/share:$XDG_DATA_DIRS"' &gt;&gt; ~/.profile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="z-shell-sea-shell" class="level2">
+<h2 class="anchored" data-anchor-id="z-shell-sea-shell">Z-shell — sea-shell</h2>
+<p>Homebrew makes package management a breeze. Let’s install <code>zsh</code>, a powerful and customizable shell.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1"><a href="#cb8-1"></a>brew install zsh</span>
+<span id="cb8-2"><a href="#cb8-2"></a>zsh --version</span>
+<span id="cb8-3"><a href="#cb8-3"></a>zsh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This will take you to interactive <code>.zshrc</code> file setup. The file contains commands that are run each time a shell is spawned. You can either generate empty file with <code>0</code> or go through the interactive setup with <code>1</code>. <img src="8.png" class="img-fluid"></p>
+<p>Add the brew initialization to <code>.zshrc</code> file as well. This way <code>brew</code> will always be by your side!</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb9-1"><a href="#cb9-1"></a>(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') &gt;&gt; /home/bwrob/.zshrc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Check the default shell and set it to <code>zsh</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb10-1"><a href="#cb10-1"></a>echo $SHELL</span>
+<span id="cb10-2"><a href="#cb10-2"></a>sudo chsh -s $(which zsh)</span>
+<span id="cb10-3"><a href="#cb10-3"></a>echo $SHELL</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="github-command-line-tool" class="level2">
+<h2 class="anchored" data-anchor-id="github-command-line-tool">GitHub command line tool</h2>
+<p>Remember <code>git != GitHub</code>, we need a way to authenticate and use Github from CLI. There’s a tool for that!</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1"><a href="#cb11-1"></a>brew install gh</span>
+<span id="cb11-2"><a href="#cb11-2"></a>gh auth login</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="9.png" class="img-fluid"></p>
+<p>Now create a convenient directory and copy your favourite <code>GitHub</code> repo:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb12-1"><a href="#cb12-1"></a>mkdir repos &amp;&amp; cd repos</span>
+<span id="cb12-2"><a href="#cb12-2"></a>gh repo clone python_playground</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="connect-to-visual-studio-code" class="level2">
+<h2 class="anchored" data-anchor-id="connect-to-visual-studio-code">Connect to Visual Studio Code</h2>
+<p>While WSL grants us the power of Linux, let’s not forget the user-friendly interface of Windows. When it comes to software development, we can achieve the perfect blend by integrating Visual Studio Code (VSC) with our WSL environment.</p>
+<p>Here’s how:</p>
+<ul>
+<li><p><strong>Install the WSL Extension in VSC</strong>: Fire up VSC on your Windows machine and head over to the Extensions tab. Search for “WSL” and install the official extension by Microsoft: <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl">WSL extension</a>.</p></li>
+<li><p><strong>Launching VSC from WSL</strong>: Within your WSL terminal, you can directly invoke VSC as if it were running natively on Windows. Use the following command:</p></li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1"><a href="#cb13-1"></a>code ~\repos\python_playground</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="10.png" class="img-fluid"></p>
+<p>In the <a href="">next post</a> I will show you how to set up Python environment in Linux. Stay tuned :) .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Download the Ubuntu shell script <a href="../../scripts/wsl_setup.sh">here</a>.</p>
 </div>
 </div>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-     <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-     <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-       <option value="" disabled="" selected="" hidden="">Order By</option>
-       <option value="index" data-direction="asc">Default</option>
-         <option value="listing-title" data-direction="asc">
-          Title
-        </option>
-         <option value="listing-date-sort" data-direction="asc">
-          Date - Oldest
-        </option>
-         <option value="listing-date-sort" data-direction="desc">
-          Date - Newest
-        </option>
-         <option value="listing-author" data-direction="asc">
-          Author
-        </option>
-     </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
-</div>
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="Dev setup" data-listing-date-sort="1723327200000" data-listing-file-modified-sort="1723381488368" data-listing-date-modified-sort="1723327200000" data-listing-reading-time-sort="6" data-listing-word-count-sort="1049">
-<a href="./posts/linux_in_windows/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/linux_in_windows/image.jpg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Linux in Windows via WSL
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Dev setup'); return false;">
-Dev setup
-</div>
-</div>
-<div class="card-text listing-description">
-Great dev setup and still CS coffee break
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-bwrob
-</div>
-<div class="listing-date">
-Aug 11, 2024
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="Pythonic Distractions,Context Managers" data-listing-date-sort="1715464800000" data-listing-file-modified-sort="1723313591220" data-listing-date-modified-sort="1716242400000" data-listing-reading-time-sort="16" data-listing-word-count-sort="3063">
-<a href="./posts/exit_stack/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/exit_stack/flowchart.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Exit stack to the rescue
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Pythonic Distractions'); return false;">
-Pythonic Distractions
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Context Managers'); return false;">
-Context Managers
-</div>
-</div>
-<div class="card-text listing-description">
-How to chain resource managers in elegant way.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-bwrob
-</div>
-<div class="listing-date">
-May 12, 2024
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="2" data-categories="Pythonic Distractions,Design Patterns" data-listing-date-sort="1714255200000" data-listing-file-modified-sort="1723313591220" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="13" data-listing-word-count-sort="2518">
-<a href="./posts/strategy_pattern_integration/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top"><img src="posts/strategy_pattern_integration/Rectangle_rule.gif" style="height: 150px;"  class="thumbnail-image card-img"/></p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Strategies for Numerical Integration
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Pythonic Distractions'); return false;">
-Pythonic Distractions
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Design Patterns'); return false;">
-Design Patterns
-</div>
-</div>
-<div class="card-text listing-description">
-How to apply strategy design pattern to decouple integration problem from method it’s solved with.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-bwrob
-</div>
-<div class="listing-date">
-Apr 28, 2024
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="3" data-categories="News" data-listing-date-sort="1713823200000" data-listing-file-modified-sort="1723313591220" data-listing-date-modified-sort="1713823200000" data-listing-reading-time-sort="1" data-listing-word-count-sort="116">
-<a href="./posts/welcome/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./logo/python_mug.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Welcome To My Blog
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('News'); return false;">
-News
-</div>
-</div>
-<div class="card-text listing-description">
-Warm welcome to enjoy the ride with me.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-bwrob
-</div>
-<div class="listing-date">
-Apr 23, 2024
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
