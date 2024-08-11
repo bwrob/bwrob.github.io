@@ -3,14 +3,16 @@
 import os
 import subprocess
 import time
+from collections.abc import Generator
 from enum import Enum
 from functools import wraps
 from pathlib import Path
-from typing import Callable, Generator, TypeVar
+from typing import Callable, TypeVar
 
 T = TypeVar("T")
-TaskListOptionalDelay = list[tuple[T, int] | T]
-TaskList = list[tuple[T, int]]
+Task = tuple[T, int]
+TaskListOptionalDelay = list[Task[T] | T]
+TaskList = list[Task[T]]
 
 NAME_EXCLUDES = ("$", "tmp")
 EXT_EXCLUDES = ("exe",)
@@ -58,7 +60,8 @@ def start_process(
     """
     if path.is_dir():
         print(f"Opening folder {name}")
-    elif path.suffix in (".exe", ".lnk"):
+
+    if path.suffix in (".exe", ".lnk"):
         print(f"Running app {name}")
     else:
         print(f"Opening file {name}")
@@ -76,7 +79,7 @@ def run_command(
     Args:
         command: Command to run.
     """
-    subprocess.call(
+    _ = subprocess.call(
         f"powershell.exe {command}",
         shell=False,
     )
@@ -114,7 +117,13 @@ def with_optional_delay(
 
     @wraps(task_worker)
     def task_defaulted_worker(task_list: TaskListOptionalDelay[T]) -> None:
-        tasks_with_defaulted_delays = [
+        """A decorator that adds a default delay to tasks in a task list
+        if no delay is specified.
+
+        Args:
+            task_list: A list of tasks with optional delays.
+        """
+        tasks_with_defaulted_delays: TaskList[T] = [
             item if isinstance(item, tuple) else (item, DEFAULT_DELAY_SECONDS)
             for item in task_list
         ]
