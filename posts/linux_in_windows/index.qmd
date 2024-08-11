@@ -14,7 +14,7 @@ image: image.jpg
 ## Windows, Linux, and You: Ménage à trois
 
 Tired of the age-old Windows vs. Linux debate among PC superusers?
-Well, get ready to toss that outdated script out the window! 
+Well, get ready to throw that outdated script out the window! 
 I'll show you how to get the best of both world.
 
 ### Pros and cons 
@@ -25,14 +25,14 @@ However, Windows limitations in terms of system control and software development
 
 Linux, on the other hand, has carved a niche for itself as the preferred operating system for developers and system administrators. 
 Providing unparalleled flexibility and a vast array of open-source tools.
-But the learning curve is steep, the open-source projects often get abbandoned, and with great power (sudo) comes great responsibility.
+But the learning curve is steep, the open-source projects often get abandoned and with great power (sudo) comes great responsibility (and sometimes system reinstall).
 
 ### Bridging the gap
 
 At this point, even Microsoft, a strong contrarian to Linux in the past, embraced the usefulness of Linux shell at your fingertips.
 Imagine having the sleek, user-friendly interface of Windows for your everyday tasks.
 Combine it with a the raw power and flexibility of Linux for when you need to dive deep into development or system administration. 
-And limited stakes once you (inevatibly) remove half of your file system with a bash script.
+And limited stakes once you (inevitably) remove half of your file system with a bash script.
 Enter Windows Subsystem for Linux (WSL): a ticket to 10x-ing your Windows experience. 
 Let's explore how this dynamic duo can supercharge your digital life.
 
@@ -41,21 +41,21 @@ Let's explore how this dynamic duo can supercharge your digital life.
 You might be wondering how WSL differs from a traditional virtual machine (VM). 
 While both provide a way to run Linux on Windows, they operate in fundamentally different ways. 
 A VM essentially emulates a virtual computer within your computer, complete with its own operating system and hardware resources.
-This makes VMs resource-intensive and can impact overall system performance.   
+This makes VMs resource-intensive and can impact overall system performance.
 They are also hard to set up and maintain.
 
 WSL, on the other hand, is a more lightweight approach. 
 It integrates Linux directly into the Windows kernel, allowing for faster boot times, better performance, and seamless file sharing between Windows and Linux environments.
 So, if you're looking for a powerful, efficient, and integrated way to harness the best of both Windows and Linux, WSL is the way to go.
 
-## Installing and setuping WSL
+## Installing and setting up WSL
 
 First, we need to set up the WSL and install a chosen Linux distribution. 
-Fortunatelly, this is super easy, bearly an inconvinience. 
-You can choose from a list of distros pre-packaged by Microsoft, or download and build an image from scratch.
+Fortunately, this is "super easy, barely an inconvenience". 
+You can choose from a list of distros pre-packaged by Microsoft or download and build an image from scratch.
 You can even build Arch and be legally alowed to say `BTW, I use Arch (on Windows)`.
 For this guide, we'll take a more conventional approach and opt for the long-term support (LTS) version of Ubuntu.
-Now, open the Powershell with administrative priviliges and run:
+Now, open the Powershell with administrative privileges and run:
 
 ```{shell}
 wsl --update
@@ -66,12 +66,17 @@ These commands ensure that WSL is up-to-date and displays the installed WSL vers
 
 ![](1.png)
 
+ Our next command will be:
+
 ```{shell}
 wsl -l -o
 ```
+
+This yields a curated list of pre-packaged Linux distributions that Microsoft provides, making the process almost effortless.
+
 ![](2.png)
 
-This yields a curated list of pre-packaged Linux distributions, that Microsoft provides, making the process almost effortless.
+
 For the instalation itself:
 
 ```{shell}
@@ -84,21 +89,21 @@ Reboot the Windows system and you'll see `Ubuntu' among your applications.
 ![](5.png)
 
 
-## Base setup -- new shell and package manager
+## Base setup --- new shell and package manager
 
-There is additional benefit we can reap with just a bit of more work - a fully system-agnostic setup.
+There is an additional benefit we can reap with just a bit of more work --- a fully system-agnostic setup.
 By having Linux kernel run on Windows, we unified 2 out of 3 giants.
 The only pillar that is missing is the Mac OS.
 But wait, it's based on Unix as well!
-It just uses differrent default shell and lacks a package manager, as Apple doesn't trust it's clients.
-zsh offers a more interactive and customizable shell experience compared to the default bash. 
-Homebrew, often referred to as the "missing package manager for macOS," provides a convenient way to install additional software on Linux systems.
+It just uses differrent default shell and lacks a package manager, as Apple doesn't trust its clients.
+`zsh` offers a more interactive and customizable shell experience compared to the default bash. 
+Homebrew, often referred to as the "missing package manager for macOS", provides a convenient way to install additional software on Linux systems.
 Let's change the terminal shell to `zsh` in our Ubuntu installation and compile a secondary (to `apt-get`) package manager -- `brew`.
 
 ### Brewing starts
 
-Before we dive into installing Homebrew, we need to equip our system with essential tools. 
-The build-essential package provides a collection of compilers and libraries necessary for building software from source code.
+Before we dive into installing Homebrew, we need to equip our system with the essential tools. 
+The build-essential package provides a collection of compilers and libraries necessary for building software from the source code.
 Git is a version control system used for managing code projects.
 
 Let's install these prerequisites using the following command:
@@ -134,11 +139,11 @@ zsh
 
 This will take you to interactive `.zshrc` file setup.
 The file contains commands that are run each time a shell is spawned.
-You can either generate empty file with `0` or go throug the interactive setup with `1`.
+You can either generate empty file with `0` or go through the interactive setup with `1`.
 ![](8.png)
 
 Add the brew initialization to `.zshrc` file as well.
-This way `brew` will always be at your side!
+This way `brew` will always be by your side!
 ```{bash}
 (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/bwrob/.zshrc
 ```
@@ -153,7 +158,7 @@ echo $SHELL &&  sudo chsh -s $(which zsh) &&  echo $SHELL
 
 ## GitHub command line tool
 
-Remember `git` != `GitHub`, we need a way to authenticate and use Github from CLI.
+Remember `git != GitHub`, we need a way to authenticate and use Github from CLI.
 There's a tool for that!
 
 ```{bash}
@@ -162,7 +167,7 @@ gh auth login
 ```
 ![](9.png)
 
-Now create a convinient directory and copy your favourite `GitHub` repo:
+Now create a convenient directory and copy your favourite `GitHub` repo:
 ```{bash}
 mkdir repos && cd repos
 gh repo clone python_playground
@@ -170,13 +175,13 @@ gh repo clone python_playground
 
 ## Connect to Visual Studio Code
 
-While WSL empowers us with the power of Linux, let's not forget the user-friendly interface of Windows. When it comes to software development, we can achieve the perfect blend by integrating Visual Studio Code (VSC) with our WSL environment.
+While WSL grants us the power of Linux, let's not forget the user-friendly interface of Windows. When it comes to software development, we can achieve the perfect blend by integrating Visual Studio Code (VSC) with our WSL environment.
 
 Here's how:
 
-**Install the WSL Extension in VSC**:  Fire up VSC on your Windows machine and head over to the Extensions tab. Search for "WSL" and install the official extension by Microsoft: [WSL extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl).
+* **Install the WSL Extension in VSC**:  Fire up VSC on your Windows machine and head over to the Extensions tab. Search for "WSL" and install the official extension by Microsoft: [WSL extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl).
 
-**Launching VSC from WSL**: Within your WSL terminal, you can directly invoke VSC as if it were running natively on Windows. Use the following command:
+* **Launching VSC from WSL**: Within your WSL terminal, you can directly invoke VSC as if it were running natively on Windows. Use the following command:
 
 ```{bash}
 code ~\repos\python_playground
