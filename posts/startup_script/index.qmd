@@ -21,11 +21,11 @@ As for the reasons for eternally turned on machines --- the proprietary framewor
 
 One tidbit to get this point across - in 2019 we still used 32-bit Win7, which had a cap on single-process memory consumption to 4Gb. We had a universally used hack to extend this to 8Gb for Excel, since the default wasn't enough for many of our pricing sheets.
 
-When post-COVID I parted ways with the company, I got a corporate laptop from the new employer. The office was much sparser, quieter with 'hot seats' approach. I worked mostly remotely either way. This meant switching off the company machine each day, as the VPN connections and certificates wouldn't last overnight. I was extremally annoyed with opening all of the daily tools again and again, after getting used to having it all waiting for me to jump right in.
+When post-COVID I parted ways with the company, I got a corporate laptop from the new employer. The office was much sparser, quieter with 'hot seats' approach. I worked mostly remotely either way. This meant switching off the company machine each day, as the VPN connections and certificates wouldn't last overnight. I was extremely annoyed with opening all of the daily tools again and again, after getting used to having it all waiting for me to jump right in.
 
 Hence the need for a startup script to open all of the apps, tools and files programatically. It won't cover everything, like authorizations or connections but still a little helper to start the day.
 
-To spice things up, we will overengineer the hell out of it and use generic typing, generators and decorators :D.
+To spice things up, we will over-engineer the hell out of it and use generic typing, generators and decorators :D.
 
 ## The startup script
 
@@ -58,7 +58,7 @@ def run_startup_script():
 
 ```
 
-We specify programs to be launched, open all files in a chosesn temp folder, and run a list of shell commands. After each step there should be some delay not to spam system with process calls. Certain steps might be more time consuming, like cloud services authorization. Those need longer delay. On the other hand, specifying delay for each task would be cumbersome, most cases would be fine with some default value. We end up with a design that our soon-to-be workers `start_programs`, `start_work_files`, and `run_commands` expect lists of either `task` or `(task, delay_seconds)`. We can now start the implementation by figuring out how the delay time should be defaulted if not specified.
+We specify programs to be launched, open all files in a chosen temp folder, and run a list of shell commands. After each step there should be some delay not to spam system with process calls. Certain steps might be more time consuming, like cloud services authorization. Those need longer delay. On the other hand, specifying delay for each task would be cumbersome, most cases would be fine with some default value. We end up with a design that our soon-to-be workers `start_programs`, `start_work_files`, and `run_commands` expect lists of either `task` or `(task, delay_seconds)`. We can now start the implementation by figuring out how the delay time should be defaulted if not specified.
 
 ### Decorator defaulting the time delays
 
@@ -98,7 +98,6 @@ def with_optional_delay(
 
     return task_defaulted_worker
 ```
-
 
 ### Main workers
 
@@ -168,11 +167,11 @@ def run_commands(
 
 ```
 
-
 ### List all files in list of directories
 
 ```{python}
-
+#| eval: false
+#|
 def filter_excluded(
     path: Path,
 ) -> bool:
@@ -209,7 +208,7 @@ def path_files(
 ### Interacting with the OS
 
 ```{python}
-
+#| eval: false
 
 def start_process(
     *,
