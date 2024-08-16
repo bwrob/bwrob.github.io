@@ -14,12 +14,51 @@ image: image.jpg
 
 ```{bash}
 brew install python@3.12
-brew install pipx
-pipx ensurepath
-pipx install poetry poethepoet pre-commit pytest ruff basedpyright
-which poetry 
 ```
 
+Dev tools should be accessable globally, but should't be in the defualt global python env.
+Solution - `pipx`
+
+
+```{bash}
+brew install pipx
+pipx ensurepath
+pipx install argcomplete
+```
+
+Add pipix completions to config
+
+```{bash}
+nano  .zshrc
+
+autoload -U compinit && compinit
+eval "$(register-python-argcomplete pipx)"
+```
+![](1.png)
+
+Install dev tools
+```{bash}
+pipx install poetry poethepoet pre-commit pytest ruff basedpyright
+```
+![](2.png)
+
+```{bash}
+nano $(which poetry)
+```
+![](3.png)
+
+Shebang Line (#!):
+#!/home/bwrob/.local/share/pipx/venvs/poetry/bin/python: This line specifies the interpreter used to run the script. In this case, it's a Python interpreter located in a specific virtual environment (poetry).
+
+This script acts as a launcher for the poetry command. It sets up the environment and handles potential script extensions before delegating the actual command execution to the poetry library.
+
+We can see that each of the toolos install with pipx is installed in its own venv, but is available globally
+```{bash}
+ls /home/bwrob/.local/share/pipx/venvs/ -la
+```
+![](4.png)
+
+Copy your
 ```{bash}
 # Instal dependencies
 poetry install
