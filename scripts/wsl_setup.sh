@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script is a quick and dirty hack to get Linux in Windows and WSL. It's not meant to be a full setup. 
+# This script is a quick and dirty hack to get Linux in Windows and WSL. It's not meant to be a full setup.
 # I just wanted to get some experience with WSL and Homebrew.
 sudo apt-get upgrade -y && sudo apt-get install build-essential git -y
 
