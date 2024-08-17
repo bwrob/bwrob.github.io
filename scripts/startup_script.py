@@ -3,11 +3,12 @@
 import os
 import subprocess
 import time
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from enum import Enum
 from functools import wraps
+from logging import getLogger
 from pathlib import Path
-from typing import Callable, TypeVar
+from typing import TypeVar
 
 T = TypeVar("T")
 Task = tuple[T, int]
@@ -18,6 +19,8 @@ NAME_EXCLUDES = ("$", "tmp")
 EXT_EXCLUDES = ("exe",)
 DEFAULT_DELAY_SECONDS = 4
 FILES_IN_TREE_PATTERN = r"**\*.*"
+
+logger = getLogger(__name__)
 
 
 class Program(Enum):
@@ -34,7 +37,9 @@ def filter_excluded(
     """Filter path based on name and extension exclude lists.
 
     Args:
+    ----
         path: Path to filter.
+
     """
     return (path.stem not in NAME_EXCLUDES) and (path.suffix not in EXT_EXCLUDES)
 
@@ -55,18 +60,21 @@ def start_process(
             * folders are opened with system explorer.
 
     Args:
+    ----
         name: Name of the process to start.
+        path: Path to the target.
         delay: Time to wait after starting the process.
+
     """
     if path.is_dir():
-        print(f"Opening folder {name}")
+        logger.info("Opening folder %s", name)
 
     if path.suffix in (".exe", ".lnk"):
-        print(f"Running app {name}")
+        logger.info("Running app %s", name)
     else:
-        print(f"Opening file {name}")
+        logger.info("Opening file %s", name)
 
-    os.startfile(path)
+    os.startfile(path)  # noqa: S606
     time.sleep(delay)
 
 
@@ -74,12 +82,15 @@ def run_command(
     command: str,
     delay: int,
 ) -> None:
-    """Runs a powershell command.
+    """Run a powershell command.
 
     Args:
+    ----
         command: Command to run.
+        delay: Time to wait after starting the process.
+
     """
-    _ = subprocess.call(
+    _ = subprocess.call(  # noqa: S603
         f"powershell.exe {command}",
         shell=False,
     )
@@ -89,12 +100,14 @@ def run_command(
 def path_files(
     directory_tasks: TaskList[Path],
 ) -> Generator[tuple[Path, int], None, None]:
-    """Generates all files in the work folder that are not excluded.
+    """Generate all files in the work folder that are not excluded.
 
     Yields the folder path at beginning of the generator.
 
     Args:
-        temp_folder: Path to the work folder.
+    ----
+        directory_tasks: List of tasks with paths to work folders.
+
     """
     for folder, delay in directory_tasks:
         yield folder, delay
@@ -109,19 +122,22 @@ def path_files(
 def with_optional_delay(
     task_worker: Callable[[TaskList[T]], None],
 ) -> Callable[[TaskListOptionalDelay[T]], None]:
-    """Adds default delay to all non-tuple items.
+    """Add default delay to all non-tuple items.
 
     Args:
-        mixed_list: mixed list of items T or tuples (T, int) with delays
+    ----
+        task_worker: A function that takes a list of tasks.
+
     """
 
     @wraps(task_worker)
     def task_defaulted_worker(task_list: TaskListOptionalDelay[T]) -> None:
-        """A decorator that adds a default delay to tasks in a task list
-        if no delay is specified.
+        """Add a default delay to tasks in a task list if no delay is specified.
 
         Args:
+        ----
             task_list: A list of tasks with optional delays.
+
         """
         tasks_with_defaulted_delays: TaskList[T] = [
             item if isinstance(item, tuple) else (item, DEFAULT_DELAY_SECONDS)
@@ -136,12 +152,14 @@ def with_optional_delay(
 def start_programs(
     programs: TaskList[Program],
 ) -> None:
-    """Starts listed programs.
+    """Start listed programs.
 
     Args:
+    ----
         programs: List of programs to start.
             Can be a string or a tuple. If a tuple is given, the first
             element is the name, the second is the delay.
+
     """
     for program, delay in programs:
         start_process(
@@ -155,10 +173,12 @@ def start_programs(
 def start_work_files(
     directory_tasks: TaskList[Path],
 ) -> None:
-    """Starts all  files in the work folders.
+    """Start all  files in the work folders.
 
     Args:
+    ----
         directory_tasks: List of tasks with paths to work folders.
+
     """
     for path, delay in path_files(directory_tasks):
         start_process(
@@ -172,20 +192,20 @@ def start_work_files(
 def run_commands(
     commands: TaskList[str],
 ) -> None:
-    """Runs all commands in the command list.
+    """Run all commands in the command list.
 
     Args:
+    ----
         commands: List of commands to run.
+
     """
     for command, delay in commands:
         run_command(command, delay)
 
 
-def run_startup_script():
-    """
-    Runs the startup script.
-    """
-    print(f" Welcome {os.getlogin()}! ".center(40, "*"))
+def run_startup_script() -> None:
+    """Run the startup script."""
+    logger.info(f" Welcome {os.getlogin()}! ".center(40, "*"))
     start_programs(
         [
             Program.POWERSHELL,

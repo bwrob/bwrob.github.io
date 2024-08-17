@@ -1,5 +1,5 @@
 ---
-title: " Windows Startup Python Script"
+title: " Python Startup Script"
 description: "Start your day with a cup of coffee,
     not opening the same apps all over again every morning."
 author: "bwrob"
@@ -12,6 +12,8 @@ image: win_98.png
 
 format-links: [html]
 ---
+
+![](win_98.png){width="95%" fig-align="center"}
 
 ## Why a start up script?
 
@@ -41,20 +43,18 @@ We can start by creating the public interface, see what we want to achieve, and 
 ```{python}
 #| eval: false
 
-def run_startup_script():
-    """
-    Runs the startup script.
-    """
-    print(f"Welcome!")
+def run_startup_script() -> None:
+    """Run the startup script."""
+    logger.info(f" Welcome {os.getlogin()}! ".center(40, "*"))
     start_programs(
         [
-            "powershell",
-            "notepad++",
-            ("firefox", 8),
-        ]
+            Program.POWERSHELL,
+            Program.NOTEPAD,
+            (Program.FIREFOX, 8),
+        ],
     )
-    start_work_files([".temp"])
-    run_commands([('login-to-cloud --user bwrob', 30)])
+    start_work_files([Path.home() / ".temp"])
+    run_commands(['Write-Output "test"'])
 
 ```
 
@@ -62,13 +62,19 @@ We specify programs to be launched, open all files in a chosen temp folder, and 
 
 ### Decorator defaulting the time delays
 
+Now we can start the implementation. We want the workers to be called with a list of tasks, but a task can be either a command or a tuple including the delay. Let's not include some complicated conditionals in each of the workers. That would be annoying, and potentially get out of sync at some point.
+
+Other way to do this is to add a default delay to all non-tuple items. We can implement that as a separate defaulting function, which we would call in each worker. But, being more clever we could use a decorator, that changes the workers's signature.
+
 ```{python}
 from functools import wraps
-from typing import Callable, TypeVar
+from collections.abc import Callable
+from typing import TypeVar
 
 T = TypeVar("T")
-TaskListOptionalDelay = list[tuple[T, int] | T]
-TaskList = list[tuple[T, int]]
+Task = tuple[T, int]
+TaskList = list[Task[T]]
+TaskListOptionalDelay = list[Task[T] | T]
 
 
 DEFAULT_DELAY_SECONDS = 4
@@ -76,19 +82,22 @@ DEFAULT_DELAY_SECONDS = 4
 def with_optional_delay(
     task_worker: Callable[[TaskList[T]], None],
 ) -> Callable[[TaskListOptionalDelay[T]], None]:
-    """Adds default delay to all non-tuple items.
+    """Add default delay to all non-tuple items.
 
     Args:
-        mixed_list: mixed list of items T or tuples (T, int) with delays
+    ----
+        task_worker: A function that takes a list of tasks.
+
     """
 
     @wraps(task_worker)
     def task_defaulted_worker(task_list: TaskListOptionalDelay[T]) -> None:
-        """A decorator that adds a default delay to tasks in a task list
-        if no delay is specified.
+        """Add a default delay to tasks in a task list if no delay is specified.
 
         Args:
+        ----
             task_list: A list of tasks with optional delays.
+
         """
         tasks_with_defaulted_delays: TaskList[T] = [
             item if isinstance(item, tuple) else (item, DEFAULT_DELAY_SECONDS)
@@ -99,7 +108,18 @@ def with_optional_delay(
     return task_defaulted_worker
 ```
 
+First, for convinience let's define a template type annotation:
+
+-   The generic, variable type is conventionally denoted by `T`.
+-   A `Task` is a tuple of a generic task `T` and a `int` delay.
+-   A `TaskList` is a list of `Task`s. Simple.
+-   A `TaskListOptionalDelay` is a list of `Task`s or `T`s. Those are the guys we are going to turn into `TaskLists`.
+
+The decorator 'with_optional_delay' adds a default delay of 4 seconds to all non-tuple items. It's input is a worker function that already expects a `TaskList`. It fills in the missing delay with the default value, and passes it to the decorated function.
+
 ### Main workers
+
+With the preparation done, we can start with the workers. For the programs we will be launching, we need to look up the exact paths of the executables. Let's define a `Program` enum, that would wrap those up in readable nice names. For working with system paths we will use `pathlib.Path` that provides high-level interface.
 
 ```{python}
 #| eval: false
@@ -114,19 +134,26 @@ class Program(Enum):
     POWERSHELL = Path(r"C:\windows\system32\windowspowershell\v1.0\powershell.exe")
     NOTEPAD = Path(r"C:\Program Files\Notepad++\notepad++.exe")
     FIREFOX = Path(r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Firefox.lnk")
+```
 
+Other than that, the main workers `start_programs`, `start_work_files`, and `run_commands` are simple. They just iterate over the provided `TaskList` and do the respective action for a given `Task`.
+
+```{python}
+#| eval: false
 
 
 @with_optional_delay
 def start_programs(
     programs: TaskList[Program],
 ) -> None:
-    """Starts listed programs.
+    """Start listed programs.
 
     Args:
+    ----
         programs: List of programs to start.
             Can be a string or a tuple. If a tuple is given, the first
             element is the name, the second is the delay.
+
     """
     for program, delay in programs:
         start_process(
@@ -140,10 +167,12 @@ def start_programs(
 def start_work_files(
     directory_tasks: TaskList[Path],
 ) -> None:
-    """Starts all  files in the work folders.
+    """Start all  files in the work folders.
 
     Args:
+    ----
         directory_tasks: List of tasks with paths to work folders.
+
     """
     for path, delay in path_files(directory_tasks):
         start_process(
@@ -157,41 +186,61 @@ def start_work_files(
 def run_commands(
     commands: TaskList[str],
 ) -> None:
-    """Runs all commands in the command list.
+    """Run all commands in the command list.
 
     Args:
+    ----
         commands: List of commands to run.
+
     """
     for command, delay in commands:
         run_command(command, delay)
+
 
 ```
 
 ### List all files in list of directories
 
+Notice the use of `path_files` generator above. When working with complex iterations, it is good practice to create a generator that wraps the iteration details. It is beneficial for readability and maintainability, especially in cases where you need to:
+
+-   yield multiple values at once (ex. *yield path, delay* for path in directory\*)
+-   have nested iterators (ex. *for directory in list for path in directory*)
+-   filter the iteration (ex. *for path in directory if filter(path)*)
+
+Here we'll have all three of them combined!
+
 ```{python}
 #| eval: false
-#|
+
+NAME_EXCLUDES = ("$", "tmp")
+EXT_EXCLUDES = ("exe",)
+
+
 def filter_excluded(
     path: Path,
 ) -> bool:
     """Filter path based on name and extension exclude lists.
 
     Args:
+    ----
         path: Path to filter.
+
     """
     return (path.stem not in NAME_EXCLUDES) and (path.suffix not in EXT_EXCLUDES)
+
 
 
 def path_files(
     directory_tasks: TaskList[Path],
 ) -> Generator[tuple[Path, int], None, None]:
-    """Generates all files in the work folder that are not excluded.
+    """Generate all files in the work folder that are not excluded.
 
     Yields the folder path at beginning of the generator.
 
     Args:
-        temp_folder: Path to the work folder.
+    ----
+        directory_tasks: List of tasks with paths to work folders.
+
     """
     for folder, delay in directory_tasks:
         yield folder, delay
@@ -205,10 +254,19 @@ def path_files(
 
 ```
 
+The `filter_excluded` function filters out files based on name and extension exclude lists. `Path.stem` and `Path.suffix` are used to check if the file name or extension is in the lists respectively.
+
 ### Interacting with the OS
+
+With all of the framework prepared, the next step is to interact with the OS. To open a file, folder or run an app, we can use the `os.startfile` function. All the rest of the `start_process` function is just utility logging. For running a shell command we can use the `subprocess` module, calling powershell with the `powershell.exe` and adding the command to run.
 
 ```{python}
 #| eval: false
+
+import os
+import subprocess
+import time
+
 
 def start_process(
     *,
@@ -226,16 +284,19 @@ def start_process(
             * folders are opened with system explorer.
 
     Args:
+    ----
         name: Name of the process to start.
+        path: Path to the target.
         delay: Time to wait after starting the process.
+
     """
     if path.is_dir():
-        print(f"Opening folder {name}")
+        logger.info("Opening folder %s", name)
 
     if path.suffix in (".exe", ".lnk"):
-        print(f"Running app {name}")
+        logger.info("Running app %s", name)
     else:
-        print(f"Opening file {name}")
+        logger.info("Opening file %s", name)
 
     os.startfile(path)
     time.sleep(delay)
@@ -245,10 +306,13 @@ def run_command(
     command: str,
     delay: int,
 ) -> None:
-    """Runs a powershell command.
+    """Run a powershell command.
 
     Args:
+    ----
         command: Command to run.
+        delay: Time to wait after starting the process.
+
     """
     _ = subprocess.call(
         f"powershell.exe {command}",
