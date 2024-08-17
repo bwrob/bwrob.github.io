@@ -11,20 +11,20 @@ Expect a healthy dose of humor alongside the technical discussions because, let'
 
 Whether you're a seasoned quant, a curious programmer, or simply someone who enjoys exploring the applications of code, grab a cup of coffee and join me on this journey!
 
-# Blog setup
+## Blog setup
 
-## Setting Up Your Blog:
+### Setting Up Your Blog
 
 Install Quarto: Follow the installation instructions for your operating system from the official [Quarto website](https://quarto.org/docs/download/).
 Create a Project: Use the quarto create command to create a new Quarto project directory.
 Choose a Template: You can choose from various pre-built blog templates available online or create your own HTML structure.
 Write Your Blog Posts: Use Quarto documents (.qmd files) to write your blog posts. These files combine markdown for text formatting with code chunks for including code snippets.
 
-## Rendering and Previewing:
+### Rendering and Previewing
 
 Render Your Content: Use the quarto render command to convert your Quarto documents into static HTML files.
 
-## Deploying to GitHub Pages:
+### Deploying to GitHub Pages
 
 Version Control: Initialize your project directory as a Git repository and commit your files.
 GitHub Repository: Create a new repository on GitHub or use an existing one.
@@ -37,7 +37,7 @@ Here are some resources for further guidance:
 
 The official Quarto documentation has detailed instructions on creating projects, writing content, and [deploying to GitHub Pages](https://quarto.org/docs/publishing/github-pages.html).
 
+### Additional Tips
 
-### Additional Tips:
 Customize Your Blog: Explore Quarto's theming options and CSS customization to personalize your blog's look and feel.
 Version Control Best Practices: Familiarize yourself with Git version control practices to manage your blog content effectively.
