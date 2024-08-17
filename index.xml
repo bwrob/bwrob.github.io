@@ -160,6 +160,802 @@ Note
   <media:content url="https://bwrob.github.io/posts/linux_in_windows/image.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
+  <title>Python Startup Script</title>
+  <dc:creator>bwrob </dc:creator>
+  <link>https://bwrob.github.io/posts/startup_script/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bwrob.github.io/posts/startup_script/win_98.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:65.0%"></p>
+</figure>
+</div>
+<section id="why-a-startup-script" class="level2">
+<h2 class="anchored" data-anchor-id="why-a-startup-script">Why a startup script?</h2>
+<p>Confession time. Pre-COVID I worked for a Swiss bank — it was the whole corporate package. Working from a crowded office, open space, dedicated desks, dedicated desktop PCs, hundreds of people. And we never turned the PCs off, some of them were running constantly for months. Not very eco-friendly behaviour, either from the company side or from the employees. But there were legit reasons for this and the company had much <a href="https://www.wikiwand.com/en/Credit_Suisse#Controversies">bigger sins</a> on their books.</p>
+<p>As for the reasons for constantly turned on machines — the proprietary frameworks and tooling we used were awfully heavy and slow. If you were occasionally forced to kill all the processes — due to an update or system crash — getting them all up again took an hour or more. Developer tools, pricing systems, connections to Monte Carlo farms, downloading trade data, analysis definitions — you name it, we used it.</p>
+<p>One tidbit to get this point across — in 2019 we still used 32-bit Win7, which had a cap on single-process memory consumption to 4GB. We had a universally used hack to extend this to 8GB for Excel, since the default wasn’t enough for many of our pricing sheets.</p>
+<p>When I parted ways with the company post-COVID, I got a corporate laptop from the new employer. The office was much sparser, quieter and with ‘hot seats’ approach. I worked mostly remotely either way. This meant switching off the company machine each day, as the VPN connections and certificates wouldn’t last overnight. I was extremely annoyed with opening all of the daily tools again and again, after getting used to having it all waiting for me to jump right in.</p>
+<p>Hence the need for a startup script to open all of the apps, tools and files programatically. It won’t cover everything, like authorizations or connections but still a little helper to start the day.</p>
+<p>To spice things up, we will overengineer the hell out of it and use generic typing, generators and decorators :D.</p>
+</section>
+<section id="the-startup-script" class="level2">
+<h2 class="anchored" data-anchor-id="the-startup-script">The startup script</h2>
+<section id="public-interface" class="level3">
+<h3 class="anchored" data-anchor-id="public-interface">Public interface</h3>
+<p>Let’s first think about the design and what we want to achieve. Imagine the code being split into two parts:</p>
+<ul>
+<li>the hidden logic layer, <strong>the worker</strong> that does stuff and</li>
+<li>the public interface that integrates with the rest of the codebase or is called at the top level, <strong>the manager</strong>.</li>
+</ul>
+<p>We can start by creating the public interface, see what we want to achieve and later deal with filling in a working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:</p>
+<div id="0b794c7d" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> run_startup_script() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb1-2">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Run the startup script."""</span></span>
+<span id="cb1-3">    logger.info(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f" Welcome </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>os<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>getlogin()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">! "</span>.center(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">40</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"*"</span>))</span>
+<span id="cb1-4">    start_programs(</span>
+<span id="cb1-5">        [</span>
+<span id="cb1-6">            Program.POWERSHELL,</span>
+<span id="cb1-7">            Program.NOTEPAD,</span>
+<span id="cb1-8">            (Program.FIREFOX, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>),</span>
+<span id="cb1-9">        ],</span>
+<span id="cb1-10">    )</span>
+<span id="cb1-11">    start_work_files([Path.home() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">".temp"</span>])</span>
+<span id="cb1-12">    run_commands([<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Write-Output "test"'</span>])</span></code></pre></div>
+</div>
+<p>We specify programs to be launched, open all files in a chosen temp folder and run a list of shell commands. After each step there should be some delay to avoid spamming system with process calls. Certain steps might be more time consuming, like cloud services authorization. Those need longer delay. On the other hand, specifying delay for each task would be cumbersome, most cases would be fine with some default value. We end up with a design that our soon-to-be workers <code>start_programs</code>, <code>start_work_files</code>, and <code>run_commands</code> expect lists of either <code>task</code> or <code>(task, delay_seconds)</code>. We can now start the implementation by figuring out how the delay time should be defaulted if not specified.</p>
+</section>
+<section id="decorator-defaulting-the-time-delays" class="level3">
+<h3 class="anchored" data-anchor-id="decorator-defaulting-the-time-delays">Decorator defaulting the time delays</h3>
+<p>Now we can start the implementation. We want the workers to be called with a list of tasks, but a task can be either a command or a tuple including the delay. Let’s not include some complicated conditionals in each of the workers — that would be annoying and potentially get out of sync at some point.</p>
+<p>Other way to do this is to add a default delay to all non-tuple items. We can implement that as a separate defaulting function, which we would call in each worker. But — being more clever! — we could also use a decorator that changes the workers’s signature.</p>
+<div id="101feaa4" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> functools <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> wraps</span>
+<span id="cb2-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> collections.abc <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Callable</span>
+<span id="cb2-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> TypeVar</span>
+<span id="cb2-4"></span>
+<span id="cb2-5">T <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> TypeVar(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"T"</span>)</span>
+<span id="cb2-6">Task <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">tuple</span>[T, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>]</span>
+<span id="cb2-7">TaskList <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>[Task[T]]</span>
+<span id="cb2-8">TaskListOptionalDelay <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>[Task[T] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> T]</span>
+<span id="cb2-9"></span>
+<span id="cb2-10"></span>
+<span id="cb2-11">DEFAULT_DELAY_SECONDS <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span></span>
+<span id="cb2-12"></span>
+<span id="cb2-13"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> with_optional_delay(</span>
+<span id="cb2-14">    task_worker: Callable[[TaskList[T]], <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>],</span>
+<span id="cb2-15">) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Callable[[TaskListOptionalDelay[T]], <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>]:</span>
+<span id="cb2-16">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Add default delay to all non-tuple items.</span></span>
+<span id="cb2-17"></span>
+<span id="cb2-18"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Args:</span></span>
+<span id="cb2-19"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    ----</span></span>
+<span id="cb2-20"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        task_worker: A function that takes a list of tasks.</span></span>
+<span id="cb2-21"></span>
+<span id="cb2-22"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb2-23"></span>
+<span id="cb2-24">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@wraps</span>(task_worker)</span>
+<span id="cb2-25">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> task_defaulted_worker(task_list: TaskListOptionalDelay[T]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb2-26">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Add a default delay to tasks in a task list if no delay is specified.</span></span>
+<span id="cb2-27"></span>
+<span id="cb2-28"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Args:</span></span>
+<span id="cb2-29"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        ----</span></span>
+<span id="cb2-30"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            task_list: A list of tasks with optional delays.</span></span>
+<span id="cb2-31"></span>
+<span id="cb2-32"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        """</span></span>
+<span id="cb2-33">        tasks_with_defaulted_delays: TaskList[T] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [</span>
+<span id="cb2-34">            item <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">isinstance</span>(item, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">tuple</span>) <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span> (item, DEFAULT_DELAY_SECONDS)</span>
+<span id="cb2-35">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> item <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> task_list</span>
+<span id="cb2-36">        ]</span>
+<span id="cb2-37">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> task_worker(tasks_with_defaulted_delays)</span>
+<span id="cb2-38"></span>
+<span id="cb2-39">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> task_defaulted_worker</span></code></pre></div>
+</div>
+<p>First, for convenience, let’s define a template type annotation:</p>
+<ul>
+<li>The generic variable type is conventionally denoted by <code>T</code>.</li>
+<li>A <code>Task</code> is a tuple of a generic task <code>T</code> and an <code>int</code> delay.</li>
+<li>A <code>TaskList</code> is a list of <code>Task</code>s. Simple.</li>
+<li>A <code>TaskListOptionalDelay</code> is a list of <code>Task</code>s or <code>T</code>s. Those are the guys we are going to turn into <code>TaskLists</code>.</li>
+</ul>
+<p>The decorator <code>with_optional_delay</code> adds a default delay of 4 seconds to all non-tuple items. Its input is a worker function that already expects a <code>TaskList</code>. It fills in the missing delay with the default value and passes it to the decorated function.</p>
+</section>
+<section id="main-workers" class="level3">
+<h3 class="anchored" data-anchor-id="main-workers">Main workers</h3>
+<p>With the preparation done, we can start with the workers. For the programs we will be launching, we need to look up the exact paths of the executables. Let’s define a <code>Program</code> enum that would wrap those up in readable nice names. For working with system paths we will use <code>pathlib.Path</code> that provides high-level interface.</p>
+<div id="36e145b9" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Enum</span>
+<span id="cb3-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> pathlib <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Path</span>
+<span id="cb3-3"></span>
+<span id="cb3-4"></span>
+<span id="cb3-5"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> Program(Enum):</span>
+<span id="cb3-6">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Types of programs."""</span></span>
+<span id="cb3-7"></span>
+<span id="cb3-8">    POWERSHELL <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Path(<span class="vs" style="color: #20794D;
+background-color: null;
+font-style: inherit;">r"C:\windows\system32\windowspowershell\v1.0\powershell.exe"</span>)</span>
+<span id="cb3-9">    NOTEPAD <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Path(<span class="vs" style="color: #20794D;
+background-color: null;
+font-style: inherit;">r"C:\Program Files\Notepad++\notepad++.exe"</span>)</span>
+<span id="cb3-10">    FIREFOX <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Path(<span class="vs" style="color: #20794D;
+background-color: null;
+font-style: inherit;">r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Firefox.lnk"</span>)</span></code></pre></div>
+</div>
+<p>Other than that, the main workers <code>start_programs</code>, <code>start_work_files</code>, and <code>run_commands</code> are simple. They just iterate over the provided <code>TaskList</code> and do the respective action for a given <code>Task</code>.</p>
+<div id="6152ba75" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@with_optional_delay</span></span>
+<span id="cb4-2"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> start_programs(</span>
+<span id="cb4-3">    programs: TaskList[Program],</span>
+<span id="cb4-4">) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb4-5">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Start listed programs.</span></span>
+<span id="cb4-6"></span>
+<span id="cb4-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Args:</span></span>
+<span id="cb4-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    ----</span></span>
+<span id="cb4-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        programs: List of programs to start.</span></span>
+<span id="cb4-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            Can be a string or a tuple. If a tuple is given, the first</span></span>
+<span id="cb4-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            element is the name, the second is the delay.</span></span>
+<span id="cb4-12"></span>
+<span id="cb4-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb4-14">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> program, delay <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> programs:</span>
+<span id="cb4-15">        start_process(</span>
+<span id="cb4-16">            name<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>program.name,</span>
+<span id="cb4-17">            path<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>program.value,</span>
+<span id="cb4-18">            delay<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>delay,</span>
+<span id="cb4-19">        )</span>
+<span id="cb4-20"></span>
+<span id="cb4-21"></span>
+<span id="cb4-22"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@with_optional_delay</span></span>
+<span id="cb4-23"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> start_work_files(</span>
+<span id="cb4-24">    directory_tasks: TaskList[Path],</span>
+<span id="cb4-25">) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb4-26">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Start all  files in the work folders.</span></span>
+<span id="cb4-27"></span>
+<span id="cb4-28"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Args:</span></span>
+<span id="cb4-29"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    ----</span></span>
+<span id="cb4-30"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        directory_tasks: List of tasks with paths to work folders.</span></span>
+<span id="cb4-31"></span>
+<span id="cb4-32"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb4-33">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> path, delay <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> path_files(directory_tasks):</span>
+<span id="cb4-34">        start_process(</span>
+<span id="cb4-35">            name<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>path.name,</span>
+<span id="cb4-36">            path<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>path,</span>
+<span id="cb4-37">            delay<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>delay,</span>
+<span id="cb4-38">        )</span>
+<span id="cb4-39"></span>
+<span id="cb4-40"></span>
+<span id="cb4-41"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@with_optional_delay</span></span>
+<span id="cb4-42"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> run_commands(</span>
+<span id="cb4-43">    commands: TaskList[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>],</span>
+<span id="cb4-44">) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb4-45">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Run all commands in the command list.</span></span>
+<span id="cb4-46"></span>
+<span id="cb4-47"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Args:</span></span>
+<span id="cb4-48"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    ----</span></span>
+<span id="cb4-49"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        commands: List of commands to run.</span></span>
+<span id="cb4-50"></span>
+<span id="cb4-51"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb4-52">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> command, delay <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> commands:</span>
+<span id="cb4-53">        run_command(command, delay)</span></code></pre></div>
+</div>
+</section>
+<section id="list-all-files-in-list-of-directories" class="level3">
+<h3 class="anchored" data-anchor-id="list-all-files-in-list-of-directories">List all files in list of directories</h3>
+<p>Notice the use of <code>path_files</code> generator above. When working with complex iterations, it’s a good practice to create a generator that wraps the iteration details. It is beneficial for readability and maintainability, especially in cases where you need to:</p>
+<ul>
+<li>yield multiple values at once (ex. <em>yield path, delay for path in directory</em>),</li>
+<li>have nested iterators (ex. <em>for directory in list for path in directory</em>),</li>
+<li>filter the iteration (ex. <em>for path in directory if filter(path)</em>).</li>
+</ul>
+<p>Here we’ll have all three of them combined!</p>
+<div id="17fd406b" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">NAME_EXCLUDES <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"$"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tmp"</span>)</span>
+<span id="cb5-2">EXT_EXCLUDES <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"exe"</span>,)</span>
+<span id="cb5-3"></span>
+<span id="cb5-4"></span>
+<span id="cb5-5"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> filter_excluded(</span>
+<span id="cb5-6">    path: Path,</span>
+<span id="cb5-7">) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">bool</span>:</span>
+<span id="cb5-8">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Filter path based on name and extension exclude lists.</span></span>
+<span id="cb5-9"></span>
+<span id="cb5-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Args:</span></span>
+<span id="cb5-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    ----</span></span>
+<span id="cb5-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        path: Path to filter.</span></span>
+<span id="cb5-13"></span>
+<span id="cb5-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb5-15">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> (path.stem <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> NAME_EXCLUDES) <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">and</span> (path.suffix <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> EXT_EXCLUDES)</span>
+<span id="cb5-16"></span>
+<span id="cb5-17"></span>
+<span id="cb5-18"></span>
+<span id="cb5-19"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> path_files(</span>
+<span id="cb5-20">    directory_tasks: TaskList[Path],</span>
+<span id="cb5-21">) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Generator[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">tuple</span>[Path, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>], <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>]:</span>
+<span id="cb5-22">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Generate all files in the work folder that are not excluded.</span></span>
+<span id="cb5-23"></span>
+<span id="cb5-24"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Yields the folder path at beginning of the generator.</span></span>
+<span id="cb5-25"></span>
+<span id="cb5-26"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Args:</span></span>
+<span id="cb5-27"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    ----</span></span>
+<span id="cb5-28"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        directory_tasks: List of tasks with paths to work folders.</span></span>
+<span id="cb5-29"></span>
+<span id="cb5-30"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb5-31">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> folder, delay <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> directory_tasks:</span>
+<span id="cb5-32">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">yield</span> folder, delay</span>
+<span id="cb5-33"></span>
+<span id="cb5-34">        all_files <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> folder.glob(FILES_IN_TREE_PATTERN)</span>
+<span id="cb5-35">        filtered <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">filter</span>(filter_excluded, all_files)</span>
+<span id="cb5-36"></span>
+<span id="cb5-37">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">file</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> filtered:</span>
+<span id="cb5-38">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">yield</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">file</span>, delay</span></code></pre></div>
+</div>
+<p>The <code>filter_excluded</code> function filters out files based on exclusions in name and extension lists. <code>Path.stem</code> and <code>Path.suffix</code> are used to check if the file name or extension is in the lists respectively.</p>
+</section>
+<section id="interacting-with-the-os" class="level3">
+<h3 class="anchored" data-anchor-id="interacting-with-the-os">Interacting with the OS</h3>
+<p>With all of the framework prepared, the next step is to interact with the OS. To open a file, folder or run an app, we can use the <code>os.startfile</code> function. All the rest of the <code>start_process</code> function is just utility logging. For running a shell command we can use the <code>subprocess</code> module, calling powershell with the <code>powershell.exe</code> and adding the command to run.</p>
+<div id="2b4f68a0" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> os</span>
+<span id="cb6-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> subprocess</span>
+<span id="cb6-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> time</span>
+<span id="cb6-4"></span>
+<span id="cb6-5"></span>
+<span id="cb6-6"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> start_process(</span>
+<span id="cb6-7">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>,</span>
+<span id="cb6-8">    name: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>,</span>
+<span id="cb6-9">    path: Path,</span>
+<span id="cb6-10">    delay: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> DEFAULT_DELAY_SECONDS,</span>
+<span id="cb6-11">) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb6-12">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Given a path, starts the target.</span></span>
+<span id="cb6-13"></span>
+<span id="cb6-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Behavior:</span></span>
+<span id="cb6-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        * Minimizes all windows.</span></span>
+<span id="cb6-16"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        * Depending on the path target:</span></span>
+<span id="cb6-17"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            * executable files are run,</span></span>
+<span id="cb6-18"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            * content files are opened with system default program,</span></span>
+<span id="cb6-19"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            * folders are opened with system explorer.</span></span>
+<span id="cb6-20"></span>
+<span id="cb6-21"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Args:</span></span>
+<span id="cb6-22"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    ----</span></span>
+<span id="cb6-23"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        name: Name of the process to start.</span></span>
+<span id="cb6-24"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        path: Path to the target.</span></span>
+<span id="cb6-25"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        delay: Time to wait after starting the process.</span></span>
+<span id="cb6-26"></span>
+<span id="cb6-27"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb6-28">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> path.is_dir():</span>
+<span id="cb6-29">        logger.info(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Opening folder </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%s</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>, name)</span>
+<span id="cb6-30"></span>
+<span id="cb6-31">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> path.suffix <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">".exe"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">".lnk"</span>):</span>
+<span id="cb6-32">        logger.info(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Running app </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%s</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>, name)</span>
+<span id="cb6-33">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span>:</span>
+<span id="cb6-34">        logger.info(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Opening file </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%s</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>, name)</span>
+<span id="cb6-35"></span>
+<span id="cb6-36">    os.startfile(path)</span>
+<span id="cb6-37">    time.sleep(delay)</span>
+<span id="cb6-38"></span>
+<span id="cb6-39"></span>
+<span id="cb6-40"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> run_command(</span>
+<span id="cb6-41">    command: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>,</span>
+<span id="cb6-42">    delay: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>,</span>
+<span id="cb6-43">) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb6-44">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Run a powershell command.</span></span>
+<span id="cb6-45"></span>
+<span id="cb6-46"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Args:</span></span>
+<span id="cb6-47"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    ----</span></span>
+<span id="cb6-48"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        command: Command to run.</span></span>
+<span id="cb6-49"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        delay: Time to wait after starting the process.</span></span>
+<span id="cb6-50"></span>
+<span id="cb6-51"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb6-52">    _ <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> subprocess.call(</span>
+<span id="cb6-53">        <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"powershell.exe </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>command<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>,</span>
+<span id="cb6-54">        shell<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>,</span>
+<span id="cb6-55">    )</span>
+<span id="cb6-56">    time.sleep(delay)</span></code></pre></div>
+</div>
+</section>
+</section>
+<section id="the-last-bit-of-convenience" class="level2">
+<h2 class="anchored" data-anchor-id="the-last-bit-of-convenience">The last bit of convenience</h2>
+<p>We got it, friends, the script works and the job is done. But… do you recall the last time you googled a shortcut for a semi-frequently used functionality? Do you still remember the shortcut, or use it each time you need the functionality? Convenience needs to be convenient (obviously). So let’s make the usage of our script as seamless as possible.</p>
+<p>In Windows OS the best way for me would be to have a shortcut that would run it with one click. We could pin it to the taskbar and start menu. To create one:</p>
+<ul>
+<li>Go to any folder, right-click and select <code>New &gt; Shortcut</code>.</li>
+<li>In the guide that pops up paste in <code>%systemroot%\System32\cmd.exe /c "python.exe $1"</code> where <code>$1</code> should be replaced by the path to your script. You can also replace <code>python.exe</code> with interpreter path of any venv you wish.</li>
+<li>Optionally, you can later change the icon for the shortcut (needs to be <code>.ico</code> file). I like to roll with Win-98 style ‘My Computer’ icon.</li>
+<li>Copy the shortcut to start menu directory. For Win11 it’s <code>C:\ProgramData\Microsoft\Windows\Start Menu\Programs</code>. You should be able to see it in start menu already. Now you can pin it to the taskbar.</li>
+</ul>
+<p><img src="https://bwrob.github.io/posts/startup_script/startup_shortcut.png" class="img-fluid" style="width:100.0%"></p>
+<p>That’s a good enough reminder and convenience tool for me. You might need some different setup, especially for another OS. For Linux, you might try to leverage <code>activate</code> or <code>bashrc</code> scripts in your working setup.</p>
+</section>
+<section id="further-extensions" class="level2">
+<h2 class="anchored" data-anchor-id="further-extensions">Further extensions</h2>
+<p>There are a couple more things I wish this guy could do for me still:</p>
+<ul>
+<li><strong>Changing Teams status to green</strong> - there’s a MS Graph API that could do this but we would need to manage Azure authorizations through the script. I am not up to that, especially on a work account. Might experiment on personal one in the future.</li>
+<li><strong>Display placement of opened processes</strong> — I have 2 displays (which you could count as 4, due to the size format) and I am very particular about where each app should go. I would love the apps to open where they should. This is however OS specific, for Win it require to mingle with win32api. Yet another project for the future.</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Download the startup <a href="../../scripts/startup_script.py">script</a> and example Windows <a href="Startup!.lnk">shortcut</a>.</p>
+</div>
+</div>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
+  <category>Pythonic Distractions</category>
+  <guid>https://bwrob.github.io/posts/startup_script/</guid>
+  <pubDate>Mon, 20 May 2024 22:00:00 GMT</pubDate>
+  <media:content url="https://bwrob.github.io/posts/startup_script/win_98.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
+<item>
   <title>Exit stack to the rescue</title>
   <dc:creator>bwrob </dc:creator>
   <link>https://bwrob.github.io/posts/exit_stack/</link>
