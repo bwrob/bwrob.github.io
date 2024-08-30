@@ -9,14 +9,33 @@ date-modified: "2024-08-18"
 categories: [Dev Env]
 ---
 
-## Install oh my posh!
+## Install oh-my-zsh
 
-https://ohmyposh.dev/docs/installation/linux
+
+```{bash}
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+brew install autojump
+nano ~/.zshrc
+```
+
+```{bash}
+# If you come from bash you might have to change your $PATH.
+export PATH=$HOME/bin:/usr/local/bin:$PATH
+plugins=(git python vscode autojump)
+
+```
+
+
+## Oh my posh
 
 ```{bash}
 brew install jandedobbeleer/oh-my-posh/oh-my-posh
-echo 'eval "$(oh-my-posh init zsh)"' >> .zshrc 
+echo 'eval "$(oh-my-posh init zsh)"' >> .zshrc
 ```
+
+for proper display you need the fonts on the win as well. easiest to install omp on the win POWESHELL as well
+
+
 
 ## Aliases
 
@@ -40,14 +59,14 @@ alias ls='eza -la --group-directories-first --icons'
 ```{bash}
 brew install fzf
 # Set up fzf key bindings and fuzzy completion
-echo 'source <(fzf --zsh)' >> .zshrc 
+echo 'source <(fzf --zsh)' >> .zshrc
 ```
 
-### eza 
+### eza
 
 ls replacment
 ```{bash}
-brew install eza 
+brew install eza
 echo 'alias ls='eza -la --group-directories-first --icons'' >> .zshrc
 ```
 
