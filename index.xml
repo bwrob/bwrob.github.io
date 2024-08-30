@@ -21,7 +21,7 @@
 <item>
   <title>Linux in Windows via WSL</title>
   <dc:creator>bwrob </dc:creator>
-  <link>https://bwrob.github.io/posts/linux_in_windows/</link>
+  <link>https://bwrob.github.io/posts/linux-in-windows/</link>
   <description><![CDATA[ 
 
 
@@ -30,7 +30,7 @@
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://bwrob.github.io/posts/linux_in_windows/image.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%"></p>
+<p><img src="https://bwrob.github.io/posts/linux-in-windows/image.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%"></p>
 </figure>
 </div>
 <section id="windows-linux-and-you-ménage-à-trois" class="level2">
@@ -70,15 +70,15 @@ Note
 <div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1">wsl --update</span>
 <span id="cb1-2">wsl --version</span></code></pre></div>
 <p>These commands ensure that WSL is up-to-date and displays the installed WSL version.</p>
-<p><img src="https://bwrob.github.io/posts/linux_in_windows/1.png" class="img-fluid"></p>
+<p><img src="https://bwrob.github.io/posts/linux-in-windows/1.png" class="img-fluid"></p>
 <p>Our next command will be:</p>
 <div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1">wsl -l -o</span></code></pre></div>
 <p>This yields a curated list of pre-packaged Linux distributions that Microsoft provides, making the process almost effortless.</p>
-<p><img src="https://bwrob.github.io/posts/linux_in_windows/2.png" class="img-fluid"></p>
+<p><img src="https://bwrob.github.io/posts/linux-in-windows/2.png" class="img-fluid"></p>
 <p>For the installation itself:</p>
 <div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1">wsl --install -d 'Ubuntu-24.04'</span></code></pre></div>
-<p><img src="https://bwrob.github.io/posts/linux_in_windows/3.png" class="img-fluid"></p>
-<p>Reboot the Windows system and you’ll see `Ubuntu’ among your applications. <img src="https://bwrob.github.io/posts/linux_in_windows/4.png" class="img-fluid"> <img src="https://bwrob.github.io/posts/linux_in_windows/5.png" class="img-fluid"></p>
+<p><img src="https://bwrob.github.io/posts/linux-in-windows/3.png" class="img-fluid"></p>
+<p>Reboot the Windows system and you’ll see `Ubuntu’ among your applications. <img src="https://bwrob.github.io/posts/linux-in-windows/4.png" class="img-fluid"> <img src="https://bwrob.github.io/posts/linux-in-windows/5.png" class="img-fluid"></p>
 </section>
 <section id="base-setup-new-shell-and-package-manager" class="level2">
 <h2 class="anchored" data-anchor-id="base-setup-new-shell-and-package-manager">Base setup — new shell and package manager</h2>
@@ -92,11 +92,11 @@ Note
 <p>Execute the installation script for Homebrew:</p>
 <div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1">INSTALL_PATH="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"</span>
 <span id="cb5-2">/bin/bash -c "$(curl -fsSL $INSTALL_PATH)"</span></code></pre></div>
-<p><img src="https://bwrob.github.io/posts/linux_in_windows/6.png" class="img-fluid"></p>
+<p><img src="https://bwrob.github.io/posts/linux-in-windows/6.png" class="img-fluid"></p>
 <p>To make Homebrew accessible from your shell, you need to load its environment variables. The following command achieves this and subsequently runs a diagnostic check:</p>
 <div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1">eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"</span>
 <span id="cb6-2">brew doctor</span></code></pre></div>
-<p><img src="https://bwrob.github.io/posts/linux_in_windows/7.png" class="img-fluid"></p>
+<p><img src="https://bwrob.github.io/posts/linux-in-windows/7.png" class="img-fluid"></p>
 <p>Doctor’s orders to append brew to some set of paths! Let’s do this then:</p>
 <div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1">echo 'export XDG_DATA_DIRS="/home/linuxbrew/.linuxbrew/share:$XDG_DATA_DIRS"' &gt;&gt; ~/.profile</span></code></pre></div>
 </section>
@@ -107,7 +107,7 @@ Note
 <div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1">brew install zsh</span>
 <span id="cb8-2">zsh --version</span>
 <span id="cb8-3">zsh</span></code></pre></div>
-<p>This will take you to interactive <code>.zshrc</code> file setup. The file contains commands that are run each time a shell is spawned. You can either generate empty file with <code>0</code> or go through the interactive setup with <code>1</code>. <img src="https://bwrob.github.io/posts/linux_in_windows/8.png" class="img-fluid"></p>
+<p>This will take you to interactive <code>.zshrc</code> file setup. The file contains commands that are run each time a shell is spawned. You can either generate empty file with <code>0</code> or go through the interactive setup with <code>1</code>. <img src="https://bwrob.github.io/posts/linux-in-windows/8.png" class="img-fluid"></p>
 <p>Add the brew initialization to <code>.zshrc</code> file as well. This way <code>brew</code> will always be by your side!</p>
 <div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb9-1">(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') &gt;&gt; /home/bwrob/.zshrc</span></code></pre></div>
 <p>Check the default shell and set it to <code>zsh</code>:</p>
@@ -120,7 +120,7 @@ Note
 <p>Remember <code>git != GitHub</code>, we need a way to authenticate and use Github from CLI. There’s a tool for that!</p>
 <div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1">brew install gh</span>
 <span id="cb11-2">gh auth login</span></code></pre></div>
-<p><img src="https://bwrob.github.io/posts/linux_in_windows/9.png" class="img-fluid"></p>
+<p><img src="https://bwrob.github.io/posts/linux-in-windows/9.png" class="img-fluid"></p>
 <p>Now create a convenient directory and copy your favourite <code>GitHub</code> repo:</p>
 <div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb12-1">mkdir repos &amp;&amp; cd repos</span>
 <span id="cb12-2">gh repo clone python_playground</span></code></pre></div>
@@ -134,7 +134,7 @@ Note
 <li><p><strong>Launching VSC from WSL</strong>: Within your WSL terminal, you can directly invoke VSC as if it were running natively on Windows. Use the following command:</p></li>
 </ul>
 <div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1">code ~\repos\python_playground</span></code></pre></div>
-<p><img src="https://bwrob.github.io/posts/linux_in_windows/10.png" class="img-fluid"></p>
+<p><img src="https://bwrob.github.io/posts/linux-in-windows/10.png" class="img-fluid"></p>
 <p>In the <a href="">next post</a> I will show you how to set up Python environment in Linux. Stay tuned :) .</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -155,14 +155,14 @@ Note
 
 <a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>Dev Setup</category>
-  <guid>https://bwrob.github.io/posts/linux_in_windows/</guid>
+  <guid>https://bwrob.github.io/posts/linux-in-windows/</guid>
   <pubDate>Sat, 10 Aug 2024 22:00:00 GMT</pubDate>
-  <media:content url="https://bwrob.github.io/posts/linux_in_windows/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://bwrob.github.io/posts/linux-in-windows/image.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Python Startup Script</title>
   <dc:creator>bwrob </dc:creator>
-  <link>https://bwrob.github.io/posts/startup_script/</link>
+  <link>https://bwrob.github.io/posts/startup-script/</link>
   <description><![CDATA[ 
 
 
@@ -171,7 +171,7 @@ Note
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://bwrob.github.io/posts/startup_script/win_98.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:65.0%"></p>
+<p><img src="https://bwrob.github.io/posts/startup-script/win_98.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:65.0%"></p>
 </figure>
 </div>
 <section id="why-a-startup-script" class="level2">
@@ -193,7 +193,7 @@ Note
 <li>the public interface that integrates with the rest of the codebase or is called at the top level, <strong>the manager</strong>.</li>
 </ul>
 <p>We can start by creating the public interface, see what we want to achieve and later deal with filling in a working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:</p>
-<div id="0b794c7d" class="cell" data-execution_count="1">
+<div id="db08b96c" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -244,7 +244,7 @@ font-style: inherit;">'Write-Output "test"'</span>])</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="decorator-defaulting-the-time-delays">Decorator defaulting the time delays</h3>
 <p>Now we can start the implementation. We want the workers to be called with a list of tasks, but a task can be either a command or a tuple including the delay. Let’s not include some complicated conditionals in each of the workers — that would be annoying and potentially get out of sync at some point.</p>
 <p>Other way to do this is to add a default delay to all non-tuple items. We can implement that as a separate defaulting function, which we would call in each worker. But — being more clever! — we could also use a decorator that changes the workers’s signature.</p>
-<div id="101feaa4" class="cell" data-execution_count="2">
+<div id="5d320ba4" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> functools <span class="im" style="color: #00769E;
@@ -395,7 +395,7 @@ font-style: inherit;">return</span> task_defaulted_worker</span></code></pre></d
 <section id="main-workers" class="level3">
 <h3 class="anchored" data-anchor-id="main-workers">Main workers</h3>
 <p>With the preparation done, we can start with the workers. For the programs we will be launching, we need to look up the exact paths of the executables. Let’s define a <code>Program</code> enum that would wrap those up in readable nice names. For working with system paths we will use <code>pathlib.Path</code> that provides high-level interface.</p>
-<div id="36e145b9" class="cell" data-execution_count="3">
+<div id="12f5aa74" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
@@ -433,7 +433,7 @@ background-color: null;
 font-style: inherit;">r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Firefox.lnk"</span>)</span></code></pre></div>
 </div>
 <p>Other than that, the main workers <code>start_programs</code>, <code>start_work_files</code>, and <code>run_commands</code> are simple. They just iterate over the provided <code>TaskList</code> and do the respective action for a given <code>Task</code>.</p>
-<div id="6152ba75" class="cell" data-execution_count="4">
+<div id="5f576f40" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">@with_optional_delay</span></span>
@@ -591,7 +591,7 @@ font-style: inherit;">in</span> commands:</span>
 <li>filter the iteration (ex. <em>for path in directory if filter(path)</em>).</li>
 </ul>
 <p>Here we’ll have all three of them combined!</p>
-<div id="17fd406b" class="cell" data-execution_count="5">
+<div id="e30cfaba" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">NAME_EXCLUDES <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> (<span class="st" style="color: #20794D;
@@ -734,7 +734,7 @@ font-style: inherit;">file</span>, delay</span></code></pre></div>
 <section id="interacting-with-the-os" class="level3">
 <h3 class="anchored" data-anchor-id="interacting-with-the-os">Interacting with the OS</h3>
 <p>With all of the framework prepared, the next step is to interact with the OS. To open a file, folder or run an app, we can use the <code>os.startfile</code> function. All the rest of the <code>start_process</code> function is just utility logging. For running a shell command we can use the <code>subprocess</code> module, calling powershell with the <code>powershell.exe</code> and adding the command to run.</p>
-<div id="2b4f68a0" class="cell" data-execution_count="6">
+<div id="d287e628" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> os</span>
@@ -922,7 +922,7 @@ font-style: inherit;">False</span>,</span>
 <li>Optionally, you can later change the icon for the shortcut (needs to be <code>.ico</code> file). I like to roll with Win-98 style ‘My Computer’ icon.</li>
 <li>Copy the shortcut to start menu directory. For Win11 it’s <code>C:\ProgramData\Microsoft\Windows\Start Menu\Programs</code>. You should be able to see it in start menu already. Now you can pin it to the taskbar.</li>
 </ul>
-<p><img src="https://bwrob.github.io/posts/startup_script/startup_shortcut.png" class="img-fluid" style="width:100.0%"></p>
+<p><img src="https://bwrob.github.io/posts/startup-script/startup_shortcut.png" class="img-fluid" style="width:100.0%"></p>
 <p>That’s a good enough reminder and convenience tool for me. You might need some different setup, especially for another OS. For Linux, you might try to leverage <code>activate</code> or <code>bashrc</code> scripts in your working setup.</p>
 </section>
 <section id="further-extensions" class="level2">
@@ -951,14 +951,14 @@ Note
 
 <a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>Pythonic Distractions</category>
-  <guid>https://bwrob.github.io/posts/startup_script/</guid>
+  <guid>https://bwrob.github.io/posts/startup-script/</guid>
   <pubDate>Mon, 20 May 2024 22:00:00 GMT</pubDate>
-  <media:content url="https://bwrob.github.io/posts/startup_script/win_98.png" medium="image" type="image/png" height="144" width="144"/>
+  <media:content url="https://bwrob.github.io/posts/startup-script/win_98.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>Exit stack to the rescue</title>
   <dc:creator>bwrob </dc:creator>
-  <link>https://bwrob.github.io/posts/exit_stack/</link>
+  <link>https://bwrob.github.io/posts/exit-stack/</link>
   <description><![CDATA[ 
 
 
@@ -997,7 +997,7 @@ Note
 <section id="mock-functions" class="level3">
 <h3 class="anchored" data-anchor-id="mock-functions">Mock functions</h3>
 <p>The setup described above comes from a real-life situation I worked through. I can’t show you the actual API usage or data (or even the name of RMS itself), so we need to define some mocker functions. Mocks like this are actually not an uncommon thing — such approach is prevalent in testing API client code. In our case it would look like this:</p>
-<div id="685f12f6" class="cell" data-execution_count="1">
+<div id="20b2aae2" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
@@ -1175,7 +1175,7 @@ font-style: inherit;">."</span>)</span></code></pre></div>
 <section id="context-managers" class="level3">
 <h3 class="anchored" data-anchor-id="context-managers">Context managers</h3>
 <p>Easiest way to define a CM is through <code>contextlib.contextmanager</code> decorator. To use it, you need a function that returns a generator. Code executed on enter should come before <code>yield</code> statement and the one for the exit afterwards. The generator yields the result of the CM (ex. handle to an opened file), the <code>y</code> in <code>with x(*args) as y:</code>.</p>
-<div id="67c446ca" class="cell" data-execution_count="2">
+<div id="dd3b4e1f" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> contextlib <span class="im" style="color: #00769E;
@@ -1243,7 +1243,7 @@ font-style: inherit;">yield</span> analysis_uuid</span>
 </div>
 <p>Modern approach to Python development leans heavily towards type annotations. Dynamical typing is powerful but can lead to unwieldy code. To properly annotate the <code>analysis</code> function we need to import <code>Generator</code> from <code>typing</code> module. Remember, the <code>@contextmanager</code> decorator takes the function and turns it into CM — a class with <code>__enter__</code> and <code>__exit__</code> methods. The <code>Generator</code> needs three inputs but in our case only the first one is important — <code>YieldType</code>, here <code>str</code> (<a href="https://docs.python.org/3/library/typing.html#typing.Generator">see</a> for more).</p>
 <p>With this done implementing the 3 remaining CMs is easy, just remember our flow chart.</p>
-<div id="a2c54c23" class="cell" data-execution_count="3">
+<div id="ecba5cda" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">@contextmanager</span></span>
@@ -1384,7 +1384,7 @@ font-style: inherit;">yield</span> portfolio_uuid</span>
 <section id="analysis-results" class="level3">
 <h3 class="anchored" data-anchor-id="analysis-results">Analysis results</h3>
 <p>No stress or complexity here, to run the analysis we need to specify which analysis to run on which portfolio.</p>
-<div id="84aab413" class="cell" data-execution_count="4">
+<div id="2af6be80" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
@@ -1457,7 +1457,7 @@ font-style: inherit;">return</span> pd.DataFrame()</span></code></pre></div>
 <section id="using-contexts-directly" class="level3">
 <h3 class="anchored" data-anchor-id="using-contexts-directly">Using contexts directly</h3>
 <p>First, we use the managers directly through <code>with</code> clause, remembering the dependencies from our flow chart.</p>
-<div id="5c1a1682" class="cell" data-execution_count="5">
+<div id="b154fc87" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">PORTFOLIO <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
@@ -1524,7 +1524,7 @@ font-weight: bold;
 font-style: inherit;">return</span> results</span></code></pre></div>
 </div>
 <p>This is terrible! I am already getting lost, needed few tries to get it right. We ended up with <strong>6</strong> levels of indentation, the code is confusing, the flow is obtuse. Let’s run it either way, to see if at least works.</p>
-<div id="c0be414c" class="cell" data-execution_count="6">
+<div id="bb80a839" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -1572,13 +1572,13 @@ font-style: inherit;">"Running analysis."</span>)</span>
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_e573c53c-422a-4abd-9faf-2dff9372bc97'}
-Preparing analysis using {'benchmark_name': 'benchmark_ac85be33-260d-44ff-b671-38b0c4d7df61'}
-Running analysis analysis_9f9f6b18-4012-41ea-a9d0-795e13a87dea on portfolio portfolio_f496d0d5-4b2d-4e33-a6ac-e1a0e99c65b7.
-Cleaning up after analysis_9f9f6b18-4012-41ea-a9d0-795e13a87dea.
-Cleaning up after portfolio_f496d0d5-4b2d-4e33-a6ac-e1a0e99c65b7.
-Cleaning up after benchmark_ac85be33-260d-44ff-b671-38b0c4d7df61.
-Cleaning up after otc_products_e573c53c-422a-4abd-9faf-2dff9372bc97.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_99f3b953-5f5c-42c5-b55b-201e7d2cdf8d'}
+Preparing analysis using {'benchmark_name': 'benchmark_f90bcb7e-bf96-4b4e-b4b9-a0a3e4596ad2'}
+Running analysis analysis_cbce2ea7-addf-4366-97f2-ff3effd08135 on portfolio portfolio_2ff30842-f378-4b87-a639-998d13efbce4.
+Cleaning up after analysis_cbce2ea7-addf-4366-97f2-ff3effd08135.
+Cleaning up after portfolio_2ff30842-f378-4b87-a639-998d13efbce4.
+Cleaning up after benchmark_f90bcb7e-bf96-4b4e-b4b9-a0a3e4596ad2.
+Cleaning up after otc_products_99f3b953-5f5c-42c5-b55b-201e7d2cdf8d.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <div>
@@ -1627,7 +1627,7 @@ Cleaning up after otc_products_e573c53c-422a-4abd-9faf-2dff9372bc97.</code></pre
 </div>
 </div>
 <p>So the flow is exactly the same as in our first attempt. Let’s try it!</p>
-<div id="0bcb8fc7" class="cell" data-execution_count="7">
+<div id="d447193d" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> contextlib <span class="im" style="color: #00769E;
@@ -1690,7 +1690,7 @@ font-style: inherit;">=</span>portfolio_uuid,</span>
 <span id="cb8-22">        )</span></code></pre></div>
 </div>
 <p>That’s amazing (if the approach works)! In our code we end up with only single <code>with</code> clause and the outputs of CMs are defined just like the regular variables. We just need to wrap the CM calls in <code>stack.enter_context</code> method that pushes each CM to the stack.</p>
-<div id="66e8f3f3" class="cell" data-execution_count="8">
+<div id="5f004a27" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1">print_title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Running analysis with exit stack."</span>)</span>
@@ -1701,20 +1701,20 @@ font-style: inherit;">"Running analysis with exit stack."</span>)</span>
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_bc358074-a2cd-4aaf-88e3-83d7578b0cc3'}
-Preparing analysis using {'benchmark_name': 'benchmark_895fd9eb-db36-444f-8ff6-ca5a9d3c60cf'}
-Running analysis analysis_8ad5507e-ff1f-4f46-966a-e9ba980e5ee2 on portfolio portfolio_a1ef6985-136c-4cd6-bfab-8aa03a9ac33e.
-Cleaning up after analysis_8ad5507e-ff1f-4f46-966a-e9ba980e5ee2.
-Cleaning up after portfolio_a1ef6985-136c-4cd6-bfab-8aa03a9ac33e.
-Cleaning up after benchmark_895fd9eb-db36-444f-8ff6-ca5a9d3c60cf.
-Cleaning up after otc_products_bc358074-a2cd-4aaf-88e3-83d7578b0cc3.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_99724f02-d403-4e4b-bd62-606f9c45aa4d'}
+Preparing analysis using {'benchmark_name': 'benchmark_92a5d787-280d-4523-a0ec-27228851f27a'}
+Running analysis analysis_ecd28d3d-a7c4-4a16-af44-ffbfef1d34c1 on portfolio portfolio_d47fa4bd-52d0-429c-adea-64110feab27b.
+Cleaning up after analysis_ecd28d3d-a7c4-4a16-af44-ffbfef1d34c1.
+Cleaning up after portfolio_d47fa4bd-52d0-429c-adea-64110feab27b.
+Cleaning up after benchmark_92a5d787-280d-4523-a0ec-27228851f27a.
+Cleaning up after otc_products_99724f02-d403-4e4b-bd62-606f9c45aa4d.</code></pre>
 </div>
 </div>
 <p>It works as well! We also get a package of benefits for free.</p>
 <section id="disabling-the-clean-up" class="level3">
 <h3 class="anchored" data-anchor-id="disabling-the-clean-up">Disabling the clean up</h3>
 <p>Working with API is tricky and debugging could be a painful experience. If we notice something iffy with the results we are reciving, it could be due to a bug at any of the stages. In such case disabling the artifact clean up and examining them is a good way to investigate. How do we do that? Comment out the exit code in our resource CMs? Nope, now we know better. With exit stack approach we just need to clean up the stack before exiting its context.</p>
-<div id="d4bc90c6" class="cell" data-execution_count="9">
+<div id="419f9553" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -1805,7 +1805,7 @@ font-weight: bold;
 font-style: inherit;">return</span> results</span></code></pre></div>
 </div>
 <p>The <code>_ = some_function()</code> is a Pythonic way of disregarding outputs of <code>some_function</code>. Method <code>pop_all</code> actually moves the stack contents to a new stack, but we don’t care about that. We just want to get rid of them from our current one.</p>
-<div id="6b05a96f" class="cell" data-execution_count="10">
+<div id="9ace9613" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1">print_title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Running analysis with exit stack and no clean up."</span>)</span>
@@ -1820,9 +1820,9 @@ font-style: inherit;">False</span>)</span></code></pre></div>
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_f8bc847f-93ac-4efb-a24d-54bc6f24b029'}
-Preparing analysis using {'benchmark_name': 'benchmark_53ef5c08-fb01-4f19-8586-1a28283ee8b2'}
-Running analysis analysis_83fffa69-7b9f-4f75-9a81-7fe0ebe1bf7d on portfolio portfolio_f07b2879-ae9b-46d6-a52d-8e0def5b2a61.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_081100da-0a7c-4ef0-824a-ed08bc2634db'}
+Preparing analysis using {'benchmark_name': 'benchmark_471797fa-bab9-4ba9-9a90-349f82aadda9'}
+Running analysis analysis_917c597a-2f37-4269-97bd-04d2e9c1c144 on portfolio portfolio_61e7f808-15cf-4522-bb38-3307a01beea9.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <div>
@@ -1845,7 +1845,7 @@ Running analysis analysis_83fffa69-7b9f-4f75-9a81-7fe0ebe1bf7d on portfolio port
 <section id="multiple-portfolios" class="level3">
 <h3 class="anchored" data-anchor-id="multiple-portfolios">Multiple portfolios</h3>
 <p>Benefit #2 — what do we do if we have multiple managers and many portfolios to re-run for? Or — outside of the example scope — we want to held multiple files open at the same time? Easy, we just push to the stack in a loop or a list comprehension.</p>
-<div id="e0966912" class="cell" data-execution_count="11">
+<div id="909742ad" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1">PORTFOLIOS <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
@@ -1973,19 +1973,19 @@ font-style: inherit;">True</span>)</span></code></pre></div>
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_da602e64-c813-4bbc-bb45-ddb32f8d7f2b'}
-Preparing portfolio using {'portfolio_name': 'portfolio_2', 'otc_products_uuid': 'otc_products_da602e64-c813-4bbc-bb45-ddb32f8d7f2b'}
-Preparing portfolio using {'portfolio_name': 'portfolio_3', 'otc_products_uuid': 'otc_products_da602e64-c813-4bbc-bb45-ddb32f8d7f2b'}
-Preparing analysis using {'benchmark_name': 'benchmark_09e8fbf6-c0c6-4c03-a6bb-4e550c1becdc'}
-Running analysis analysis_a594eac7-befe-4b9a-9372-ef0b193c7c83 on portfolio portfolio_ad7ccd6f-eb00-4eed-bd50-0a8a059bb62d.
-Running analysis analysis_a594eac7-befe-4b9a-9372-ef0b193c7c83 on portfolio portfolio_caa42de2-cb5c-4768-aae6-6f1fd2193a7f.
-Running analysis analysis_a594eac7-befe-4b9a-9372-ef0b193c7c83 on portfolio portfolio_941c7779-8e17-4568-9d16-25b97549f153.
-Cleaning up after analysis_a594eac7-befe-4b9a-9372-ef0b193c7c83.
-Cleaning up after portfolio_941c7779-8e17-4568-9d16-25b97549f153.
-Cleaning up after portfolio_caa42de2-cb5c-4768-aae6-6f1fd2193a7f.
-Cleaning up after portfolio_ad7ccd6f-eb00-4eed-bd50-0a8a059bb62d.
-Cleaning up after benchmark_09e8fbf6-c0c6-4c03-a6bb-4e550c1becdc.
-Cleaning up after otc_products_da602e64-c813-4bbc-bb45-ddb32f8d7f2b.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_552f9fb6-cccb-4ef9-8335-8ade0a9c956c'}
+Preparing portfolio using {'portfolio_name': 'portfolio_2', 'otc_products_uuid': 'otc_products_552f9fb6-cccb-4ef9-8335-8ade0a9c956c'}
+Preparing portfolio using {'portfolio_name': 'portfolio_3', 'otc_products_uuid': 'otc_products_552f9fb6-cccb-4ef9-8335-8ade0a9c956c'}
+Preparing analysis using {'benchmark_name': 'benchmark_0a1f9262-c763-4e2d-8431-ad1e9ef162e7'}
+Running analysis analysis_d67e0ca0-c493-44e0-9485-44634cc399ea on portfolio portfolio_cb4851d2-c627-48e9-bdfe-c44760fba488.
+Running analysis analysis_d67e0ca0-c493-44e0-9485-44634cc399ea on portfolio portfolio_752024ca-e667-47ed-a4a9-637269e11cf2.
+Running analysis analysis_d67e0ca0-c493-44e0-9485-44634cc399ea on portfolio portfolio_afb5fe85-1352-4c18-8e54-b5694d8a9813.
+Cleaning up after analysis_d67e0ca0-c493-44e0-9485-44634cc399ea.
+Cleaning up after portfolio_afb5fe85-1352-4c18-8e54-b5694d8a9813.
+Cleaning up after portfolio_752024ca-e667-47ed-a4a9-637269e11cf2.
+Cleaning up after portfolio_cb4851d2-c627-48e9-bdfe-c44760fba488.
+Cleaning up after benchmark_0a1f9262-c763-4e2d-8431-ad1e9ef162e7.
+Cleaning up after otc_products_552f9fb6-cccb-4ef9-8335-8ade0a9c956c.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <div>
@@ -2029,14 +2029,14 @@ Note
 <a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>Pythonic Distractions</category>
   <category>Context Managers</category>
-  <guid>https://bwrob.github.io/posts/exit_stack/</guid>
+  <guid>https://bwrob.github.io/posts/exit-stack/</guid>
   <pubDate>Sat, 11 May 2024 22:00:00 GMT</pubDate>
-  <media:content url="https://bwrob.github.io/posts/exit_stack/flowchart.png" medium="image" type="image/png" height="41" width="144"/>
+  <media:content url="https://bwrob.github.io/posts/exit-stack/flowchart.png" medium="image" type="image/png" height="41" width="144"/>
 </item>
 <item>
   <title>Strategies for Numerical Integration</title>
   <dc:creator>bwrob </dc:creator>
-  <link>https://bwrob.github.io/posts/strategy_pattern_integration/</link>
+  <link>https://bwrob.github.io/posts/strategy-pattern-integration/</link>
   <description><![CDATA[ 
 
 
@@ -2076,7 +2076,7 @@ Note
 <section id="abstract-schema" class="level2">
 <h2 class="anchored" data-anchor-id="abstract-schema">Abstract schema</h2>
 <p>Each scheme that we’d come up with, even the most complex ones, would have the same main purpose — ‘integrate’. To make the implementation for it, we create a template class that all concrete schemes will inherit from.</p>
-<div id="babaff9d" class="cell" data-execution_count="1">
+<div id="4b3620a0" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> abc <span class="im" style="color: #00769E;
@@ -2142,9 +2142,9 @@ font-style: inherit;">"""Abstract method for integrating a function."""</span></
 <section id="rectangle-rule" class="level3">
 <h3 class="anchored" data-anchor-id="rectangle-rule">Rectangle Rule</h3>
 <p>It’s the simplest way of estimating the area under a curve you can think of — cover it with smaller and smaller rectangles with the value of a function at the leftmost point as height constant width.</p>
-<p><a href="https://en.wikipedia.org/wiki/File:Rectangle_rule.gif"><img src="https://bwrob.github.io/posts/strategy_pattern_integration/Rectangle_rule.gif" class="img-fluid" style="width:100.0%"></a></p>
+<p><a href="https://en.wikipedia.org/wiki/File:Rectangle_rule.gif"><img src="https://bwrob.github.io/posts/strategy-pattern-integration/Rectangle_rule.gif" class="img-fluid" style="width:100.0%"></a></p>
 <p>Implementing this idea is trivial when using <a href="https://numpy.org/">numpy</a>, but let’s add some syntactic sugar so the class is sweeter to work with.</p>
-<div id="36014193" class="cell" data-execution_count="2">
+<div id="381d910d" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
@@ -2304,7 +2304,7 @@ font-style: inherit;">*</span> dx</span></code></pre></div>
 <section id="simple-monte-carlo" class="level3">
 <h3 class="anchored" data-anchor-id="simple-monte-carlo">Simple Monte Carlo</h3>
 <p>This guy sounds fancy with its luxurious Monaco vibes, but it’s just a peasant in a nice suit. Instead of looking at equaly-spaced points, we shuffle them from uniform distribution on the interval of integration. We calculate the integrand function values at those points and sum them up. Then multiply the sum by the average distance between points and through the magic of probability theory (and not opening actual probability textbook in 10 years) you get a good probabilistic estimator of the integral value. The implementation is analogous to the <code>RectangleScheme</code>.</p>
-<div id="0abfd092" class="cell" data-execution_count="3">
+<div id="99e7c8fc" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
@@ -2524,7 +2524,7 @@ Note
 <section id="integrator" class="level2">
 <h2 class="anchored" data-anchor-id="integrator">Integrator</h2>
 <p>What’s left is to have a way of defining the problem to solve and define how our schemes (strategies) interact with it.</p>
-<div id="6a5f8c9d" class="cell" data-execution_count="4">
+<div id="80288072" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">"""An integrator class that allows to perform integration using different schemas."""</span></span>
@@ -2672,7 +2672,7 @@ font-style: inherit;">self</span>.__interval_end,</span>
 <section id="lets-integrate" class="level2">
 <h2 class="anchored" data-anchor-id="lets-integrate">Let’s integrate!</h2>
 <p>Ok, now to the integrating! Let’s set up the stage:</p>
-<div id="f800b516" class="cell" data-execution_count="5">
+<div id="4c96dcce" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">start, end <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
@@ -2702,7 +2702,7 @@ font-style: inherit;">+</span> np.cos(x)</span></code></pre></div>
 </div>
 <p>Excited? Don’t be… yet.</p>
 <p>We should get some benchmark value first. As none of us would bother to integrate this by hand, we’ll use SciPy. Unexpectedly (SciPy uses C and Fortran underneath), we get the result in a breeze and it is very close to <a href="https://www.wolframalpha.com/input?i=integrate+sin%28x%29+%2B+cos%28x%29+over+0+to+pi%2F2">actual value of 2.0</a>.</p>
-<div id="3b02fb92" class="cell" data-execution_count="6">
+<div id="c73f5267" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> scipy.integrate <span class="im" style="color: #00769E;
@@ -2720,7 +2720,7 @@ font-style: inherit;">print</span>(scipy_quad)</span></code></pre></div>
 </div>
 </div>
 <p>Now let’s use our <code>Integrator</code> class and see.</p>
-<div id="72cefd0f" class="cell" data-execution_count="7">
+<div id="236d53a4" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1">integrator <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Integrator(</span>
@@ -2817,7 +2817,7 @@ Using Monte Carlo schema with 1048576 random points.
 Rectangle schema results:
 [np.float64(1.5707963267948966), np.float64(1.986172817555692), np.float64(1.9995804632216618), np.float64(1.9999869013603688), np.float64(1.9999995906791057)].
 Monte Carlo schema results:
-[np.float64(2.1549186819296136), np.float64(1.9747611088966641), np.float64(2.009699806348172), np.float64(1.997963878702236), np.float64(2.0000534031609596)].</code></pre>
+[np.float64(2.1969906297261237), np.float64(2.0134668800808653), np.float64(2.0064279435728283), np.float64(2.0005466617785443), np.float64(2.0000359927529363)].</code></pre>
 </div>
 </div>
 <p>The performance and convergence of those schemes is terrible. Like anything in Python, if you want robust and performing code, you need to implement it with C or use any/all of the enhancement frameworks that Python provides (see Numba). Additionally, the simple methods we implemented are very naive. The standard numerical packages use sophisticated algorithms honed for many decades.</p>
@@ -2843,7 +2843,7 @@ Note
 <a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>Pythonic Distractions</category>
   <category>Design Patterns</category>
-  <guid>https://bwrob.github.io/posts/strategy_pattern_integration/</guid>
+  <guid>https://bwrob.github.io/posts/strategy-pattern-integration/</guid>
   <pubDate>Sat, 27 Apr 2024 22:00:00 GMT</pubDate>
 </item>
 <item>
