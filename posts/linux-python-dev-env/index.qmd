@@ -23,7 +23,7 @@ Solution - `pipx`
 ```{bash}
 brew install pipx
 pipx ensurepath
-pipx install argcomplete
+pipx install argcomplete --force
 ```
 
 Add pipix completions to config
@@ -68,4 +68,14 @@ pre-commit install --install-hooks --overwrite --allow-missing-config
 pre-commit autoupdate
 # Run pre-commit to test setup
 pre-commit run --all-files
+```
+
+## Quarto
+
+```{bash}
+wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.5.57/quarto-1.5.57-linux-amd64.tar.gz
+mkdir ~/.local/share/quarto
+tar -C ~/.local/share/quarto -xvzf quarto-1.5.57-linux-amd64.tar.gz
+ln -s ~/.local/share/quarto/quarto-1.5.57/bin/quarto ~/.local/bin/quarto
+quarto check
 ```
