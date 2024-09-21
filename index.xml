@@ -16,7 +16,7 @@
 <height>144</height>
 <width>144</width>
 </image>
-<generator>quarto-1.5.56</generator>
+<generator>quarto-1.5.57</generator>
 <lastBuildDate>Sat, 10 Aug 2024 22:00:00 GMT</lastBuildDate>
 <item>
   <title>Linux in Windows via WSL</title>
@@ -193,7 +193,7 @@ Note
 <li>the public interface that integrates with the rest of the codebase or is called at the top level, <strong>the manager</strong>.</li>
 </ul>
 <p>We can start by creating the public interface, see what we want to achieve and later deal with filling in a working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:</p>
-<div id="db08b96c" class="cell" data-execution_count="1">
+<div id="38d4c307" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -244,7 +244,7 @@ font-style: inherit;">'Write-Output "test"'</span>])</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="decorator-defaulting-the-time-delays">Decorator defaulting the time delays</h3>
 <p>Now we can start the implementation. We want the workers to be called with a list of tasks, but a task can be either a command or a tuple including the delay. Let’s not include some complicated conditionals in each of the workers — that would be annoying and potentially get out of sync at some point.</p>
 <p>Other way to do this is to add a default delay to all non-tuple items. We can implement that as a separate defaulting function, which we would call in each worker. But — being more clever! — we could also use a decorator that changes the workers’s signature.</p>
-<div id="5d320ba4" class="cell" data-execution_count="2">
+<div id="34648759" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> functools <span class="im" style="color: #00769E;
@@ -395,7 +395,7 @@ font-style: inherit;">return</span> task_defaulted_worker</span></code></pre></d
 <section id="main-workers" class="level3">
 <h3 class="anchored" data-anchor-id="main-workers">Main workers</h3>
 <p>With the preparation done, we can start with the workers. For the programs we will be launching, we need to look up the exact paths of the executables. Let’s define a <code>Program</code> enum that would wrap those up in readable nice names. For working with system paths we will use <code>pathlib.Path</code> that provides high-level interface.</p>
-<div id="12f5aa74" class="cell" data-execution_count="3">
+<div id="03df6d0c" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
@@ -433,7 +433,7 @@ background-color: null;
 font-style: inherit;">r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Firefox.lnk"</span>)</span></code></pre></div>
 </div>
 <p>Other than that, the main workers <code>start_programs</code>, <code>start_work_files</code>, and <code>run_commands</code> are simple. They just iterate over the provided <code>TaskList</code> and do the respective action for a given <code>Task</code>.</p>
-<div id="5f576f40" class="cell" data-execution_count="4">
+<div id="75ff4172" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">@with_optional_delay</span></span>
@@ -591,7 +591,7 @@ font-style: inherit;">in</span> commands:</span>
 <li>filter the iteration (ex. <em>for path in directory if filter(path)</em>).</li>
 </ul>
 <p>Here we’ll have all three of them combined!</p>
-<div id="e30cfaba" class="cell" data-execution_count="5">
+<div id="26d166cf" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">NAME_EXCLUDES <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> (<span class="st" style="color: #20794D;
@@ -734,7 +734,7 @@ font-style: inherit;">file</span>, delay</span></code></pre></div>
 <section id="interacting-with-the-os" class="level3">
 <h3 class="anchored" data-anchor-id="interacting-with-the-os">Interacting with the OS</h3>
 <p>With all of the framework prepared, the next step is to interact with the OS. To open a file, folder or run an app, we can use the <code>os.startfile</code> function. All the rest of the <code>start_process</code> function is just utility logging. For running a shell command we can use the <code>subprocess</code> module, calling powershell with the <code>powershell.exe</code> and adding the command to run.</p>
-<div id="d287e628" class="cell" data-execution_count="6">
+<div id="adab67c9" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> os</span>
@@ -997,7 +997,7 @@ Note
 <section id="mock-functions" class="level3">
 <h3 class="anchored" data-anchor-id="mock-functions">Mock functions</h3>
 <p>The setup described above comes from a real-life situation I worked through. I can’t show you the actual API usage or data (or even the name of RMS itself), so we need to define some mocker functions. Mocks like this are actually not an uncommon thing — such approach is prevalent in testing API client code. In our case it would look like this:</p>
-<div id="20b2aae2" class="cell" data-execution_count="1">
+<div id="649f4b0a" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
@@ -1175,7 +1175,7 @@ font-style: inherit;">."</span>)</span></code></pre></div>
 <section id="context-managers" class="level3">
 <h3 class="anchored" data-anchor-id="context-managers">Context managers</h3>
 <p>Easiest way to define a CM is through <code>contextlib.contextmanager</code> decorator. To use it, you need a function that returns a generator. Code executed on enter should come before <code>yield</code> statement and the one for the exit afterwards. The generator yields the result of the CM (ex. handle to an opened file), the <code>y</code> in <code>with x(*args) as y:</code>.</p>
-<div id="dd3b4e1f" class="cell" data-execution_count="2">
+<div id="c2c7cbfd" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> contextlib <span class="im" style="color: #00769E;
@@ -1243,7 +1243,7 @@ font-style: inherit;">yield</span> analysis_uuid</span>
 </div>
 <p>Modern approach to Python development leans heavily towards type annotations. Dynamical typing is powerful but can lead to unwieldy code. To properly annotate the <code>analysis</code> function we need to import <code>Generator</code> from <code>typing</code> module. Remember, the <code>@contextmanager</code> decorator takes the function and turns it into CM — a class with <code>__enter__</code> and <code>__exit__</code> methods. The <code>Generator</code> needs three inputs but in our case only the first one is important — <code>YieldType</code>, here <code>str</code> (<a href="https://docs.python.org/3/library/typing.html#typing.Generator">see</a> for more).</p>
 <p>With this done implementing the 3 remaining CMs is easy, just remember our flow chart.</p>
-<div id="ecba5cda" class="cell" data-execution_count="3">
+<div id="7b45acbd" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">@contextmanager</span></span>
@@ -1384,7 +1384,7 @@ font-style: inherit;">yield</span> portfolio_uuid</span>
 <section id="analysis-results" class="level3">
 <h3 class="anchored" data-anchor-id="analysis-results">Analysis results</h3>
 <p>No stress or complexity here, to run the analysis we need to specify which analysis to run on which portfolio.</p>
-<div id="2af6be80" class="cell" data-execution_count="4">
+<div id="07736943" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
@@ -1457,7 +1457,7 @@ font-style: inherit;">return</span> pd.DataFrame()</span></code></pre></div>
 <section id="using-contexts-directly" class="level3">
 <h3 class="anchored" data-anchor-id="using-contexts-directly">Using contexts directly</h3>
 <p>First, we use the managers directly through <code>with</code> clause, remembering the dependencies from our flow chart.</p>
-<div id="b154fc87" class="cell" data-execution_count="5">
+<div id="1f7e6192" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">PORTFOLIO <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
@@ -1524,7 +1524,7 @@ font-weight: bold;
 font-style: inherit;">return</span> results</span></code></pre></div>
 </div>
 <p>This is terrible! I am already getting lost, needed few tries to get it right. We ended up with <strong>6</strong> levels of indentation, the code is confusing, the flow is obtuse. Let’s run it either way, to see if at least works.</p>
-<div id="bb80a839" class="cell" data-execution_count="6">
+<div id="fcf5b680" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -1572,13 +1572,13 @@ font-style: inherit;">"Running analysis."</span>)</span>
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_99f3b953-5f5c-42c5-b55b-201e7d2cdf8d'}
-Preparing analysis using {'benchmark_name': 'benchmark_f90bcb7e-bf96-4b4e-b4b9-a0a3e4596ad2'}
-Running analysis analysis_cbce2ea7-addf-4366-97f2-ff3effd08135 on portfolio portfolio_2ff30842-f378-4b87-a639-998d13efbce4.
-Cleaning up after analysis_cbce2ea7-addf-4366-97f2-ff3effd08135.
-Cleaning up after portfolio_2ff30842-f378-4b87-a639-998d13efbce4.
-Cleaning up after benchmark_f90bcb7e-bf96-4b4e-b4b9-a0a3e4596ad2.
-Cleaning up after otc_products_99f3b953-5f5c-42c5-b55b-201e7d2cdf8d.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_0c4e8b1b-6051-459e-82bf-18d513f3c7c9'}
+Preparing analysis using {'benchmark_name': 'benchmark_80032ced-a130-46a9-8b8f-d51649b036b6'}
+Running analysis analysis_6bff93be-802f-44ea-a575-5a4b3b9b278e on portfolio portfolio_6c80505c-7380-445c-bd3c-87cb8cb857af.
+Cleaning up after analysis_6bff93be-802f-44ea-a575-5a4b3b9b278e.
+Cleaning up after portfolio_6c80505c-7380-445c-bd3c-87cb8cb857af.
+Cleaning up after benchmark_80032ced-a130-46a9-8b8f-d51649b036b6.
+Cleaning up after otc_products_0c4e8b1b-6051-459e-82bf-18d513f3c7c9.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <div>
@@ -1627,7 +1627,7 @@ Cleaning up after otc_products_99f3b953-5f5c-42c5-b55b-201e7d2cdf8d.</code></pre
 </div>
 </div>
 <p>So the flow is exactly the same as in our first attempt. Let’s try it!</p>
-<div id="d447193d" class="cell" data-execution_count="7">
+<div id="e806b920" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> contextlib <span class="im" style="color: #00769E;
@@ -1690,7 +1690,7 @@ font-style: inherit;">=</span>portfolio_uuid,</span>
 <span id="cb8-22">        )</span></code></pre></div>
 </div>
 <p>That’s amazing (if the approach works)! In our code we end up with only single <code>with</code> clause and the outputs of CMs are defined just like the regular variables. We just need to wrap the CM calls in <code>stack.enter_context</code> method that pushes each CM to the stack.</p>
-<div id="5f004a27" class="cell" data-execution_count="8">
+<div id="f9e34629" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1">print_title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Running analysis with exit stack."</span>)</span>
@@ -1701,20 +1701,20 @@ font-style: inherit;">"Running analysis with exit stack."</span>)</span>
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_99724f02-d403-4e4b-bd62-606f9c45aa4d'}
-Preparing analysis using {'benchmark_name': 'benchmark_92a5d787-280d-4523-a0ec-27228851f27a'}
-Running analysis analysis_ecd28d3d-a7c4-4a16-af44-ffbfef1d34c1 on portfolio portfolio_d47fa4bd-52d0-429c-adea-64110feab27b.
-Cleaning up after analysis_ecd28d3d-a7c4-4a16-af44-ffbfef1d34c1.
-Cleaning up after portfolio_d47fa4bd-52d0-429c-adea-64110feab27b.
-Cleaning up after benchmark_92a5d787-280d-4523-a0ec-27228851f27a.
-Cleaning up after otc_products_99724f02-d403-4e4b-bd62-606f9c45aa4d.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_481792c1-2e50-4d83-890b-a8cb6121bf13'}
+Preparing analysis using {'benchmark_name': 'benchmark_5206df24-8548-403c-90ab-505e3d9b6fd4'}
+Running analysis analysis_24ad68ba-2568-4c2d-b104-f18df91e10ea on portfolio portfolio_2da70069-8d67-48ea-b2af-d10b10b773dc.
+Cleaning up after analysis_24ad68ba-2568-4c2d-b104-f18df91e10ea.
+Cleaning up after portfolio_2da70069-8d67-48ea-b2af-d10b10b773dc.
+Cleaning up after benchmark_5206df24-8548-403c-90ab-505e3d9b6fd4.
+Cleaning up after otc_products_481792c1-2e50-4d83-890b-a8cb6121bf13.</code></pre>
 </div>
 </div>
 <p>It works as well! We also get a package of benefits for free.</p>
 <section id="disabling-the-clean-up" class="level3">
 <h3 class="anchored" data-anchor-id="disabling-the-clean-up">Disabling the clean up</h3>
 <p>Working with API is tricky and debugging could be a painful experience. If we notice something iffy with the results we are reciving, it could be due to a bug at any of the stages. In such case disabling the artifact clean up and examining them is a good way to investigate. How do we do that? Comment out the exit code in our resource CMs? Nope, now we know better. With exit stack approach we just need to clean up the stack before exiting its context.</p>
-<div id="419f9553" class="cell" data-execution_count="9">
+<div id="f6f5368d" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -1805,7 +1805,7 @@ font-weight: bold;
 font-style: inherit;">return</span> results</span></code></pre></div>
 </div>
 <p>The <code>_ = some_function()</code> is a Pythonic way of disregarding outputs of <code>some_function</code>. Method <code>pop_all</code> actually moves the stack contents to a new stack, but we don’t care about that. We just want to get rid of them from our current one.</p>
-<div id="9ace9613" class="cell" data-execution_count="10">
+<div id="d7b1782b" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1">print_title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Running analysis with exit stack and no clean up."</span>)</span>
@@ -1820,9 +1820,9 @@ font-style: inherit;">False</span>)</span></code></pre></div>
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_081100da-0a7c-4ef0-824a-ed08bc2634db'}
-Preparing analysis using {'benchmark_name': 'benchmark_471797fa-bab9-4ba9-9a90-349f82aadda9'}
-Running analysis analysis_917c597a-2f37-4269-97bd-04d2e9c1c144 on portfolio portfolio_61e7f808-15cf-4522-bb38-3307a01beea9.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_6314d748-8391-4c74-ab96-3387523b8e86'}
+Preparing analysis using {'benchmark_name': 'benchmark_ec868087-668a-4cae-a89b-2987c0f82590'}
+Running analysis analysis_aa499825-ed45-4201-a261-d4bc9f23120e on portfolio portfolio_94294d81-6acc-4c15-b9cd-227741b6c89a.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <div>
@@ -1845,7 +1845,7 @@ Running analysis analysis_917c597a-2f37-4269-97bd-04d2e9c1c144 on portfolio port
 <section id="multiple-portfolios" class="level3">
 <h3 class="anchored" data-anchor-id="multiple-portfolios">Multiple portfolios</h3>
 <p>Benefit #2 — what do we do if we have multiple managers and many portfolios to re-run for? Or — outside of the example scope — we want to held multiple files open at the same time? Easy, we just push to the stack in a loop or a list comprehension.</p>
-<div id="909742ad" class="cell" data-execution_count="11">
+<div id="7c2eb077" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1">PORTFOLIOS <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
@@ -1973,19 +1973,19 @@ font-style: inherit;">True</span>)</span></code></pre></div>
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_552f9fb6-cccb-4ef9-8335-8ade0a9c956c'}
-Preparing portfolio using {'portfolio_name': 'portfolio_2', 'otc_products_uuid': 'otc_products_552f9fb6-cccb-4ef9-8335-8ade0a9c956c'}
-Preparing portfolio using {'portfolio_name': 'portfolio_3', 'otc_products_uuid': 'otc_products_552f9fb6-cccb-4ef9-8335-8ade0a9c956c'}
-Preparing analysis using {'benchmark_name': 'benchmark_0a1f9262-c763-4e2d-8431-ad1e9ef162e7'}
-Running analysis analysis_d67e0ca0-c493-44e0-9485-44634cc399ea on portfolio portfolio_cb4851d2-c627-48e9-bdfe-c44760fba488.
-Running analysis analysis_d67e0ca0-c493-44e0-9485-44634cc399ea on portfolio portfolio_752024ca-e667-47ed-a4a9-637269e11cf2.
-Running analysis analysis_d67e0ca0-c493-44e0-9485-44634cc399ea on portfolio portfolio_afb5fe85-1352-4c18-8e54-b5694d8a9813.
-Cleaning up after analysis_d67e0ca0-c493-44e0-9485-44634cc399ea.
-Cleaning up after portfolio_afb5fe85-1352-4c18-8e54-b5694d8a9813.
-Cleaning up after portfolio_752024ca-e667-47ed-a4a9-637269e11cf2.
-Cleaning up after portfolio_cb4851d2-c627-48e9-bdfe-c44760fba488.
-Cleaning up after benchmark_0a1f9262-c763-4e2d-8431-ad1e9ef162e7.
-Cleaning up after otc_products_552f9fb6-cccb-4ef9-8335-8ade0a9c956c.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_15337209-1b80-4a0d-9923-8835208cd6a1'}
+Preparing portfolio using {'portfolio_name': 'portfolio_2', 'otc_products_uuid': 'otc_products_15337209-1b80-4a0d-9923-8835208cd6a1'}
+Preparing portfolio using {'portfolio_name': 'portfolio_3', 'otc_products_uuid': 'otc_products_15337209-1b80-4a0d-9923-8835208cd6a1'}
+Preparing analysis using {'benchmark_name': 'benchmark_5fe93e01-cd21-44c5-aff5-6c7db44d4276'}
+Running analysis analysis_bfe28ed6-0fed-4801-8994-9a6f1515d9c6 on portfolio portfolio_bff801a9-18d1-4ac9-82d5-62e3e74fd469.
+Running analysis analysis_bfe28ed6-0fed-4801-8994-9a6f1515d9c6 on portfolio portfolio_32f70938-5150-4866-b93f-3a2201e505e1.
+Running analysis analysis_bfe28ed6-0fed-4801-8994-9a6f1515d9c6 on portfolio portfolio_40962dbb-9ffd-4684-8f09-5e3cb72b6187.
+Cleaning up after analysis_bfe28ed6-0fed-4801-8994-9a6f1515d9c6.
+Cleaning up after portfolio_40962dbb-9ffd-4684-8f09-5e3cb72b6187.
+Cleaning up after portfolio_32f70938-5150-4866-b93f-3a2201e505e1.
+Cleaning up after portfolio_bff801a9-18d1-4ac9-82d5-62e3e74fd469.
+Cleaning up after benchmark_5fe93e01-cd21-44c5-aff5-6c7db44d4276.
+Cleaning up after otc_products_15337209-1b80-4a0d-9923-8835208cd6a1.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <div>
@@ -2076,7 +2076,7 @@ Note
 <section id="abstract-schema" class="level2">
 <h2 class="anchored" data-anchor-id="abstract-schema">Abstract schema</h2>
 <p>Each scheme that we’d come up with, even the most complex ones, would have the same main purpose — ‘integrate’. To make the implementation for it, we create a template class that all concrete schemes will inherit from.</p>
-<div id="4b3620a0" class="cell" data-execution_count="1">
+<div id="587509d6" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> abc <span class="im" style="color: #00769E;
@@ -2144,7 +2144,7 @@ font-style: inherit;">"""Abstract method for integrating a function."""</span></
 <p>It’s the simplest way of estimating the area under a curve you can think of — cover it with smaller and smaller rectangles with the value of a function at the leftmost point as height constant width.</p>
 <p><a href="https://en.wikipedia.org/wiki/File:Rectangle_rule.gif"><img src="https://bwrob.github.io/posts/strategy-pattern-integration/Rectangle_rule.gif" class="img-fluid" style="width:100.0%"></a></p>
 <p>Implementing this idea is trivial when using <a href="https://numpy.org/">numpy</a>, but let’s add some syntactic sugar so the class is sweeter to work with.</p>
-<div id="381d910d" class="cell" data-execution_count="2">
+<div id="4a2fd6d1" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
@@ -2304,7 +2304,7 @@ font-style: inherit;">*</span> dx</span></code></pre></div>
 <section id="simple-monte-carlo" class="level3">
 <h3 class="anchored" data-anchor-id="simple-monte-carlo">Simple Monte Carlo</h3>
 <p>This guy sounds fancy with its luxurious Monaco vibes, but it’s just a peasant in a nice suit. Instead of looking at equaly-spaced points, we shuffle them from uniform distribution on the interval of integration. We calculate the integrand function values at those points and sum them up. Then multiply the sum by the average distance between points and through the magic of probability theory (and not opening actual probability textbook in 10 years) you get a good probabilistic estimator of the integral value. The implementation is analogous to the <code>RectangleScheme</code>.</p>
-<div id="99e7c8fc" class="cell" data-execution_count="3">
+<div id="3684a68d" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
@@ -2524,7 +2524,7 @@ Note
 <section id="integrator" class="level2">
 <h2 class="anchored" data-anchor-id="integrator">Integrator</h2>
 <p>What’s left is to have a way of defining the problem to solve and define how our schemes (strategies) interact with it.</p>
-<div id="80288072" class="cell" data-execution_count="4">
+<div id="1c6348e9" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">"""An integrator class that allows to perform integration using different schemas."""</span></span>
@@ -2672,7 +2672,7 @@ font-style: inherit;">self</span>.__interval_end,</span>
 <section id="lets-integrate" class="level2">
 <h2 class="anchored" data-anchor-id="lets-integrate">Let’s integrate!</h2>
 <p>Ok, now to the integrating! Let’s set up the stage:</p>
-<div id="4c96dcce" class="cell" data-execution_count="5">
+<div id="df0f6059" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">start, end <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
@@ -2702,7 +2702,7 @@ font-style: inherit;">+</span> np.cos(x)</span></code></pre></div>
 </div>
 <p>Excited? Don’t be… yet.</p>
 <p>We should get some benchmark value first. As none of us would bother to integrate this by hand, we’ll use SciPy. Unexpectedly (SciPy uses C and Fortran underneath), we get the result in a breeze and it is very close to <a href="https://www.wolframalpha.com/input?i=integrate+sin%28x%29+%2B+cos%28x%29+over+0+to+pi%2F2">actual value of 2.0</a>.</p>
-<div id="c73f5267" class="cell" data-execution_count="6">
+<div id="da61077a" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> scipy.integrate <span class="im" style="color: #00769E;
@@ -2720,7 +2720,7 @@ font-style: inherit;">print</span>(scipy_quad)</span></code></pre></div>
 </div>
 </div>
 <p>Now let’s use our <code>Integrator</code> class and see.</p>
-<div id="236d53a4" class="cell" data-execution_count="7">
+<div id="7078f38a" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1">integrator <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Integrator(</span>
@@ -2817,7 +2817,7 @@ Using Monte Carlo schema with 1048576 random points.
 Rectangle schema results:
 [np.float64(1.5707963267948966), np.float64(1.986172817555692), np.float64(1.9995804632216618), np.float64(1.9999869013603688), np.float64(1.9999995906791057)].
 Monte Carlo schema results:
-[np.float64(2.1969906297261237), np.float64(2.0134668800808653), np.float64(2.0064279435728283), np.float64(2.0005466617785443), np.float64(2.0000359927529363)].</code></pre>
+[np.float64(2.1674863935509348), np.float64(2.049404880963646), np.float64(1.9956862021349064), np.float64(2.00035743340837), np.float64(2.0000909818381047)].</code></pre>
 </div>
 </div>
 <p>The performance and convergence of those schemes is terrible. Like anything in Python, if you want robust and performing code, you need to implement it with C or use any/all of the enhancement frameworks that Python provides (see Numba). Additionally, the simple methods we implemented are very naive. The standard numerical packages use sophisticated algorithms honed for many decades.</p>
