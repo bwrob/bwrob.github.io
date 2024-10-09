@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Wstęp do programowania (PWr Zima 2024) – bwrob blog</title>
+<title>Równania Różniczkowe 1A (UWr Lato 2017) – bwrob blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,40 +19,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -102,35 +68,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="bwrob blog">
@@ -214,10 +151,11 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
     <h2 id="toc-title">On this page</h2>
   <ul>
-  <li><a href="#informacje-ogólne" id="toc-informacje-ogólne" class="nav-link active" data-scroll-target="#informacje-ogólne">Informacje ogólne</a></li>
-  <li><a href="#notki-z-zajęć" id="toc-notki-z-zajęć" class="nav-link" data-scroll-target="#notki-z-zajęć">Notki z zajęć</a>
+  <li><a href="#skrypty" id="toc-skrypty" class="nav-link active" data-scroll-target="#skrypty">Skrypty</a>
   <ul class="collapse">
-  <li><a href="#rozważania-wstępne" id="toc-rozważania-wstępne" class="nav-link" data-scroll-target="#rozważania-wstępne">Rozważania wstępne</a></li>
+  <li><a href="#równania-różniczkowe-zwyczajne" id="toc-równania-różniczkowe-zwyczajne" class="nav-link" data-scroll-target="#równania-różniczkowe-zwyczajne">Równania Różniczkowe Zwyczajne</a></li>
+  <li><a href="#równania-różniczkowe-cząstkowe" id="toc-równania-różniczkowe-cząstkowe" class="nav-link" data-scroll-target="#równania-różniczkowe-cząstkowe">Równania Różniczkowe Cząstkowe</a></li>
+  <li><a href="#listy-zadań" id="toc-listy-zadań" class="nav-link" data-scroll-target="#listy-zadań">Listy Zadań</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -229,78 +167,52 @@ window.Quarto = {
   <div class="about-contents">
     <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Wstęp do programowania (PWr Zima 2024)</h1>
+<h1 class="title">Równania Różniczkowe 1A (UWr Lato 2017)</h1>
 </div>
 <div class="quarto-title-meta">
   </div>
 </header> <main class="content" id="quarto-document-content">
 
-<section id="informacje-ogólne" class="level2">
-<h2 data-anchor-id="informacje-ogólne">Informacje ogólne</h2>
-<p>Zasady zaliczenia na <a href="https://alfa.im.pwr.edu.pl/~giniew/doku.php?id=rok2425:zimowy:wdp">stronie kursu u wykładowcy</a>.</p>
-<p>Dodatkowe zasady moich grup lablatorialnych:</p>
+<p>Prowadzę jedną z grup ćwiczeniowych do wykładu Roberta Stańczego.</p>
+<section id="skrypty" class="level2">
+<h2 data-anchor-id="skrypty">Skrypty</h2>
+<section id="równania-różniczkowe-zwyczajne" class="level3">
+<h3 data-anchor-id="równania-różniczkowe-zwyczajne">Równania Różniczkowe Zwyczajne</h3>
 <ul>
-<li><em>Listy zadań</em> - co najmniej pierwsze 4 listy będziemy robić na zajęciach, w systemie deklaracyjnym. Po zajęciach proszę o przesłanie rozwiązań. Kolejne listy zadań będą w formie zadań domowych, do zrobienia i przesłania przed zajęciami. Rozwiązania będą omiawiane i wyrywkowo sprawdzane w trakcie zajęć.</li>
-<li><em>Odpowiedź ustna</em> - od 7-mych zajęć można zgłaszać się na ochotnika, co najmniej 3 ochotników jest wymaganych na jednych zajęciach.</li>
-<li><em>Projekt grupowy</em> - można się łączyć w grupy w obrębie moich 2 grup, ale nie poza. Zakładam 5-8 grup.</li>
-<li><em>Aktywność</em> - punkty zostaną przydzielone na zasadzie normalizacji aktywności na zajęciach. Gwarantuję, że jedna <em>duża</em> aktywność (np. przedstawienie pełnego rozwiązania z listy) będzie dawała co najmniej jeden punkt.</li>
+<li>Raczyński, A. <a href="../pdf/RR 1A - Raczyński.pdf">Skrypt do kursu</a></li>
+<li>Palczewski, A. <a href="../pdf/RRZ skrypt - Palczewski.pdf">Skrypt do zajęć na UW</a></li>
+<li>Palczewski, A. <a href="../pdf/RRZ zadania - Palczewski.pdf">Zbiór zadań</a></li>
 </ul>
 </section>
-<section id="notki-z-zajęć" class="level2">
-<h2 data-anchor-id="notki-z-zajęć">Notki z zajęć</h2>
-<section id="rozważania-wstępne" class="level3">
-<h3 data-anchor-id="rozważania-wstępne">Rozważania wstępne</h3>
-<ol type="1">
-<li>Po co matematykowi komputer?</li>
-<li>Co i dlaczego będzie na kursie?</li>
-<li>Organizacja pracy i zasady zaliczenia.</li>
-<li>Czym jest język programowania?</li>
-<li>Charakterystyka języka Python.</li>
-<li>Środowisko programistyczne Jupyter Notebook.</li>
-<li>Podstawy języka znacznikowego Markdown.</li>
-</ol>
-<section id="przykłady-zeszytów-jupyter" class="level4">
-<h4 data-anchor-id="przykłady-zeszytów-jupyter">Przykłady zeszytów Jupyter</h4>
-<p>Przykłady ilustrujące wachlarz możliwości zeszytów Jupyter i Markdown w zastosowaniach matematycznych. Wymagają one osobnych ustawień środowiska programistycznego i zewnętrznych narzędzi. Polecam zapoznanie się z nimi czysto ilustracyjnie jako motywacja do nauki.</p>
+<section id="równania-różniczkowe-cząstkowe" class="level3">
+<h3 data-anchor-id="równania-różniczkowe-cząstkowe">Równania Różniczkowe Cząstkowe</h3>
 <ul>
-<li>Wizualizacja <a href="https://www.wikiwand.com/pl/articles/Zbi%C3%B3r_Mandelbrota">zbioru Mandelbrota</a> obliczana na karcie graficznej - <a href="https://github.com/bwrob/bwrob.github.io/tree/main/pages/notebooks/mandebrot.ipynb">link</a></li>
-<li>Pobieranie i analiza danych o cenie akcji spółki giełdowej - <a href="https://github.com/bwrob/bwrob.github.io/tree/main/pages/notebooks/cd_projekt_red.ipynb">link</a></li>
-<li>Numeryczne rozwiązanie <a href="https://www.wikiwand.com/pl/articles/R%C3%B3wnanie_r%C3%B3%C5%BCniczkowe_cz%C4%85stkowe">równań różniczkowych cząstkowych</a> - <a href="https://github.com/jorgensd/dolfinx-tutorial/blob/main/chapter1/fundamentals_code.ipynb">link</a></li>
-<li>Rozwiązania zadań z podstaw <a href="https://www.wikiwand.com/pl/articles/Algebra_liniowa">algebry liniowej</a> - <a href="https://github.com/weijie-chen/Linear-Algebra-With-Python/blob/master/notebooks/Chapter%201%20-%20Linear%20Equation%20System.ipynb">link</a></li>
-<li>Cała obecna strona została utworzona z wykorzystaniem Markdownu i Pythona korzystając z technologii [Quarto]](https://quarto.org/) - <a href="https://github.com/bwrob/bwrob.github.io/blob/main/pages/courses/pwr-intro-to-cs-2024.qmd">link</a></li>
+<li><a href="../pdf/charakterystyki.pdf">Rozwiązane zadania na metodę charakterystyk</a></li>
+<li>Karpiński, W.: <a href="http://www.math.uni.lodz.pl/~karpinw/zadania/RRCz1/II_rzad_zadania.PDF">Rozwiązane zadania z równań drugiego rzędu</a></li>
+<li><a href="../pdf/rozdzielanie zmiennych.pdf">Rozwiązane zadania na metodę rozdzielania zmiennych</a></li>
 </ul>
 </section>
-<section id="python-lista-1" class="level4">
-<h4 data-anchor-id="python-lista-1">Python lista 1</h4>
-<p><a href="https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_1.ipynb">link</a></p>
+<section id="listy-zadań" class="level3">
+<h3 data-anchor-id="listy-zadań">Listy Zadań</h3>
 <ul>
-<li><p>Zamiast</p>
-<div id="c2af6b15" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pole <span class="op">=</span> math.pi <span class="op">*</span> <span class="dv">10</span><span class="op">**</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>warto użyć</p>
-<div id="899cf7a3" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> pi</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>pole <span class="op">=</span> pi <span class="op">*</span> <span class="dv">10</span><span class="op">**</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Zmniejszamy ilość pisania przy wielokrotnym użyciu, a sam import jest wydajniejszy co może mieć znaczenie przy bardziej zaawansowanych zadaniach.</p></li>
-<li><p>Funkcje pierwiastka kwadratowego i podnoszenia do potęgi <span class="math inline">\(1/2\)</span> są oczywiście równoważne, natomiast polecana jest <code>math.sqrt</code>. Mniej ogólne algorytmy są zazwyczaj lepiej zoptymalizowane (przy naszych zastosowaniach nie ma to jednak znaczenia).</p>
-<div id="99646b47" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> sqrt</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="dv">2</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> sqrt(x)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> x<span class="op">**</span><span class="fl">0.5</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(y, z, y <span class="op">==</span> z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>1.4142135623730951 1.4142135623730951 True</code></pre>
-</div>
-</div></li>
-<li><p>Do <em>zadania 6</em> jeszcze wrócimy po funkcjach i pętlach aby zaimplemetować dużo czytelniejsze rozwiązanie.</p></li>
+<li><a href="../pdf/RR01.pdf">Lista 1</a></li>
+<li><a href="../pdf/RR02.pdf">Lista 2</a></li>
+<li><a href="../pdf/RR03.pdf">Lista 3</a></li>
+<li><a href="../pdf/RR04.pdf">Lista 4</a></li>
+<li><a href="../pdf/RR05.pdf">Lista 5</a></li>
+<li><a href="../pdf/RR06.pdf">Lista 6</a></li>
+<li><a href="../pdf/RR07.pdf">Lista 7</a></li>
+<li><a href="../pdf/RR08.pdf">Lista 8</a></li>
+<li><a href="../pdf/RR09.pdf">Lista 9</a></li>
+<li><a href="../pdf/RR10.pdf">Lista 10</a></li>
+<li><a href="../pdf/RR11.pdf">Lista 11</a></li>
+<li><a href="../pdf/RR12.pdf">Lista 12</a></li>
+<li><a href="../pdf/RR13.pdf">Lista 13</a></li>
+<li><a href="../pdf/RR14.pdf">Lista 14</a></li>
+<li><a href="../pdf/RR15.pdf">Lista 15 - powtórzeniowa</a></li>
 </ul>
 
 
-</section>
 </section>
 </section>
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> 
