@@ -11,17 +11,20 @@ about:
 
 ## Informacje ogólne
 
-Zasady zaliczenia na [stronie kursu u wykładowcy](https://alfa.im.pwr.edu.pl/~giniew/doku.php?id=rok2425:zimowy:wdp).
+Laboratoria komputerowe do wykładu Andrzeja Giniewicza. 
 
-Dodatkowe zasady moich grup lablatorialnych:
+Zasady zaliczenia kursu można znaleźć na [stronie kursu u wykładowcy](https://alfa.im.pwr.edu.pl/~giniew/doku.php?id=rok2425:zimowy:wdp).
 
-- *Listy zadań* - co najmniej pierwsze 4 listy będziemy robić na zajęciach, w systemie deklaracyjnym. Po zajęciach proszę o przesłanie rozwiązań. Kolejne listy zadań będą w formie zadań domowych, do zrobienia i przesłania przed zajęciami. Rozwiązania będą omiawiane i wyrywkowo sprawdzane w trakcie zajęć.
+**Dodatkowe zasady moich grup laboratoryjnych:**
+
+- *Listy zadań* - conajmniej pierwsze 4 listy będziemy robić na zajęciach, w systemie deklaracyjnym. Po zajęciach proszę o przesłanie rozwiązań. Kolejne listy zadań będą w formie zadań domowych, do zrobienia i przesłania przed zajęciami. Rozwiązania będą omiawiane i wyrywkowo sprawdzane w trakcie zajęć.
 - *Odpowiedź ustna* - od 7-mych zajęć można zgłaszać się na ochotnika, co najmniej 3 ochotników jest wymaganych na jednych zajęciach.
-- *Projekt grupowy* - można się łączyć w grupy w obrębie moich 2 grup, ale nie poza. Zakładam 5-8 grup.
-- *Aktywność* - punkty zostaną przydzielone na zasadzie normalizacji aktywności na zajęciach. Gwarantuję, że jedna *duża* aktywność (np. przedstawienie pełnego rozwiązania z listy) będzie dawała co najmniej jeden punkt.
+- *Projekt grupowy* - można się łączyć w grupy w obrębie moich 2 zajęć (wtorek 7:30 i czwartek 7:30), ale nie poza. Zakładam w sumie 5-8 grup projektowych.
+- *Aktywność* - punkty zostaną przydzielone na zasadzie normalizacji rozkładu aktywności na zajęciach. Gwarantuję, że jedna *duża* aktywność (np. przedstawienie pełnego rozwiązania z listy) będzie dawała co najmniej jeden punkt.
 
 ## Notki z zajęć
 
+::: {.callout-note collapse="true"}
 ### Rozważania wstępne
 
 1. Po co matematykowi komputer?
@@ -31,8 +34,10 @@ Dodatkowe zasady moich grup lablatorialnych:
 5. Charakterystyka języka Python.
 6. Środowisko programistyczne Jupyter Notebook.
 7. Podstawy języka znacznikowego Markdown.
+:::
 
-#### Przykłady zeszytów Jupyter
+::: {.callout-note collapse="true"}
+### Przykłady zeszytów Jupyter
 
 Przykłady ilustrujące wachlarz możliwości zeszytów Jupyter i Markdown w zastosowaniach matematycznych.
 Wymagają one osobnych ustawień środowiska programistycznego i zewnętrznych narzędzi.
@@ -43,10 +48,12 @@ Polecam zapoznanie się z nimi czysto ilustracyjnie jako motywacja do nauki.
 - Numeryczne rozwiązanie [równań różniczkowych cząstkowych](https://www.wikiwand.com/pl/articles/R%C3%B3wnanie_r%C3%B3%C5%BCniczkowe_cz%C4%85stkowe) - [link](https://github.com/jorgensd/dolfinx-tutorial/blob/main/chapter1/fundamentals_code.ipynb)
 - Rozwiązania zadań z podstaw [algebry liniowej](https://www.wikiwand.com/pl/articles/Algebra_liniowa) - [link](https://github.com/weijie-chen/Linear-Algebra-With-Python/blob/master/notebooks/Chapter%201%20-%20Linear%20Equation%20System.ipynb)
 - Cała obecna strona została utworzona z wykorzystaniem Markdownu i Pythona korzystając z technologii [Quarto]](https://quarto.org/) - [link](https://github.com/bwrob/bwrob.github.io/blob/main/pages/courses/pwr-intro-to-cs-2024.qmd)
+:::
 
+::: {.callout-note collapse="true"}
 #### Python lista 1
 
-[link](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_1.ipynb)
+[Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_1.ipynb)
 
 - Zamiast
   ```{python}
@@ -69,4 +76,35 @@ Polecam zapoznanie się z nimi czysto ilustracyjnie jako motywacja do nauki.
   print(y, z, y == z)
   ```
 
-- Do *zadania 6* jeszcze wrócimy po funkcjach i pętlach aby zaimplemetować dużo czytelniejsze rozwiązanie.
+- W *zadaniu 4* występuje funkcja podłoga $ \lfloor x \rfloor $.  Jest to największa liczba całkowita mniejsza niż $x$. W Pythonie można używać funkcji `math.floor`.
+  ```{python}
+  from math import floor
+  x = 2.5
+  y = 2.9
+  z = -3.1
+  print(floor(x), floor(y), floor(z))
+  ```
+
+- *Zadanie 5* pokazuje, jak ważne jest umiejetne korzystanie ze zmiennych pomocniczych.
+  ```{python}
+  from math import sqrt, pi
+
+  suma_w_nawiasie = 5 ** 4 + 53 * sqrt(89)
+
+  mianownik = 80 * sqrt(15) * suma_w_nawiasie ** (3/2)
+  licznik = 3308 * suma_w_nawiasie - 3 * sqrt(89)
+  pi_przyblizenie = mianownik / licznik
+
+  print(round(pi_przyblizenie, 10))
+  print(round(pi_przyblizenie, 10) == round(pi, 10))
+  ```
+  W powyższym kodzie dużo łatwiej wyłapac bład niż w jednolinijkowym gigancie.
+
+- Do *zadania 6* wrócimy jeszcze raz po funkcjach i pętlach aby zaimplemetować dużo czytelniejsze rozwiązanie.
+:::
+
+::: {.callout-note collapse="true"}
+#### Python lista 2
+
+[Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_2.ipynb)
+:::
