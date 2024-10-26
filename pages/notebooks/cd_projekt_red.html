@@ -118,10 +118,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -185,22 +185,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 <div id="initial_id" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2024-02-25T13:41:34.963602400Z&quot;,&quot;start_time&quot;:&quot;2024-02-25T13:41:34.948970Z&quot;}" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> mplfinance <span class="im">as</span> mpf</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> yfinance <span class="im">as</span> yf</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rich <span class="im">import</span> <span class="bu">print</span> <span class="im">as</span> rprint</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> mplfinance <span class="im">as</span> mpf</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> yfinance <span class="im">as</span> yf</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">from</span> rich <span class="im">import</span> <span class="bu">print</span> <span class="im">as</span> rprint</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="35eeea9d085633c0" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2024-02-25T13:41:35.547278900Z&quot;,&quot;start_time&quot;:&quot;2024-02-25T13:41:34.966778Z&quot;}" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ticker_name <span class="op">=</span> <span class="st">"CDR.WA"</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>yf_ticker <span class="op">=</span> yf.Ticker(ticker_name)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>rprint(yf_ticker.info)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>ticker_name <span class="op">=</span> <span class="st">"CDR.WA"</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>yf_ticker <span class="op">=</span> yf.Ticker(ticker_name)</span>
+<span id="cb2-3"><a href="#cb2-3"></a>rprint(yf_ticker.info)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold">{</span>
     <span style="color: #008000; text-decoration-color: #008000">'address1'</span>: <span style="color: #008000; text-decoration-color: #008000">'Building E'</span>,
@@ -434,13 +436,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="42125cc45d7e70fb" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2024-02-25T13:41:35.683261Z&quot;,&quot;start_time&quot;:&quot;2024-02-25T13:41:35.546279600Z&quot;}" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>period <span class="op">=</span> <span class="st">"6mo"</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>interval <span class="op">=</span> <span class="st">"1d"</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>historical_data <span class="op">=</span> yf_ticker.history(</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    period<span class="op">=</span>period,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    interval<span class="op">=</span>interval,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>historical_data.tail(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>period <span class="op">=</span> <span class="st">"6mo"</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>interval <span class="op">=</span> <span class="st">"1d"</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>historical_data <span class="op">=</span> yf_ticker.history(</span>
+<span id="cb3-4"><a href="#cb3-4"></a>    period<span class="op">=</span>period,</span>
+<span id="cb3-5"><a href="#cb3-5"></a>    interval<span class="op">=</span>interval,</span>
+<span id="cb3-6"><a href="#cb3-6"></a>)</span>
+<span id="cb3-7"><a href="#cb3-7"></a>historical_data.tail(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <div>
 
@@ -576,19 +578,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="3aebdf9fc8a7b06a" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2024-02-25T13:41:36.177469100Z&quot;,&quot;start_time&quot;:&quot;2024-02-25T13:41:35.684261200Z&quot;}" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mpf.plot(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    historical_data,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">type</span><span class="op">=</span><span class="st">"candle"</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    mav<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">24</span>),</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    volume<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    style<span class="op">=</span><span class="st">"yahoo"</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    figratio<span class="op">=</span>(<span class="dv">3</span>, <span class="dv">2</span>),</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    figscale<span class="op">=</span><span class="fl">1.5</span>,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    show_nontrading<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span>yf_ticker.info[<span class="st">"longName"</span>],</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    tight_layout<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    warn_too_much_data<span class="op">=</span><span class="dv">10_000</span>,</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>mpf.plot(</span>
+<span id="cb4-2"><a href="#cb4-2"></a>    historical_data,</span>
+<span id="cb4-3"><a href="#cb4-3"></a>    <span class="bu">type</span><span class="op">=</span><span class="st">"candle"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    mav<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">24</span>),</span>
+<span id="cb4-5"><a href="#cb4-5"></a>    volume<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb4-6"><a href="#cb4-6"></a>    style<span class="op">=</span><span class="st">"yahoo"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7"></a>    figratio<span class="op">=</span>(<span class="dv">3</span>, <span class="dv">2</span>),</span>
+<span id="cb4-8"><a href="#cb4-8"></a>    figscale<span class="op">=</span><span class="fl">1.5</span>,</span>
+<span id="cb4-9"><a href="#cb4-9"></a>    show_nontrading<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb4-10"><a href="#cb4-10"></a>    title<span class="op">=</span>yf_ticker.info[<span class="st">"longName"</span>],</span>
+<span id="cb4-11"><a href="#cb4-11"></a>    tight_layout<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb4-12"><a href="#cb4-12"></a>    warn_too_much_data<span class="op">=</span><span class="dv">10_000</span>,</span>
+<span id="cb4-13"><a href="#cb4-13"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">

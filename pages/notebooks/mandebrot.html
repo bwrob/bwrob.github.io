@@ -115,10 +115,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -182,51 +182,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 <div id="b9baa2b408d09be2" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-12-03T20:20:15.404330900Z&quot;,&quot;start_time&quot;:&quot;2023-12-03T20:20:14.977415900Z&quot;}" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> partial</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mandelbrot <span class="im">import</span> (</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    create_fractal,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    create_fractal_gpu,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    create_fractal_jit,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    show_fractal,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> functools <span class="im">import</span> partial</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">from</span> mandelbrot <span class="im">import</span> (</span>
+<span id="cb1-4"><a href="#cb1-4"></a>    create_fractal,</span>
+<span id="cb1-5"><a href="#cb1-5"></a>    create_fractal_gpu,</span>
+<span id="cb1-6"><a href="#cb1-6"></a>    create_fractal_jit,</span>
+<span id="cb1-7"><a href="#cb1-7"></a>    show_fractal,</span>
+<span id="cb1-8"><a href="#cb1-8"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="12c1847bdccc38fd" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-12-03T20:20:15.410792700Z&quot;,&quot;start_time&quot;:&quot;2023-12-03T20:20:15.405327600Z&quot;}" data-jupyter="{&quot;outputs_hidden&quot;:false}" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>resolution <span class="op">=</span> (<span class="dv">1440</span>, <span class="dv">3440</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>iter_small <span class="op">=</span> <span class="dv">10</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>iter_medium <span class="op">=</span> <span class="dv">10_000</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>iter_large <span class="op">=</span> <span class="dv">1_000_000</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>view_rectangle <span class="op">=</span> (<span class="op">-</span><span class="fl">2.5</span>, <span class="fl">1.5</span>, <span class="op">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>resolution <span class="op">=</span> (<span class="dv">1440</span>, <span class="dv">3440</span>)</span>
+<span id="cb2-2"><a href="#cb2-2"></a>iter_small <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>iter_medium <span class="op">=</span> <span class="dv">10_000</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>iter_large <span class="op">=</span> <span class="dv">1_000_000</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>view_rectangle <span class="op">=</span> (<span class="op">-</span><span class="fl">2.5</span>, <span class="fl">1.5</span>, <span class="op">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="initial_id" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-12-03T20:20:15.410792700Z&quot;,&quot;start_time&quot;:&quot;2023-12-03T20:20:15.408836600Z&quot;}" data-jupyter="{&quot;outputs_hidden&quot;:false}" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> show_size(iters: <span class="bu">int</span>):</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> partial(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        show_fractal,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        max_iters<span class="op">=</span>iters,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        resolution<span class="op">=</span>resolution,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        view<span class="op">=</span>view_rectangle,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>show_quick <span class="op">=</span> show_size(iter_small)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>show_medium <span class="op">=</span> show_size(iter_medium)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>show_long <span class="op">=</span> show_size(iter_large)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">def</span> show_size(iters: <span class="bu">int</span>):</span>
+<span id="cb3-2"><a href="#cb3-2"></a>    <span class="cf">return</span> partial(</span>
+<span id="cb3-3"><a href="#cb3-3"></a>        show_fractal,</span>
+<span id="cb3-4"><a href="#cb3-4"></a>        max_iters<span class="op">=</span>iters,</span>
+<span id="cb3-5"><a href="#cb3-5"></a>        resolution<span class="op">=</span>resolution,</span>
+<span id="cb3-6"><a href="#cb3-6"></a>        view<span class="op">=</span>view_rectangle,</span>
+<span id="cb3-7"><a href="#cb3-7"></a>    )</span>
+<span id="cb3-8"><a href="#cb3-8"></a></span>
+<span id="cb3-9"><a href="#cb3-9"></a></span>
+<span id="cb3-10"><a href="#cb3-10"></a>show_quick <span class="op">=</span> show_size(iter_small)</span>
+<span id="cb3-11"><a href="#cb3-11"></a>show_medium <span class="op">=</span> show_size(iter_medium)</span>
+<span id="cb3-12"><a href="#cb3-12"></a>show_long <span class="op">=</span> show_size(iter_large)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="2bd2ecdac3f9d69a" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-12-03T20:21:36.051237300Z&quot;,&quot;start_time&quot;:&quot;2023-12-03T20:21:31.436257100Z&quot;}" data-jupyter="{&quot;outputs_hidden&quot;:false}" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> worker <span class="kw">in</span> [</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    create_fractal,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    create_fractal_jit,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    create_fractal_gpu,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>]:</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    show_quick(worker)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="cf">for</span> worker <span class="kw">in</span> [</span>
+<span id="cb4-2"><a href="#cb4-2"></a>    create_fractal,</span>
+<span id="cb4-3"><a href="#cb4-3"></a>    create_fractal_jit,</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    create_fractal_gpu,</span>
+<span id="cb4-5"><a href="#cb4-5"></a>]:</span>
+<span id="cb4-6"><a href="#cb4-6"></a>    show_quick(worker)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Mandelbrot created in 4.110897000180557s
 Max iterations to escape 10</code></pre>
@@ -262,11 +264,11 @@ Max iterations to escape 10</code></pre>
 </div>
 </div>
 <div id="f8fb7041b467c20b" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-12-03T20:22:06.921619100Z&quot;,&quot;start_time&quot;:&quot;2023-12-03T20:21:50.238726400Z&quot;}" data-jupyter="{&quot;outputs_hidden&quot;:false}" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> worker <span class="kw">in</span> [</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    create_fractal_jit,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    create_fractal_gpu,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>]:</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    show_medium(worker)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="cf">for</span> worker <span class="kw">in</span> [</span>
+<span id="cb8-2"><a href="#cb8-2"></a>    create_fractal_jit,</span>
+<span id="cb8-3"><a href="#cb8-3"></a>    create_fractal_gpu,</span>
+<span id="cb8-4"><a href="#cb8-4"></a>]:</span>
+<span id="cb8-5"><a href="#cb8-5"></a>    show_medium(worker)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Mandelbrot created in 16.01580259995535s
 Max iterations to escape 10000</code></pre>
@@ -291,12 +293,12 @@ Max iterations to escape 10000</code></pre>
 </div>
 </div>
 <div id="f74d98cd05029249" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-12-03T20:21:06.536970100Z&quot;,&quot;start_time&quot;:&quot;2023-12-03T20:20:37.114331800Z&quot;}" data-jupyter="{&quot;outputs_hidden&quot;:false}" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>show_fractal(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    fractal_worker<span class="op">=</span>create_fractal_gpu,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    max_iters<span class="op">=</span><span class="dv">10_000_000</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    resolution<span class="op">=</span>(<span class="dv">14400</span>, <span class="dv">34400</span>),</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    view<span class="op">=</span>view_rectangle,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>show_fractal(</span>
+<span id="cb11-2"><a href="#cb11-2"></a>    fractal_worker<span class="op">=</span>create_fractal_gpu,</span>
+<span id="cb11-3"><a href="#cb11-3"></a>    max_iters<span class="op">=</span><span class="dv">10_000_000</span>,</span>
+<span id="cb11-4"><a href="#cb11-4"></a>    resolution<span class="op">=</span>(<span class="dv">14400</span>, <span class="dv">34400</span>),</span>
+<span id="cb11-5"><a href="#cb11-5"></a>    view<span class="op">=</span>view_rectangle,</span>
+<span id="cb11-6"><a href="#cb11-6"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
