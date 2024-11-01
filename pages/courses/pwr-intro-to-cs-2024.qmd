@@ -1,0 +1,148 @@
+---
+title: "Wstęp do programowania (PWr Zima 2024)"
+
+toc: true
+toc-depth: 3
+toc-expand: true
+
+about:
+  template: marquee
+---
+
+## Informacje ogólne
+
+Laboratoria komputerowe do wykładu Andrzeja Giniewicza.
+
+Zasady zaliczenia kursu można znaleźć na [stronie kursu u wykładowcy](https://alfa.im.pwr.edu.pl/~giniew/doku.php?id=rok2425:zimowy:wdp).
+
+**Dodatkowe zasady moich grup laboratoryjnych:**
+
+- **Listy zadań**
+
+  Conajmniej pierwsze 4 listy będziemy robić na zajęciach, w systemie deklaracyjnym. Po zajęciach proszę o przesłanie rozwiązań. Kolejne listy zadań będą w formie zadań domowych, do zrobienia i przesłania przed zajęciami. Rozwiązania będą omiawiane i wyrywkowo sprawdzane w trakcie zajęć.
+
+- **Zadanie domowe**
+
+  Wyobraź sobie, że pomagasz młodszemu koledze lub koleżance, którzy dalej są w liceum. Chcesz przygotować interaktywny notebook tłumaczący jakieś zagadnienie z zakresu matematyki, fizyki, informatyki lub chemii. Wybrany temat może, ale nie musi pochodzić z zakresu nauczania w szkole średniej. Ma być zrozumiały i dostępny dla ucznia liceum. Polecam wybrać temat, który Ciebie też intresuje.
+
+  W Twoim dokumencie powinny znaleźć się prawidłowo sformatowane komórki tekstowe, z nagłówkami oraz wzorami. Umieść również obliczenia wykonane w języku Python, jako ilustrację do niektórych przykładów, rozwiązanie zadań, lub wizualizację. Można, ale nie trzeba używać modułów Python nie przedstawionych na kursie.
+
+  Za zadanie domowe można dostać maksymalnie 10 punktów. Po 3 za użycie Pythona, skład i formatowanie komórek Markdown oraz treść
+  tłumaczaca zagadnienie. Dodatkowy punkt za ogólna schludność i estetykę zeszytu.
+
+  Gdybyś chciał wydrukować notatnik, powinien zająć przynajmniej dwie strony A4 przy standardowym rozmiarze kroju pisma (podpowiedź - możesz sprawdzić podgląd wydruku w menu File w narzędziu Jupyter Lab, jeśli trudno ocenić Ci ile już napisałeś).
+
+  Termin oddania do ustalenia, w listopadzie.
+
+- **Odpowiedź ustna**
+
+  Od 7-mych zajęć można zgłaszać się na ochotnika, co najmniej 3 ochotników jest wymaganych na jednych zajęciach.
+
+- **Projekt grupowy**
+
+  Można się łączyć w grupy w obrębie moich 2 zajęć (wtorek 7:30 i czwartek 7:30), ale nie poza. Zakładam w sumie 5-8 grup projektowych.
+
+- **Aktywność**
+
+  Punkty zostaną przydzielone na zasadzie normalizacji rozkładu aktywności na zajęciach. Gwarantuję, że jedna *duża* aktywność (np. przedstawienie pełnego rozwiązania z listy) będzie dawała co najmniej jeden punkt.
+
+## Notki z zajęć
+
+::: {.callout-note collapse="true"}
+### Rozważania wstępne
+
+1. Po co matematykowi komputer?
+2. Co i dlaczego będzie na kursie?
+3. Organizacja pracy i zasady zaliczenia.
+4. Czym jest język programowania?
+5. Charakterystyka języka Python.
+6. Środowisko programistyczne Jupyter Notebook.
+7. Podstawy języka znacznikowego Markdown.
+:::
+
+::: {.callout-note collapse="true"}
+### Przykłady zeszytów Jupyter
+
+Przykłady ilustrujące wachlarz możliwości zeszytów Jupyter i Markdown w zastosowaniach matematycznych.
+Wymagają one osobnych ustawień środowiska programistycznego i zewnętrznych narzędzi.
+Polecam zapoznanie się z nimi czysto ilustracyjnie jako motywacja do nauki.
+
+- Wizualizacja [zbioru Mandelbrota](https://www.wikiwand.com/pl/articles/Zbi%C3%B3r_Mandelbrota) obliczana na karcie graficznej - [link](https://github.com/bwrob/bwrob.github.io/tree/main/pages/notebooks/mandebrot.ipynb)
+- Pobieranie i analiza danych o cenie akcji spółki giełdowej - [link](https://github.com/bwrob/bwrob.github.io/tree/main/pages/notebooks/cd_projekt_red.ipynb)
+- Numeryczne rozwiązanie [równań różniczkowych cząstkowych](https://www.wikiwand.com/pl/articles/R%C3%B3wnanie_r%C3%B3%C5%BCniczkowe_cz%C4%85stkowe) - [link](https://github.com/jorgensd/dolfinx-tutorial/blob/main/chapter1/fundamentals_code.ipynb)
+- Rozwiązania zadań z podstaw [algebry liniowej](https://www.wikiwand.com/pl/articles/Algebra_liniowa) - [link](https://github.com/weijie-chen/Linear-Algebra-With-Python/blob/master/notebooks/Chapter%201%20-%20Linear%20Equation%20System.ipynb)
+- Cała obecna strona została utworzona z wykorzystaniem Markdownu i Pythona korzystając z technologii [Quarto]](https://quarto.org/) - [link](https://github.com/bwrob/bwrob.github.io/blob/main/pages/courses/pwr-intro-to-cs-2024.qmd)
+:::
+
+::: {.callout-note collapse="true"}
+#### Python lista 1 - wyrażenia matematyczne
+
+[Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_1.ipynb)
+
+- Zamiast
+  ```{python}
+  import math
+  pole = math.pi * 10**2
+  ```
+  warto użyć
+  ```{python}
+  from math import pi
+  pole = pi * 10**2
+  ```
+  Zmniejszamy ilość pisania przy wielokrotnym użyciu, a sam import jest wydajniejszy co może mieć znaczenie przy bardziej zaawansowanych zadaniach.
+
+- Funkcje pierwiastka kwadratowego i podnoszenia do potęgi $1/2$ są oczywiście równoważne, natomiast polecana jest `math.sqrt`. Mniej ogólne algorytmy są zazwyczaj lepiej zoptymalizowane (przy naszych zastosowaniach nie ma to jednak znaczenia).
+  ```{python}
+  from math import sqrt
+  x = 2
+  y = sqrt(x)
+  z = x**0.5
+  print(y, z, y == z)
+  ```
+
+- W *zadaniu 4* występuje funkcja podłoga $ \lfloor x \rfloor $.  Jest to największa liczba całkowita mniejsza niż $x$. W Pythonie można używać funkcji `math.floor`.
+  ```{python}
+  from math import floor
+  x = 2.5
+  y = 2.9
+  z = -3.1
+  print(floor(x), floor(y), floor(z))
+  ```
+
+- *Zadanie 5* pokazuje, jak ważne jest umiejetne korzystanie ze zmiennych pomocniczych.
+  ```{python}
+  from math import sqrt, pi
+
+  suma_w_nawiasie = 5 ** 4 + 53 * sqrt(89)
+
+  mianownik = 80 * sqrt(15) * suma_w_nawiasie ** (3/2)
+  licznik = 3308 * suma_w_nawiasie - 3 * sqrt(89)
+  pi_przyblizenie = mianownik / licznik
+
+  print(round(pi_przyblizenie, 10))
+  print(round(pi_przyblizenie, 10) == round(pi, 10))
+  ```
+  W powyższym kodzie dużo łatwiej wyłapac bład niż w jednolinijkowym gigancie.
+
+- Do *zadania 6* wrócimy jeszcze raz po funkcjach i pętlach aby zaimplemetować dużo czytelniejsze rozwiązanie.
+:::
+
+::: {.callout-note collapse="true"}
+#### Python lista 2 - napisy
+
+[Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_2.ipynb)
+
+- W razie gdy chcemy sprawdzić, gdzie w systemie zapisany jest dany plik Python albo zeszyt Jupyter poniższe drukuje obecna ścieżkę robocza (Current Working Directory).
+  ```{python}
+  import os
+  print(os.getcwd())
+  ```
+
+:::
+
+::: {.callout-note collapse="true"}
+#### Python lista 3 - listy i słowniki
+
+[Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_3.ipynb)
+
+:::
