@@ -1,0 +1,397 @@
+---
+title: "Wstęp do programowania (PWr Zima 2024)"
+
+about:
+  template: marquee
+---
+
+
+Laboratoria komputerowe do wykładu Andrzeja Giniewicza.
+
+
+## Zasady zaliczenia
+
+Ogólne zasady zaliczenia kursu można znaleźć na [stronie kursu u wykładowcy](https://alfa.im.pwr.edu.pl/~giniew/doku.php?id=rok2425:zimowy:wdp).
+
+Doprecyzowania obowiazujace w moich grupach:
+
+:::{.panel-tabset}
+### Listy zadań
+
+Conajmniej pierwsze 4 listy będziemy robić na zajęciach, w systemie deklaracyjnym. Po zajęciach proszę o przesłanie rozwiązań. Kolejne listy zadań będą w formie zadań domowych, do zrobienia i przesłania przed zajęciami. Rozwiązania będą omiawiane i wyrywkowo sprawdzane w trakcie zajęć.
+
+### Zadanie domowe
+
+Wyobraź sobie, że pomagasz młodszemu koledze lub koleżance, którzy dalej są w liceum. Chcesz przygotować interaktywny notebook tłumaczący jakieś zagadnienie z zakresu matematyki, fizyki, informatyki lub chemii. Wybrany temat może, ale nie musi pochodzić z zakresu nauczania w szkole średniej. Ma być zrozumiały i dostępny dla ucznia liceum. *Kod Python nie musi być zrozumiały dla licealisty*. Polecam wybrać temat, który Ciebie też interesuje.
+
+W Twoim dokumencie powinny znaleźć się prawidłowo sformatowane komórki tekstowe, z nagłówkami oraz wzorami. Umieść również obliczenia wykonane w języku Python, jako ilustrację do niektórych przykładów, rozwiązanie zadań, lub wizualizację. Można, ale nie trzeba używać modułów Python nie przedstawionych na kursie.
+
+Za zadanie domowe można dostać maksymalnie 10 punktów. Po 3 za użycie Pythona, skład i formatowanie komórek Markdown oraz treść
+tłumaczaca zagadnienie. Dodatkowy punkt za ogólna schludność i estetykę zeszytu.
+
+Gdybyś chciał wydrukować notatnik, powinien zająć przynajmniej dwie strony A4 przy standardowym rozmiarze kroju pisma (podpowiedź - możesz sprawdzić podgląd wydruku w menu File w narzędziu Jupyter Lab, jeśli trudno ocenić Ci ile już napisałeś).
+
+Termin oddania do 19 listopada (grupa wtorkowa) / 21 listopada (grupa czwartkowa). Zadanie domowe proszę przesyłać mailowo. Proszę załaczyć informację czy zgadzasz się na pokazanie Twojej pracy innym studentom i opublikowanie jej tutaj jako przyklad.
+
+### Odpowiedź ustna
+
+Od 7-mych zajęć można zgłaszać się na ochotnika, co najmniej 3 ochotników jest wymaganych na jednych zajęciach.
+
+### Projekt grupowy
+
+Można się łączyć w grupy w obrębie moich 2 zajęć (wtorek 7:30 i czwartek 7:30), ale nie poza. Zakładam w sumie 5-8 grup projektowych.
+
+### Aktywność
+
+Punkty zostaną przydzielone na zasadzie normalizacji rozkładu aktywności na zajęciach. Gwarantuję, że jedna *duża* aktywność (np. przedstawienie pełnego rozwiązania z listy) będzie dawała co najmniej jeden punkt.
+:::
+
+
+## Python
+
+:::{.panel-tabset}
+
+### Przykłady zeszytów Jupyter
+
+Przykłady ilustrujące wachlarz możliwości zeszytów Jupyter i Markdown w zastosowaniach matematycznych.
+Wymagają one osobnych ustawień środowiska programistycznego i zewnętrznych narzędzi.
+Polecam zapoznanie się z nimi czysto ilustracyjnie jako motywacja do nauki.
+
+- Wizualizacja [zbioru Mandelbrota](https://www.wikiwand.com/pl/articles/Zbi%C3%B3r_Mandelbrota) obliczana na karcie graficznej - [link](https://github.com/bwrob/bwrob.github.io/tree/main/pages/notebooks/mandebrot.ipynb)
+- Pobieranie i analiza danych o cenie akcji spółki giełdowej - [link](https://github.com/bwrob/bwrob.github.io/tree/main/pages/notebooks/cd_projekt_red.ipynb)
+- Numeryczne rozwiązanie [równań różniczkowych cząstkowych](https://www.wikiwand.com/pl/articles/R%C3%B3wnanie_r%C3%B3%C5%BCniczkowe_cz%C4%85stkowe) - [link](https://github.com/jorgensd/dolfinx-tutorial/blob/main/chapter1/fundamentals_code.ipynb)
+- Rozwiązania zadań z podstaw [algebry liniowej](https://www.wikiwand.com/pl/articles/Algebra_liniowa) - [link](https://github.com/weijie-chen/Linear-Algebra-With-Python/blob/master/notebooks/Chapter%201%20-%20Linear%20Equation%20System.ipynb)
+- Cała obecna strona została utworzona z wykorzystaniem Markdownu i Pythona korzystając z technologii [Quarto]](https://quarto.org/) - [link](https://github.com/bwrob/bwrob.github.io/blob/main/pages/courses/pwr-intro-to-cs-2024.qmd)
+
+### Komentarze do list zadań
+
+:::{.panel-tabset}
+
+
+### Lista 1
+
+Python lista 1 - wyrażenia matematyczne
+
+[Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_1.ipynb)
+
+- Zamiast
+  ```{python}
+  import math
+  pole = math.pi * 10**2
+  ```
+  warto użyć
+  ```{python}
+  from math import pi
+  pole = pi * 10**2
+  ```
+  Zmniejszamy ilość pisania przy wielokrotnym użyciu, a sam import jest wydajniejszy co może mieć znaczenie przy bardziej zaawansowanych zadaniach.
+
+- Funkcje pierwiastka kwadratowego i podnoszenia do potęgi $1/2$ są oczywiście równoważne, natomiast polecana jest `math.sqrt`. Mniej ogólne algorytmy są zazwyczaj lepiej zoptymalizowane (przy naszych zastosowaniach nie ma to jednak znaczenia).
+  ```{python}
+  from math import sqrt
+  x = 2
+  y = sqrt(x)
+  z = x**0.5
+  print(y, z, y == z)
+  ```
+
+- W *zadaniu 4* występuje funkcja podłoga $ \lfloor x \rfloor $.  Jest to największa liczba całkowita mniejsza niż $x$. W Pythonie można używać funkcji `math.floor`.
+  ```{python}
+  from math import floor
+  x = 2.5
+  y = 2.9
+  z = -3.1
+  print(floor(x), floor(y), floor(z))
+  ```
+
+- *Zadanie 5* pokazuje, jak ważne jest umiejetne korzystanie ze zmiennych pomocniczych.
+  ```{python}
+  from math import sqrt, pi
+
+  suma_w_nawiasie = 5 ** 4 + 53 * sqrt(89)
+
+  mianownik = 80 * sqrt(15) * suma_w_nawiasie ** (3/2)
+  licznik = 3308 * suma_w_nawiasie - 3 * sqrt(89)
+  pi_przyblizenie = mianownik / licznik
+
+  print(round(pi_przyblizenie, 10))
+  print(round(pi_przyblizenie, 10) == round(pi, 10))
+  ```
+  W powyższym kodzie dużo łatwiej wyłapac bład niż w jednolinijkowym gigancie.
+
+- Do *zadania 6* wrócimy jeszcze raz po funkcjach i pętlach aby zaimplemetować dużo czytelniejsze rozwiązanie.
+
+### Lista 2
+
+Python lista 2 - napisy
+
+[Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_2.ipynb)
+
+- W razie gdy chcemy sprawdzić, gdzie w systemie zapisany jest dany plik Python albo zeszyt Jupyter poniższe drukuje obecna ścieżkę robocza (Current Working Directory).
+  ```{python}
+  import os
+  print(os.getcwd())
+  ```
+
+
+### Lista 3
+
+Python lista 3 - listy i słowniki
+
+[Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_3.ipynb)
+
+
+Komentarze dla zaawansowanych:
+
+**Zadanie 2**
+
+Kluczem do pisania szybkiego kodu w Pythonie jest jak najczestsze kożystanie z wbudowanych funkcji, które wykonywane sa bezposrednio w języku niskopoziomowym.
+
+Przykładowo, to zadanie można elegancko rozwiazac za pomoca wbudowaniej biblioteki `itertools`. Składaja się na nia pomocnicze funkcje rozwiazujace często potrzebne funkcjonalności dookoła iteratorów:
+
+```{python}
+from itertools import accumulate
+L = list(accumulate((-1) ** i / (i) for i in range(1, 101)))
+print(L)
+```
+Stosujemy tu potrójne złożenie generatorów. Generatory to obiekty, po których możemy iterować, a zwaracaja wartości pojedynczo. Często wykonywane jest to leniwie, dopiero kiedy sa o to zapytane.
+
+* `range(1, 101)` tworzy generator liczb od 1 do 100, nie trzyma tych liczb od razu w pamięci, tylko wie która jest następna.
+*  `(func(n) for n in range(1, 101))` tworzy generator liczb od 1 do 100, a potem wykona operacje na nich.
+*  `accumulate` bierze coś po czym moźna iterować i operator binarny (domyślnie `+`) i zwraca generator częściowych wartości używania tego operatora na wszystkich elementach generatora.
+*  `list` tworzy listę zawierajaca elementy złożonego generatora, zmusza do materializacji wynikow. Wszystko powyżej było tworzone leniwie.
+
+**Zadanie 5**
+
+Iterowanie się po wszystkich elementach zbioru często da się zastapić za pomoca matematycznych operacji na zbiorach, które sa dobrze zoptymalizowane.
+
+```{python}
+S = {"dolnośląskie", "lubuskie", "wielkopolskie"}
+M = {"Wrocław", "Opole", "Zielona Góra", "Gorzów Wielkopolski"}
+D = {
+    "dolnośląskie": {"Wrocław"},
+    "kujawsko-pomorskie": {"Bydgoszcz", "Toruń"},
+    "lubelskie": {"Lublin"},
+    "lubuskie": {"Gorzów Wielkopolski", "Zielona Góra"},
+    "łódzkie": {"Łódź"},
+    "małopolskie": {"Kraków"},
+    "mazowieckie": {"Warszawa"},
+    "opolskie": {"Opole"},
+    "podkarpackie": {"Rzeszów"},
+    "podlaskie": {"Białystok"},
+    "pomorskie": {"Gdańsk"},
+    "śląskie": {"Katowice"},
+    "świętokrzyskie": {"Kielce"},
+    "warmińsko-mazurskie": {"Olsztyn"},
+    "wielkopolskie": {"Poznań"},
+    "zachodniopomorskie": {"Szczecin"},
+}
+
+print(set.union(*D.values()))
+print({key for key, value in D.items() if value.intersection(M)})
+```
+
+**Zadanie 6**
+
+W Pythonie 3.8+ jest to możliwe za pomoca operatora `:=` (walrus operator). Pozwala na tworzenie zmiennych pomocniczych wewnatrz wyrażeń języka.
+
+```{python}
+from math import sin, cos, radians
+
+n = 101
+punkty = {
+    (angle:=i * 360 / n): (cos(radians(angle)), sin(radians(angle)))
+    for i in range(n)
+}
+print(punkty)
+```
+    Inna metoda jest użycie generatora wewnatrz listy składanej.
+
+```{python}
+punkty = {
+    angle: (cos(radians(angle)), sin(radians(angle)))
+    for angle in (i * 360 / n for i in range(n))
+}
+print(punkty)
+```
+
+Plusem użycia generatora, a nie osobnej listy jest to, że jest on leniwie ewaluowany - jeden element na raz. Nie trzymamy katów w pamieci dwa razy.
+
+### Lista 4
+
+Python lista 4 - funkcje.
+
+[Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_4.ipynb)
+
+* Na zajęciach zobaczyliśy jak zapisać zadanie Fizz Buzz bez porównania modulo 15:
+
+  ```{python}
+  def fizz_buzz(
+      liczba: int,
+  ) -> str:
+      """Wyznacz FizzBuzz dla liczby."""
+      msg = ""
+      if liczba % 3 == 0:
+          msg += "Fizz"
+      if liczba % 5 == 0:
+          msg += "Buzz"
+      return msg or str(liczba)
+
+
+  print([fizz_buzz(i) for i in range(1, 16)])
+  ```
+
+  Jest to szczególnie istotne, jeżeli dodamy dodatkowo `Mizz` dla liczb podzielnych przez 7 i `Duzz` dla liczb podzielnych przez 8. Funkcję można wtedy jeszcze bardziej uprościć za pomoca słownika i listy składanej:
+
+  ```{python}
+  def fizz_buzz(
+      liczba: int,
+  ) -> str:
+      """Wyznacz FizzBuzz dla liczby."""
+      msg = ""
+      mapa = {
+          3: "Fizz",
+          5: "Buzz",
+          7: "Mizz",
+          8: "Duzz",
+      }
+      lista_slow = [mapa[i] for i in mapa if liczba % i == 0]
+      msg = "".join(lista_slow)
+      return msg or str(liczba)
+
+  print([fizz_buzz(i) for i in range(1, 16)])
+  ```
+
+  Sprawdzanie wszystkich podzielności miesznych było by bardzo niekomfortowe.
+
+### Lista 5
+
+Python lista 5 - numpy, matplotlib.
+
+[Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_5.ipynb)
+
+### Lista 6
+
+Python lista 6 - testowanie, wyjatki
+
+[Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_6.ipynb)
+
+:::
+
+:::
+
+
+## Bash i git
+
+:::{.panel-tabset}
+
+### Nawigacja systemu plików
+
+Przyklady komend uzytych na zajeciach (rozszyfrowanie ich jako zadanie dla czytelnika):
+
+```{bash}
+history -c
+pwd
+cd ~
+mkdir test
+cd test
+touch test.txt
+code test.txt
+cp test.txt test2.txt
+mv test2.txt test3.txt
+rm test2.txt
+echo "Hello World" >> test3.txt
+cat test3.txt
+wc < test3.txt
+cat test.txt test3.txt > test4.txt
+cd ..
+rm -ri test
+ls -la
+history 1 > notatki.txt
+```
+
+### Skryptowanie
+
+Przykladowy skrypt zapisany jako plik `hello.sh`:
+
+```{bash}
+#! bash
+
+echo "Hello $1 !"
+
+if [ "$1"=="Flip" ] ; then
+	echo ”Long time no see ! ”
+elif [ "$1"=="Flap" ] ; then
+	echo "What do you want?"
+else
+	echo "Who are you again ?"
+fi
+
+if ! [ -f log.txt ] ; then
+	touch log.txt
+fi
+echo "$(date) User $1 visited." >> log.txt
+
+for i in $(seq 5 -1 1)
+do
+	echo "Konczymy za $i"
+done
+
+```
+
+Jego wykonanie:
+
+```{bash}
+chmod +x hello.sh
+./hello.sh Flap
+```
+
+Skrypt w pythonie:
+
+```{python}
+#! python3
+
+import sys
+
+if __name__ == "__main__":
+	if len(sys.argv) > 1 :
+		for x in sys.argv[ 1 : ] :
+			print(f"Nice to meet you {x}")
+
+```
+
+Jego wykonanie:
+
+```{bash}
+chmod +x hello.py
+./hello.py Flip Flap Flop
+```
+
+### Git i GitLab
+
+Ustawienie klucza SSH:
+
+```{bash}
+ssh-keygen -t ed25519 -C "imie nazwisk, indeks"
+```
+
+Klucz publiczny powinien byc w pliku `~/.ssh/id_ed25519.pub`. Na koncie GitLab powinien byc dodany klucz publiczny SSH. Ustawienie klucza SSH w systemie lokalnym:
+
+```{bash}
+eval $(ssh-agent)
+ssh-add <sciezka klucza>
+ssh git@gitlab.com
+```
+
+Tworzymy repozytorium `lekcja-1`na stronie GitLab. Klikamy na niebieskie przycisk `Code` i kopiujemy to co pod SSH.
+Skopiowanie repozytorium GitLab i komit podpisany kluczem SSH:
+```{bash}
+git clone <sciezka ssh>
+git config --global user.name "<imie nazwisko>"
+git config --global user.email "<email pwr>"
+git config --local gpg.format ssh
+git config --local user.signingkey /ścieżka/do/klucza/id_ec25519.pub
+git switch --create main
+```
+
+:::
