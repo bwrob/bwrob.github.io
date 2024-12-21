@@ -281,7 +281,7 @@ Python lista 6 - testowanie, wyjatki
 :::
 
 
-## Bash i gits
+## Bash i git
 
 :::{.panel-tabset}
 
@@ -291,26 +291,80 @@ Przyklady komend uzytych na zajeciach (rozszyfrowanie ich jako zadanie dla czyte
 
 ```{bash}
 history -c
+pwd
+cd ~
+mkdir test
+cd test
+touch test.txt
+code test.txt
+cp test.txt test2.txt
+mv test2.txt test3.txt
+rm test2.txt
+echo "Hello World" >> test3.txt
+cat test3.txt
+wc < test3.txt
+cat test.txt test3.txt > test4.txt
 cd ..
+rm -ri test
 ls -la
 history 1 > notatki.txt
 ```
 
 ### Skryptowanie
 
-Przykladowy skrypt:
+Przykladowy skrypt zapisany jako plik `hello.sh`:
 
 ```{bash}
-#!/bin/bash
+#! bash
 
-echo "Hello world"
+echo "Hello $1 !"
+
+if [ "$1"=="Flip" ] ; then
+	echo ”Long time no see ! ”
+elif [ "$1"=="Flap" ] ; then
+	echo "What do you want?"
+else
+	echo "Who are you again ?"
+fi
+
+if ! [ -f log.txt ] ; then
+	touch log.txt
+fi
+echo "$(date) User $1 visited." >> log.txt
+
+for i in $(seq 5 -1 1)
+do
+	echo "Konczymy za $i"
+done
+
 ```
 
 Jego wykonanie:
 
 ```{bash}
 chmod +x hello.sh
-./hello.sh
+./hello.sh Flap
+```
+
+Skrypt w pythonie:
+
+```{python}
+#! python3
+
+import sys
+
+if __name__ == "__main__":
+	if len(sys.argv) > 1 :
+		for x in sys.argv[ 1 : ] :
+			print(f"Nice to meet you {x}")
+
+```
+
+Jego wykonanie:
+
+```{bash}
+chmod +x hello.py
+./hello.py Flip Flap Flop
 ```
 
 ### Git i GitLab
@@ -318,15 +372,26 @@ chmod +x hello.sh
 Ustawienie klucza SSH:
 
 ```{bash}
-ssh-keygen -t rsa -b 4096
+ssh-keygen -t ed25519 -C "imie nazwisk, indeks"
 ```
 
+Klucz publiczny powinien byc w pliku `~/.ssh/id_ed25519.pub`. Na koncie GitLab powinien byc dodany klucz publiczny SSH. Ustawienie klucza SSH w systemie lokalnym:
+
+```{bash}
+eval $(ssh-agent)
+ssh-add <sciezka klucza>
+ssh git@gitlab.com
+```
+
+Tworzymy repozytorium `lekcja-1`na stronie GitLab. Klikamy na niebieskie przycisk `Code` i kopiujemy to co pod SSH.
 Skopiowanie repozytorium GitLab i komit podpisany kluczem SSH:
 ```{bash}
-git clone <URL> --depth 1
-git config --global user.name "<name>"
-git config --global user.email "<email>"
-
+git clone <sciezka ssh>
+git config --global user.name "<imie nazwisko>"
+git config --global user.email "<email pwr>"
+git config --local gpg.format ssh
+git config --local user.signingkey /ścieżka/do/klucza/id_ec25519.pub
+git switch --create main
 ```
 
 :::
