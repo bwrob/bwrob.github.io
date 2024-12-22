@@ -371,7 +371,7 @@ chmod +x hello.py
 
 ### Git i GitLab
 
-Ustawienie klucza SSH:
+Generowanie klucza SSH (warto przeczytać [oficjalne instrukcje](https://docs.gitlab.com/ee/user/ssh.html#generate-an-ssh-key-pair))
 
 ```{bash}
 ssh-keygen -t ed25519 -C "imie nazwisk, indeks"
@@ -394,6 +394,12 @@ git config --global user.email "<email pwr>"
 git config --local gpg.format ssh
 git config --local user.signingkey /ścieżka/do/klucza/id_ec25519.pub
 git switch --create main
+
+touch README.md
+git add README.md
+git commit -S -m "puste readme"
+git status
+git push
 ```
 
 :::
