@@ -349,6 +349,7 @@ chmod +x hello.sh
 Skrypt w pythonie:
 
 ```{python}
+# | echo: false
 #! python3
 
 import sys
@@ -377,7 +378,9 @@ Generowanie klucza SSH (warto przeczytać [oficjalne instrukcje](https://docs.gi
 ssh-keygen -t ed25519 -C "imie nazwisk, indeks"
 ```
 
-Klucz publiczny powinien byc w pliku `~/.ssh/id_ed25519.pub`. Na koncie GitLab powinien byc dodany klucz publiczny SSH. Ustawienie klucza SSH w systemie lokalnym:
+Klucz publiczny powinien byc w pliku `~/.ssh/id_ed25519.pub`. Na koncie GitLab powinien byc [dodany klucz publiczny SSH](https://docs.gitlab.com/ee/user/ssh.html#add-an-ssh-key-to-your-gitlab-account).
+
+Ustawienie klucza SSH w systemie lokalnym:
 
 ```{bash}
 eval $(ssh-agent)
@@ -386,7 +389,8 @@ ssh git@gitlab.com
 ```
 
 Tworzymy repozytorium `lekcja-1`na stronie GitLab. Klikamy na niebieskie przycisk `Code` i kopiujemy to co pod SSH.
-Skopiowanie repozytorium GitLab i komit podpisany kluczem SSH:
+
+Klonujemy repozytorium GitLab, ustawiamy uzycie klucza SSH, tworzymy gałąź `main`.
 ```{bash}
 git clone <sciezka ssh>
 git config --global user.name "<imie nazwisko>"
@@ -394,7 +398,10 @@ git config --global user.email "<email pwr>"
 git config --local gpg.format ssh
 git config --local user.signingkey /ścieżka/do/klucza/id_ec25519.pub
 git switch --create main
+```
 
+Tworzymy plik README.md, dodajemy go do repozytorium, commitujemy i pushujemy.
+```{bash}
 touch README.md
 git add README.md
 git commit -S -m "puste readme"
