@@ -1,0 +1,140 @@
+---
+title: "Programowanie (PWr Lato 2025)"
+
+about:
+  template: marquee
+---
+
+
+Laboratoria komputerowe do wykładu Andrzeja Giniewicza.
+
+
+## Zasady zaliczenia
+
+Ogólne zasady zaliczenia kursu można znaleźć na [stronie kursu u wykładowcy](https://alfa.im.pwr.edu.pl/~giniew/doku.php?id=rok2425:letni:prog).
+
+Doprecyzowania obowiazujace w moich grupach:
+
+:::{.panel-tabset}
+
+### Listy zadań
+
+Conajmniej pierwsze 3 listy będziemy robić na zajęciach, w systemie deklaracyjnym. Po zajęciach proszę o przesłanie rozwiązań. Kolejne listy zadań będą w formie zadań domowych, do zrobienia i przesłania przed zajęciami. Rozwiązania będą omiawiane i wyrywkowo sprawdzane w trakcie zajęć.
+
+### Projekt
+
+Szczegóły projektu na wykładzie. Na labach będziemy omawiać problemy i pytania wyrastające przy projekcie. Można będzie konsultować decyzje projektowe i techniczne. Na ochotnika przedstawiać sprytne rozwiązania zastosowane w programie, za punkty z aktywności.
+
+Obowiązuje jeden update w trakcie oraz prezentacja na koniec. Będziecie głosować na najciekawszy merytorycznie projekt. Ja wybiorę jeden projekt najlepszy technicznie. Oba dostaną dodatkowe punkty.
+
+### Sprawozdanie
+
+Sprawozdanie tworzone na arkuszu Excel, z wykorzystaniem VBA. Z powodów technicznych będzie robione na zajęciach.
+
+### Aktywność
+
+Można zdobyć maks 10 punktów z poza puli na części z list zadań i maks 10 na części projektowej.
+
+
+:::
+
+## Listy zadań
+
+:::{.panel-tabset}
+
+### Lista 1
+
+Przykładowe podejście do zadania 2, inne od wykładowego.
+Definujemy funkcję bisekcji oraz dekorator do pomiaru czasu:
+
+```{python}
+import math
+from time import perf_counter_ns
+
+import matplotlib.pyplot as plt
+
+
+def measure_time(func, repeat=1):
+    """Mierzy czas wykonania funkcji.
+
+    Zwraca funkcję owiniętą w pętlę powtórzeń.
+    Funkcja wynikowa zwraca listę czasów.
+    """
+
+    def worker(*args, **kwargs):
+        times = []
+        for _ in range(repeat):
+            start_time = perf_counter_ns()
+            _ = func(*args, **kwargs)
+            end_time = perf_counter_ns()
+            times.append(end_time - start_time)
+        return sorted(times)
+
+    return worker
+
+
+def bisection(
+    func, a: float, b: float, tol: float = 1e-6, max_iter: float = 1_000
+) -> float:
+    """Znajduje miejsce zerowe funkcji f metodą bisekcji.
+
+    Args:
+        a: Lewy koniec przedziału.
+        b: Prawy koniec przedziału.
+        tol: Tolerancja (dokładność).
+        max_iter: Maksymalna liczba iteracji.
+
+    Returns:
+        Przybliżone miejsce zerowe lub None, jeśli nie znaleziono.
+
+    """
+    if func(a) * func(b) >= 0:
+        return None  # Brak gwarancji istnienia miejsca zerowego
+
+    for _ in range(max_iter):
+        c = (a + b) / 2
+        if abs(func(c)) < tol:
+            return c
+        if func(c) * func(a) < 0:
+            b = c
+        else:
+            a = c
+    return None
+
+
+```
+
+Mierzymy czas:
+
+```{python}
+import math
+
+
+def atan_minus_1(x):
+    return math.atan(x) - 1
+
+
+n_max = 1_000
+repeat = 1_000
+ns = list(range(1, n_max + 1))
+measure_bisection_time = measure_time(bisection, repeat=repeat)
+time_lists = [(n, measure_bisection_time(atan_minus_1, 0.0, 10.0 * n)) for n in ns]
+time_points = [
+    (float(n), time)
+    for n, times in time_lists
+    for time in times[repeat // 3 : -repeat // 3]
+]
+```
+
+Przedstawiamy na wykresie:
+
+
+```{python}
+import numpy as np
+
+x, y = zip(*time_points)
+fig, ax = plt.subplots()
+ax.plot(x, y, "o", color="blue")
+```
+
+:::
