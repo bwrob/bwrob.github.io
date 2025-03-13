@@ -1,0 +1,120 @@
+---
+title: "Mathematician in finance"
+description: "How to survive in th financial whirpool."
+author: "bwrob"
+
+date: "2025-03-15"
+date-modified: "2025-03-15"
+
+categories: [Career]
+---
+
+## Required skillsets
+```{python}
+# | echo: false
+# | output: asis
+# | collapse: true
+
+from IPython.display import display, Markdown
+import plotly.graph_objects as go
+import yfinance as yf
+
+
+job_skills = {
+    "Office Quant": {
+        "Programming": 8,
+        "Financial Modeling": 9,
+        "Quantitative Analysis": 10,
+        "Data Analysis": 8,
+        "Domain Knowledge": 9,
+    },
+    "Quant Developer": {
+        "Programming": 10,
+        "Software Engineering": 9,
+        "Algorithm Development": 10,
+        "Data Management": 7,
+        "High-Performance Computing": 8,
+    },
+    "Market Risk Quant": {
+        "Programming": 9,
+        "Risk Modeling": 10,
+        "Quantitative Analysis": 9,
+        "Data Analysis": 9,
+        "Regulatory Knowledge": 8,
+    },
+    "Validation Quant": {
+        "Programming": 8,
+        "Model Validation": 10,
+        "Quantitative Analysis": 9,
+        "Data Analysis": 6,
+        "Regulatory Knowledge": 9,
+    },
+    "Quant Researcher": {
+        "Programming": 10,
+        "Statistical Learning": 10,
+        "Quantitative Analysis": 10,
+        "Data Mining": 8,
+        "Mathematical Modeling": 10,
+    },
+    "Algorithmic Trader (Quant)": {
+        "Programming": 10,
+        "Quantitative Analysis": 9,
+        "Market Microstructure": 10,
+        "Data Management": 7,
+        "Low-Latency Programming": 9,
+    },
+    "Credit Risk Quant": {
+        "Programming": 9,
+        "Credit Modeling": 10,
+        "Quantitative Analysis": 9,
+        "Data Analysis": 9,
+        "Domain Knowledge": 8,
+    },
+    "Structured Products Quant": {
+        "Programming": 9,
+        "Financial Modeling": 9,
+        "Quantitative Analysis": 10,
+        "Domain Knowledge": 9,
+        "Communication": 7,
+    },
+    "Portfolio Construction Quant": {
+        "Programming": 9,
+        "Optimization": 10,
+        "Quantitative Analysis": 8,
+        "Data Analysis": 9,
+        "Risk Management": 8,
+    },
+}
+all_skills = set()
+for skills in job_skills.values():
+    all_skills.update(skills.keys())
+all_skills = list(all_skills)
+
+
+tabs = all_skills
+display(Markdown(":::{.panel-tabset}"))
+
+for job_title, skills in job_skills.items():
+    display(Markdown("\n"))
+    display(Markdown("### {}".format(job_title)))
+    display(Markdown("\n"))
+
+    skill_values = [skills.get(skill, 0) for skill in all_skills]
+    fig = go.Figure(
+        data=[
+            go.Bar(
+                y=all_skills,
+                x=skill_values,
+                orientation="h",
+            )
+        ]
+    )
+
+    fig.update_layout(
+        title=f"Skill Levels - {job_title}",
+    )
+
+    display(fig)
+
+display(Markdown(":::"))
+```
