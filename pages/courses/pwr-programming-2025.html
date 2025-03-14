@@ -215,10 +215,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <p>Conajmniej pierwsze 3 listy będziemy robić na zajęciach, w systemie deklaracyjnym. Po zajęciach proszę o przesłanie rozwiązań. Kolejne listy zadań będą w formie zadań domowych, do zrobienia i przesłania przed zajęciami. Rozwiązania będą omiawiane i wyrywkowo sprawdzane w trakcie zajęć.</p>
+<p>Nazwa pliku z rozwiązaniami listy <code>x</code> powinna być następująca <code>{nr_indeksu}_lista_{x}.py</code>. Struktura pliku poniższa:</p>
+<div id="d5cfcce6" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Funkcje pomocnicze do zadania 1</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">def</span> zadanie_1(): ...</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co"># Funkcje pomocnicze do zadania 2</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="kw">def</span> zadanie_2(): ...</span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co"># Funkcje pomocnicze do zadania 3</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="kw">def</span> zadanie_3(): ...</span>
+<span id="cb1-12"><a href="#cb1-12"></a></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"":</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="er">    zadanie_1</span>()</span>
+<span id="cb1-15"><a href="#cb1-15"></a>    zadanie_2()</span>
+<span id="cb1-16"><a href="#cb1-16"></a>    zadanie_3()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <p>Szczegóły projektu na wykładzie. Na labach będziemy omawiać problemy i pytania wyrastające przy projekcie. Można będzie konsultować decyzje projektowe i techniczne. Na ochotnika przedstawiać sprytne rozwiązania zastosowane w programie, za punkty z aktywności.</p>
 <p>Obowiązuje jeden update w trakcie oraz prezentacja na koniec. Będziecie głosować na najciekawszy merytorycznie projekt. Ja wybiorę jeden projekt najlepszy technicznie. Oba dostaną dodatkowe punkty.</p>
+<p>Zespoły mogą być łączone pomiędzy moimi dwoma grupami, natomiast na prezentację końcową musi pojawić się cała grupa w jednym terminie.</p>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <p>Sprawozdanie tworzone na arkuszu Excel, z wykorzystaniem VBA. Z powodów technicznych będzie robione na zajęciach.</p>
@@ -236,91 +256,91 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <p>Przykładowe podejście do zadania 2, inne od wykładowego. Definujemy funkcję bisekcji oraz dekorator do pomiaru czasu:</p>
-<div id="f6720f9a" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> math</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="im">from</span> time <span class="im">import</span> perf_counter_ns</span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-5"><a href="#cb1-5"></a></span>
-<span id="cb1-6"><a href="#cb1-6"></a></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="kw">def</span> measure_time(func, repeat<span class="op">=</span><span class="dv">1</span>):</span>
-<span id="cb1-8"><a href="#cb1-8"></a>    <span class="co">"""Mierzy czas wykonania funkcji.</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co">    Zwraca funkcję owiniętą w pętlę powtórzeń.</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="co">    Funkcja wynikowa zwraca listę czasów.</span></span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="co">    """</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a></span>
-<span id="cb1-14"><a href="#cb1-14"></a>    <span class="kw">def</span> worker(<span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
-<span id="cb1-15"><a href="#cb1-15"></a>        times <span class="op">=</span> []</span>
-<span id="cb1-16"><a href="#cb1-16"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(repeat):</span>
-<span id="cb1-17"><a href="#cb1-17"></a>            start_time <span class="op">=</span> perf_counter_ns()</span>
-<span id="cb1-18"><a href="#cb1-18"></a>            _ <span class="op">=</span> func(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
-<span id="cb1-19"><a href="#cb1-19"></a>            end_time <span class="op">=</span> perf_counter_ns()</span>
-<span id="cb1-20"><a href="#cb1-20"></a>            times.append(end_time <span class="op">-</span> start_time)</span>
-<span id="cb1-21"><a href="#cb1-21"></a>        <span class="cf">return</span> <span class="bu">sorted</span>(times)</span>
-<span id="cb1-22"><a href="#cb1-22"></a></span>
-<span id="cb1-23"><a href="#cb1-23"></a>    <span class="cf">return</span> worker</span>
-<span id="cb1-24"><a href="#cb1-24"></a></span>
-<span id="cb1-25"><a href="#cb1-25"></a></span>
-<span id="cb1-26"><a href="#cb1-26"></a><span class="kw">def</span> bisection(</span>
-<span id="cb1-27"><a href="#cb1-27"></a>    func, a: <span class="bu">float</span>, b: <span class="bu">float</span>, tol: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1e-6</span>, max_iter: <span class="bu">float</span> <span class="op">=</span> <span class="dv">1_000</span></span>
-<span id="cb1-28"><a href="#cb1-28"></a>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb1-29"><a href="#cb1-29"></a>    <span class="co">"""Znajduje miejsce zerowe funkcji f metodą bisekcji.</span></span>
-<span id="cb1-30"><a href="#cb1-30"></a></span>
-<span id="cb1-31"><a href="#cb1-31"></a><span class="co">    Args:</span></span>
-<span id="cb1-32"><a href="#cb1-32"></a><span class="co">        a: Lewy koniec przedziału.</span></span>
-<span id="cb1-33"><a href="#cb1-33"></a><span class="co">        b: Prawy koniec przedziału.</span></span>
-<span id="cb1-34"><a href="#cb1-34"></a><span class="co">        tol: Tolerancja (dokładność).</span></span>
-<span id="cb1-35"><a href="#cb1-35"></a><span class="co">        max_iter: Maksymalna liczba iteracji.</span></span>
-<span id="cb1-36"><a href="#cb1-36"></a></span>
-<span id="cb1-37"><a href="#cb1-37"></a><span class="co">    Returns:</span></span>
-<span id="cb1-38"><a href="#cb1-38"></a><span class="co">        Przybliżone miejsce zerowe lub None, jeśli nie znaleziono.</span></span>
-<span id="cb1-39"><a href="#cb1-39"></a></span>
-<span id="cb1-40"><a href="#cb1-40"></a><span class="co">    """</span></span>
-<span id="cb1-41"><a href="#cb1-41"></a>    <span class="cf">if</span> func(a) <span class="op">*</span> func(b) <span class="op">&gt;=</span> <span class="dv">0</span>:</span>
-<span id="cb1-42"><a href="#cb1-42"></a>        <span class="cf">return</span> <span class="va">None</span>  <span class="co"># Brak gwarancji istnienia miejsca zerowego</span></span>
-<span id="cb1-43"><a href="#cb1-43"></a></span>
-<span id="cb1-44"><a href="#cb1-44"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(max_iter):</span>
-<span id="cb1-45"><a href="#cb1-45"></a>        c <span class="op">=</span> (a <span class="op">+</span> b) <span class="op">/</span> <span class="dv">2</span></span>
-<span id="cb1-46"><a href="#cb1-46"></a>        <span class="cf">if</span> <span class="bu">abs</span>(func(c)) <span class="op">&lt;</span> tol:</span>
-<span id="cb1-47"><a href="#cb1-47"></a>            <span class="cf">return</span> c</span>
-<span id="cb1-48"><a href="#cb1-48"></a>        <span class="cf">if</span> func(c) <span class="op">*</span> func(a) <span class="op">&lt;</span> <span class="dv">0</span>:</span>
-<span id="cb1-49"><a href="#cb1-49"></a>            b <span class="op">=</span> c</span>
-<span id="cb1-50"><a href="#cb1-50"></a>        <span class="cf">else</span>:</span>
-<span id="cb1-51"><a href="#cb1-51"></a>            a <span class="op">=</span> c</span>
-<span id="cb1-52"><a href="#cb1-52"></a>    <span class="cf">return</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="9b1f61fa" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">import</span> math</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="im">from</span> time <span class="im">import</span> perf_counter_ns</span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="kw">def</span> measure_time(func, repeat<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb2-8"><a href="#cb2-8"></a>    <span class="co">"""Mierzy czas wykonania funkcji.</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co">    Zwraca funkcję owiniętą w pętlę powtórzeń.</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="co">    Funkcja wynikowa zwraca listę czasów.</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co">    """</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a></span>
+<span id="cb2-14"><a href="#cb2-14"></a>    <span class="kw">def</span> worker(<span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb2-15"><a href="#cb2-15"></a>        times <span class="op">=</span> []</span>
+<span id="cb2-16"><a href="#cb2-16"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(repeat):</span>
+<span id="cb2-17"><a href="#cb2-17"></a>            start_time <span class="op">=</span> perf_counter_ns()</span>
+<span id="cb2-18"><a href="#cb2-18"></a>            _ <span class="op">=</span> func(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
+<span id="cb2-19"><a href="#cb2-19"></a>            end_time <span class="op">=</span> perf_counter_ns()</span>
+<span id="cb2-20"><a href="#cb2-20"></a>            times.append(end_time <span class="op">-</span> start_time)</span>
+<span id="cb2-21"><a href="#cb2-21"></a>        <span class="cf">return</span> <span class="bu">sorted</span>(times)</span>
+<span id="cb2-22"><a href="#cb2-22"></a></span>
+<span id="cb2-23"><a href="#cb2-23"></a>    <span class="cf">return</span> worker</span>
+<span id="cb2-24"><a href="#cb2-24"></a></span>
+<span id="cb2-25"><a href="#cb2-25"></a></span>
+<span id="cb2-26"><a href="#cb2-26"></a><span class="kw">def</span> bisection(</span>
+<span id="cb2-27"><a href="#cb2-27"></a>    func, a: <span class="bu">float</span>, b: <span class="bu">float</span>, tol: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1e-6</span>, max_iter: <span class="bu">float</span> <span class="op">=</span> <span class="dv">1_000</span></span>
+<span id="cb2-28"><a href="#cb2-28"></a>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb2-29"><a href="#cb2-29"></a>    <span class="co">"""Znajduje miejsce zerowe funkcji f metodą bisekcji.</span></span>
+<span id="cb2-30"><a href="#cb2-30"></a></span>
+<span id="cb2-31"><a href="#cb2-31"></a><span class="co">    Args:</span></span>
+<span id="cb2-32"><a href="#cb2-32"></a><span class="co">        a: Lewy koniec przedziału.</span></span>
+<span id="cb2-33"><a href="#cb2-33"></a><span class="co">        b: Prawy koniec przedziału.</span></span>
+<span id="cb2-34"><a href="#cb2-34"></a><span class="co">        tol: Tolerancja (dokładność).</span></span>
+<span id="cb2-35"><a href="#cb2-35"></a><span class="co">        max_iter: Maksymalna liczba iteracji.</span></span>
+<span id="cb2-36"><a href="#cb2-36"></a></span>
+<span id="cb2-37"><a href="#cb2-37"></a><span class="co">    Returns:</span></span>
+<span id="cb2-38"><a href="#cb2-38"></a><span class="co">        Przybliżone miejsce zerowe lub None, jeśli nie znaleziono.</span></span>
+<span id="cb2-39"><a href="#cb2-39"></a></span>
+<span id="cb2-40"><a href="#cb2-40"></a><span class="co">    """</span></span>
+<span id="cb2-41"><a href="#cb2-41"></a>    <span class="cf">if</span> func(a) <span class="op">*</span> func(b) <span class="op">&gt;=</span> <span class="dv">0</span>:</span>
+<span id="cb2-42"><a href="#cb2-42"></a>        <span class="cf">return</span> <span class="va">None</span>  <span class="co"># Brak gwarancji istnienia miejsca zerowego</span></span>
+<span id="cb2-43"><a href="#cb2-43"></a></span>
+<span id="cb2-44"><a href="#cb2-44"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(max_iter):</span>
+<span id="cb2-45"><a href="#cb2-45"></a>        c <span class="op">=</span> (a <span class="op">+</span> b) <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb2-46"><a href="#cb2-46"></a>        <span class="cf">if</span> <span class="bu">abs</span>(func(c)) <span class="op">&lt;</span> tol:</span>
+<span id="cb2-47"><a href="#cb2-47"></a>            <span class="cf">return</span> c</span>
+<span id="cb2-48"><a href="#cb2-48"></a>        <span class="cf">if</span> func(c) <span class="op">*</span> func(a) <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb2-49"><a href="#cb2-49"></a>            b <span class="op">=</span> c</span>
+<span id="cb2-50"><a href="#cb2-50"></a>        <span class="cf">else</span>:</span>
+<span id="cb2-51"><a href="#cb2-51"></a>            a <span class="op">=</span> c</span>
+<span id="cb2-52"><a href="#cb2-52"></a>    <span class="cf">return</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Mierzymy czas:</p>
-<div id="5fe301f5" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">import</span> math</span>
-<span id="cb2-2"><a href="#cb2-2"></a></span>
-<span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="kw">def</span> atan_minus_1(x):</span>
-<span id="cb2-5"><a href="#cb2-5"></a>    <span class="cf">return</span> math.atan(x) <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a></span>
-<span id="cb2-7"><a href="#cb2-7"></a></span>
-<span id="cb2-8"><a href="#cb2-8"></a>n_max <span class="op">=</span> <span class="dv">1_000</span></span>
-<span id="cb2-9"><a href="#cb2-9"></a>repeat <span class="op">=</span> <span class="dv">1_000</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a>ns <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, n_max <span class="op">+</span> <span class="dv">1</span>))</span>
-<span id="cb2-11"><a href="#cb2-11"></a>measure_bisection_time <span class="op">=</span> measure_time(bisection, repeat<span class="op">=</span>repeat)</span>
-<span id="cb2-12"><a href="#cb2-12"></a>time_lists <span class="op">=</span> [(n, measure_bisection_time(atan_minus_1, <span class="fl">0.0</span>, <span class="fl">10.0</span> <span class="op">*</span> n)) <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
-<span id="cb2-13"><a href="#cb2-13"></a>time_points <span class="op">=</span> [</span>
-<span id="cb2-14"><a href="#cb2-14"></a>    (<span class="bu">float</span>(n), time)</span>
-<span id="cb2-15"><a href="#cb2-15"></a>    <span class="cf">for</span> n, times <span class="kw">in</span> time_lists</span>
-<span id="cb2-16"><a href="#cb2-16"></a>    <span class="cf">for</span> time <span class="kw">in</span> times[repeat <span class="op">//</span> <span class="dv">3</span> : <span class="op">-</span>repeat <span class="op">//</span> <span class="dv">3</span>]</span>
-<span id="cb2-17"><a href="#cb2-17"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="07ec6ae6" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">import</span> math</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="kw">def</span> atan_minus_1(x):</span>
+<span id="cb3-5"><a href="#cb3-5"></a>    <span class="cf">return</span> math.atan(x) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a></span>
+<span id="cb3-8"><a href="#cb3-8"></a>n_max <span class="op">=</span> <span class="dv">1_000</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>repeat <span class="op">=</span> <span class="dv">1_000</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a>ns <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, n_max <span class="op">+</span> <span class="dv">1</span>))</span>
+<span id="cb3-11"><a href="#cb3-11"></a>measure_bisection_time <span class="op">=</span> measure_time(bisection, repeat<span class="op">=</span>repeat)</span>
+<span id="cb3-12"><a href="#cb3-12"></a>time_lists <span class="op">=</span> [(n, measure_bisection_time(atan_minus_1, <span class="fl">0.0</span>, <span class="fl">10.0</span> <span class="op">*</span> n)) <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
+<span id="cb3-13"><a href="#cb3-13"></a>time_points <span class="op">=</span> [</span>
+<span id="cb3-14"><a href="#cb3-14"></a>    (<span class="bu">float</span>(n), time)</span>
+<span id="cb3-15"><a href="#cb3-15"></a>    <span class="cf">for</span> n, times <span class="kw">in</span> time_lists</span>
+<span id="cb3-16"><a href="#cb3-16"></a>    <span class="cf">for</span> time <span class="kw">in</span> times[repeat <span class="op">//</span> <span class="dv">3</span> : <span class="op">-</span>repeat <span class="op">//</span> <span class="dv">3</span>]</span>
+<span id="cb3-17"><a href="#cb3-17"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Przedstawiamy na wykresie:</p>
-<div id="34402c16" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb3-2"><a href="#cb3-2"></a></span>
-<span id="cb3-3"><a href="#cb3-3"></a>x, y <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>time_points)</span>
-<span id="cb3-4"><a href="#cb3-4"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
-<span id="cb3-5"><a href="#cb3-5"></a>ax.plot(x, y, <span class="st">"o"</span>, color<span class="op">=</span><span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="30ff2036" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a>x, y <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>time_points)</span>
+<span id="cb4-4"><a href="#cb4-4"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb4-5"><a href="#cb4-5"></a>ax.plot(x, y, <span class="st">"o"</span>, color<span class="op">=</span><span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="pwr-programming-2025_files/figure-html/cell-4-output-1.png" width="583" height="411" class="figure-img"></p>
+<p><img src="pwr-programming-2025_files/figure-html/cell-5-output-1.png" width="583" height="411" class="figure-img"></p>
 </figure>
 </div>
 </div>
