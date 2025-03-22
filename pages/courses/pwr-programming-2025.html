@@ -216,7 +216,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <p>Conajmniej pierwsze 3 listy będziemy robić na zajęciach, w systemie deklaracyjnym. Po zajęciach proszę o przesłanie rozwiązań. Kolejne listy zadań będą w formie zadań domowych, do zrobienia i przesłania przed zajęciami. Rozwiązania będą omiawiane i wyrywkowo sprawdzane w trakcie zajęć.</p>
 <p>Nazwa pliku z rozwiązaniami listy <code>x</code> powinna być następująca <code>{nr_indeksu}_lista_{x}.py</code>. Struktura pliku poniższa:</p>
-<div id="236b4738" class="cell" data-execution_count="1">
+<div id="b490a4a6" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Funkcje pomocnicze do zadania 1</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a></span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="kw">def</span> zadanie_1(): ...</span>
@@ -252,30 +252,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="listy-zadań-1" class="level2">
 <h2 data-anchor-id="listy-zadań-1">Listy zadań</h2>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Lista 1</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Lista 1</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Lista 2</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <p>Komentarze i ciekawostki:</p>
 <ul>
 <li><p>Zdefiniowana funkcja “zna” swoją nazwę (i dużo więcej o sobie). Poniższa funkcja ma też docstring oraz zdefinowane typy wejścia i wyjścia. Zarówno anotacje, jak i magiczne metody zaczynające się od <code>__</code> pojawią się dalej na wykładzie.</p>
-<div id="80c2f31b" class="cell" data-execution_count="2">
+<div id="77879059" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">def</span> minimum(lista: <span class="bu">list</span>[<span class="bu">int</span>]) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
 <span id="cb2-2"><a href="#cb2-2"></a>    <span class="co">"""Szukamy minimum."""</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a>    <span class="cf">return</span> <span class="bu">min</span>(lista)</span>
 <span id="cb2-4"><a href="#cb2-4"></a></span>
 <span id="cb2-5"><a href="#cb2-5"></a></span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="bu">print</span>(minimum.<span class="va">__name__</span>)</span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="bu">print</span>(minimum.__doc__)</span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="bu">print</span>(minimum.__annotations__)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="kw">def</span> maksimum(lista: <span class="bu">list</span>[<span class="bu">int</span>]) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb2-7"><a href="#cb2-7"></a>    <span class="co">"""Szukamy maksimum."""</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>    <span class="cf">return</span> <span class="bu">max</span>(lista)</span>
+<span id="cb2-9"><a href="#cb2-9"></a></span>
+<span id="cb2-10"><a href="#cb2-10"></a></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="cf">for</span> funkcja <span class="kw">in</span> [maksimum, minimum]:</span>
+<span id="cb2-12"><a href="#cb2-12"></a>    <span class="bu">print</span>(funkcja.<span class="va">__name__</span>)</span>
+<span id="cb2-13"><a href="#cb2-13"></a>    <span class="bu">print</span>(funkcja.__doc__)</span>
+<span id="cb2-14"><a href="#cb2-14"></a>    <span class="bu">print</span>(funkcja.__annotations__)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>minimum
+<pre><code>maksimum
+Szukamy maksimum.
+{'lista': list[int], 'return': &lt;class 'int'&gt;}
+minimum
 Szukamy minimum.
 {'lista': list[int], 'return': &lt;class 'int'&gt;}</code></pre>
 </div>
 </div></li>
 </ul>
 <p>Przykładowe podejście do zadania 2, inne od wykładowego. Definujemy funkcję bisekcji oraz dekorator do pomiaru czasu:</p>
-<div id="371ef05c" class="cell" data-execution_count="3">
+<div id="2b1bd36b" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="im">import</span> math</span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="im">from</span> time <span class="im">import</span> perf_counter_ns</span>
 <span id="cb4-3"><a href="#cb4-3"></a></span>
@@ -330,7 +339,7 @@ Szukamy minimum.
 <span id="cb4-52"><a href="#cb4-52"></a>    <span class="cf">return</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Mierzymy czas:</p>
-<div id="fe037165" class="cell" data-execution_count="4">
+<div id="54b0b0c9" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="im">import</span> math</span>
 <span id="cb5-2"><a href="#cb5-2"></a></span>
 <span id="cb5-3"><a href="#cb5-3"></a></span>
@@ -350,7 +359,7 @@ Szukamy minimum.
 <span id="cb5-17"><a href="#cb5-17"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Przedstawiamy na wykresie:</p>
-<div id="ea5b00fd" class="cell" data-execution_count="5">
+<div id="f1d1992f" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb6-2"><a href="#cb6-2"></a></span>
 <span id="cb6-3"><a href="#cb6-3"></a>x, y <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>time_points)</span>
@@ -359,11 +368,14 @@ Szukamy minimum.
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="pwr-programming-2025_files/figure-html/cell-6-output-1.png" width="592" height="411" class="figure-img"></p>
+<p><img src="pwr-programming-2025_files/figure-html/cell-6-output-1.png" width="583" height="414" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>xs</p>
 </div>
 </div>
 </div>
