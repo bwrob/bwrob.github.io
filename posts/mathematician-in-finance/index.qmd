@@ -9,7 +9,29 @@ date-modified: "2025-03-15"
 categories: [Career]
 ---
 
-## Required skillsets
+## Financial Markets
+
+Financial markets are complex ecosystems where assets like stocks, bonds, and derivatives are traded. These markets facilitate the flow of capital between investors and businesses, driving economic growth.
+
+They are characterized by:
+    * Constant change and volatility.
+    * Large volumes of data.
+    * Interconnectedness of global economies.
+    * The need for precise valuation and risk assessment.
+
+## The Role of Mathematicians
+
+* **Modeling Uncertainty:** Financial markets are inherently uncertain. Mathematicians use probability and statistics to model and quantify this uncertainty, allowing for better risk management.
+* **Precise Valuation:** Many financial instruments, especially derivatives, require complex mathematical models for accurate pricing. Stochastic calculus, partial differential equations, and numerical methods are essential tools.
+* **Risk Management:** Mathematicians develop sophisticated models to measure and manage various types of financial risk, including market risk, credit risk, and operational risk. This ensures the stability and resilience of financial institutions.
+* **Algorithmic Trading:** High-frequency trading and other algorithmic strategies rely heavily on mathematical optimization and statistical analysis to identify and exploit market opportunities.
+* **Data Analysis:** The sheer volume of financial data necessitates advanced mathematical and statistical techniques for analysis and interpretation. Mathematicians are skilled at extracting meaningful insights from complex datasets.
+* **Optimization:** Portfolio optimization and other financial problems involve finding the best possible solution within given constraints. Mathematical optimization techniques are crucial for achieving optimal outcomes.
+* **Regulatory Compliance:** Increasingly, financial regulations require rigorous quantitative analysis and model validation. Mathematicians play a key role in ensuring compliance with these regulations.
+
+
+
+## Quantitative Analyst Flavours
 ```{python}
 # | echo: false
 # | output: asis
@@ -18,88 +40,106 @@ categories: [Career]
 from IPython.display import display, Markdown
 import plotly.graph_objects as go
 import yfinance as yf
+import dataclasses
+
+import dataclasses
+
+
+@dataclasses.dataclass
+class QuantType:
+    skills: dict[str, int]
+    description: str
+
 
 job_skills = {
-    "Office Quant": {
-        "Programming": 2,
-        "Financial Modeling": 3,
-        "Quantitative Analysis": 3,
-        "Data Analysis": 2,
-        "Domain Knowledge": 3,
-    },
-    "Quant Developer": {
-        "Programming": 3,
-        "Software Engineering": 3,
-        "Algorithm Development": 3,
-        "Data Management": 2,
-        "High-Performance Computing": 2,
-    },
-    "Market Risk Quant": {
-        "Programming": 2,
-        "Risk Modeling": 3,
-        "Quantitative Analysis": 3,
-        "Data Analysis": 3,
-        "Regulatory Knowledge": 2,
-    },
-    "Validation Quant": {
-        "Programming": 2,
-        "Model Validation": 3,
-        "Quantitative Analysis": 3,
-        "Data Analysis": 2,
-        "Regulatory Knowledge": 3,
-    },
-    "Quant Researcher": {
-        "Programming": 3,
-        "Statistical Learning": 3,
-        "Quantitative Analysis": 3,
-        "Data Mining": 2,
-        "Mathematical Modeling": 3,
-    },
-    "Algorithmic Trader (Quant)": {
-        "Programming": 3,
-        "Quantitative Analysis": 3,
-        "Market Microstructure": 3,
-        "Data Management": 2,
-        "Low-Latency Programming": 2,
-    },
-    "Credit Risk Quant": {
-        "Programming": 2,
-        "Credit Modeling": 3,
-        "Quantitative Analysis": 3,
-        "Data Analysis": 3,
-        "Domain Knowledge": 2,
-    },
-    "Structured Products Quant": {
-        "Programming": 2,
-        "Financial Modeling": 3,
-        "Quantitative Analysis": 3,
-        "Domain Knowledge": 3,
-        "Communication": 2,
-    },
-    "Portfolio Construction Quant": {
-        "Programming": 2,
-        "Optimization": 3,
-        "Quantitative Analysis": 3,
-        "Data Analysis": 3,
-        "Risk Management": 2,
-    },
+    "Front Office Quant": QuantType(
+        skills={
+            "Programming": 2,
+            "Financial Modeling": 3,
+            "Quantitative Analysis": 3,
+            "Data Analysis": 2,
+            "Domain Knowledge": 3,
+        },
+        description="Develops and applies quantitative models for pricing, risk management, and trading strategies within a financial institution's front office.",
+    ),
+    "Quant Developer": QuantType(
+        skills={
+            "Programming": 3,
+            "Software Engineering": 3,
+            "Algorithm Development": 3,
+            "Data Management": 2,
+            "High-Performance Computing": 2,
+        },
+        description="Designs and implements software solutions for quantitative trading systems, risk management platforms, and financial modeling tools.",
+    ),
+    "Market Risk Quant": QuantType(
+        skills={
+            "Programming": 2,
+            "Risk Modeling": 3,
+            "Quantitative Analysis": 3,
+            "Data Analysis": 3,
+            "Regulatory Knowledge": 2,
+        },
+        description="Develops and validates models for measuring and managing market risk, ensuring compliance with regulatory requirements.",
+    ),
+    "Validation Quant": QuantType(
+        skills={
+            "Programming": 2,
+            "Model Validation": 3,
+            "Quantitative Analysis": 3,
+            "Data Analysis": 2,
+            "Regulatory Knowledge": 3,
+        },
+        description="Independently assesses and validates financial models developed by other quants, ensuring their accuracy and robustness.",
+    ),
+    "Quant Researcher": QuantType(
+        skills={
+            "Programming": 3,
+            "Statistical Learning": 3,
+            "Quantitative Analysis": 3,
+            "Data Mining": 2,
+            "Mathematical Modeling": 3,
+        },
+        description="Conducts cutting-edge research in quantitative finance, developing new models and techniques for trading, risk management, and asset pricing.",
+    ),
+    "Algorithmic Trader": QuantType(
+        skills={
+            "Programming": 3,
+            "Quantitative Analysis": 3,
+            "Market Microstructure": 3,
+            "Data Management": 2,
+            "Low-Latency Programming": 2,
+        },
+        description="Develops and implements automated trading strategies using quantitative models and algorithms, often focusing on high-frequency trading.",
+    ),
+    "Credit Risk Quant": QuantType(
+        skills={
+            "Programming": 2,
+            "Credit Modeling": 3,
+            "Quantitative Analysis": 3,
+            "Data Analysis": 3,
+            "Domain Knowledge": 2,
+        },
+        description="Develops and validates models for measuring and managing credit risk, assessing the likelihood of borrower default.",
+    ),
 }
 
 all_skills = set()
-for skills in job_skills.values():
-    all_skills.update(skills.keys())
+for data in job_skills.values():
+    all_skills.update(data.skills.keys())
 all_skills = list(all_skills)
 
 
 tabs = all_skills
 display(Markdown(":::{.panel-tabset}"))
 
-for job_title, skills in job_skills.items():
+for job_title, data in job_skills.items():
     display(Markdown("\n"))
     display(Markdown("### {}".format(job_title)))
     display(Markdown("\n"))
+    display(Markdown(data.description))
 
-    skill_values = [skills.get(skill, 0) for skill in all_skills]
+    skill_values = [data.skills.get(skill, 0) for skill in all_skills]
     fig = go.Figure(
         data=[
             go.Bar(
@@ -121,3 +161,90 @@ for job_title, skills in job_skills.items():
 
 display(Markdown(":::"))
 ```
+
+## The Daily Quant Experience
+
+The life of a quantitative analyst extends far beyond just crunching numbers. It's a dynamic blend of technical expertise and interpersonal skills.
+
+* **Keeping up to date**
+    * Quants often start by reviewing market data, news, and reports, staying updated on global financial trends.
+    * This requires **attention to detail** and the ability to quickly grasp complex information.
+* **Model Development and Testing:**
+    * A significant portion of the day is spent developing, refining, or testing quantitative models.
+    * This involves coding, statistical analysis, and rigorous testing, demanding strong **problem-solving** abilities and **analytical thinking**.
+* **Collaboration and Communication:**
+    * Quants work closely with traders, risk managers, and developers.
+    * Explaining complex models and findings to non-technical colleagues is crucial, highlighting the importance of **clear communication**.
+    * Working in teams requires great **collaboration** skills.
+* **Problem-Solving Under Pressure:**
+    * Financial markets can be volatile, requiring quants to adapt quickly to changing conditions.
+    * This demands **adaptability** and the ability to remain calm under pressure.
+    * The amount of pressure varies significantly between positions.
+* **Continuous Learning:**
+    * The field of quantitative finance is constantly evolving, requiring quants to stay up-to-date with new techniques and technologies.
+    * A commitment to **lifelong learning** is essential, wich can make it fun.
+* **Regulatory Compliance:**
+    * Many quants spend time making sure that models and processes comply with the current rules. This requires great **attention to detail**, and an ability to understand complex documents.
+
+## Potential Employers
+
+:::{.panel-tabset}
+
+### Wrocław
+
+* UBS
+
+### Poland
+
+* HSBC
+*
+
+:::
+
+## Q&A
+
+**Career Paths and Opportunities:**
+
+* What career opportunities are available for a mathematics graduate?
+* What were your career choices and how did they shape your path?
+* What are the general trends in the job market for mathematicians?
+* Is it worth pursuing a Ph.D. for a career outside academia? Does a Ph.D. give a better negotiating position, or is 4 years of industry experience better?
+* What are the prospects for starting your own company? Do you know any successful alumni entrepreneurs?
+* What fields can I transition to after a Bachelor's or Master's degree in mathematics?
+* Are postgraduate studies like MBA or project management certifications valuable?
+* Are there any useful certificates or training courses?
+* What are the benefits of doing a doctorate, or working during a doctorate?
+* What to do after completing a doctorate - is it worth taking up employment at the university, or is it not worth it (assuming work in a corporation).
+* What are the benefits of participating in Erasmus, international internships, or doctoral exchanges?
+
+**Skills and Education:**
+
+* What specific mathematical skills are essential in your work? Did you have to learn anything new after graduation?
+* What kind of mathematics do you use in your work?
+* What skills are worth developing during studies to be more attractive on the job market?
+* How do studies relate to real-world job requirements, especially in data analysis?
+* What kind of skills are needed in data analysis?
+
+**Recruitment:**
+
+* What should students focus on during their studies to succeed in recruitment processes?
+* What skills are needed to successfully pass recruitment?
+
+**Work Environment and Industry Insights:**
+
+* Why do you find your current job interesting?
+* How do mathematicians communicate with non-technical managers in your company?
+* Can you tell us about your company, internship opportunities, and employee development programs?
+* What is the work culture like in your company, and how do you foster interpersonal relationships?
+* Has there been an increase in online work after the COVID-19 pandemic?
+* How is artificial intelligence used in your field, and will it replace mechanical mathematical work?
+
+**Personal Advice:**
+
+* If you had a mathematically talented child in college, what advice would you give them?
+
+**Class Logistics:**
+
+* What are the student demographics (Bachelor's/Master's, specializations, language of instruction)?
+* What topics will be covered before your lecture?
+* Can the lecture be shortened to one hour if necessary?
