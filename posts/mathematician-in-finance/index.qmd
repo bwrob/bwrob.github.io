@@ -1,0 +1,273 @@
+---
+title: "Mathematician in the financial markets (PL)"
+description: "How to survive in the whirlpool of finance."
+author: "bwrob"
+
+date: "2025-03-22"
+date-modified: "2025-03-22"
+
+categories: [Career]
+
+image: financial_whirlpool.png
+
+format-links: [html]
+---
+![](financial_whirlpool.png){width="95%" fig-align="center"}
+
+## Summary
+
+This post accompanies a lecture I delivered at the University of Wroclaw on career planning for mathematicians. It explores the skills, roles, and opportunities in the financial industry, highlighting how mathematical expertise can be applied to areas like risk management, quantitative analysis, and algorithmic trading.
+
+## Rynki Finansowe
+
+Rynki finansowe to złożone ekosystemy, w których handluje się aktywami, takimi jak akcje, obligacje i instrumenty pochodne. Rynki te ułatwiają przepływ kapitału między inwestorami a przedsiębiorstwami, napędzając wzrost gospodarczy. Pozwalają takze na transfer już istniejącego ryzyka finansowego.
+
+Charakteryzują się:
+
+* Ciągłymi zmianami i zmiennością.
+* Ogromnymi wolumenami danych.
+* Wzajemnymi powiązaniami globalnych gospodarek.
+* Potrzebą precyzyjnej wyceny i oceny ryzyka.
+
+## Rola Matematyków
+
+* **Modelowanie Niepewności:** Rynki finansowe są z natury niepewne. Matematycy wykorzystują rachunek prawdopodobieństwa i statystykę do modelowania i kwantyfikacji tej niepewności, co pozwala na lepsze zarządzanie ryzykiem.
+* **Precyzyjna Wycena:** Wiele instrumentów finansowych, zwłaszcza instrumentów pochodnych, wymaga złożonych modeli matematycznych do dokładnej wyceny. Rachunek stochastyczny, równania różniczkowe cząstkowe i metody numeryczne są niezbędnymi narzędziami.
+* **Zarządzanie Ryzykiem:** Matematycy opracowują zaawansowane modele do pomiaru i zarządzania różnymi rodzajami ryzyka finansowego, w tym ryzykiem rynkowym, kredytowym i operacyjnym. Zapewnia to stabilność i odporność instytucji finansowych.
+* **Handel Algorytmiczny:** Handel wysokiej częstotliwości i inne strategie algorytmiczne w dużym stopniu opierają się na optymalizacji matematycznej i analizie statystycznej w celu identyfikacji i wykorzystania możliwości rynkowych.
+* **Analiza Danych:** Ogromna ilość danych finansowych wymaga zaawansowanych technik matematycznych i statystycznych do analizy i interpretacji. Matematycy są biegli w wydobywaniu istotnych informacji ze złożonych zbiorów danych.
+* **Optymalizacja:** Optymalizacja portfela i inne problemy finansowe polegają na znalezieniu najlepszego możliwego rozwiązania w danych ograniczeniach. Techniki optymalizacji matematycznej są kluczowe dla osiągnięcia optymalnych wyników.
+* **Zgodność z Regulacjami:** Coraz częściej przepisy finansowe wymagają rygorystycznej analizy ilościowej i walidacji modeli. Matematycy odgrywają kluczową rolę w zapewnieniu zgodności z tymi przepisami.
+
+## Rodzaje analityków ilościowych
+
+```{python}
+# | echo: false
+# | output: asis
+# | collapse: true
+
+from IPython.display import display, Markdown
+import plotly.graph_objects as go
+import yfinance as yf
+import dataclasses
+
+import dataclasses
+
+
+@dataclasses.dataclass
+class QuantType:
+    skills: dict[str, int]
+    description: str
+
+
+job_skills = {
+    "Front Office Quant": QuantType(
+        skills={
+            "Analiza Danych": 1,
+            "Inżynieria Oprogramowania": 1,
+            "Matematyka Finansowa": 3,
+            "Programowanie": 3,
+            "Wiedza Finansowa": 3,
+            "Wiedza Regulacyjna": 1,
+        },
+        description="Opracowuje i stosuje modele ilościowe do wyceny, zarządzania ryzykiem i strategii handlowych w dziale transakcyjnym instytucji finansowej.",
+    ),
+
+    "Market Risk Quant": QuantType(
+        skills={
+            "Analiza Danych": 1,
+            "Modelowanie Ryzyka": 3,
+            "Matematyka Finansowa": 2,
+            "Programowanie": 2,
+            "Wiedza Finansowa": 2,
+            "Wiedza Regulacyjna": 2,
+        },
+        description="Opracowuje i waliduje modele do pomiaru i zarządzania ryzykiem rynkowym, zapewniając zgodność z wymogami regulacyjnymi.",
+    ),
+    "Credit Risk Quant": QuantType(
+        skills={
+            "Analiza Danych": 2,
+            "Modelowanie Ryzyka": 3,
+            "Matematyka Finansowa": 3,
+            "Programowanie": 2,
+            "Inżynieria Oprogramowania": 1,
+            "Wiedza Finansowa": 2,
+        },
+        description="Opracowuje i waliduje modele do pomiaru i zarządzania ryzykiem kredytowym, oceniając prawdopodobieństwo niewypłacalności pożyczkobiorcy.",
+    ),
+    "Validation Quant": QuantType(
+        skills={
+            "Analiza Danych": 1,
+            "Matematyka Finansowa": 3,
+            "Programowanie": 2,
+            "Walidacja Modeli": 3,
+            "Wiedza Regulacyjna": 3,
+        },
+        description="Niezależnie ocenia i waliduje modele finansowe opracowane przez innych kwantów, zapewniając ich dokładność i solidność.",
+    ),
+    "Quant Researcher": QuantType(
+        skills={
+            "Eksploracja Danych": 2,
+            "Programowanie": 2,
+            "Uczenie Statystyczne": 3,
+            "Matematyka Finansowa": 3,
+            "Wiedza Finansowa": 3,
+        },
+        description="Prowadzi nowatorskie badania w dziedzinie finansów ilościowych, opracowując nowe modele i techniki handlu, zarządzania ryzykiem i wyceny aktywów.",
+    ),
+    "Algorithmic Trader": QuantType(
+        skills={
+            "Eksploracja Danych": 2,
+            "Inżynieria Oprogramowania": 2,
+            "Mikrostruktura Rynku": 3,
+            "Programowanie": 3,
+            "Wiedza Finansowa": 3,
+            "Zarządzanie Danymi": 2,
+            "Uczenie Statystyczne": 3,
+        },
+        description="Opracowuje i wdraża zautomatyzowane strategie handlowe przy użyciu modeli ilościowych i algorytmów, często koncentrując się na handlu wysokiej częstotliwości.",
+    ),
+    "Quant Developer": QuantType(
+        skills={
+            "Inżynieria Oprogramowania": 3,
+            "Matematyka Finansowa": 1,
+            "Programowanie": 3,
+            "Projektowanie Algorytmów": 3,
+            "Wiedza Finansowa": 2,
+            "Wiedza Regulacyjna": 1,
+            "Zarządzanie Danymi": 2,
+        },
+        description="Projektuje i wdraża rozwiązania programowe dla systemów handlu ilościowego, platform zarządzania ryzykiem i narzędzi modelowania finansowego.",
+    ),
+
+}
+
+all_skills = set()
+for data in job_skills.values():
+    all_skills.update(data.skills.keys())
+all_skills = tuple(reversed(sorted(all_skills)))
+
+
+tabs = all_skills
+display(Markdown(":::{.panel-tabset}"))
+
+for job_title, data in job_skills.items():
+    display(Markdown("\n"))
+    display(Markdown("### {}".format(job_title)))
+    display(Markdown("\n"))
+    display(Markdown(data.description))
+
+    skill_values = [data.skills.get(skill, 0) for skill in all_skills]
+    fig = go.Figure(
+        data=[
+            go.Bar(
+                y=all_skills,
+                x=skill_values,
+                orientation="h",
+            )
+        ]
+    )
+
+    fig.update_layout(
+        title=f"Skill Levels - {job_title}",
+        xaxis_showgrid=False,
+        xaxis=dict(tickmode="linear", tick0=0, dtick=1),
+        width=700,
+    )
+
+    display(fig)
+
+display(Markdown(":::"))
+```
+
+## Codzienne Doświadczenia Quanta
+
+Życie analityka ilościowego wykracza daleko poza samo przetwarzanie liczb. To różnorodne połączenie wiedzy technicznej i umiejętności interpersonalnych.
+
+* **Bycie na bieżąco**
+    * Niektóre profesje wymagają stałej znajomości przeglądu danych rynkowych, wiadomości i raportów, aby być na bieżąco z globalnymi trendami finansowymi.
+    * Wymaga to **dbałości o szczegóły** i umiejętności szybkiego przyswajania złożonych informacji.
+* **Rozwój i Testowanie Modeli:**
+    * Znaczną część dnia poświęca się na rozwój, udoskonalanie lub testowanie modeli ilościowych.
+    * Obejmuje to kodowanie, analizę statystyczną i rygorystyczne testowanie, co wymaga silnych umiejętności **rozwiązywania problemów** i **myślenia analitycznego**.
+* **Współpraca i Komunikacja:**
+    * Quanci ściśle współpracują z traderami, menedżerami ryzyka i programistami.
+    * Wyjaśnianie złożonych modeli i wyników nietechnicznym współpracownikom jest kluczowe, co podkreśla znaczenie **jasnej komunikacji**.
+    * Praca w zespołach wymaga doskonałych umiejętności **współpracy**.
+* **Rozwiązywanie Problemów pod Presją:**
+    * Rynki finansowe mogą być niestabilne, co wymaga od kwantów szybkiego dostosowywania się do zmieniających się warunków.
+    * Wymaga to **zdolności adaptacji** i umiejętności zachowania spokoju pod presją.
+    * Poziom presji znacznie różni się w zależności od stanowiska.
+* **Ciągłe Uczenie się:**
+    * Dziedzina finansów ilościowych stale się rozwija, co wymaga od kwantów bycia na bieżąco z nowymi technikami i technologiami.
+    * Zaangażowanie w **całożyciowe uczenie się** jest niezbędne, co może sprawić, że praca jest ciekawa.
+* **Zgodność z Regulacjami:**
+    * Wielu quantów spędza czas na upewnianiu się, że modele i procesy są zgodne z obowiązującymi przepisami. Wymaga to dużej **dbałości o szczegóły** i umiejętności rozumienia złożonych dokumentów.
+
+## Potencjali pracodawcy
+
+:::{.panel-tabset}
+
+### Wrocław
+
+* Allianz Deutchland (ubezpieczenia)
+* BNY Mellon
+* EY (konsulting)
+* Qube RT
+* Santander
+* UBS
+
+### Polska
+
+* Citi
+* Commerzbank
+* Goldman Sachs
+* HSBC
+* mBank
+* Natwest
+* Point 72
+* Revolut
+* Standard Chartered
+
+:::
+
+## Przegląd mojej edukacji i kariery
+
+[Resume](../../pages/resume.qmd)
+
+## Pytania i Odpowiedzi
+
+:::{.panel-tabset}
+
+
+### Ścieżki Kariery i Możliwości:
+
+* Jakie są ogólne możliwości kariery dla absolwenta matematyki?
+* Jakie są perspektywy założenia własnej firmy? Czy znasz jakichś absolwentów, którym się to udało?
+* Czy po pandemii COVID-19 mamy więcej pracy online?
+* Korzyści ze zrobienia doktoratu, czy doktorat daje lepszą pozycję przetargową, co lepsze doktorat czy 4 lata doświadczenia w różnych firmach?
+
+### Umiejętności i Edukacja:
+
+* Jakiej matematyki używa Pan w pracy? Co trzeba umieć i czy musiał się Pan czegoś douczyć? Na co studenci mają zwrócić uwagę na studiach?
+* Jakie umiejętności warto rozwijać podczas studiów, aby być bardziej atrakcyjnym na rynku pracy?
+* Czy warto się przykładać do podstawowych przedmiotów, które są na I i II roku? Czy podstawy są ważne? Studenci często szybko biorą przedmioty bardziej specjalistyczne, a te podstawowe zaliczają byle zaliczyć.
+* Jak ocenia Pan wartość magisterium? Co było niepotrzebne w naszym programie studiów, a co wartościowe?
+* Na jakie dziedziny mogę się przenieść po licencjacie lub magisterium z matematyki?
+* Czy studia podyplomowe, takie jak MBA lub certyfikaty zarządzania projektami, są wartościowe? Czy są jakieś przydatne certyfikaty lub kursy szkoleniowe?
+
+### Rekrutacja:
+
+* Na czym powinni skupić się studenci podczas studiów, aby odnieść sukces w procesach rekrutacyjnych?
+* Jakie umiejętności są potrzebne, aby pomyślnie przejść rekrutację? Czego student ma się nauczyć, aby z sukcesem przejść rekrutację?
+* Jak szukać ofert pracy, jak je zrozumieć? Jak przygotowac się do rozmowy rekrutacyjnej?
+
+### Środowisko Pracy i Wiedza o Branży:
+
+* Dlaczego uważa Pan swoją obecną pracę za interesującą?
+* Jak matematycy komunikują się z nietechnicznymi menedżerami w Pana firmie?
+* Czy może Pan opowiedzieć nam o swojej firmie, możliwościach stażu i programach rozwoju pracowników? Jak wygląda kultura pracy w Pana firmie?
+* Jak sztuczna inteligencja jest wykorzystywana w Pana dziedzinie i czy zastąpi mechaniczną pracę matematyczną?
+
+
+:::
