@@ -1,10 +1,6 @@
 ---
 title: "Wstęp do programowania (PWr Zima 2024)"
 
-toc: true
-toc-depth: 3
-toc-expand: true
-
 about:
   template: marquee
 ---
@@ -50,23 +46,12 @@ Można się łączyć w grupy w obrębie moich 2 zajęć (wtorek 7:30 i czwartek
 Punkty zostaną przydzielone na zasadzie normalizacji rozkładu aktywności na zajęciach. Gwarantuję, że jedna *duża* aktywność (np. przedstawienie pełnego rozwiązania z listy) będzie dawała co najmniej jeden punkt.
 :::
 
-## Notki z zajęć
+
+## Python
 
 :::{.panel-tabset}
 
-### Wstęp
-
-1. Po co matematykowi komputer?
-2. Co i dlaczego będzie na kursie?
-3. Organizacja pracy i zasady zaliczenia.
-4. Czym jest język programowania?
-5. Charakterystyka języka Python.
-6. Środowisko programistyczne Jupyter Notebook.
-7. Podstawy języka znacznikowego Markdown.
-
-
-
-### Przykłady Jupyter
+### Przykłady zeszytów Jupyter
 
 Przykłady ilustrujące wachlarz możliwości zeszytów Jupyter i Markdown w zastosowaniach matematycznych.
 Wymagają one osobnych ustawień środowiska programistycznego i zewnętrznych narzędzi.
@@ -77,6 +62,11 @@ Polecam zapoznanie się z nimi czysto ilustracyjnie jako motywacja do nauki.
 - Numeryczne rozwiązanie [równań różniczkowych cząstkowych](https://www.wikiwand.com/pl/articles/R%C3%B3wnanie_r%C3%B3%C5%BCniczkowe_cz%C4%85stkowe) - [link](https://github.com/jorgensd/dolfinx-tutorial/blob/main/chapter1/fundamentals_code.ipynb)
 - Rozwiązania zadań z podstaw [algebry liniowej](https://www.wikiwand.com/pl/articles/Algebra_liniowa) - [link](https://github.com/weijie-chen/Linear-Algebra-With-Python/blob/master/notebooks/Chapter%201%20-%20Linear%20Equation%20System.ipynb)
 - Cała obecna strona została utworzona z wykorzystaniem Markdownu i Pythona korzystając z technologii [Quarto]](https://quarto.org/) - [link](https://github.com/bwrob/bwrob.github.io/blob/main/pages/courses/pwr-intro-to-cs-2024.qmd)
+
+### Komentarze do list zadań
+
+:::{.panel-tabset}
+
 
 ### Lista 1
 
@@ -273,4 +263,150 @@ Python lista 4 - funkcje.
   ```
 
   Sprawdzanie wszystkich podzielności miesznych było by bardzo niekomfortowe.
+
+### Lista 5
+
+Python lista 5 - numpy, matplotlib.
+
+[Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_5.ipynb)
+
+### Lista 6
+
+Python lista 6 - testowanie, wyjatki
+
+[Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_6.ipynb)
+
+:::
+
+:::
+
+
+## Bash i git
+
+:::{.panel-tabset}
+
+### Nawigacja systemu plików
+
+Przyklady komend uzytych na zajeciach (rozszyfrowanie ich jako zadanie dla czytelnika):
+
+```{bash}
+history -c
+pwd
+cd ~
+mkdir test
+cd test
+touch test.txt
+code test.txt
+cp test.txt test2.txt
+mv test2.txt test3.txt
+rm test2.txt
+echo "Hello World" >> test3.txt
+cat test3.txt
+wc < test3.txt
+cat test.txt test3.txt > test4.txt
+cd ..
+rm -ri test
+ls -la
+history 1 > notatki.txt
+```
+
+### Skryptowanie
+
+Przykladowy skrypt zapisany jako plik `hello.sh`:
+
+```{bash}
+#! bash
+
+echo "Hello $1 !"
+
+if [ "$1"=="Flip" ] ; then
+	echo ”Long time no see ! ”
+elif [ "$1"=="Flap" ] ; then
+	echo "What do you want?"
+else
+	echo "Who are you again ?"
+fi
+
+if ! [ -f log.txt ] ; then
+	touch log.txt
+fi
+echo "$(date) User $1 visited." >> log.txt
+
+for i in $(seq 5 -1 1)
+do
+	echo "Konczymy za $i"
+done
+
+```
+
+Jego wykonanie:
+
+```{bash}
+chmod +x hello.sh
+./hello.sh Flap
+```
+
+Skrypt w pythonie:
+
+```{python}
+# | echo: false
+#! python3
+
+import sys
+
+print(f"Hello !")
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        for x in sys.argv[1:]:
+            print(f"Nice to meet you {x}")
+
+```
+
+Jego wykonanie:
+
+```{bash}
+chmod +x hello.py
+./hello.py Flip Flap Flop
+```
+
+### Git i GitLab
+
+Generowanie klucza SSH (warto przeczytać [oficjalne instrukcje](https://docs.gitlab.com/ee/user/ssh.html#generate-an-ssh-key-pair))
+
+```{bash}
+ssh-keygen -t ed25519 -C "imie nazwisk, indeks"
+```
+
+Klucz publiczny powinien byc w pliku `~/.ssh/id_ed25519.pub`. Na koncie GitLab powinien byc [dodany klucz publiczny SSH](https://docs.gitlab.com/ee/user/ssh.html#add-an-ssh-key-to-your-gitlab-account).
+
+Ustawienie klucza SSH w systemie lokalnym:
+
+```{bash}
+eval $(ssh-agent)
+ssh-add <sciezka klucza>
+ssh git@gitlab.com
+```
+
+Tworzymy repozytorium `lekcja-1`na stronie GitLab. Klikamy na niebieskie przycisk `Code` i kopiujemy to co pod SSH.
+
+Klonujemy repozytorium GitLab, ustawiamy uzycie klucza SSH, tworzymy gałąź `main`.
+```{bash}
+git clone <sciezka ssh>
+git config --global user.name "<imie nazwisko>"
+git config --global user.email "<email pwr>"
+git config --local gpg.format ssh
+git config --local user.signingkey /ścieżka/do/klucza/id_ec25519.pub
+git switch --create main
+```
+
+Tworzymy plik README.md, dodajemy go do repozytorium, commitujemy i pushujemy.
+```{bash}
+touch README.md
+git add README.md
+git commit -S -m "puste readme"
+git status
+git push
+```
+
 :::
