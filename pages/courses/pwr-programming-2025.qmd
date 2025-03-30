@@ -233,5 +233,31 @@ ax.plot(x, y, "o", color="blue")
 
 ### Lista 2
 
-xs
+1. W opowiastce o Alfredzie, wczytując się dokładnie, mógł on się także cofać, co oznacza przyzwolenie na ujemne rozwiązania. Przyjmowałem też rozwiązania zakładające jedynie dodatnią ilośc skoków.
+
+2. Nie robimy tak:
+
+```{python}
+def moja_funkcja(k):
+    return k
+
+nazwa = "moja_funkcja"
+wynik = eval(nazwa)(1)
+print(f"Funkcja {nazwa} daje {wynik=}")
+```
+
+Funkcja `eval` ma bardzo mało rozsądnych zastosowań, jest niebezpieczna, najlepiej zapomniec że istnieje. Zamiast tego:
+
+```{python}
+funkcja = moja_funkcja
+wynik = moja_funkcja(1)
+print(f"Funkcja {funkcja.__name__} daje {wynik=}")
+```
+
+
 :::
+
+## Polecane źródła
+
+- Python mniej poważnie. Zabawne projekty programistyczne, które zwiększą Twoje umiejętności, *Lee Vaughan*
+- Matematyka konkretna, *Graham Ronald L., Knuth Donald E., Oren Patashnik*
