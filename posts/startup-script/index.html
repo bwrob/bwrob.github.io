@@ -281,7 +281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>the public interface that integrates with the rest of the codebase or is called at the top level, <strong>the manager</strong>.</li>
 </ul>
 <p>We can start by creating the public interface, see what we want to achieve and later deal with filling in a working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:</p>
-<div id="1b484e0a" class="cell" data-execution_count="1">
+<div id="101dc221" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">def</span> run_startup_script() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb1-2"><a href="#cb1-2"></a>    <span class="co">"""Run the startup script."""</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a>    logger.info(<span class="ss">f" Welcome </span><span class="sc">{</span>os<span class="sc">.</span>getlogin()<span class="sc">}</span><span class="ss">! "</span>.center(<span class="dv">40</span>, <span class="st">"*"</span>))</span>
@@ -301,7 +301,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="decorator-defaulting-the-time-delays">Decorator defaulting the time delays</h3>
 <p>Now we can start the implementation. We want the workers to be called with a list of tasks, but a task can be either a command or a tuple including the delay. Let’s not include some complicated conditionals in each of the workers — that would be annoying and potentially get out of sync at some point.</p>
 <p>Other way to do this is to add a default delay to all non-tuple items. We can implement that as a separate defaulting function, which we would call in each worker. But — being more clever! — we could also use a decorator that changes the workers’s signature.</p>
-<div id="aa225202" class="cell" data-execution_count="2">
+<div id="5b0678f2" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> functools <span class="im">import</span> wraps</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="im">from</span> collections.abc <span class="im">import</span> Callable</span>
 <span id="cb2-3"><a href="#cb2-3"></a><span class="im">from</span> typing <span class="im">import</span> TypeVar</span>
@@ -354,7 +354,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="main-workers" class="level3">
 <h3 class="anchored" data-anchor-id="main-workers">Main workers</h3>
 <p>With the preparation done, we can start with the workers. For the programs we will be launching, we need to look up the exact paths of the executables. Let’s define a <code>Program</code> enum that would wrap those up in readable nice names. For working with system paths we will use <code>pathlib.Path</code> that provides high-level interface.</p>
-<div id="328e755b" class="cell" data-execution_count="3">
+<div id="d88a4ff6" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">from</span> enum <span class="im">import</span> Enum</span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb3-3"><a href="#cb3-3"></a></span>
@@ -367,7 +367,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-10"><a href="#cb3-10"></a>    FIREFOX <span class="op">=</span> Path(<span class="vs">r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Firefox.lnk"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Other than that, the main workers <code>start_programs</code>, <code>start_work_files</code>, and <code>run_commands</code> are simple. They just iterate over the provided <code>TaskList</code> and do the respective action for a given <code>Task</code>.</p>
-<div id="0df3de9a" class="cell" data-execution_count="4">
+<div id="1fe1663a" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="at">@with_optional_delay</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="kw">def</span> start_programs(</span>
 <span id="cb4-3"><a href="#cb4-3"></a>    programs: TaskList[Program],</span>
@@ -432,7 +432,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>filter the iteration (ex. <em>for path in directory if filter(path)</em>).</li>
 </ul>
 <p>Here we’ll have all three of them combined!</p>
-<div id="87c91707" class="cell" data-execution_count="5">
+<div id="c4e846e5" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>NAME_EXCLUDES <span class="op">=</span> (<span class="st">"$"</span>, <span class="st">"tmp"</span>)</span>
 <span id="cb5-2"><a href="#cb5-2"></a>EXT_EXCLUDES <span class="op">=</span> (<span class="st">"exe"</span>,)</span>
 <span id="cb5-3"><a href="#cb5-3"></a></span>
@@ -477,7 +477,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="interacting-with-the-os" class="level3">
 <h3 class="anchored" data-anchor-id="interacting-with-the-os">Interacting with the OS</h3>
 <p>With all of the framework prepared, the next step is to interact with the OS. To open a file, folder or run an app, we can use the <code>os.startfile</code> function. All the rest of the <code>start_process</code> function is just utility logging. For running a shell command we can use the <code>subprocess</code> module, calling powershell with the <code>powershell.exe</code> and adding the command to run.</p>
-<div id="c83e4648" class="cell" data-execution_count="6">
+<div id="3e1ae04a" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">import</span> os</span>
 <span id="cb6-2"><a href="#cb6-2"></a><span class="im">import</span> subprocess</span>
 <span id="cb6-3"><a href="#cb6-3"></a><span class="im">import</span> time</span>
