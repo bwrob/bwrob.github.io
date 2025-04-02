@@ -217,7 +217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <p>Conajmniej pierwsze 3 listy będziemy robić na zajęciach, w systemie deklaracyjnym. Po zajęciach proszę o przesłanie rozwiązań. Kolejne listy zadań będą w formie zadań domowych, do zrobienia i przesłania przed zajęciami. Rozwiązania będą omiawiane i wyrywkowo sprawdzane w trakcie zajęć.</p>
 <p>Nazwa pliku z rozwiązaniami listy <code>x</code> powinna być następująca <code>{nr_indeksu}_lista_{x}.py</code>. Struktura pliku poniższa:</p>
-<div id="47934cd9" class="cell" data-execution_count="1">
+<div id="6dd9bb0f" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Funkcje pomocnicze do zadania 1</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a></span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="kw">def</span> zadanie_1(): ...</span>
@@ -260,7 +260,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol type="1">
 <li>Zdefiniowana funkcja “zna” swoją nazwę (i wie dużo więcej o sobie). Poniższa funkcja ma też docstring oraz zdefinowane typy wejścia i wyjścia. Zarówno anotacje, jak i magiczne metody zaczynające się od <code>__</code> pojawią się dalej na wykładzie.</li>
 </ol>
-<div id="3c4520d7" class="cell" data-execution_count="2">
+<div id="c92e55df" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">def</span> minimum(lista: <span class="bu">list</span>[<span class="bu">int</span>]) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
 <span id="cb2-2"><a href="#cb2-2"></a>    <span class="co">"""Szukamy minimum."""</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a>    <span class="cf">return</span> <span class="bu">min</span>(lista)</span>
@@ -287,12 +287,12 @@ Szukamy minimum.
 <ol start="2" type="1">
 <li>W pythonie dobrą praktyką są krótkie linijki, maks 88 znaków. Łatwiej wtedy czyta się kod. Są do tego formattery, które robią to za nas. Ja polecam Ruff, dostępny jako wtyczka do VSC. Zamiast tego:</li>
 </ol>
-<div id="95abaad8" class="cell" data-execution_count="3">
+<div id="c9f4395c" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">def</span> generuj_liste_napisow_AB(dlugosc, dlugosc_napisu):</span>
 <span id="cb4-2"><a href="#cb4-2"></a>    <span class="cf">return</span> [<span class="st">''</span>.join(random.choices([<span class="st">'A'</span>, <span class="st">'B'</span>], weights<span class="op">=</span>[<span class="dv">95</span>, <span class="dv">5</span>], k<span class="op">=</span>dlugosc_napisu)) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(dlugosc)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Dostajemy:</p>
-<div id="30c4c681" class="cell" data-execution_count="4">
+<div id="6bbf22ff" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">def</span> generuj_liste_napisow_AB(dlugosc, dlugosc_napisu):</span>
 <span id="cb5-2"><a href="#cb5-2"></a>    <span class="cf">return</span> [</span>
 <span id="cb5-3"><a href="#cb5-3"></a>        <span class="st">""</span>.join(</span>
@@ -308,7 +308,7 @@ Szukamy minimum.
 <ol start="3" type="1">
 <li>Nie robimy tak:</li>
 </ol>
-<div id="c737b069" class="cell" data-execution_count="5">
+<div id="4524e08f" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">def</span> czy_jednomodalna(A):</span>
 <span id="cb6-2"><a href="#cb6-2"></a>    maksima <span class="op">=</span> maksima_lokalne(A)</span>
 <span id="cb6-3"><a href="#cb6-3"></a>    <span class="cf">if</span> <span class="bu">len</span>(maksima) <span class="op">==</span> <span class="dv">1</span>:</span>
@@ -317,14 +317,14 @@ Szukamy minimum.
 <span id="cb6-6"><a href="#cb6-6"></a>        <span class="cf">return</span> <span class="va">False</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Tylko tak:</p>
-<div id="7d840ea5" class="cell" data-execution_count="6">
+<div id="ce4356c8" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">def</span> czy_jednomodalna(A):</span>
 <span id="cb7-2"><a href="#cb7-2"></a>    <span class="cf">return</span> <span class="bu">len</span>(maksima_lokalne(A)) <span class="op">==</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="4" type="1">
 <li>Biblioteka <code>string</code> posiada dużo pomocniczych opcji w zakresie napisów. Nie musimy wymieniać liter alfabetu, wystarczy użyć:</li>
 </ol>
-<div id="661a10da" class="cell" data-execution_count="7">
+<div id="e96abbe7" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="im">import</span> string</span>
 <span id="cb8-2"><a href="#cb8-2"></a></span>
 <span id="cb8-3"><a href="#cb8-3"></a><span class="bu">print</span>(string.ascii_lowercase)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -333,7 +333,7 @@ Szukamy minimum.
 </div>
 </div>
 <p>Przykładowe podejście do zadania 2, inne od wykładowego. Definujemy funkcję bisekcji oraz dekorator do pomiaru czasu:</p>
-<div id="38f015c2" class="cell" data-execution_count="8">
+<div id="c96d6a4d" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="im">import</span> math</span>
 <span id="cb10-2"><a href="#cb10-2"></a><span class="im">from</span> time <span class="im">import</span> perf_counter_ns</span>
 <span id="cb10-3"><a href="#cb10-3"></a></span>
@@ -388,7 +388,7 @@ Szukamy minimum.
 <span id="cb10-52"><a href="#cb10-52"></a>    <span class="cf">return</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Mierzymy czas:</p>
-<div id="45307f56" class="cell" data-execution_count="9">
+<div id="64c71efa" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="im">import</span> math</span>
 <span id="cb11-2"><a href="#cb11-2"></a></span>
 <span id="cb11-3"><a href="#cb11-3"></a></span>
@@ -408,7 +408,7 @@ Szukamy minimum.
 <span id="cb11-17"><a href="#cb11-17"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Przedstawiamy na wykresie:</p>
-<div id="21c5d83b" class="cell" data-execution_count="10">
+<div id="4ad9086a" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb12-2"><a href="#cb12-2"></a></span>
 <span id="cb12-3"><a href="#cb12-3"></a>x, y <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>time_points)</span>
@@ -428,7 +428,7 @@ Szukamy minimum.
 <li><p>W opowiastce o Alfredzie, wczytując się dokładnie, mógł on się także cofać, co oznacza przyzwolenie na ujemne rozwiązania. Przyjmowałem też rozwiązania zakładające jedynie dodatnią ilośc skoków.</p></li>
 <li><p>Nie robimy tak:</p></li>
 </ol>
-<div id="5bfba535" class="cell" data-execution_count="11">
+<div id="680f479e" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">def</span> moja_funkcja(k):</span>
 <span id="cb13-2"><a href="#cb13-2"></a>    <span class="cf">return</span> k</span>
 <span id="cb13-3"><a href="#cb13-3"></a></span>
@@ -441,7 +441,7 @@ Szukamy minimum.
 </div>
 </div>
 <p>Funkcja <code>eval</code> ma bardzo mało rozsądnych zastosowań, jest niebezpieczna, najlepiej zapomniec że istnieje. Zamiast tego:</p>
-<div id="9f67b6c8" class="cell" data-execution_count="12">
+<div id="aace5214" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a>funkcja <span class="op">=</span> moja_funkcja</span>
 <span id="cb15-2"><a href="#cb15-2"></a>wynik <span class="op">=</span> moja_funkcja(<span class="dv">1</span>)</span>
 <span id="cb15-3"><a href="#cb15-3"></a><span class="bu">print</span>(<span class="ss">f"Funkcja </span><span class="sc">{</span>funkcja<span class="sc">.</span><span class="va">__name__</span><span class="sc">}</span><span class="ss"> daje </span><span class="sc">{</span>wynik<span class="op">=</span><span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -454,7 +454,7 @@ Szukamy minimum.
 <ol type="1">
 <li>W funkcji liczby_zaprzyjażnione można użyć cachowania aby dla każdej liczby liczyć jej sumę dzielników tylko raz.</li>
 </ol>
-<div id="6f5fd3a3" class="cell" data-execution_count="13">
+<div id="6a6be4d1" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">def</span> liczby_zaprzyjaźnione(N):</span>
 <span id="cb17-2"><a href="#cb17-2"></a>    liczby <span class="op">=</span> []</span>
 <span id="cb17-3"><a href="#cb17-3"></a>    sumy_dzielników <span class="op">=</span> [<span class="dv">0</span>] <span class="op">*</span> (N <span class="op">+</span> <span class="dv">1</span>)</span>
@@ -466,6 +466,104 @@ Szukamy minimum.
 <span id="cb17-9"><a href="#cb17-9"></a>                liczby.append((a, b))</span>
 <span id="cb17-10"><a href="#cb17-10"></a>    <span class="cf">return</span> liczby</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<ol start="2" type="1">
+<li>Iterując po obiekcie, chcąc znać indeks na ktorym jesteśmy używamy <code>enumerate</code>.</li>
+</ol>
+<div id="5869252f" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a>lista <span class="op">=</span> [<span class="st">"a"</span>, <span class="st">"b"</span>]</span>
+<span id="cb18-2"><a href="#cb18-2"></a></span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="co"># nie robimy tak</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a>licznik <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb18-5"><a href="#cb18-5"></a><span class="cf">for</span> litera <span class="kw">in</span> lista:</span>
+<span id="cb18-6"><a href="#cb18-6"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>licznik<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>litera<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb18-7"><a href="#cb18-7"></a>    licznik <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb18-8"><a href="#cb18-8"></a></span>
+<span id="cb18-9"><a href="#cb18-9"></a><span class="co"># tylko tak</span></span>
+<span id="cb18-10"><a href="#cb18-10"></a><span class="cf">for</span> licznik, litera <span class="kw">in</span> <span class="bu">enumerate</span>(lista):</span>
+<span id="cb18-11"><a href="#cb18-11"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>licznik<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>litera<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0: a
+1: b
+0: a
+1: b</code></pre>
+</div>
+</div>
+<ol start="3" type="1">
+<li>Sito Eratostenesa da się znacząco przyśpieszyć implementując je w <code>NumPy</code>.</li>
+</ol>
+<div id="57e86828" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb20-2"><a href="#cb20-2"></a><span class="im">import</span> time</span>
+<span id="cb20-3"><a href="#cb20-3"></a></span>
+<span id="cb20-4"><a href="#cb20-4"></a></span>
+<span id="cb20-5"><a href="#cb20-5"></a><span class="kw">def</span> sito_listowe(limit):</span>
+<span id="cb20-6"><a href="#cb20-6"></a>    <span class="co">"""</span></span>
+<span id="cb20-7"><a href="#cb20-7"></a><span class="co">    Implementacja sita Eratostenesa przy użyciu list.</span></span>
+<span id="cb20-8"><a href="#cb20-8"></a><span class="co">    """</span></span>
+<span id="cb20-9"><a href="#cb20-9"></a>    <span class="cf">if</span> limit <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb20-10"><a href="#cb20-10"></a>        <span class="cf">return</span> []</span>
+<span id="cb20-11"><a href="#cb20-11"></a>    kandydaci <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(limit))</span>
+<span id="cb20-12"><a href="#cb20-12"></a>    kandydaci[<span class="dv">0</span>] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb20-13"><a href="#cb20-13"></a>    kandydaci[<span class="dv">1</span>] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb20-14"><a href="#cb20-14"></a>    <span class="cf">for</span> liczba <span class="kw">in</span> kandydaci:</span>
+<span id="cb20-15"><a href="#cb20-15"></a>        <span class="cf">if</span> liczba <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb20-16"><a href="#cb20-16"></a>            <span class="cf">continue</span></span>
+<span id="cb20-17"><a href="#cb20-17"></a>        <span class="cf">if</span> liczba <span class="op">*</span> liczba <span class="op">&gt;=</span> limit:</span>
+<span id="cb20-18"><a href="#cb20-18"></a>            <span class="cf">break</span></span>
+<span id="cb20-19"><a href="#cb20-19"></a>        <span class="cf">for</span> wielokrotnosc <span class="kw">in</span> <span class="bu">range</span>(liczba <span class="op">*</span> liczba, limit, liczba):</span>
+<span id="cb20-20"><a href="#cb20-20"></a>            kandydaci[wielokrotnosc] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb20-21"><a href="#cb20-21"></a>    <span class="cf">return</span> [liczba <span class="cf">for</span> liczba <span class="kw">in</span> kandydaci <span class="cf">if</span> liczba <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>]</span>
+<span id="cb20-22"><a href="#cb20-22"></a></span>
+<span id="cb20-23"><a href="#cb20-23"></a></span>
+<span id="cb20-24"><a href="#cb20-24"></a><span class="kw">def</span> sito_numpy(limit):</span>
+<span id="cb20-25"><a href="#cb20-25"></a>    <span class="co">"""</span></span>
+<span id="cb20-26"><a href="#cb20-26"></a><span class="co">    Implementacja sita Eratostenesa przy użyciu biblioteki NumPy.</span></span>
+<span id="cb20-27"><a href="#cb20-27"></a><span class="co">    """</span></span>
+<span id="cb20-28"><a href="#cb20-28"></a>    <span class="cf">if</span> limit <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb20-29"><a href="#cb20-29"></a>        <span class="cf">return</span> np.array([], dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb20-30"><a href="#cb20-30"></a></span>
+<span id="cb20-31"><a href="#cb20-31"></a>    czy_pierwsza <span class="op">=</span> np.ones(limit <span class="op">+</span> <span class="dv">1</span>, dtype<span class="op">=</span><span class="bu">bool</span>)</span>
+<span id="cb20-32"><a href="#cb20-32"></a>    czy_pierwsza[<span class="dv">0</span>:<span class="dv">2</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb20-33"><a href="#cb20-33"></a>    <span class="cf">for</span> p <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="bu">int</span>(np.sqrt(limit)) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb20-34"><a href="#cb20-34"></a>        <span class="cf">if</span> czy_pierwsza[p]:</span>
+<span id="cb20-35"><a href="#cb20-35"></a>            czy_pierwsza[p <span class="op">*</span> p :: p] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb20-36"><a href="#cb20-36"></a>    <span class="cf">return</span> np.nonzero(czy_pierwsza)[<span class="dv">0</span>]</span>
+<span id="cb20-37"><a href="#cb20-37"></a></span>
+<span id="cb20-38"><a href="#cb20-38"></a></span>
+<span id="cb20-39"><a href="#cb20-39"></a><span class="co"># Funkcja do pomiaru czasu wykonania z powtórzeniami i wyborem minimalnego czasu.</span></span>
+<span id="cb20-40"><a href="#cb20-40"></a><span class="kw">def</span> mierz_czas_sita(funkcja, limit, nazwa_funkcji, powtorzenia<span class="op">=</span><span class="dv">10</span>):</span>
+<span id="cb20-41"><a href="#cb20-41"></a>    <span class="co">"""</span></span>
+<span id="cb20-42"><a href="#cb20-42"></a><span class="co">    Mierzy czas wykonania danej funkcji sita Eratostenesa.</span></span>
+<span id="cb20-43"><a href="#cb20-43"></a><span class="co">    """</span></span>
+<span id="cb20-44"><a href="#cb20-44"></a>    czasy <span class="op">=</span> []</span>
+<span id="cb20-45"><a href="#cb20-45"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(powtorzenia):</span>
+<span id="cb20-46"><a href="#cb20-46"></a>        czas_start <span class="op">=</span> time.time()</span>
+<span id="cb20-47"><a href="#cb20-47"></a>        wynik <span class="op">=</span> funkcja(limit)</span>
+<span id="cb20-48"><a href="#cb20-48"></a>        czas_koniec <span class="op">=</span> time.time()</span>
+<span id="cb20-49"><a href="#cb20-49"></a>        czasy.append(czas_koniec <span class="op">-</span> czas_start)</span>
+<span id="cb20-50"><a href="#cb20-50"></a></span>
+<span id="cb20-51"><a href="#cb20-51"></a>    minimalny_czas <span class="op">=</span> <span class="bu">min</span>(czasy)</span>
+<span id="cb20-52"><a href="#cb20-52"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>nazwa_funkcji<span class="sc">}</span><span class="ss"> (limit=</span><span class="sc">{</span>limit<span class="sc">}</span><span class="ss">):"</span>)</span>
+<span id="cb20-53"><a href="#cb20-53"></a>    <span class="bu">print</span>(<span class="ss">f"  Minimalny czas (</span><span class="sc">{</span>powtorzenia<span class="sc">}</span><span class="ss"> uruchomień): </span><span class="sc">{</span>minimalny_czas<span class="sc">:.6f}</span><span class="ss"> sekund"</span>)</span>
+<span id="cb20-54"><a href="#cb20-54"></a>    <span class="bu">print</span>(<span class="ss">f"  Liczba liczb pierwszych: </span><span class="sc">{</span><span class="bu">len</span>(wynik)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb20-55"><a href="#cb20-55"></a></span>
+<span id="cb20-56"><a href="#cb20-56"></a></span>
+<span id="cb20-57"><a href="#cb20-57"></a><span class="co"># Przykładowe użycie i pomiar czasu</span></span>
+<span id="cb20-58"><a href="#cb20-58"></a>limit <span class="op">=</span> <span class="dv">10_000_000</span></span>
+<span id="cb20-59"><a href="#cb20-59"></a></span>
+<span id="cb20-60"><a href="#cb20-60"></a><span class="bu">print</span>(<span class="st">"Pomiar czasu z limitem ="</span>, limit)</span>
+<span id="cb20-61"><a href="#cb20-61"></a>mierz_czas_sita(sito_numpy, limit, <span class="st">"Sito NumPy (zoptymalizowane)"</span>)</span>
+<span id="cb20-62"><a href="#cb20-62"></a>mierz_czas_sita(sito_listowe, limit, <span class="st">"Sito Listowe"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pomiar czasu z limitem = 10000000
+Sito NumPy (zoptymalizowane) (limit=10000000):
+  Minimalny czas (10 uruchomień): 0.017350 sekund
+  Liczba liczb pierwszych: 664579
+Sito Listowe (limit=10000000):
+  Minimalny czas (10 uruchomień): 1.080429 sekund
+  Liczba liczb pierwszych: 664579</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -475,6 +573,7 @@ Szukamy minimum.
 <ul>
 <li>Python mniej poważnie. Zabawne projekty programistyczne, które zwiększą Twoje umiejętności, <em>Lee Vaughan</em></li>
 <li>Matematyka konkretna, <em>Graham Ronald L., Knuth Donald E., Oren Patashnik</em></li>
+<li>Wprowadzenie do algorytmów, <em>Cormen Thomas H., Leiserson Charles E., Rivest Ronald L, Clifford Stein</em></li>
 </ul>
 
 
