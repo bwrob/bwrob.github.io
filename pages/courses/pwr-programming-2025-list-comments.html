@@ -196,6 +196,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#lista-1" id="toc-lista-1" class="nav-link active" data-scroll-target="#lista-1">Lista 1</a></li>
   <li><a href="#lista-2" id="toc-lista-2" class="nav-link" data-scroll-target="#lista-2">Lista 2</a></li>
   <li><a href="#lista-3" id="toc-lista-3" class="nav-link" data-scroll-target="#lista-3">Lista 3</a></li>
+  <li><a href="#lista-4" id="toc-lista-4" class="nav-link" data-scroll-target="#lista-4">Lista 4</a></li>
   </ul>
 </nav>
     </div>
@@ -212,7 +213,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol type="1">
 <li>Zdefiniowana funkcja “zna” swoją nazwę (i wie dużo więcej o sobie). Poniższa funkcja ma też docstring oraz zdefinowane typy wejścia i wyjścia. Zarówno anotacje, jak i magiczne metody zaczynające się od <code>__</code> pojawią się dalej na wykładzie.</li>
 </ol>
-<div id="31f50371" class="cell" data-execution_count="1">
+<div id="bbc4a44a" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">def</span> minimum(lista: <span class="bu">list</span>[<span class="bu">int</span>]) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
 <span id="cb1-2"><a href="#cb1-2"></a>    <span class="co">"""Szukamy minimum."""</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a>    <span class="cf">return</span> <span class="bu">min</span>(lista)</span>
@@ -239,12 +240,12 @@ Szukamy minimum.
 <ol start="2" type="1">
 <li>W pythonie dobrą praktyką są krótkie linijki, maks 88 znaków. Łatwiej wtedy czyta się kod. Są do tego formattery, które robią to za nas. Ja polecam Ruff, dostępny jako wtyczka do VSC. Zamiast tego:</li>
 </ol>
-<div id="fd5363b5" class="cell" data-execution_count="2">
+<div id="fe66b7ab" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">def</span> generuj_liste_napisow_AB(dlugosc, dlugosc_napisu):</span>
 <span id="cb3-2"><a href="#cb3-2"></a>    <span class="cf">return</span> [<span class="st">''</span>.join(random.choices([<span class="st">'A'</span>, <span class="st">'B'</span>], weights<span class="op">=</span>[<span class="dv">95</span>, <span class="dv">5</span>], k<span class="op">=</span>dlugosc_napisu)) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(dlugosc)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Dostajemy:</p>
-<div id="ac42fc6c" class="cell" data-execution_count="3">
+<div id="0be9d271" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">def</span> generuj_liste_napisow_AB(dlugosc, dlugosc_napisu):</span>
 <span id="cb4-2"><a href="#cb4-2"></a>    <span class="cf">return</span> [</span>
 <span id="cb4-3"><a href="#cb4-3"></a>        <span class="st">""</span>.join(</span>
@@ -260,7 +261,7 @@ Szukamy minimum.
 <ol start="3" type="1">
 <li>Nie robimy tak:</li>
 </ol>
-<div id="f69736c0" class="cell" data-execution_count="4">
+<div id="55fb037b" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">def</span> czy_jednomodalna(A):</span>
 <span id="cb5-2"><a href="#cb5-2"></a>    maksima <span class="op">=</span> maksima_lokalne(A)</span>
 <span id="cb5-3"><a href="#cb5-3"></a>    <span class="cf">if</span> <span class="bu">len</span>(maksima) <span class="op">==</span> <span class="dv">1</span>:</span>
@@ -269,14 +270,14 @@ Szukamy minimum.
 <span id="cb5-6"><a href="#cb5-6"></a>        <span class="cf">return</span> <span class="va">False</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Tylko tak:</p>
-<div id="7c4b6d00" class="cell" data-execution_count="5">
+<div id="87ccfd1d" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">def</span> czy_jednomodalna(A):</span>
 <span id="cb6-2"><a href="#cb6-2"></a>    <span class="cf">return</span> <span class="bu">len</span>(maksima_lokalne(A)) <span class="op">==</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="4" type="1">
 <li>Biblioteka <code>string</code> posiada dużo pomocniczych opcji w zakresie napisów. Nie musimy wymieniać liter alfabetu, wystarczy użyć:</li>
 </ol>
-<div id="d7b72a22" class="cell" data-execution_count="6">
+<div id="c9b745ec" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="im">import</span> string</span>
 <span id="cb7-2"><a href="#cb7-2"></a></span>
 <span id="cb7-3"><a href="#cb7-3"></a><span class="bu">print</span>(string.ascii_lowercase)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -285,7 +286,7 @@ Szukamy minimum.
 </div>
 </div>
 <p>Przykładowe podejście do zadania 2, inne od wykładowego. Definujemy funkcję bisekcji oraz dekorator do pomiaru czasu:</p>
-<div id="9e16b090" class="cell" data-execution_count="7">
+<div id="33ab44e2" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="im">import</span> math</span>
 <span id="cb9-2"><a href="#cb9-2"></a><span class="im">from</span> time <span class="im">import</span> perf_counter_ns</span>
 <span id="cb9-3"><a href="#cb9-3"></a></span>
@@ -340,7 +341,7 @@ Szukamy minimum.
 <span id="cb9-52"><a href="#cb9-52"></a>    <span class="cf">return</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Mierzymy czas:</p>
-<div id="d5fb3486" class="cell" data-execution_count="8">
+<div id="fc20f409" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="im">import</span> math</span>
 <span id="cb10-2"><a href="#cb10-2"></a></span>
 <span id="cb10-3"><a href="#cb10-3"></a></span>
@@ -349,7 +350,7 @@ Szukamy minimum.
 <span id="cb10-6"><a href="#cb10-6"></a></span>
 <span id="cb10-7"><a href="#cb10-7"></a></span>
 <span id="cb10-8"><a href="#cb10-8"></a>n_max <span class="op">=</span> <span class="dv">1_000</span></span>
-<span id="cb10-9"><a href="#cb10-9"></a>repeat <span class="op">=</span> <span class="dv">1_000</span></span>
+<span id="cb10-9"><a href="#cb10-9"></a>repeat <span class="op">=</span> <span class="dv">100</span></span>
 <span id="cb10-10"><a href="#cb10-10"></a>ns <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, n_max <span class="op">+</span> <span class="dv">1</span>))</span>
 <span id="cb10-11"><a href="#cb10-11"></a>measure_bisection_time <span class="op">=</span> measure_time(bisection, repeat<span class="op">=</span>repeat)</span>
 <span id="cb10-12"><a href="#cb10-12"></a>time_lists <span class="op">=</span> [(n, measure_bisection_time(atan_minus_1, <span class="fl">0.0</span>, <span class="fl">10.0</span> <span class="op">*</span> n)) <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
@@ -360,7 +361,7 @@ Szukamy minimum.
 <span id="cb10-17"><a href="#cb10-17"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Przedstawiamy na wykresie:</p>
-<div id="9222258c" class="cell" data-execution_count="9">
+<div id="3dfe240b" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb11-2"><a href="#cb11-2"></a></span>
 <span id="cb11-3"><a href="#cb11-3"></a>x, y <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>time_points)</span>
@@ -369,7 +370,7 @@ Szukamy minimum.
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="pwr-programming-2025-list-comments_files/figure-html/cell-10-output-1.png" width="583" height="411" class="figure-img"></p>
+<p><img src="pwr-programming-2025-list-comments_files/figure-html/cell-10-output-1.png" width="592" height="416" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -381,7 +382,7 @@ Szukamy minimum.
 <li><p>W opowiastce o Alfredzie, wczytując się dokładnie, mógł on się także cofać, co oznacza przyzwolenie na ujemne rozwiązania. Przyjmowałem też rozwiązania zakładające jedynie dodatnią ilośc skoków.</p></li>
 <li><p>Nie robimy tak:</p></li>
 </ol>
-<div id="5cbb63ba" class="cell" data-execution_count="10">
+<div id="b9d272f4" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">def</span> moja_funkcja(k):</span>
 <span id="cb12-2"><a href="#cb12-2"></a>    <span class="cf">return</span> k</span>
 <span id="cb12-3"><a href="#cb12-3"></a></span>
@@ -394,7 +395,7 @@ Szukamy minimum.
 </div>
 </div>
 <p>Funkcja <code>eval</code> ma bardzo mało rozsądnych zastosowań, jest niebezpieczna, najlepiej zapomniec że istnieje. Zamiast tego:</p>
-<div id="9754aa66" class="cell" data-execution_count="11">
+<div id="886e5147" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>funkcja <span class="op">=</span> moja_funkcja</span>
 <span id="cb14-2"><a href="#cb14-2"></a>wynik <span class="op">=</span> moja_funkcja(<span class="dv">1</span>)</span>
 <span id="cb14-3"><a href="#cb14-3"></a><span class="bu">print</span>(<span class="ss">f"Funkcja </span><span class="sc">{</span>funkcja<span class="sc">.</span><span class="va">__name__</span><span class="sc">}</span><span class="ss"> daje </span><span class="sc">{</span>wynik<span class="op">=</span><span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -405,7 +406,7 @@ Szukamy minimum.
 <ol start="3" type="1">
 <li>Staramy się o czyste i jasne importy z modułów. Możemy robić tak:</li>
 </ol>
-<div id="06900c1a" class="cell" data-execution_count="12">
+<div id="12852d3c" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="im">from</span> math <span class="im">import</span> ceil, gcd, lcm</span>
 <span id="cb16-2"><a href="#cb16-2"></a></span>
 <span id="cb16-3"><a href="#cb16-3"></a><span class="bu">print</span>(lcm(gcd(<span class="dv">10</span>, <span class="dv">6</span>), ceil(<span class="dv">10</span> <span class="op">/</span> <span class="dv">3</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -414,20 +415,20 @@ Szukamy minimum.
 </div>
 </div>
 <p>(kolejność funkcji alfabetyczna) lub tak</p>
-<div id="7dac16a5" class="cell" data-execution_count="13">
+<div id="ee95330d" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a><span class="im">import</span> math</span>
 <span id="cb18-2"><a href="#cb18-2"></a></span>
 <span id="cb18-3"><a href="#cb18-3"></a><span class="bu">print</span>(math.lcm(math.gcd(<span class="dv">10</span>, <span class="dv">6</span>), math.ceil(<span class="dv">10</span> <span class="op">/</span> <span class="dv">3</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Staramy się nie robić tak:</p>
-<div id="d4ef7ac8" class="cell" data-execution_count="14">
+<div id="5e465138" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a><span class="im">from</span> math <span class="im">import</span> lcm, ceil</span>
 <span id="cb19-2"><a href="#cb19-2"></a><span class="im">import</span> math</span>
 <span id="cb19-3"><a href="#cb19-3"></a></span>
 <span id="cb19-4"><a href="#cb19-4"></a><span class="bu">print</span>(lcm(math.gcd(<span class="dv">10</span>, <span class="dv">6</span>), ceil(<span class="dv">10</span> <span class="op">/</span> <span class="dv">3</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Nigdy nie robimy tak:</p>
-<div id="2129f4bd" class="cell" data-execution_count="15">
+<div id="cfda0133" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a><span class="im">from</span> math <span class="im">import</span> <span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
@@ -436,7 +437,7 @@ Szukamy minimum.
 <ol type="1">
 <li>W funkcji liczby_zaprzyjażnione można użyć cachowania aby dla każdej liczby liczyć jej sumę dzielników tylko raz.</li>
 </ol>
-<div id="514d1312" class="cell" data-execution_count="16">
+<div id="3c14be1a" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">def</span> liczby_zaprzyjaźnione(N):</span>
 <span id="cb21-2"><a href="#cb21-2"></a>    liczby <span class="op">=</span> []</span>
 <span id="cb21-3"><a href="#cb21-3"></a>    sumy_dzielników <span class="op">=</span> [<span class="dv">0</span>] <span class="op">*</span> (N <span class="op">+</span> <span class="dv">1</span>)</span>
@@ -451,7 +452,7 @@ Szukamy minimum.
 <ol start="2" type="1">
 <li>Iterując po obiekcie, chcąc znać indeks na ktorym jesteśmy używamy <code>enumerate</code>.</li>
 </ol>
-<div id="3dd3a8d1" class="cell" data-execution_count="17">
+<div id="9a829c5f" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a>lista <span class="op">=</span> [<span class="st">"a"</span>, <span class="st">"b"</span>]</span>
 <span id="cb22-2"><a href="#cb22-2"></a></span>
 <span id="cb22-3"><a href="#cb22-3"></a><span class="co"># nie robimy tak</span></span>
@@ -473,7 +474,7 @@ Szukamy minimum.
 <ol start="3" type="1">
 <li>Sito Eratostenesa da się znacząco przyśpieszyć implementując je w <code>NumPy</code>.</li>
 </ol>
-<div id="2b883893" class="cell" data-execution_count="18">
+<div id="191b1989" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb24-2"><a href="#cb24-2"></a><span class="im">import</span> time</span>
 <span id="cb24-3"><a href="#cb24-3"></a></span>
@@ -531,19 +532,104 @@ Szukamy minimum.
 <span id="cb24-55"><a href="#cb24-55"></a></span>
 <span id="cb24-56"><a href="#cb24-56"></a></span>
 <span id="cb24-57"><a href="#cb24-57"></a><span class="co"># Przykładowe użycie i pomiar czasu</span></span>
-<span id="cb24-58"><a href="#cb24-58"></a>limit <span class="op">=</span> <span class="dv">10_000_000</span></span>
+<span id="cb24-58"><a href="#cb24-58"></a>limit <span class="op">=</span> <span class="dv">1_000_000</span></span>
 <span id="cb24-59"><a href="#cb24-59"></a></span>
 <span id="cb24-60"><a href="#cb24-60"></a><span class="bu">print</span>(<span class="st">"Pomiar czasu z limitem ="</span>, limit)</span>
 <span id="cb24-61"><a href="#cb24-61"></a>mierz_czas_sita(sito_numpy, limit, <span class="st">"Sito NumPy (zoptymalizowane)"</span>)</span>
 <span id="cb24-62"><a href="#cb24-62"></a>mierz_czas_sita(sito_listowe, limit, <span class="st">"Sito Listowe"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Pomiar czasu z limitem = 10000000
-Sito NumPy (zoptymalizowane) (limit=10000000):
-  Minimalny czas (10 uruchomień): 0.017430 sekund
-  Liczba liczb pierwszych: 664579
-Sito Listowe (limit=10000000):
-  Minimalny czas (10 uruchomień): 1.042613 sekund
-  Liczba liczb pierwszych: 664579</code></pre>
+<pre><code>Pomiar czasu z limitem = 1000000
+Sito NumPy (zoptymalizowane) (limit=1000000):
+  Minimalny czas (10 uruchomień): 0.001624 sekund
+  Liczba liczb pierwszych: 78498
+Sito Listowe (limit=1000000):
+  Minimalny czas (10 uruchomień): 0.071456 sekund
+  Liczba liczb pierwszych: 78498</code></pre>
+</div>
+</div>
+</section>
+<section id="lista-4" class="level2">
+<h2 data-anchor-id="lista-4">Lista 4</h2>
+<ol type="1">
+<li>Często pojawia się policzenia powtórzeń elementów w liśicie:</li>
+</ol>
+<div id="3ef3c00d" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1"></a>lista <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>]</span>
+<span id="cb26-2"><a href="#cb26-2"></a>wystapienia <span class="op">=</span> {klucz: <span class="dv">0</span> <span class="cf">for</span> klucz <span class="kw">in</span> <span class="bu">set</span>(lista)}</span>
+<span id="cb26-3"><a href="#cb26-3"></a><span class="cf">for</span> elem <span class="kw">in</span> lista:</span>
+<span id="cb26-4"><a href="#cb26-4"></a>    wystapienia[elem] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb26-5"><a href="#cb26-5"></a><span class="bu">print</span>(wystapienia)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{1: 3, 2: 4, 3: 2, 4: 1}</code></pre>
+</div>
+</div>
+<p>Python ma do tego wbudowaną funkcjonalność <a href="https://docs.python.org/3/library/collections.html#collections.Counter">Counter</a>:</p>
+<div id="3f909a8e" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
+<span id="cb28-2"><a href="#cb28-2"></a>wystapienia <span class="op">=</span> Counter(lista)</span>
+<span id="cb28-3"><a href="#cb28-3"></a><span class="bu">print</span>(wystapienia)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Counter({2: 4, 1: 3, 3: 2, 4: 1})</code></pre>
+</div>
+</div>
+<ol start="2" type="1">
+<li>Podobnie mamy gotowe narzędzia do liczenia sum częściowych. Zamiast:</li>
+</ol>
+<div id="280f54ba" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1"></a>pozycje <span class="op">=</span> {}</span>
+<span id="cb30-2"><a href="#cb30-2"></a>suma <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb30-3"><a href="#cb30-3"></a>klucze <span class="op">=</span> <span class="bu">sorted</span>(wystapienia)</span>
+<span id="cb30-4"><a href="#cb30-4"></a><span class="cf">for</span> klucz <span class="kw">in</span> klucze:</span>
+<span id="cb30-5"><a href="#cb30-5"></a>    pozycje[klucz] <span class="op">=</span> suma</span>
+<span id="cb30-6"><a href="#cb30-6"></a>    suma <span class="op">+=</span> wystapienia[klucz]</span>
+<span id="cb30-7"><a href="#cb30-7"></a><span class="bu">print</span>(pozycje)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{1: 0, 2: 3, 3: 7, 4: 9}</code></pre>
+</div>
+</div>
+<p>możemy użyć <a href="https://docs.python.org/3/library/itertools.html#itertools.accumulate">accumulate</a>:</p>
+<div id="aaa0387e" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1"></a><span class="im">from</span> itertools <span class="im">import</span> accumulate</span>
+<span id="cb32-2"><a href="#cb32-2"></a></span>
+<span id="cb32-3"><a href="#cb32-3"></a></span>
+<span id="cb32-4"><a href="#cb32-4"></a>pozycje <span class="op">=</span> <span class="bu">dict</span>(</span>
+<span id="cb32-5"><a href="#cb32-5"></a>    <span class="bu">zip</span>(</span>
+<span id="cb32-6"><a href="#cb32-6"></a>        klucze,</span>
+<span id="cb32-7"><a href="#cb32-7"></a>        accumulate((wystapienia[k] <span class="cf">for</span> k <span class="kw">in</span> klucze), initial<span class="op">=</span><span class="dv">0</span>),</span>
+<span id="cb32-8"><a href="#cb32-8"></a>    )</span>
+<span id="cb32-9"><a href="#cb32-9"></a>)</span>
+<span id="cb32-10"><a href="#cb32-10"></a><span class="bu">print</span>(pozycje)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{1: 0, 2: 3, 3: 7, 4: 9}</code></pre>
+</div>
+</div>
+<ol start="3" type="1">
+<li>Alternatywne podejście do sortowania przez zliczanie. Dobry pretekst aby poznać <a href="https://docs.python.org/3/library/collections.html#collections.defaultdict">defaultdict</a> oraz <a href="https://docs.python.org/3/library/itertools.html#itertools.chain.from_iterable">chain</a>.</li>
+</ol>
+<div id="ef317582" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict</span>
+<span id="cb34-2"><a href="#cb34-2"></a><span class="im">from</span> itertools <span class="im">import</span> chain</span>
+<span id="cb34-3"><a href="#cb34-3"></a></span>
+<span id="cb34-4"><a href="#cb34-4"></a></span>
+<span id="cb34-5"><a href="#cb34-5"></a><span class="kw">def</span> sortowanie_zliczanie(lista, klucze):</span>
+<span id="cb34-6"><a href="#cb34-6"></a>    wystapienia <span class="op">=</span> defaultdict(<span class="bu">list</span>)</span>
+<span id="cb34-7"><a href="#cb34-7"></a>    <span class="cf">for</span> elem <span class="kw">in</span> lista:</span>
+<span id="cb34-8"><a href="#cb34-8"></a>        wystapienia[elem].append(elem)</span>
+<span id="cb34-9"><a href="#cb34-9"></a>    <span class="cf">return</span> <span class="bu">list</span>(</span>
+<span id="cb34-10"><a href="#cb34-10"></a>        chain.from_iterable(</span>
+<span id="cb34-11"><a href="#cb34-11"></a>            (wystapienia[klucz] <span class="cf">for</span> klucz <span class="kw">in</span> klucze),</span>
+<span id="cb34-12"><a href="#cb34-12"></a>        )</span>
+<span id="cb34-13"><a href="#cb34-13"></a>    )</span>
+<span id="cb34-14"><a href="#cb34-14"></a></span>
+<span id="cb34-15"><a href="#cb34-15"></a></span>
+<span id="cb34-16"><a href="#cb34-16"></a><span class="bu">print</span>(</span>
+<span id="cb34-17"><a href="#cb34-17"></a>    sortowanie_zliczanie(</span>
+<span id="cb34-18"><a href="#cb34-18"></a>        [<span class="st">"a"</span>, <span class="st">"c"</span>, <span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"b"</span>],</span>
+<span id="cb34-19"><a href="#cb34-19"></a>        klucze<span class="op">=</span>(<span class="st">"c"</span>, <span class="st">"b"</span>, <span class="st">"a"</span>),</span>
+<span id="cb34-20"><a href="#cb34-20"></a>    )</span>
+<span id="cb34-21"><a href="#cb34-21"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>['c', 'b', 'b', 'a', 'a']</code></pre>
 </div>
 </div>
 
