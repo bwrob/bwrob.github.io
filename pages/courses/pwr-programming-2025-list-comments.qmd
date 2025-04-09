@@ -3,6 +3,9 @@ title: "Programowanie (PWr Lato 2025) Komentarze do list"
 
 about:
   template: marquee
+
+execute:
+  freeze: true  # never re-render during project render
 ---
 
 
@@ -149,7 +152,7 @@ def atan_minus_1(x):
 
 
 n_max = 1_000
-repeat = 1_000
+repeat = 100
 ns = list(range(1, n_max + 1))
 measure_bisection_time = measure_time(bisection, repeat=repeat)
 time_lists = [(n, measure_bisection_time(atan_minus_1, 0.0, 10.0 * n)) for n in ns]
@@ -333,9 +336,83 @@ def mierz_czas_sita(funkcja, limit, nazwa_funkcji, powtorzenia=10):
 
 
 # Przykładowe użycie i pomiar czasu
-limit = 10_000_000
+limit = 1_000_000
 
 print("Pomiar czasu z limitem =", limit)
 mierz_czas_sita(sito_numpy, limit, "Sito NumPy (zoptymalizowane)")
 mierz_czas_sita(sito_listowe, limit, "Sito Listowe")
+```
+
+## Lista 4
+
+1. Często pojawia się policzenia powtórzeń elementów w liśicie:
+
+```{python}
+lista = [1, 2, 2, 1, 2, 3, 4, 2, 1, 3]
+wystapienia = {klucz: 0 for klucz in set(lista)}
+for elem in lista:
+    wystapienia[elem] += 1
+print(wystapienia)
+```
+
+Python ma do tego wbudowaną funkcjonalność [Counter](https://docs.python.org/3/library/collections.html#collections.Counter):
+
+```{python}
+from collections import Counter
+wystapienia = Counter(lista)
+print(wystapienia)
+```
+
+
+2. Podobnie mamy gotowe narzędzia do liczenia sum częściowych. Zamiast:
+
+```{python}
+pozycje = {}
+suma = 0
+klucze = sorted(wystapienia)
+for klucz in klucze:
+    pozycje[klucz] = suma
+    suma += wystapienia[klucz]
+print(pozycje)
+```
+
+możemy użyć [accumulate](https://docs.python.org/3/library/itertools.html#itertools.accumulate):
+
+```{python}
+from itertools import accumulate
+
+
+pozycje = dict(
+    zip(
+        klucze,
+        accumulate((wystapienia[k] for k in klucze), initial=0),
+    )
+)
+print(pozycje)
+```
+
+3. Alternatywne podejście do sortowania przez zliczanie. Dobry pretekst aby poznać [defaultdict](https://docs.python.org/3/library/collections.html#collections.defaultdict) oraz [chain](https://docs.python.org/3/library/itertools.html#itertools.chain.from_iterable).
+
+```{python}
+from collections import defaultdict
+from itertools import chain
+
+
+def sortowanie_zliczanie(lista, klucze):
+    wystapienia = defaultdict(list)
+    for elem in lista:
+        wystapienia[elem].append(elem)
+    return list(
+        chain.from_iterable(
+            (wystapienia[klucz] for klucz in klucze),
+        )
+    )
+
+
+print(
+    sortowanie_zliczanie(
+        ["a", "c", "a", "b", "b"],
+        klucze=("c", "b", "a"),
+    )
+)
 ```
