@@ -97,7 +97,6 @@ def measure_time(func, repeat=1):
     Zwraca funkcję owiniętą w pętlę powtórzeń.
     Funkcja wynikowa zwraca listę czasów.
     """
-
     def worker(*args, **kwargs):
         times = []
         for _ in range(repeat):
@@ -113,18 +112,6 @@ def measure_time(func, repeat=1):
 def bisection(
     func, a: float, b: float, tol: float = 1e-6, max_iter: float = 1_000
 ) -> float:
-    """Znajduje miejsce zerowe funkcji f metodą bisekcji.
-
-    Args:
-        a: Lewy koniec przedziału.
-        b: Prawy koniec przedziału.
-        tol: Tolerancja (dokładność).
-        max_iter: Maksymalna liczba iteracji.
-
-    Returns:
-        Przybliżone miejsce zerowe lub None, jeśli nie znaleziono.
-
-    """
     if func(a) * func(b) >= 0:
         return None  # Brak gwarancji istnienia miejsca zerowego
 
@@ -159,7 +146,7 @@ time_lists = [(n, measure_bisection_time(atan_minus_1, 0.0, 10.0 * n)) for n in 
 time_points = [
     (float(n), time)
     for n, times in time_lists
-    for time in times[repeat // 3 : -repeat // 3]
+    for time in times[repeat // 2 - 5 : repeat // 2 + 5]
 ]
 ```
 
@@ -284,9 +271,7 @@ import time
 
 
 def sito_listowe(limit):
-    """
-    Implementacja sita Eratostenesa przy użyciu list.
-    """
+    """Implementacja sita Eratostenesa przy użyciu list."""
     if limit < 2:
         return []
     kandydaci = list(range(limit))
@@ -303,9 +288,7 @@ def sito_listowe(limit):
 
 
 def sito_numpy(limit):
-    """
-    Implementacja sita Eratostenesa przy użyciu biblioteki NumPy.
-    """
+    """Implementacja sita Eratostenesa przy użyciu biblioteki NumPy."""
     if limit < 2:
         return np.array([], dtype=int)
 
@@ -317,11 +300,8 @@ def sito_numpy(limit):
     return np.nonzero(czy_pierwsza)[0]
 
 
-# Funkcja do pomiaru czasu wykonania z powtórzeniami i wyborem minimalnego czasu.
 def mierz_czas_sita(funkcja, limit, nazwa_funkcji, powtorzenia=10):
-    """
-    Mierzy czas wykonania danej funkcji sita Eratostenesa.
-    """
+    """Mierzy czas wykonania danej funkcji sita Eratostenesa."""
     czasy = []
     for _ in range(powtorzenia):
         czas_start = time.time()
