@@ -108,9 +108,10 @@ Celem tego zadania jest zaimplementowanie klasy `DualNumber` w Pythonie. Liczby 
     * Zapisz te wartości jako atrybuty `self.real` i `self.dual`.
 
 2.  **Reprezentacja jako napis:**
-    * Zaimplementuj metody `__str__` i `__repr__`, aby zapewnić przyjazną dla użytkownika reprezentację łańcuchową liczby dualnej. Powinna ona wyglądać odpowiednio jak "a + bε" lub "a - bε".
+    * Zaimplementuj metody `__str__` i `__repr__`, aby zapewnić przyjazną dla użytkownika reprezentację łańcuchową liczby dualnej. Powinna ona wyglądać odpowiednio jak "a + bε" lub "a - bε" dla `__str__` i "DualNumber(a,b)" dla `__repr__`.
 
 3.  **Operacje arytmetyczne:**
+
     * Zaimplementuj następujące operacje arytmetyczne, aby umożliwić obliczenia na liczbach dualnych:
         * `__add__` (+): (a + bε) + (c + dε) = (a + c) + (b + d)ε
         * `__sub__` (-): (a + bε) - (c + dε) = (a - c) + (b - d)ε
@@ -146,7 +147,7 @@ Poniżej znajduje się przykład użycia klasy `DualNumber`, (kod kliencki). Two
 ```{python}
 # | eval: false
 
-from dual_numbers import Dual, epsilon
+from dual_numbers import DualNumber, epsilon
 
 
 funcje_zaimplementowane = False
@@ -170,7 +171,7 @@ print("Dzielenie:", a / b)
 print("Potęgowanie:", a**2)
 print("Negacja", -a)
 
-# Operacje odzwierciedlone
+# Operacje prawostronne
 print("Dodawanie prawe:", 1 + a)
 print("Odejmowanie prawe:", 5 - a)
 print("Mnożenie prawe:", 2 * a)
