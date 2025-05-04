@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Programowanie (PWr Lato 2025) Ćwiczenia projektowe – bwrob blog</title>
+<title>Liczby dualne – bwrob blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -57,7 +57,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
@@ -101,39 +101,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
 
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="bwrob blog">
@@ -146,7 +114,7 @@ window.Quarto = {
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
@@ -213,7 +181,7 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Programowanie (PWr Lato 2025) Ćwiczenia projektowe</h1>
+      <h1 class="title">Liczby dualne</h1>
                       </div>
   </div>
   <div class="quarto-title-meta">
@@ -221,106 +189,13 @@ window.Quarto = {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-  <ul>
-  <li><a href="#zarzadzanie-środowiskami" id="toc-zarzadzanie-środowiskami" class="nav-link active" data-scroll-target="#zarzadzanie-środowiskami">Zarzadzanie środowiskami</a></li>
-  <li><a href="#logowanie" id="toc-logowanie" class="nav-link" data-scroll-target="#logowanie">Logowanie</a></li>
-  <li><a href="#liczby-dualne" id="toc-liczby-dualne" class="nav-link" data-scroll-target="#liczby-dualne">Liczby dualne</a></li>
-  <li><a href="#hierarchia-funkcji" id="toc-hierarchia-funkcji" class="nav-link" data-scroll-target="#hierarchia-funkcji">Hierarchia Funkcji</a></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
 <div class="quarto-about-marquee">
   <div class="about-image-container">
   </div>
   <div class="about-contents">
      <main class="content quarto-banner-title-block" id="quarto-document-content">
-
-<section id="zarzadzanie-środowiskami" class="level2">
-<h2 data-anchor-id="zarzadzanie-środowiskami">Zarzadzanie środowiskami</h2>
-<p>Wyjaśniliśmy, dlaczego warto używać środowisk wirtualnych. Na labolatoriach korzystamy z anacondy, dla przypomnienia komendy które mogą się przydać:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource {powershell} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1"></a># tworzymy nowe środowisko</span>
-<span id="cb1-2"><a href="#cb1-2"></a># w tym przypadku z pythonem 3.12</span>
-<span id="cb1-3"><a href="#cb1-3"></a>conda create -n programowanie-2025 python=3.12</span>
-<span id="cb1-4"><a href="#cb1-4"></a># sprawdzamy czy środowisko się utworzyło, i jakie mamy środowiskam</span>
-<span id="cb1-5"><a href="#cb1-5"></a># obecne środowisko jest oznaczone *</span>
-<span id="cb1-6"><a href="#cb1-6"></a>conda info --envs</span>
-<span id="cb1-7"><a href="#cb1-7"></a># aktywujemy środowisko</span>
-<span id="cb1-8"><a href="#cb1-8"></a>conda activate programowanie-2025</span>
-<span id="cb1-9"><a href="#cb1-9"></a># instalujemy pakiety</span>
-<span id="cb1-10"><a href="#cb1-10"></a>conda install numpy pandas matplotlib rich</span>
-<span id="cb1-11"><a href="#cb1-11"></a># tworzymy plik requirements.txt</span>
-<span id="cb1-12"><a href="#cb1-12"></a>conda list -e &gt; requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Najbardziej waniliowym sposobem na zarządzanie środowiskami jest <code>venv</code>. Wtedy robimy to tak:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource {powershell} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a href="#cb2-1"></a># tworzymy nowe środowisko</span>
-<span id="cb2-2"><a href="#cb2-2"></a>python -m venv programowanie-2025</span>
-<span id="cb2-3"><a href="#cb2-3"></a># aktywujemy środowisko</span>
-<span id="cb2-4"><a href="#cb2-4"></a>programowanie-2025\Scripts\activate</span>
-<span id="cb2-5"><a href="#cb2-5"></a># instalujemy pakiety</span>
-<span id="cb2-6"><a href="#cb2-6"></a>pip install numpy pandas matplotlib rich</span>
-<span id="cb2-7"><a href="#cb2-7"></a># tworzymy plik requirements.txt</span>
-<span id="cb2-8"><a href="#cb2-8"></a>pip freeze &gt; requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Innymi sposobami na zarządzanie środowiskami są <a href="https://python-poetry.org/docs/"><code>poetry</code></a> i <a href="https://docs.astral.sh/uv/getting-started/"><code>uv</code></a>. W szczególności <code>poetry</code> jest bardzo wygodne, <code>uv</code> jest bardziej skomplikowane, ale daje więcej możliwości i jest znacznie szybsze.</p>
-</section>
-<section id="logowanie" class="level2">
-<h2 data-anchor-id="logowanie">Logowanie</h2>
-<p>Używamy tej <a href="https://docs.python.org/3/howto/logging-cookbook.html#multiple-handlers-and-formatters">recepty</a> wzbogaconej o pakiet <a href="https://rich.readthedocs.io/en/stable/introduction.html"><code>rich</code></a> do ustawienia logowania w projekcie. Dostajemy wtedy kolorowe logi na poziomie <code>INFO</code> i wyżej w terminalu, a dodatkowe informacje na poziomie <code>DEBUG</code> w pliku <code>log.txt</code>.</p>
-<div id="fb6c611a" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">import</span> logging</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="im">from</span> rich.logging <span class="im">import</span> RichHandler</span>
-<span id="cb3-3"><a href="#cb3-3"></a></span>
-<span id="cb3-4"><a href="#cb3-4"></a>logger <span class="op">=</span> logging.getLogger(<span class="st">"simple_example"</span>)</span>
-<span id="cb3-5"><a href="#cb3-5"></a>logger.setLevel(logging.DEBUG)</span>
-<span id="cb3-6"><a href="#cb3-6"></a></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="co"># logger jest tworzony tylko raz, więc nie dodajemy handlerów więcej niż raz</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="cf">if</span> <span class="kw">not</span> logger.hasHandlers():</span>
-<span id="cb3-9"><a href="#cb3-9"></a>    <span class="co"># zapisujemy logi DEBUG i wyżej do pliku</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a>    fh <span class="op">=</span> logging.FileHandler(<span class="st">"simple_example.log"</span>)</span>
-<span id="cb3-11"><a href="#cb3-11"></a>    fh.setLevel(logging.DEBUG)</span>
-<span id="cb3-12"><a href="#cb3-12"></a>    <span class="co"># ustalamy format logów</span></span>
-<span id="cb3-13"><a href="#cb3-13"></a>    formatter <span class="op">=</span> logging.Formatter(</span>
-<span id="cb3-14"><a href="#cb3-14"></a>        <span class="st">"</span><span class="sc">%(asctime)s</span><span class="st"> - </span><span class="sc">%(name)s</span><span class="st"> - </span><span class="sc">%(levelname)s</span><span class="st"> - </span><span class="sc">%(message)s</span><span class="st">"</span>,</span>
-<span id="cb3-15"><a href="#cb3-15"></a>    )</span>
-<span id="cb3-16"><a href="#cb3-16"></a>    <span class="co"># dodajemy formatter do handlera</span></span>
-<span id="cb3-17"><a href="#cb3-17"></a>    fh.setFormatter(formatter)</span>
-<span id="cb3-18"><a href="#cb3-18"></a>    <span class="co"># dodajemy handler do loggera</span></span>
-<span id="cb3-19"><a href="#cb3-19"></a>    logger.addHandler(fh)</span>
-<span id="cb3-20"><a href="#cb3-20"></a></span>
-<span id="cb3-21"><a href="#cb3-21"></a>    <span class="co"># wypisujemy logi INFO i wyżej do terminala</span></span>
-<span id="cb3-22"><a href="#cb3-22"></a>    <span class="co"># używamy RichHandler do kolorowych  czytelnych logów</span></span>
-<span id="cb3-23"><a href="#cb3-23"></a>    ch <span class="op">=</span> RichHandler()</span>
-<span id="cb3-24"><a href="#cb3-24"></a>    ch.setLevel(logging.INFO)</span>
-<span id="cb3-25"><a href="#cb3-25"></a>    logger.addHandler(ch)</span>
-<span id="cb3-26"><a href="#cb3-26"></a></span>
-<span id="cb3-27"><a href="#cb3-27"></a><span class="co"># przykładowe logi</span></span>
-<span id="cb3-28"><a href="#cb3-28"></a>logger.debug(<span class="st">"debug message"</span>)</span>
-<span id="cb3-29"><a href="#cb3-29"></a>logger.info(<span class="st">"info message"</span>)</span>
-<span id="cb3-30"><a href="#cb3-30"></a>logger.warning(<span class="st">"warn message"</span>)</span>
-<span id="cb3-31"><a href="#cb3-31"></a>logger.error(<span class="st">"error message"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="color: #7fbfbf; text-decoration-color: #7fbfbf">[05/04/25 18:12:39] </span><span style="color: #000080; text-decoration-color: #000080">INFO    </span> info message                                                           <a href="file:///var/folders/cp/8hw2xqrd443d0znxcbb7vjmm0000gn/T/ipykernel_68945/621881346.py" target="_blank"><span style="color: #7f7f7f; text-decoration-color: #7f7f7f">621881346.py</span></a><span style="color: #7f7f7f; text-decoration-color: #7f7f7f">:</span><a href="file:///var/folders/cp/8hw2xqrd443d0znxcbb7vjmm0000gn/T/ipykernel_68945/621881346.py#29" target="_blank"><span style="color: #7f7f7f; text-decoration-color: #7f7f7f">29</span></a>
-</pre>
-</div>
-<div class="cell-output cell-output-display">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="color: #7fbfbf; text-decoration-color: #7fbfbf">                    </span><span style="color: #808000; text-decoration-color: #808000">WARNING </span> warn message                                                           <a href="file:///var/folders/cp/8hw2xqrd443d0znxcbb7vjmm0000gn/T/ipykernel_68945/621881346.py" target="_blank"><span style="color: #7f7f7f; text-decoration-color: #7f7f7f">621881346.py</span></a><span style="color: #7f7f7f; text-decoration-color: #7f7f7f">:</span><a href="file:///var/folders/cp/8hw2xqrd443d0znxcbb7vjmm0000gn/T/ipykernel_68945/621881346.py#30" target="_blank"><span style="color: #7f7f7f; text-decoration-color: #7f7f7f">30</span></a>
-</pre>
-</div>
-<div class="cell-output cell-output-display">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="color: #7fbfbf; text-decoration-color: #7fbfbf">                    </span><span style="color: #800000; text-decoration-color: #800000; font-weight: bold">ERROR   </span> error message                                                          <a href="file:///var/folders/cp/8hw2xqrd443d0znxcbb7vjmm0000gn/T/ipykernel_68945/621881346.py" target="_blank"><span style="color: #7f7f7f; text-decoration-color: #7f7f7f">621881346.py</span></a><span style="color: #7f7f7f; text-decoration-color: #7f7f7f">:</span><a href="file:///var/folders/cp/8hw2xqrd443d0znxcbb7vjmm0000gn/T/ipykernel_68945/621881346.py#31" target="_blank"><span style="color: #7f7f7f; text-decoration-color: #7f7f7f">31</span></a>
-</pre>
-</div>
-</div>
-<p>W pliku dostajemy logi w formacie:</p>
-<pre><code>2025-05-03 14:36:52,989 - simple_example - DEBUG - debug message
-2025-05-03 14:36:52,989 - simple_example - INFO - info message
-2025-05-03 14:36:52,991 - simple_example - WARNING - warn message
-2025-05-03 14:36:52,992 - simple_example - ERROR - error message</code></pre>
-</section>
-<section id="liczby-dualne" class="level2">
-<h2 data-anchor-id="liczby-dualne">Liczby dualne</h2>
 <p>Implementujemy <a href="https://www.wikiwand.com/en/articles/Dual_number">liczby dualne</a> w Pythonie. Nasza implementacja powinna być napisana w pliku <code>dual_numbers.py</code>.</p>
 <p>Celem tego zadania jest zaimplementowanie klasy <code>DualNumber</code> w Pythonie. Liczby dualne są rozszerzeniem liczb rzeczywistych o specjalny element ‘ε’ (epsilon), taki że ε² = 0. Są one używane w automatycznym różniczkowaniu.</p>
 <p><strong>Liczba dualna:</strong> Liczba postaci a + bε, gdzie ‘a’ i ‘b’ są liczbami rzeczywistymi, a ε jest jednostką nieskończenie małą.</p>
@@ -380,120 +255,56 @@ window.Quarto = {
 </ul></li>
 </ol>
 <p>Poniżej znajduje się przykład użycia klasy <code>DualNumber</code>, (kod kliencki). Twoja implementacja powinna umożliwić poprawne działanie tego kodu.</p>
-<div id="fb5efa67" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="im">from</span> dual_numbers <span class="im">import</span> DualNumber, epsilon</span>
-<span id="cb5-2"><a href="#cb5-2"></a></span>
-<span id="cb5-3"><a href="#cb5-3"></a></span>
-<span id="cb5-4"><a href="#cb5-4"></a>funcje_zaimplementowane <span class="op">=</span> <span class="va">False</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="co"># Utwórz kilka liczb dualnych</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a>a <span class="op">=</span> DualNumber(<span class="dv">2</span>, <span class="dv">3</span>)  <span class="co"># 2 + 3ε</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a>b <span class="op">=</span> DualNumber(<span class="dv">1</span>, <span class="dv">4</span>)  <span class="co"># 1 + 4ε</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a>c <span class="op">=</span> DualNumber(<span class="dv">5</span>, <span class="dv">0</span>)  <span class="co"># 5 + 0ε (odpowiednik liczby rzeczywistej 5)</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a>d <span class="op">=</span> <span class="dv">1</span> <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> epsilon  <span class="co"># 1 + 2ε</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a></span>
-<span id="cb5-12"><a href="#cb5-12"></a><span class="co"># Wypisz liczby dualne</span></span>
-<span id="cb5-13"><a href="#cb5-13"></a><span class="bu">print</span>(<span class="st">"Liczba dualna a:"</span>, a)</span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="bu">print</span>(<span class="st">"Liczba dualna b:"</span>, b)</span>
-<span id="cb5-15"><a href="#cb5-15"></a><span class="bu">print</span>(<span class="st">"Epsilon:"</span>, epsilon)</span>
-<span id="cb5-16"><a href="#cb5-16"></a></span>
-<span id="cb5-17"><a href="#cb5-17"></a><span class="co"># Podstawowe operacje arytmetyczne</span></span>
-<span id="cb5-18"><a href="#cb5-18"></a><span class="bu">print</span>(<span class="st">"Dodawanie:"</span>, a <span class="op">+</span> b)</span>
-<span id="cb5-19"><a href="#cb5-19"></a><span class="bu">print</span>(<span class="st">"Odejmowanie:"</span>, a <span class="op">-</span> b)</span>
-<span id="cb5-20"><a href="#cb5-20"></a><span class="bu">print</span>(<span class="st">"Mnożenie:"</span>, a <span class="op">*</span> b)</span>
-<span id="cb5-21"><a href="#cb5-21"></a><span class="bu">print</span>(<span class="st">"Dzielenie:"</span>, a <span class="op">/</span> b)</span>
-<span id="cb5-22"><a href="#cb5-22"></a><span class="bu">print</span>(<span class="st">"Potęgowanie:"</span>, a<span class="op">**</span><span class="dv">2</span>)</span>
-<span id="cb5-23"><a href="#cb5-23"></a><span class="bu">print</span>(<span class="st">"Negacja"</span>, <span class="op">-</span>a)</span>
-<span id="cb5-24"><a href="#cb5-24"></a></span>
-<span id="cb5-25"><a href="#cb5-25"></a><span class="co"># Operacje prawostronne</span></span>
-<span id="cb5-26"><a href="#cb5-26"></a><span class="bu">print</span>(<span class="st">"Dodawanie prawe:"</span>, <span class="dv">1</span> <span class="op">+</span> a)</span>
-<span id="cb5-27"><a href="#cb5-27"></a><span class="bu">print</span>(<span class="st">"Odejmowanie prawe:"</span>, <span class="dv">5</span> <span class="op">-</span> a)</span>
-<span id="cb5-28"><a href="#cb5-28"></a><span class="bu">print</span>(<span class="st">"Mnożenie prawe:"</span>, <span class="dv">2</span> <span class="op">*</span> a)</span>
-<span id="cb5-29"><a href="#cb5-29"></a><span class="bu">print</span>(<span class="st">"Dzielenie prawe:"</span>, <span class="dv">10</span> <span class="op">/</span> a)</span>
-<span id="cb5-30"><a href="#cb5-30"></a><span class="bu">print</span>(<span class="st">"Potęgowanie prawe"</span>, <span class="dv">2</span><span class="op">**</span>a)</span>
-<span id="cb5-31"><a href="#cb5-31"></a></span>
-<span id="cb5-32"><a href="#cb5-32"></a><span class="co"># Operacje porównania</span></span>
-<span id="cb5-33"><a href="#cb5-33"></a><span class="bu">print</span>(<span class="st">"Równość:"</span>, a <span class="op">==</span> b)</span>
-<span id="cb5-34"><a href="#cb5-34"></a><span class="bu">print</span>(<span class="st">"Nierówność:"</span>, a <span class="op">!=</span> b)</span>
-<span id="cb5-35"><a href="#cb5-35"></a><span class="bu">print</span>(<span class="st">"Równość:"</span>, a <span class="op">==</span> DualNumber(<span class="dv">2</span>, <span class="dv">3</span>))</span>
-<span id="cb5-36"><a href="#cb5-36"></a></span>
-<span id="cb5-37"><a href="#cb5-37"></a><span class="co"># Konwersja na int i float</span></span>
-<span id="cb5-38"><a href="#cb5-38"></a><span class="bu">print</span>(<span class="st">"Konwersja na int:"</span>, <span class="bu">int</span>(a))</span>
-<span id="cb5-39"><a href="#cb5-39"></a><span class="bu">print</span>(<span class="st">"Konwersja na float:"</span>, <span class="bu">float</span>(a))</span>
-<span id="cb5-40"><a href="#cb5-40"></a></span>
-<span id="cb5-41"><a href="#cb5-41"></a><span class="co"># Opcjonalne funkcje na liczbach dualnych</span></span>
-<span id="cb5-42"><a href="#cb5-42"></a><span class="cf">if</span> funcje_zaimplementowane:</span>
-<span id="cb5-43"><a href="#cb5-43"></a>    <span class="bu">print</span>(<span class="st">"Pierwiastek kwadratowy z a:"</span>, DualNumber.sqrt(a))</span>
-<span id="cb5-44"><a href="#cb5-44"></a>    <span class="bu">print</span>(<span class="st">"Funkcja wykładnicza z a:"</span>, DualNumber.exp(a))</span>
-<span id="cb5-45"><a href="#cb5-45"></a>    <span class="bu">print</span>(<span class="st">"Sinus z a:"</span>, DualNumber.sin(a))</span>
-<span id="cb5-46"><a href="#cb5-46"></a>    <span class="bu">print</span>(<span class="st">"Cosinus z a:"</span>, DualNumber.cos(a))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="3d59c08f" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> dual_numbers <span class="im">import</span> DualNumber, epsilon</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a>funcje_zaimplementowane <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co"># Utwórz kilka liczb dualnych</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a>a <span class="op">=</span> DualNumber(<span class="dv">2</span>, <span class="dv">3</span>)  <span class="co"># 2 + 3ε</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>b <span class="op">=</span> DualNumber(<span class="dv">1</span>, <span class="dv">4</span>)  <span class="co"># 1 + 4ε</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>c <span class="op">=</span> DualNumber(<span class="dv">5</span>, <span class="dv">0</span>)  <span class="co"># 5 + 0ε (odpowiednik liczby rzeczywistej 5)</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>d <span class="op">=</span> <span class="dv">1</span> <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> epsilon  <span class="co"># 1 + 2ε</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co"># Wypisz liczby dualne</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="bu">print</span>(<span class="st">"Liczba dualna a:"</span>, a)</span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="bu">print</span>(<span class="st">"Liczba dualna b:"</span>, b)</span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="bu">print</span>(<span class="st">"Epsilon:"</span>, epsilon)</span>
+<span id="cb1-16"><a href="#cb1-16"></a></span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="co"># Podstawowe operacje arytmetyczne</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="bu">print</span>(<span class="st">"Dodawanie:"</span>, a <span class="op">+</span> b)</span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="bu">print</span>(<span class="st">"Odejmowanie:"</span>, a <span class="op">-</span> b)</span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="bu">print</span>(<span class="st">"Mnożenie:"</span>, a <span class="op">*</span> b)</span>
+<span id="cb1-21"><a href="#cb1-21"></a><span class="bu">print</span>(<span class="st">"Dzielenie:"</span>, a <span class="op">/</span> b)</span>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="bu">print</span>(<span class="st">"Potęgowanie:"</span>, a<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="bu">print</span>(<span class="st">"Negacja"</span>, <span class="op">-</span>a)</span>
+<span id="cb1-24"><a href="#cb1-24"></a></span>
+<span id="cb1-25"><a href="#cb1-25"></a><span class="co"># Operacje prawostronne</span></span>
+<span id="cb1-26"><a href="#cb1-26"></a><span class="bu">print</span>(<span class="st">"Dodawanie prawe:"</span>, <span class="dv">1</span> <span class="op">+</span> a)</span>
+<span id="cb1-27"><a href="#cb1-27"></a><span class="bu">print</span>(<span class="st">"Odejmowanie prawe:"</span>, <span class="dv">5</span> <span class="op">-</span> a)</span>
+<span id="cb1-28"><a href="#cb1-28"></a><span class="bu">print</span>(<span class="st">"Mnożenie prawe:"</span>, <span class="dv">2</span> <span class="op">*</span> a)</span>
+<span id="cb1-29"><a href="#cb1-29"></a><span class="bu">print</span>(<span class="st">"Dzielenie prawe:"</span>, <span class="dv">10</span> <span class="op">/</span> a)</span>
+<span id="cb1-30"><a href="#cb1-30"></a><span class="bu">print</span>(<span class="st">"Potęgowanie prawe"</span>, <span class="dv">2</span><span class="op">**</span>a)</span>
+<span id="cb1-31"><a href="#cb1-31"></a></span>
+<span id="cb1-32"><a href="#cb1-32"></a><span class="co"># Operacje porównania</span></span>
+<span id="cb1-33"><a href="#cb1-33"></a><span class="bu">print</span>(<span class="st">"Równość:"</span>, a <span class="op">==</span> b)</span>
+<span id="cb1-34"><a href="#cb1-34"></a><span class="bu">print</span>(<span class="st">"Nierówność:"</span>, a <span class="op">!=</span> b)</span>
+<span id="cb1-35"><a href="#cb1-35"></a><span class="bu">print</span>(<span class="st">"Równość:"</span>, a <span class="op">==</span> DualNumber(<span class="dv">2</span>, <span class="dv">3</span>))</span>
+<span id="cb1-36"><a href="#cb1-36"></a></span>
+<span id="cb1-37"><a href="#cb1-37"></a><span class="co"># Konwersja na int i float</span></span>
+<span id="cb1-38"><a href="#cb1-38"></a><span class="bu">print</span>(<span class="st">"Konwersja na int:"</span>, <span class="bu">int</span>(a))</span>
+<span id="cb1-39"><a href="#cb1-39"></a><span class="bu">print</span>(<span class="st">"Konwersja na float:"</span>, <span class="bu">float</span>(a))</span>
+<span id="cb1-40"><a href="#cb1-40"></a></span>
+<span id="cb1-41"><a href="#cb1-41"></a><span class="co"># Opcjonalne funkcje na liczbach dualnych</span></span>
+<span id="cb1-42"><a href="#cb1-42"></a><span class="cf">if</span> funcje_zaimplementowane:</span>
+<span id="cb1-43"><a href="#cb1-43"></a>    <span class="bu">print</span>(<span class="st">"Pierwiastek kwadratowy z a:"</span>, DualNumber.sqrt(a))</span>
+<span id="cb1-44"><a href="#cb1-44"></a>    <span class="bu">print</span>(<span class="st">"Funkcja wykładnicza z a:"</span>, DualNumber.exp(a))</span>
+<span id="cb1-45"><a href="#cb1-45"></a>    <span class="bu">print</span>(<span class="st">"Sinus z a:"</span>, DualNumber.sin(a))</span>
+<span id="cb1-46"><a href="#cb1-46"></a>    <span class="bu">print</span>(<span class="st">"Cosinus z a:"</span>, DualNumber.cos(a))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="hierarchia-funkcji" class="level2">
-<h2 data-anchor-id="hierarchia-funkcji">Hierarchia Funkcji</h2>
-<p>Celem tego ćwiczenia jest praktyczne zastosowanie dziedziczenia w Pythonie do stworzenia hierarchii klas reprezentujących różne typy funkcji matematycznych. Zaimplementujesz klasy dla funkcji rzeczywistych, funkcji różniczkowalnych oraz konkretnego przypadku - funkcji wielomianowych, sinusoidalnych i eksponencjalnych.</p>
-<ol type="1">
-<li><p><strong>Klasa bazowa <code>RealFunction</code>:</strong></p>
-<ul>
-<li><p>Zdefiniuj klasę <code>RealFunction</code>.</p></li>
-<li><p>Jej konstruktor (<code>__init__</code>) powinien przyjmować dwa argumenty:</p>
-<ul>
-<li><p><code>func</code>: Obiekt wywoływalny (np. funkcja lambda lub zwykła funkcja Pythona), który reprezentuje daną funkcję matematyczną.</p></li>
-<li><p><code>name</code> (opcjonalny): Ciąg znaków opisujący nazwę funkcji.</p></li>
-</ul></li>
-<li><p>Zaimplementuj metodę <code>__call__(self, x)</code>, która przyjmuje argument <code>x</code> (liczbę rzeczywistą) i zwraca wynik wywołania przechowywanej funkcji <code>func</code> z tym argumentem.</p></li>
-<li><p>Zaimplementuj metodę <code>__str__(self)</code>, która zwraca opis funkcji (np. jej nazwę).</p></li>
-</ul></li>
-<li><p><strong>Klasa pochodna <code>DifferentiableFunction</code>:</strong></p>
-<ul>
-<li><p>Zdefiniuj klasę <code>DifferentiableFunction</code>, która dziedziczy po <code>RealFunction</code>.</p></li>
-<li><p>Jej konstruktor (<code>__init__</code>) powinien zachowywać się tak samo jak konstruktor klasy bazowej, przekazując argumenty do <code>super().__init__(func, name)</code>.</p></li>
-<li><p>Zaimplementuj metodę <code>derivative(self, h=1e-7)</code>, która przybliża wartość pochodnej funkcji w punkcie <code>x</code> przy użyciu <strong>symetrycznego ilorazu różnicowego</strong>:</p>
-<p><span class="math display">\[\frac{f(x + h) - f(x - h)}{2h}\]</span></p>
-<p>gdzie <span class="math inline">\(f\)</span> to funkcja reprezentowana przez instancję klasy, a <span class="math inline">\(h\)</span> jest małą wartością kroku (domyślnie <span class="math inline">\(10^{-7}\)</span>). Metoda ta powinna zwracać obiekt <code>RealFunction</code> odpowiadający przybliżonej wartości pochodnej w punkcie <code>x</code>.</p></li>
-</ul></li>
-<li><p><strong>Klasa pochodna <code>PolynomialFunction</code>:</strong></p>
-<ul>
-<li><p>Zdefiniuj klasę <code>PolynomialFunction</code>, która dziedziczy po <code>DifferentiableFunction</code>.</p></li>
-<li><p>Jej konstruktor (<code>__init__</code>) powinien przyjmować dwa argumenty:</p>
-<ul>
-<li><p><code>coefficients</code>: Lista liczb reprezentujących współczynniki wielomianu. Pierwszy element listy odpowiada współczynnikowi przy najwyższej potędze, a ostatni - wyrazowi wolnemu. Na przykład, dla wielomianu <span class="math inline">\(3x^2 - 2x + 1\)</span>, lista współczynników to <code>[3, -2, 1]</code>.</p></li>
-<li><p><code>name</code> (opcjonalny): Nazwa wielomianu.</p></li>
-</ul></li>
-<li><p>Zaimplementuj metodę <code>__call__(self, x)</code>, która oblicza wartość wielomianu dla danego <code>x</code> przy użyciu <strong>schematu Hornera</strong>. Zaimplementuj w tym celu pomocniczą (np. prywatną) metodę <code>__evaluate_polynomial(self, x, coeffs)</code>.</p></li>
-<li><p>Zaimplementuj metodę <code>__str__(self)</code>, która zwraca opis wielomianu bazując się na jego współczynnikach. Powinna ona tworzyć łańcuch znaków reprezentujący wielomian w standardowej formie (np. <code>3x^2 - 2x + 1</code>).</p></li>
-<li><p>Zaimplementuj metodę <code>derivative(self)</code>, która oblicza wartość pochodnej wielomianu w punkcie <code>x</code> i zwraca <strong>nowy obiekt klasy <code>PolynomialFunction</code></strong> reprezentujący tę pochodną.</p></li>
-</ul></li>
-<li><p><strong>Klasa pochodna <code>SineFunction</code>:</strong></p>
-<ul>
-<li><p>Zdefiniuj klasę <code>SineFunction</code>, która dziedziczy po <code>DifferentiableFunction</code>.</p></li>
-<li><p>Jej konstruktor (<code>__init__</code>) powinien przyjmować następujące argumenty:</p>
-<ul>
-<li><p><code>amplitude</code> (opcjonalny): Amplituda funkcji sinus (domyślnie 1.0).</p></li>
-<li><p><code>frequency</code> (opcjonalny): Częstotliwość funkcji sinus (domyślnie 1.0).</p></li>
-<li><p><code>phase</code> (opcjonalny): Faza funkcji sinus (domyślnie 0.0).</p></li>
-<li><p><code>name</code> (opcjonalny): Nazwa funkcji sinus.</p></li>
-</ul></li>
-<li><p>Zaimplementuj metodę <code>__call__(self, x)</code>, która oblicza wartość funkcji sinus dla danego <code>x</code> przy użyciu funkcji z modułu <code>math</code>.</p></li>
-<li><p>Zaimplementuj metodę <code>__str__(self)</code>, która zwraca opis funkcji sinus bazując się na jej parametrach (amplituda, częstotliwość, faza).</p></li>
-<li><p>Zaimplementuj metodę <code>derivative(self)</code>, która oblicza wartość pochodnej funkcji sinus w punkcie <code>x</code> i zwraca <strong>nowy obiekt klasy <code>SineFunction</code></strong> reprezentujący tę pochodną.</p></li>
-</ul></li>
-<li><p><strong>Klasa pochodna <code>ExponentialFunction</code>:</strong></p>
-<ul>
-<li><p>Zdefiniuj klasę <code>ExponentialFunction</code>, która dziedziczy po <code>DifferentiableFunction</code>.</p></li>
-<li><p>Jej konstruktor (<code>__init__</code>) powinien przyjmować następujące argumenty:</p>
-<ul>
-<li><p><code>base</code> (opcjonalny): Podstawa funkcji eksponencjalnej (domyślnie <code>math.e</code>).</p></li>
-<li><p><code>name</code> (opcjonalny): Nazwa funkcji eksponencjalnej.</p></li>
-</ul></li>
-<li><p>Zaimplementuj metodę <code>__call__(self, x)</code>, która oblicza wartość funkcji eksponencjalnej dla danego <code>x</code> przy użyciu funkcji z modułu <code>math</code>.</p></li>
-<li><p>Zaimplementuj metodę <code>__str__(self)</code>, która zwraca opis funkcji eksponencjalnej bazując się na jej podstawie.</p></li>
-<li><p>Zaimplementuj metodę <code>derivative(self)</code>, która oblicza wartość pochodnej funkcji eksponencjalnej w punkcie <code>x</code> i zwraca <strong>nowy obiekt klasy <code>ExponentialFunction</code></strong> reprezentujący tę pochodną.</p></li>
-</ul></li>
-</ol>
 
 
-</section>
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> 
   </div>
 </div>
