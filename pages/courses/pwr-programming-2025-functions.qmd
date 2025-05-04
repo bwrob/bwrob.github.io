@@ -8,9 +8,9 @@ execute:
   freeze: true  # never re-render during project render
 ---
 
+## Ćwiczenie: Hierarchia Funkcji - Funkcje Rzeczywiste, Różniczkowalne, Wielomiany, Sinus i Eksponens
 
-Celem tego ćwiczenia jest praktyczne zastosowanie dziedziczenia w Pythonie do stworzenia hierarchii klas reprezentujących różne typy funkcji matematycznych. Zaimplementujesz klasy dla funkcji rzeczywistych, funkcji różniczkowalnych oraz konkretnego przypadku - funkcji wielomianowych, sinusoidalnych i eksponencjalnych.
-
+**Cel:** Celem tego ćwiczenia jest praktyczne zastosowanie dziedziczenia w Pythonie do stworzenia hierarchii klas reprezentujących różne typy funkcji matematycznych. Zaimplementujesz klasy dla funkcji rzeczywistych, funkcji różniczkowalnych oraz konkretnych przypadków - funkcji wielomianowych, sinusoidalnych i eksponencjalnych.
 
 1.  **Klasa bazowa `RealFunction`:**
 
@@ -50,7 +50,7 @@ Celem tego ćwiczenia jest praktyczne zastosowanie dziedziczenia w Pythonie do s
 
     * Zaimplementuj metodę `__call__(self, x)`, która oblicza wartość wielomianu dla danego `x` przy użyciu **schematu Hornera**. Zaimplementuj w tym celu pomocniczą (np. prywatną) metodę `__evaluate_polynomial(self, x, coeffs)`.
 
-    * Zaimplementuj metodę `__str__(self)`, która zwraca opis wielomianu bazując się na jego współczynnikach. Powinna ona tworzyć łańcuch znaków reprezentujący wielomian w standardowej formie (np. `3x^2 - 2x + 1`).
+    * Zaimplementuj metodę `__str__(self)`, która zwraca opis wielomianu na podstawie jego współczynników. Powinna ona tworzyć łańcuch znaków reprezentujący wielomian w standardowej formie (np. `3x^2 - 2x + 1`).
 
     * Zaimplementuj metodę `derivative(self)`, która oblicza wartość pochodnej wielomianu w punkcie `x` i zwraca **nowy obiekt klasy `PolynomialFunction`** reprezentujący tę pochodną.
 
@@ -68,9 +68,9 @@ Celem tego ćwiczenia jest praktyczne zastosowanie dziedziczenia w Pythonie do s
 
         * `name` (opcjonalny): Nazwa funkcji sinus.
 
-    * Zaimplementuj metodę `__call__(self, x)`, która oblicza wartość funkcji sinus dla danego `x`  przy użyciu funkcji z modułu `math`.
+    * Zaimplementuj metodę `__call__(self, x)`, która oblicza wartość funkcji sinus dla danego `x` przy użyciu funkcji z modułu `math`.
 
-    * Zaimplementuj metodę `__str__(self)`, która zwraca opis funkcji sinus bazując się na jej parametrach (amplituda, częstotliwość, faza).
+    * Zaimplementuj metodę `__str__(self)`, która zwraca opis funkcji sinus na podstawie jej parametrów (amplituda, częstotliwość, faza).
 
     * Zaimplementuj metodę `derivative(self)`, która oblicza wartość pochodnej funkcji sinus w punkcie `x` i zwraca **nowy obiekt klasy `SineFunction`** reprezentujący tę pochodną.
 
@@ -84,8 +84,60 @@ Celem tego ćwiczenia jest praktyczne zastosowanie dziedziczenia w Pythonie do s
 
         * `name` (opcjonalny): Nazwa funkcji eksponencjalnej.
 
-    * Zaimplementuj metodę `__call__(self, x)`, która oblicza wartość funkcji eksponencjalnej dla danego `x`  przy użyciu funkcji z modułu `math`.
+    * Zaimplementuj metodę `__call__(self, x)`, która oblicza wartość funkcji eksponencjalnej dla danego `x` przy użyciu funkcji z modułu `math`.
 
-    * Zaimplementuj metodę `__str__(self)`, która zwraca opis funkcji eksponencjalnej bazując się na jej podstawie.
+    * Zaimplementuj metodę `__str__(self)`, która zwraca opis funkcji eksponencjalnej na podstawie jej podstawy.
 
     * Zaimplementuj metodę `derivative(self)`, która oblicza wartość pochodnej funkcji eksponencjalnej w punkcie `x` i zwraca **nowy obiekt klasy `ExponentialFunction`** reprezentujący tę pochodną.
+
+**Przykładowe użycie klas:**
+
+Poniżej znajdują się przykłady użycia zdefiniowanych klas. Możesz je umieścić w jednej komórce kodu w Jupyter Notebook.
+
+```{python}
+# | eval: false
+
+from functions import (
+    RealFunction,
+    DifferentiableFunction,
+    PolynomialFunction,
+    SineFunction,
+    ExponentialFunction,
+)
+import math
+
+# Przykłady użycia
+
+# Funkcja wielomianowa: 3x^2 - 2x + 1
+p = PolynomialFunction([3, -2, 1], name="Wielomian Kwadratowy")
+print(p)
+print(p(2))
+pochodna_p = p.derivative()
+print(pochodna_p)
+print(pochodna_p(2))
+
+# Funkcja sinus: 2*sin(0.5*x + 0.3)
+s = SineFunction(amplitude=2, frequency=0.5, phase=0.3, name="Funkcja Sinus")
+print(s)
+print(s(math.pi))
+pochodna_s = s.derivative()
+print(pochodna_s)
+print(pochodna_s(math.pi))
+
+# Funkcja eksponencjalna: 2^x
+e = ExponentialFunction(base=2, name="Funkcja Eksponencjalna")
+print(e)
+print(e(3))
+pochodna_e = e.derivative()
+print(pochodna_e(3))
+
+
+# Przykład użycia DifferentiableFunction z funkcją
+def f(x):
+    return x**2 + 2 * x + 1
+
+df = DifferentiableFunction(f, name="Funkcja kwadratowa")
+print(df(3))  # Wypisze 16
+pochodna_df = df.derivative(3)
+print(pochodna_df)  # Wypisze przybliżoną wartość pochodnej f(x) w x=3, czyli 8
+```
