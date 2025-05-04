@@ -1,0 +1,55 @@
+---
+title: "Logowanie"
+
+about:
+  template: marquee
+
+execute:
+  freeze: true  # never re-render during project render
+---
+
+Używamy tej [recepty](https://docs.python.org/3/howto/logging-cookbook.html#multiple-handlers-and-formatters) wzbogaconej o pakiet [`rich`](https://rich.readthedocs.io/en/stable/introduction.html) do ustawienia logowania w projekcie.
+Dostajemy wtedy kolorowe logi na poziomie  `INFO` i wyżej w terminalu, a dodatkowe informacje na poziomie `DEBUG` w pliku `log.txt`.
+
+```{python}
+import logging
+from rich.logging import RichHandler
+
+logger = logging.getLogger("simple_example")
+logger.setLevel(logging.DEBUG)
+
+# logger jest tworzony tylko raz, więc nie dodajemy handlerów więcej niż raz
+if not logger.hasHandlers():
+    # zapisujemy logi DEBUG i wyżej do pliku
+    fh = logging.FileHandler("simple_example.log")
+    fh.setLevel(logging.DEBUG)
+    # ustalamy format logów
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
+    # dodajemy formatter do handlera
+    fh.setFormatter(formatter)
+    # dodajemy handler do loggera
+    logger.addHandler(fh)
+
+    # wypisujemy logi INFO i wyżej do terminala
+    # używamy RichHandler do kolorowych  czytelnych logów
+    ch = RichHandler()
+    ch.setLevel(logging.INFO)
+    logger.addHandler(ch)
+
+# przykładowe logi
+logger.debug("debug message")
+logger.info("info message")
+logger.warning("warn message")
+logger.error("error message")
+```
+
+W pliku dostajemy logi w formacie:
+
+```
+2025-05-03 14:36:52,989 - simple_example - DEBUG - debug message
+2025-05-03 14:36:52,989 - simple_example - INFO - info message
+2025-05-03 14:36:52,991 - simple_example - WARNING - warn message
+2025-05-03 14:36:52,992 - simple_example - ERROR - error message
+```

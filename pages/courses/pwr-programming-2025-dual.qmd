@@ -1,5 +1,5 @@
 ---
-title: "Programowanie (PWr Lato 2025) Ćwiczenia projektowe"
+title: "Liczby dualne"
 
 about:
   template: marquee
@@ -7,92 +7,6 @@ about:
 execute:
   freeze: true  # never re-render during project render
 ---
-
-
-
-## Zarzadzanie środowiskami
-
-Wyjaśniliśmy, dlaczego warto używać środowisk wirtualnych. Na labolatoriach korzystamy z anacondy, dla przypomnienia komendy które mogą się przydać:
-```{powershell}
-# tworzymy nowe środowisko
-# w tym przypadku z pythonem 3.12
-conda create -n programowanie-2025 python=3.12
-# sprawdzamy czy środowisko się utworzyło, i jakie mamy środowiskam
-# obecne środowisko jest oznaczone *
-conda info --envs
-# aktywujemy środowisko
-conda activate programowanie-2025
-# instalujemy pakiety
-conda install numpy pandas matplotlib rich
-# tworzymy plik requirements.txt
-conda list -e > requirements.txt
-```
-
-Najbardziej waniliowym sposobem na zarządzanie środowiskami jest `venv`. Wtedy robimy to tak:
-```{powershell}
-# tworzymy nowe środowisko
-python -m venv programowanie-2025
-# aktywujemy środowisko
-programowanie-2025\Scripts\activate
-# instalujemy pakiety
-pip install numpy pandas matplotlib rich
-# tworzymy plik requirements.txt
-pip freeze > requirements.txt
-```
-
-Innymi sposobami na zarządzanie środowiskami są [`poetry`](https://python-poetry.org/docs/) i [`uv`](https://docs.astral.sh/uv/getting-started/).
-W szczególności `poetry` jest bardzo wygodne, `uv` jest bardziej skomplikowane, ale daje więcej możliwości i jest znacznie szybsze.
-
-
-## Logowanie
-
-Używamy tej [recepty](https://docs.python.org/3/howto/logging-cookbook.html#multiple-handlers-and-formatters) wzbogaconej o pakiet [`rich`](https://rich.readthedocs.io/en/stable/introduction.html) do ustawienia logowania w projekcie.
-Dostajemy wtedy kolorowe logi na poziomie  `INFO` i wyżej w terminalu, a dodatkowe informacje na poziomie `DEBUG` w pliku `log.txt`.
-
-```{python}
-import logging
-from rich.logging import RichHandler
-
-logger = logging.getLogger("simple_example")
-logger.setLevel(logging.DEBUG)
-
-# logger jest tworzony tylko raz, więc nie dodajemy handlerów więcej niż raz
-if not logger.hasHandlers():
-    # zapisujemy logi DEBUG i wyżej do pliku
-    fh = logging.FileHandler("simple_example.log")
-    fh.setLevel(logging.DEBUG)
-    # ustalamy format logów
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    )
-    # dodajemy formatter do handlera
-    fh.setFormatter(formatter)
-    # dodajemy handler do loggera
-    logger.addHandler(fh)
-
-    # wypisujemy logi INFO i wyżej do terminala
-    # używamy RichHandler do kolorowych  czytelnych logów
-    ch = RichHandler()
-    ch.setLevel(logging.INFO)
-    logger.addHandler(ch)
-
-# przykładowe logi
-logger.debug("debug message")
-logger.info("info message")
-logger.warning("warn message")
-logger.error("error message")
-```
-
-W pliku dostajemy logi w formacie:
-
-```
-2025-05-03 14:36:52,989 - simple_example - DEBUG - debug message
-2025-05-03 14:36:52,989 - simple_example - INFO - info message
-2025-05-03 14:36:52,991 - simple_example - WARNING - warn message
-2025-05-03 14:36:52,992 - simple_example - ERROR - error message
-```
-
-## Liczby dualne
 
 Implementujemy [liczby dualne](https://www.wikiwand.com/en/articles/Dual_number) w Pythonie. Nasza implementacja powinna być napisana w pliku `dual_numbers.py`.
 
@@ -108,7 +22,7 @@ Celem tego zadania jest zaimplementowanie klasy `DualNumber` w Pythonie. Liczby 
     * Zapisz te wartości jako atrybuty `self.real` i `self.dual`.
 
 2.  **Reprezentacja jako napis:**
-    * Zaimplementuj metody `__str__` i `__repr__`, aby zapewnić przyjazną dla użytkownika reprezentację łańcuchową liczby dualnej. Powinna ona wyglądać odpowiednio jak "a + bε" lub "a - bε" dla `__str__` i "DualNumber(a,b)" dla `__repr__`.
+    * Zaimplementuj metody `__str__` i `__repr__`, aby zapewnić przyjazną dla użytkownika reprezentację napisową liczby dualnej. Powinna ona wyglądać odpowiednio jak "a + bε" lub "a - bε" dla `__str__` i "DualNumber(a,b)" dla `__repr__`.
 
 3.  **Operacje arytmetyczne:**
 

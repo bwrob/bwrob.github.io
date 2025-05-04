@@ -1,0 +1,40 @@
+---
+title: "Zarzadzanie środowiskami"
+
+about:
+  template: marquee
+
+execute:
+  freeze: true  # never re-render during project render
+---
+
+Wyjaśniliśmy, dlaczego warto używać środowisk wirtualnych. Na labolatoriach korzystamy z anacondy, dla przypomnienia komendy które mogą się przydać:
+```{powershell}
+# tworzymy nowe środowisko
+# w tym przypadku z pythonem 3.12
+conda create -n programowanie-2025 python=3.12
+# sprawdzamy czy środowisko się utworzyło, i jakie mamy środowiskam
+# obecne środowisko jest oznaczone *
+conda info --envs
+# aktywujemy środowisko
+conda activate programowanie-2025
+# instalujemy pakiety
+conda install numpy pandas matplotlib rich
+# tworzymy plik requirements.txt
+conda list -e > requirements.txt
+```
+
+Najbardziej waniliowym sposobem na zarządzanie środowiskami jest `venv`. Wtedy robimy to tak:
+```{powershell}
+# tworzymy nowe środowisko
+python -m venv programowanie-2025
+# aktywujemy środowisko
+programowanie-2025\Scripts\activate
+# instalujemy pakiety
+pip install numpy pandas matplotlib rich
+# tworzymy plik requirements.txt
+pip freeze > requirements.txt
+```
+
+Innymi sposobami na zarządzanie środowiskami są [`poetry`](https://python-poetry.org/docs/) i [`uv`](https://docs.astral.sh/uv/getting-started/).
+W szczególności `poetry` jest bardzo wygodne, `uv` jest bardziej skomplikowane, ale daje więcej możliwości i jest znacznie szybsze.

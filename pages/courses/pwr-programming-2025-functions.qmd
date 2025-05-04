@@ -1,0 +1,91 @@
+---
+title: "Hierarchia Funkcji"
+
+about:
+  template: marquee
+
+execute:
+  freeze: true  # never re-render during project render
+---
+
+
+Celem tego ćwiczenia jest praktyczne zastosowanie dziedziczenia w Pythonie do stworzenia hierarchii klas reprezentujących różne typy funkcji matematycznych. Zaimplementujesz klasy dla funkcji rzeczywistych, funkcji różniczkowalnych oraz konkretnego przypadku - funkcji wielomianowych, sinusoidalnych i eksponencjalnych.
+
+
+1.  **Klasa bazowa `RealFunction`:**
+
+    * Zdefiniuj klasę `RealFunction`.
+
+    * Jej konstruktor (`__init__`) powinien przyjmować dwa argumenty:
+
+        * `func`: Obiekt wywoływalny (np. funkcja lambda lub zwykła funkcja Pythona), który reprezentuje daną funkcję matematyczną.
+
+        * `name` (opcjonalny): Ciąg znaków opisujący nazwę funkcji.
+
+    * Zaimplementuj metodę `__call__(self, x)`, która przyjmuje argument `x` (liczbę rzeczywistą) i zwraca wynik wywołania przechowywanej funkcji `func` z tym argumentem.
+
+    * Zaimplementuj metodę `__str__(self)`, która zwraca opis funkcji (np. jej nazwę).
+
+2.  **Klasa pochodna `DifferentiableFunction`:**
+
+    * Zdefiniuj klasę `DifferentiableFunction`, która dziedziczy po `RealFunction`.
+
+    * Jej konstruktor (`__init__`) powinien zachowywać się tak samo jak konstruktor klasy bazowej, przekazując argumenty do `super().__init__(func, name)`.
+
+    * Zaimplementuj metodę `derivative(self, h=1e-7)`, która przybliża wartość pochodnej funkcji w punkcie `x` przy użyciu **symetrycznego ilorazu różnicowego**:
+
+        $$\frac{f(x + h) - f(x - h)}{2h}$$
+
+        gdzie $f$ to funkcja reprezentowana przez instancję klasy, a $h$ jest małą wartością kroku (domyślnie $10^{-7}$). Metoda ta powinna zwracać obiekt `RealFunction` odpowiadający przybliżonej wartości pochodnej w punkcie `x`.
+
+3.  **Klasa pochodna `PolynomialFunction`:**
+
+    * Zdefiniuj klasę `PolynomialFunction`, która dziedziczy po `DifferentiableFunction`.
+
+    * Jej konstruktor (`__init__`) powinien przyjmować dwa argumenty:
+
+        * `coefficients`: Lista liczb reprezentujących współczynniki wielomianu. Pierwszy element listy odpowiada współczynnikowi przy najwyższej potędze, a ostatni - wyrazowi wolnemu. Na przykład, dla wielomianu $3x^2 - 2x + 1$, lista współczynników to `[3, -2, 1]`.
+
+        * `name` (opcjonalny): Nazwa wielomianu.
+
+    * Zaimplementuj metodę `__call__(self, x)`, która oblicza wartość wielomianu dla danego `x` przy użyciu **schematu Hornera**. Zaimplementuj w tym celu pomocniczą (np. prywatną) metodę `__evaluate_polynomial(self, x, coeffs)`.
+
+    * Zaimplementuj metodę `__str__(self)`, która zwraca opis wielomianu bazując się na jego współczynnikach. Powinna ona tworzyć łańcuch znaków reprezentujący wielomian w standardowej formie (np. `3x^2 - 2x + 1`).
+
+    * Zaimplementuj metodę `derivative(self)`, która oblicza wartość pochodnej wielomianu w punkcie `x` i zwraca **nowy obiekt klasy `PolynomialFunction`** reprezentujący tę pochodną.
+
+4.  **Klasa pochodna `SineFunction`:**
+
+    * Zdefiniuj klasę `SineFunction`, która dziedziczy po `DifferentiableFunction`.
+
+    * Jej konstruktor (`__init__`) powinien przyjmować następujące argumenty:
+
+        * `amplitude` (opcjonalny): Amplituda funkcji sinus (domyślnie 1.0).
+
+        * `frequency` (opcjonalny): Częstotliwość funkcji sinus (domyślnie 1.0).
+
+        * `phase` (opcjonalny): Faza funkcji sinus (domyślnie 0.0).
+
+        * `name` (opcjonalny): Nazwa funkcji sinus.
+
+    * Zaimplementuj metodę `__call__(self, x)`, która oblicza wartość funkcji sinus dla danego `x`  przy użyciu funkcji z modułu `math`.
+
+    * Zaimplementuj metodę `__str__(self)`, która zwraca opis funkcji sinus bazując się na jej parametrach (amplituda, częstotliwość, faza).
+
+    * Zaimplementuj metodę `derivative(self)`, która oblicza wartość pochodnej funkcji sinus w punkcie `x` i zwraca **nowy obiekt klasy `SineFunction`** reprezentujący tę pochodną.
+
+5.  **Klasa pochodna `ExponentialFunction`:**
+
+    * Zdefiniuj klasę `ExponentialFunction`, która dziedziczy po `DifferentiableFunction`.
+
+    * Jej konstruktor (`__init__`) powinien przyjmować następujące argumenty:
+
+        * `base` (opcjonalny): Podstawa funkcji eksponencjalnej (domyślnie `math.e`).
+
+        * `name` (opcjonalny): Nazwa funkcji eksponencjalnej.
+
+    * Zaimplementuj metodę `__call__(self, x)`, która oblicza wartość funkcji eksponencjalnej dla danego `x`  przy użyciu funkcji z modułu `math`.
+
+    * Zaimplementuj metodę `__str__(self)`, która zwraca opis funkcji eksponencjalnej bazując się na jej podstawie.
+
+    * Zaimplementuj metodę `derivative(self)`, która oblicza wartość pochodnej funkcji eksponencjalnej w punkcie `x` i zwraca **nowy obiekt klasy `ExponentialFunction`** reprezentujący tę pochodną.
