@@ -1,0 +1,162 @@
+---
+title: "Gra w Życie"
+
+about:
+  template: marquee
+
+execute:
+  freeze: true  # never re-render during project render
+---
+
+## Gra w Życie
+
+[Conway's Game of Life](https://www.wikiwand.com/en/articles/Conway's_Game_of_Life) to symulacja automatu komórkowego, w której stan każdej komórki w siatce ewoluuje w czasie na podstawie prostych reguł dotyczących jej sąsiadów.
+
+**Zasady Gry**
+
+Gra toczy się na dwuwymiarowej siatce komórek, z których każda może być w jednym z dwóch stanów:
+
+* Żywa (oznaczona kolorem zielonym w implementacji)
+* Martwa (oznaczona kolorem czarnym w implementacji)
+
+Stan komórki w następnej generacji zależy od stanu jej ośmiu sąsiadów w obecnej generacji, zgodnie z następującymi regułami:
+
+* Martwa komórka z dokładnie trzema żywymi sąsiadami staje się żywa (**narodziny**).
+* Żywa komórka z mniej niż dwoma żywymi sąsiadami umiera z powodu **niedoludnienia**.
+* Żywa komórka z dwoma lub trzema żywymi sąsiadami **pozostaje żywa**.
+* Żywa komórka z więcej niż trzema żywymi sąsiadami umiera z powodu **przeludnienia**.
+
+## Zadanie
+
+Twoim zadaniem jest uzupełnienie kodu symulacji Game of Life. Poniżej znajduje się szkielet kodu, który musisz wypełnić.
+
+* Uzupełnij funkcję `draw_grid`, rysując na ekranie siatkę komórek z odpowiednimi kolorami (zielony dla komórek żywych, czarny dla martwych).
+* Uzupełnij brakującą część pętli `while` w `game_event_loop` tak aby gra wyświetlała kolejne generacje oraz reagowała na zdarzenia użytkownika.
+* **Dodatkowe wyzwanie:** Zaimplementuj różne początkowe wzory (np. Glider, Gosper glider gun).
+* **Dodatkowe wyzwanie:** Dodaj kontrolę prędkości symulacji. Zaimplementuj możliwość przewijania generacji.
+
+## Przykładowe sterowanie
+
+* `Spacja`: Wznawia/wstrzymuje symulację.
+* `R`: Resetuje siatkę do losowego układu.
+* `C`: Czyści siatkę (wszystkie komórki martwe).
+* `Lewy Przycisk Myszy`: Kliknięcie komórki przełącza jej stan (żywa/martwa), ale tylko gdy symulacja jest wstrzymana.
+
+## Przydatne zasoby:
+
+* [`pygame.init()`](https://www.pygame.org/docs/ref/pygame.html#pygame.init)
+* [`pygame.display.set_mode()`](https://www.pygame.org/docs/ref/pygame.html#pygame.display.set_mode)
+* [`pygame.display.set_caption()`](https://www.pygame.org/docs/ref/pygame.html#pygame.display.set_caption)
+* [`pygame.event.get()`](https://www.pygame.org/docs/ref/pygame.html#pygame.event.get)
+* [`pygame.event.EventType` (np. `pygame.MOUSEBUTTONDOWN`)](https://www.pygame.org/docs/ref/event.html#pygame.MOUSEBUTTONDOWN)
+* [`pygame.key.get_pressed()`](https://www.pygame.org/docs/ref/key.html#pygame.key.get_pressed)
+* [`pygame.draw.rect()`](https://www.pygame.org/docs/ref/draw.html#pygame.draw.rect)
+* [`pygame.display.flip()`](https://www.pygame.org/docs/ref/pygame.html#pygame.display.flip)
+* [`pygame.time.Clock()`](https://www.pygame.org/docs/ref/time.html#pygame.time.Clock)
+* [`pygame.time.Clock.tick()`](https://www.pygame.org/docs/ref/time.html#pygame.time.Clock.tick)
+* [`pygame.mouse.get_pos()`](https://www.pygame.org/docs/ref/mouse.html#pygame.mouse.get_pos)
+* [`pygame.quit()`](https://www.pygame.org/docs/ref/pygame.html#pygame.quit)
+
+## Przygotowanie środowiska
+
+Dla tego zadania będziesz potrzebować zainstalować Pygame i NumPy. Możesz to zrobić za pomocą poleceń:
+```{powershell}
+conda create -n pygame-env python=3.12
+conda activate ppygame-env
+conda config --append channels conda-forge
+conda install numpy pygame
+```
+
+## Szkielet kodu
+
+```{python}
+# | eval: false
+
+#!/usr/bin/env python3
+"""Conway's Game of Life.
+
+Implementacja Gry w Życie Conwaya w Pythonie z użyciem Pygame i NumPy.
+"""
+
+import numpy as np
+import pygame
+
+# Stałe
+WIDTH = 800
+HEIGHT = 600
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255) tuple[int, int, int]
+GREEN = (0, 200, 0)
+CELL_SIZE = 10
+GRID_WIDTH = WIDTH // CELL_SIZE
+GRID_HEIGHT = HEIGHT // CELL_SIZE
+DEFAULT_FPS = 10
+
+
+def create_random_grid() -> np.ndarray:
+    """Tworzy losową siatkę złożoną z 0 i 1."""
+    rng = np.random.default_rng()
+    return rng.integers(
+        0,
+        2,
+        size=(GRID_HEIGHT, GRID_WIDTH),
+        dtype=np.int8
+    )
+
+
+def create_empty_grid() -> np.ndarray:
+    """Tworzy pustą siatkę złożoną z 0."""
+    return np.zeros(
+        (GRID_HEIGHT, GRID_WIDTH),
+        dtype=np.int8,
+    )
+
+
+def get_next_generation(grid: np.ndarray) -> np.ndarray:
+    """Oblicza następne pokolenie Gry w Życie."""
+    new_grid: np.ndarray = np.copy(grid)
+    for r in range(GRID_HEIGHT):
+        for c in range(GRID_WIDTH):
+            # Użyj max i min do obliczenia granic sąsiedztwa
+            r_start = max(0, r - 1)
+            r_end = min(GRID_HEIGHT, r + 2)
+            c_start = max(0, c - 1)
+            c_end = min(GRID_WIDTH, c + 2)
+            # Policz żywych sąsiadów
+            live_neighbors = np.sum(grid[r_start:r_end, c_start:c_end]) - grid[r, c]
+            # Zastosuj reguły Gry w Życie
+            if grid[r, c]:  # Komórka żywa
+                if live_neighbors not in (2, 3):
+                    new_grid[r, c] = 0  # Umiera
+            elif live_neighbors == 3:  # Komórka martwa
+                new_grid[r, c] = 1  # Ożywa
+    return new_grid
+
+
+def draw_grid(screen: pygame.Surface, grid: np.ndarray) -> None:
+    """Rysuje siatkę na ekranie Pygame."""
+    pass
+
+def game_event_loop() -> None:
+    """Obsługuje główną pętlę gry, w tym zdarzenia, aktualizacje i rysowanie."""
+    paused = True
+    running = True
+    clock: pygame.time.Clock = pygame.time.Clock()
+    current_grid: np.ndarray = create_random_grid()
+    fps = FPS
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+    while running:
+        pass
+
+def main() -> None:
+    """Główna funkcja uruchamiająca Grę w Życie."""
+    pygame.init()
+    pygame.display.set_caption("Conway's Game of Life")
+    game_event_loop()
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
+
+```
