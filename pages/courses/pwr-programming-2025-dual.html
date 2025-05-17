@@ -114,7 +114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
@@ -189,13 +189,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+  <ul>
+  <li><a href="#rozwiązanie" id="toc-rozwiązanie" class="nav-link active" data-scroll-target="#rozwiązanie">Rozwiązanie</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <div class="quarto-about-marquee">
   <div class="about-image-container">
   </div>
   <div class="about-contents">
      <main class="content quarto-banner-title-block" id="quarto-document-content">
+
 <p>Implementujemy <a href="https://www.wikiwand.com/en/articles/Dual_number">liczby dualne</a> w Pythonie. Nasza implementacja powinna być napisana w pliku <code>dual_numbers.py</code>.</p>
 <p>Celem tego zadania jest zaimplementowanie klasy <code>DualNumber</code> w Pythonie. Liczby dualne są rozszerzeniem liczb rzeczywistych o specjalny element ‘ε’ (epsilon), taki że ε² = 0. Są one używane w automatycznym różniczkowaniu.</p>
 <p><strong>Liczba dualna:</strong> Liczba postaci a + bε, gdzie ‘a’ i ‘b’ są liczbami rzeczywistymi, a ε jest jednostką nieskończenie małą.</p>
@@ -255,7 +263,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></li>
 </ol>
 <p>Poniżej znajduje się przykład użycia klasy <code>DualNumber</code>, (kod kliencki). Twoja implementacja powinna umożliwić poprawne działanie tego kodu.</p>
-<div id="3d59c08f" class="cell" data-execution_count="1">
+<div id="b8782f6c" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> dual_numbers <span class="im">import</span> DualNumber, epsilon</span>
 <span id="cb1-2"><a href="#cb1-2"></a></span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
@@ -303,8 +311,182 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-45"><a href="#cb1-45"></a>    <span class="bu">print</span>(<span class="st">"Sinus z a:"</span>, DualNumber.sin(a))</span>
 <span id="cb1-46"><a href="#cb1-46"></a>    <span class="bu">print</span>(<span class="st">"Cosinus z a:"</span>, DualNumber.cos(a))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<section id="rozwiązanie" class="level2">
+<h2 data-anchor-id="rozwiązanie">Rozwiązanie</h2>
+<div id="bfb73c86" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> __future__ <span class="im">import</span> annotations</span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="im">import</span> math</span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="kw">class</span> DualNumber:</span>
+<span id="cb2-7"><a href="#cb2-7"></a>    <span class="co">"""Reprezentuje liczbę dualną postaci a + bε."""</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a></span>
+<span id="cb2-9"><a href="#cb2-9"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, real: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span>, dual: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb2-10"><a href="#cb2-10"></a>        <span class="co">"""Inicjalizuje liczbę dualną.</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co">        Args:</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="co">            real: Część rzeczywista (a). Domyślnie 0.0.</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="co">            dual: Część dualna (b). Domyślnie 0.0.</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a></span>
+<span id="cb2-16"><a href="#cb2-16"></a><span class="co">        """</span></span>
+<span id="cb2-17"><a href="#cb2-17"></a>        <span class="va">self</span>.real <span class="op">=</span> <span class="bu">float</span>(real)</span>
+<span id="cb2-18"><a href="#cb2-18"></a>        <span class="va">self</span>.dual <span class="op">=</span> <span class="bu">float</span>(dual)</span>
+<span id="cb2-19"><a href="#cb2-19"></a></span>
+<span id="cb2-20"><a href="#cb2-20"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb2-21"><a href="#cb2-21"></a>        <span class="co">"""Zwraca reprezentację łańcuchową liczby dualnej."""</span></span>
+<span id="cb2-22"><a href="#cb2-22"></a>        sign <span class="op">=</span> <span class="st">"+"</span> <span class="cf">if</span> <span class="va">self</span>.dual <span class="op">&gt;=</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">"-"</span></span>
+<span id="cb2-23"><a href="#cb2-23"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>real<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>sign<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span><span class="bu">abs</span>(<span class="va">self</span>.dual)<span class="sc">}</span><span class="ss">ε"</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a></span>
+<span id="cb2-25"><a href="#cb2-25"></a>    <span class="kw">def</span> <span class="fu">__repr__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb2-26"><a href="#cb2-26"></a>        <span class="co">"""Zwraca oficjalną reprezentację łańcuchową liczby dualnej."""</span></span>
+<span id="cb2-27"><a href="#cb2-27"></a>        <span class="cf">return</span> <span class="ss">f"DualNumber(</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>real<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>dual<span class="sc">}</span><span class="ss">)"</span></span>
+<span id="cb2-28"><a href="#cb2-28"></a></span>
+<span id="cb2-29"><a href="#cb2-29"></a>    <span class="kw">def</span> <span class="fu">__add__</span>(<span class="va">self</span>, other: DualNumber <span class="op">|</span> <span class="bu">float</span>) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-30"><a href="#cb2-30"></a>        <span class="co">"""Dodaje dwie liczby dualne lub liczbę dualną i liczbę rzeczywistą."""</span></span>
+<span id="cb2-31"><a href="#cb2-31"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(other, DualNumber):</span>
+<span id="cb2-32"><a href="#cb2-32"></a>            <span class="cf">return</span> DualNumber(<span class="va">self</span>.real <span class="op">+</span> other.real, <span class="va">self</span>.dual <span class="op">+</span> other.dual)</span>
+<span id="cb2-33"><a href="#cb2-33"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(other, <span class="bu">int</span> <span class="op">|</span> <span class="bu">float</span>):</span>
+<span id="cb2-34"><a href="#cb2-34"></a>            <span class="cf">return</span> DualNumber(<span class="va">self</span>.real <span class="op">+</span> other, <span class="va">self</span>.dual)</span>
+<span id="cb2-35"><a href="#cb2-35"></a>        <span class="cf">return</span> <span class="va">NotImplemented</span></span>
+<span id="cb2-36"><a href="#cb2-36"></a></span>
+<span id="cb2-37"><a href="#cb2-37"></a>    <span class="kw">def</span> <span class="fu">__radd__</span>(<span class="va">self</span>, other: <span class="bu">float</span>) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-38"><a href="#cb2-38"></a>        <span class="co">"""Obsługuje dodawanie z liczbą rzeczywistą po lewej stronie.</span></span>
+<span id="cb2-39"><a href="#cb2-39"></a></span>
+<span id="cb2-40"><a href="#cb2-40"></a><span class="co">        other + self</span></span>
+<span id="cb2-41"><a href="#cb2-41"></a><span class="co">        """</span></span>
+<span id="cb2-42"><a href="#cb2-42"></a>        <span class="cf">return</span> <span class="va">self</span> <span class="op">+</span> other</span>
+<span id="cb2-43"><a href="#cb2-43"></a></span>
+<span id="cb2-44"><a href="#cb2-44"></a>    <span class="kw">def</span> <span class="fu">__sub__</span>(<span class="va">self</span>, other: DualNumber <span class="op">|</span> <span class="bu">float</span>) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-45"><a href="#cb2-45"></a>        <span class="co">"""Odejmuje dwie liczby dualne lub liczbę dualną i liczbę rzeczywistą."""</span></span>
+<span id="cb2-46"><a href="#cb2-46"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(other, DualNumber):</span>
+<span id="cb2-47"><a href="#cb2-47"></a>            <span class="cf">return</span> DualNumber(<span class="va">self</span>.real <span class="op">-</span> other.real, <span class="va">self</span>.dual <span class="op">-</span> other.dual)</span>
+<span id="cb2-48"><a href="#cb2-48"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(other, <span class="bu">int</span> <span class="op">|</span> <span class="bu">float</span>):</span>
+<span id="cb2-49"><a href="#cb2-49"></a>            <span class="cf">return</span> DualNumber(<span class="va">self</span>.real <span class="op">-</span> other, <span class="va">self</span>.dual)</span>
+<span id="cb2-50"><a href="#cb2-50"></a>        <span class="cf">return</span> <span class="va">NotImplemented</span></span>
+<span id="cb2-51"><a href="#cb2-51"></a></span>
+<span id="cb2-52"><a href="#cb2-52"></a>    <span class="kw">def</span> <span class="fu">__rsub__</span>(<span class="va">self</span>, other: <span class="bu">float</span>) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-53"><a href="#cb2-53"></a>        <span class="co">"""Obsługuje odejmowanie z liczbą rzeczywistą po lewej stronie."""</span></span>
+<span id="cb2-54"><a href="#cb2-54"></a>        <span class="cf">return</span> DualNumber(other <span class="op">-</span> <span class="va">self</span>.real, <span class="op">-</span><span class="va">self</span>.dual)</span>
+<span id="cb2-55"><a href="#cb2-55"></a></span>
+<span id="cb2-56"><a href="#cb2-56"></a>    <span class="kw">def</span> <span class="fu">__mul__</span>(<span class="va">self</span>, other: DualNumber <span class="op">|</span> <span class="bu">float</span>) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-57"><a href="#cb2-57"></a>        <span class="co">"""Mnoży dwie liczby dualne lub liczbę dualną i liczbę rzeczywistą."""</span></span>
+<span id="cb2-58"><a href="#cb2-58"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(other, DualNumber):</span>
+<span id="cb2-59"><a href="#cb2-59"></a>            real_part <span class="op">=</span> <span class="va">self</span>.real <span class="op">*</span> other.real</span>
+<span id="cb2-60"><a href="#cb2-60"></a>            dual_part <span class="op">=</span> (<span class="va">self</span>.real <span class="op">*</span> other.dual) <span class="op">+</span> (<span class="va">self</span>.dual <span class="op">*</span> other.real)</span>
+<span id="cb2-61"><a href="#cb2-61"></a>            <span class="cf">return</span> DualNumber(real_part, dual_part)</span>
+<span id="cb2-62"><a href="#cb2-62"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(other, <span class="bu">int</span> <span class="op">|</span> <span class="bu">float</span>):</span>
+<span id="cb2-63"><a href="#cb2-63"></a>            <span class="cf">return</span> DualNumber(<span class="va">self</span>.real <span class="op">*</span> other, <span class="va">self</span>.dual <span class="op">*</span> other)</span>
+<span id="cb2-64"><a href="#cb2-64"></a>        <span class="cf">return</span> <span class="va">NotImplemented</span></span>
+<span id="cb2-65"><a href="#cb2-65"></a></span>
+<span id="cb2-66"><a href="#cb2-66"></a>    <span class="kw">def</span> <span class="fu">__rmul__</span>(<span class="va">self</span>, other: <span class="bu">float</span>) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-67"><a href="#cb2-67"></a>        <span class="co">"""Obsługuje mnożenie z liczbą rzeczywistą po lewej stronie."""</span></span>
+<span id="cb2-68"><a href="#cb2-68"></a>        <span class="cf">return</span> <span class="va">self</span> <span class="op">*</span> other</span>
+<span id="cb2-69"><a href="#cb2-69"></a></span>
+<span id="cb2-70"><a href="#cb2-70"></a>    <span class="kw">def</span> <span class="fu">__truediv__</span>(<span class="va">self</span>, other: DualNumber <span class="op">|</span> <span class="bu">float</span>) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-71"><a href="#cb2-71"></a>        <span class="co">"""Dzieli dwie liczby dualne lub liczbę dualną i liczbę rzeczywistą."""</span></span>
+<span id="cb2-72"><a href="#cb2-72"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(other, DualNumber):</span>
+<span id="cb2-73"><a href="#cb2-73"></a>            <span class="cf">if</span> other.real <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-74"><a href="#cb2-74"></a>                msg <span class="op">=</span> <span class="st">"Dzielenie przez zero"</span></span>
+<span id="cb2-75"><a href="#cb2-75"></a>                <span class="cf">raise</span> <span class="pp">ZeroDivisionError</span>(msg)</span>
+<span id="cb2-76"><a href="#cb2-76"></a>            real_part <span class="op">=</span> <span class="va">self</span>.real <span class="op">/</span> other.real</span>
+<span id="cb2-77"><a href="#cb2-77"></a>            dual_part <span class="op">=</span> (<span class="va">self</span>.dual <span class="op">*</span> other.real <span class="op">-</span> <span class="va">self</span>.real <span class="op">*</span> other.dual) <span class="op">/</span> (</span>
+<span id="cb2-78"><a href="#cb2-78"></a>                other.real<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb2-79"><a href="#cb2-79"></a>            )</span>
+<span id="cb2-80"><a href="#cb2-80"></a>            <span class="cf">return</span> DualNumber(real_part, dual_part)</span>
+<span id="cb2-81"><a href="#cb2-81"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(other, <span class="bu">int</span> <span class="op">|</span> <span class="bu">float</span>):</span>
+<span id="cb2-82"><a href="#cb2-82"></a>            <span class="cf">if</span> other <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-83"><a href="#cb2-83"></a>                msg <span class="op">=</span> <span class="st">"Dzielenie przez zero"</span></span>
+<span id="cb2-84"><a href="#cb2-84"></a>                <span class="cf">raise</span> <span class="pp">ZeroDivisionError</span>(msg)</span>
+<span id="cb2-85"><a href="#cb2-85"></a>            <span class="cf">return</span> DualNumber(<span class="va">self</span>.real <span class="op">/</span> other, <span class="va">self</span>.dual <span class="op">/</span> other)</span>
+<span id="cb2-86"><a href="#cb2-86"></a>        <span class="cf">return</span> <span class="va">NotImplemented</span></span>
+<span id="cb2-87"><a href="#cb2-87"></a></span>
+<span id="cb2-88"><a href="#cb2-88"></a>    <span class="kw">def</span> <span class="fu">__rtruediv__</span>(<span class="va">self</span>, other: <span class="bu">float</span>) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-89"><a href="#cb2-89"></a>        <span class="co">"""Obsługuje dzielenie z liczbą rzeczywistą po lewej stronie."""</span></span>
+<span id="cb2-90"><a href="#cb2-90"></a>        <span class="cf">if</span> <span class="va">self</span>.real <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-91"><a href="#cb2-91"></a>            msg <span class="op">=</span> <span class="st">"Dzielenie przez zero"</span></span>
+<span id="cb2-92"><a href="#cb2-92"></a>            <span class="cf">raise</span> <span class="pp">ZeroDivisionError</span>(msg)</span>
+<span id="cb2-93"><a href="#cb2-93"></a>        real_part <span class="op">=</span> other <span class="op">/</span> <span class="va">self</span>.real</span>
+<span id="cb2-94"><a href="#cb2-94"></a>        dual_part <span class="op">=</span> (<span class="dv">0</span> <span class="op">-</span> other <span class="op">*</span> <span class="va">self</span>.dual) <span class="op">/</span> (<span class="va">self</span>.real<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb2-95"><a href="#cb2-95"></a>        <span class="cf">return</span> DualNumber(real_part, dual_part)</span>
+<span id="cb2-96"><a href="#cb2-96"></a></span>
+<span id="cb2-97"><a href="#cb2-97"></a>    <span class="kw">def</span> <span class="fu">__pow__</span>(<span class="va">self</span>, n: <span class="bu">float</span>) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-98"><a href="#cb2-98"></a>        <span class="co">"""Podnosi liczbę dualną do potęgi n (n jest liczbą całkowitą lub zmiennoprzecinkową)."""</span></span>
+<span id="cb2-99"><a href="#cb2-99"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(n, <span class="bu">int</span> <span class="op">|</span> <span class="bu">float</span>):</span>
+<span id="cb2-100"><a href="#cb2-100"></a>            real_part <span class="op">=</span> <span class="va">self</span>.real<span class="op">**</span>n</span>
+<span id="cb2-101"><a href="#cb2-101"></a>            dual_part <span class="op">=</span> n <span class="op">*</span> (<span class="va">self</span>.real <span class="op">**</span> (n <span class="op">-</span> <span class="dv">1</span>)) <span class="op">*</span> <span class="va">self</span>.dual</span>
+<span id="cb2-102"><a href="#cb2-102"></a>            <span class="cf">return</span> DualNumber(real_part, dual_part)</span>
+<span id="cb2-103"><a href="#cb2-103"></a>        <span class="cf">return</span> <span class="va">NotImplemented</span></span>
+<span id="cb2-104"><a href="#cb2-104"></a></span>
+<span id="cb2-105"><a href="#cb2-105"></a>    <span class="kw">def</span> <span class="fu">__rpow__</span>(<span class="va">self</span>, other: <span class="bu">float</span>) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-106"><a href="#cb2-106"></a>        <span class="co">"""Obsługuje przypadek, gdy liczba rzeczywista jest podnoszona do potęgi liczby dualnej."""</span></span>
+<span id="cb2-107"><a href="#cb2-107"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(other, <span class="bu">int</span> <span class="op">|</span> <span class="bu">float</span>):</span>
+<span id="cb2-108"><a href="#cb2-108"></a>            real_part <span class="op">=</span> other<span class="op">**</span><span class="va">self</span>.real</span>
+<span id="cb2-109"><a href="#cb2-109"></a>            dual_part <span class="op">=</span> real_part <span class="op">*</span> math.log(other) <span class="op">*</span> <span class="va">self</span>.dual</span>
+<span id="cb2-110"><a href="#cb2-110"></a>            <span class="cf">return</span> DualNumber(real_part, dual_part)</span>
+<span id="cb2-111"><a href="#cb2-111"></a>        <span class="cf">return</span> <span class="va">NotImplemented</span></span>
+<span id="cb2-112"><a href="#cb2-112"></a></span>
+<span id="cb2-113"><a href="#cb2-113"></a>    <span class="kw">def</span> <span class="fu">__neg__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-114"><a href="#cb2-114"></a>        <span class="co">"""Zwraca negację liczby dualnej."""</span></span>
+<span id="cb2-115"><a href="#cb2-115"></a>        <span class="cf">return</span> DualNumber(<span class="op">-</span><span class="va">self</span>.real, <span class="op">-</span><span class="va">self</span>.dual)</span>
+<span id="cb2-116"><a href="#cb2-116"></a></span>
+<span id="cb2-117"><a href="#cb2-117"></a>    <span class="kw">def</span> <span class="fu">__eq__</span>(<span class="va">self</span>, other: DualNumber) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb2-118"><a href="#cb2-118"></a>        <span class="co">"""Sprawdza, czy dwie liczby dualne są równe."""</span></span>
+<span id="cb2-119"><a href="#cb2-119"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(other, DualNumber):</span>
+<span id="cb2-120"><a href="#cb2-120"></a>            <span class="cf">return</span> <span class="va">self</span>.real <span class="op">==</span> other.real <span class="kw">and</span> <span class="va">self</span>.dual <span class="op">==</span> other.dual</span>
+<span id="cb2-121"><a href="#cb2-121"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb2-122"><a href="#cb2-122"></a></span>
+<span id="cb2-123"><a href="#cb2-123"></a>    <span class="kw">def</span> <span class="fu">__ne__</span>(<span class="va">self</span>, other: DualNumber) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb2-124"><a href="#cb2-124"></a>        <span class="co">"""Sprawdza, czy dwie liczby dualne nie są równe."""</span></span>
+<span id="cb2-125"><a href="#cb2-125"></a>        <span class="cf">return</span> <span class="kw">not</span> <span class="va">self</span> <span class="op">==</span> other</span>
+<span id="cb2-126"><a href="#cb2-126"></a></span>
+<span id="cb2-127"><a href="#cb2-127"></a>    <span class="kw">def</span> <span class="fu">__int__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb2-128"><a href="#cb2-128"></a>        <span class="co">"""Konwertuje liczbę dualną na liczbę całkowitą (zwraca część rzeczywistą)."""</span></span>
+<span id="cb2-129"><a href="#cb2-129"></a>        <span class="cf">return</span> <span class="bu">int</span>(<span class="va">self</span>.real)</span>
+<span id="cb2-130"><a href="#cb2-130"></a></span>
+<span id="cb2-131"><a href="#cb2-131"></a>    <span class="kw">def</span> <span class="fu">__float__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb2-132"><a href="#cb2-132"></a>        <span class="co">"""Konwertuje liczbę dualną na liczbę zmiennoprzecinkową (zwraca część rzeczywistą)."""</span></span>
+<span id="cb2-133"><a href="#cb2-133"></a>        <span class="cf">return</span> <span class="bu">float</span>(<span class="va">self</span>.real)</span>
+<span id="cb2-134"><a href="#cb2-134"></a></span>
+<span id="cb2-135"><a href="#cb2-135"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb2-136"><a href="#cb2-136"></a>    <span class="kw">def</span> sqrt(z: DualNumber) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-137"><a href="#cb2-137"></a>        <span class="co">"""Oblicza pierwiastek kwadratowy z liczby dualnej."""</span></span>
+<span id="cb2-138"><a href="#cb2-138"></a>        <span class="cf">if</span> z.real <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb2-139"><a href="#cb2-139"></a>            msg <span class="op">=</span> <span class="st">"Pierwiastek kwadratowy z ujemnej części rzeczywistej nie jest zdefiniowany dla liczb dualnych w tej implementacji"</span></span>
+<span id="cb2-140"><a href="#cb2-140"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(</span>
+<span id="cb2-141"><a href="#cb2-141"></a>                msg,</span>
+<span id="cb2-142"><a href="#cb2-142"></a>            )</span>
+<span id="cb2-143"><a href="#cb2-143"></a>        real_part <span class="op">=</span> math.sqrt(z.real)</span>
+<span id="cb2-144"><a href="#cb2-144"></a>        dual_part <span class="op">=</span> z.dual <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> real_part) <span class="cf">if</span> real_part <span class="op">!=</span> <span class="dv">0</span> <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb2-145"><a href="#cb2-145"></a>        <span class="cf">return</span> DualNumber(real_part, dual_part)</span>
+<span id="cb2-146"><a href="#cb2-146"></a></span>
+<span id="cb2-147"><a href="#cb2-147"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb2-148"><a href="#cb2-148"></a>    <span class="kw">def</span> exp(z: DualNumber) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-149"><a href="#cb2-149"></a>        <span class="co">"""Oblicza funkcję wykładniczą liczby dualnej."""</span></span>
+<span id="cb2-150"><a href="#cb2-150"></a>        real_part <span class="op">=</span> math.exp(z.real)</span>
+<span id="cb2-151"><a href="#cb2-151"></a>        dual_part <span class="op">=</span> real_part <span class="op">*</span> z.dual</span>
+<span id="cb2-152"><a href="#cb2-152"></a>        <span class="cf">return</span> DualNumber(real_part, dual_part)</span>
+<span id="cb2-153"><a href="#cb2-153"></a></span>
+<span id="cb2-154"><a href="#cb2-154"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb2-155"><a href="#cb2-155"></a>    <span class="kw">def</span> sin(z: DualNumber) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-156"><a href="#cb2-156"></a>        <span class="co">"""Oblicza sinus liczby dualnej."""</span></span>
+<span id="cb2-157"><a href="#cb2-157"></a>        real_part <span class="op">=</span> math.sin(z.real)</span>
+<span id="cb2-158"><a href="#cb2-158"></a>        dual_part <span class="op">=</span> math.cos(z.real) <span class="op">*</span> z.dual</span>
+<span id="cb2-159"><a href="#cb2-159"></a>        <span class="cf">return</span> DualNumber(real_part, dual_part)</span>
+<span id="cb2-160"><a href="#cb2-160"></a></span>
+<span id="cb2-161"><a href="#cb2-161"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb2-162"><a href="#cb2-162"></a>    <span class="kw">def</span> cos(z: DualNumber) <span class="op">-&gt;</span> DualNumber:</span>
+<span id="cb2-163"><a href="#cb2-163"></a>        <span class="co">"""Oblicza cosinus liczby dualnej."""</span></span>
+<span id="cb2-164"><a href="#cb2-164"></a>        real_part <span class="op">=</span> math.cos(z.real)</span>
+<span id="cb2-165"><a href="#cb2-165"></a>        dual_part <span class="op">=</span> <span class="op">-</span>math.sin(z.real) <span class="op">*</span> z.dual</span>
+<span id="cb2-166"><a href="#cb2-166"></a>        <span class="cf">return</span> DualNumber(real_part, dual_part)</span>
+<span id="cb2-167"><a href="#cb2-167"></a></span>
+<span id="cb2-168"><a href="#cb2-168"></a></span>
+<span id="cb2-169"><a href="#cb2-169"></a>epsilon <span class="op">=</span> DualNumber(<span class="dv">0</span>, <span class="dv">1</span>)  <span class="co"># Nieskończenie mała jednostka epsilon</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
+</section>
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> 
   </div>
 </div>
