@@ -70,7 +70,6 @@ conda install numpy pygame
 ## Szkielet kodu
 
 ```{python}
-# | eval: false
 
 #!/usr/bin/env python3
 """Conway's Game of Life.
@@ -85,7 +84,7 @@ import pygame
 WIDTH = 800
 HEIGHT = 600
 BLACK = (0, 0, 0)
-WHITE = (255, 255, 255) tuple[int, int, int]
+WHITE = (255, 255, 255)
 GREEN = (0, 200, 0)
 CELL_SIZE = 10
 GRID_WIDTH = WIDTH // CELL_SIZE
@@ -143,7 +142,7 @@ def game_event_loop() -> None:
     running = True
     clock: pygame.time.Clock = pygame.time.Clock()
     current_grid: np.ndarray = create_random_grid()
-    fps = FPS
+    fps = DEFAULT_FPS
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
     while running:
