@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Programowanie (PWr Lato 2025) – bwrob blog</title>
+<title>Ruff - narzędzie do analizy kodu – bwrob blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -147,7 +181,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Programowanie (PWr Lato 2025)</h1>
+      <h1 class="title">Ruff - narzędzie do analizy kodu</h1>
                       </div>
   </div>
   <div class="quarto-title-meta">
@@ -159,9 +193,11 @@ ul.task-list li input[type="checkbox"] {
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
   <ul>
-  <li><a href="#zasady-zaliczenia" id="toc-zasady-zaliczenia" class="nav-link active" data-scroll-target="#zasady-zaliczenia">Zasady zaliczenia</a></li>
-  <li><a href="#materiały-z-zajęć" id="toc-materiały-z-zajęć" class="nav-link" data-scroll-target="#materiały-z-zajęć">Materiały z zajęć</a></li>
-  <li><a href="#polecane-źródła" id="toc-polecane-źródła" class="nav-link" data-scroll-target="#polecane-źródła">Polecane źródła</a></li>
+  <li><a href="#instalacja" id="toc-instalacja" class="nav-link active" data-scroll-target="#instalacja">Instalacja</a></li>
+  <li><a href="#użycie-z-poziomu-terminala" id="toc-użycie-z-poziomu-terminala" class="nav-link" data-scroll-target="#użycie-z-poziomu-terminala">Użycie z poziomu terminala</a></li>
+  <li><a href="#dodatkowa-konfiguracja" id="toc-dodatkowa-konfiguracja" class="nav-link" data-scroll-target="#dodatkowa-konfiguracja">Dodatkowa konfiguracja</a></li>
+  <li><a href="#integracja-z-vscode" id="toc-integracja-z-vscode" class="nav-link" data-scroll-target="#integracja-z-vscode">Integracja z VSCode</a></li>
+  <li><a href="#zadanie" id="toc-zadanie" class="nav-link" data-scroll-target="#zadanie">Zadanie</a></li>
   </ul>
 </nav>
     </div>
@@ -172,51 +208,71 @@ ul.task-list li input[type="checkbox"] {
   <div class="about-contents">
      <main class="content quarto-banner-title-block" id="quarto-document-content">
 
-<p>Laboratoria komputerowe do wykładu Andrzeja Giniewicza.</p>
-<section id="zasady-zaliczenia" class="level2">
-<h2 data-anchor-id="zasady-zaliczenia">Zasady zaliczenia</h2>
-<p>Ogólne zasady zaliczenia kursu można znaleźć na <a href="https://alfa.im.pwr.edu.pl/~giniew/doku.php?id=rok2425:letni:prog">stronie kursu u wykładowcy</a>.</p>
-<p>Doprecyzowania obowiazujace w moich grupach:</p>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Listy zadań</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Projekt</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Sprawozdanie</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false">Aktywność</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<p>Co najmniej pierwsze 3 listy będziemy robić na zajęciach, w systemie deklaracyjnym. Po zajęciach proszę o przesłanie rozwiązań. Kolejne listy zadań będą w formie zadań domowych, do zrobienia i przesłania przed zajęciami. Rozwiązania będą omiawiane i wyrywkowo sprawdzane w trakcie zajęć.</p>
-</div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<p>Szczegóły projektu na wykładzie. Na labach będziemy omawiać problemy i pytania wyrastające przy projekcie. Można będzie konsultować decyzje projektowe i techniczne. Na ochotnika przedstawiać sprytne rozwiązania zastosowane w programie, za punkty z aktywności.</p>
-<p>Obowiązuje jeden update w trakcie oraz prezentacja na koniec. Będziecie głosować na najciekawszy merytorycznie projekt. Ja wybiorę jeden projekt najlepszy technicznie. Oba dostaną dodatkowe punkty.</p>
-<p>Zespoły mogą być łączone pomiędzy moimi dwoma grupami, natomiast na prezentację końcową musi pojawić się cała grupa w jednym terminie.</p>
-</div>
-<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<p>Sprawozdanie tworzone na arkuszu Excel, z wykorzystaniem VBA. Z powodów technicznych będzie robione na zajęciach.</p>
-</div>
-<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
-<p>Można zdobyć maks 10 punktów z poza puli na części z list zadań i maks 10 na części projektowej.</p>
-</div>
-</div>
-</div>
+<section id="instalacja" class="level2">
+<h2 data-anchor-id="instalacja">Instalacja</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">conda</span> install <span class="at">-c</span> conda-forge ruff</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="materiały-z-zajęć" class="level2">
-<h2 data-anchor-id="materiały-z-zajęć">Materiały z zajęć</h2>
-<ul>
-<li><a href="../../pages/courses/pwr-programming-2025-list-comments.html">Komentarze do list zadań</a></li>
-<li><a href="../../pages/courses/pwr-programming-2025-env.html">Zarządzanie środowiskami</a></li>
-<li><a href="../../pages/courses/pwr-programming-2025-log.html">Logowanie</a></li>
-<li><a href="../../pages/courses/pwr-programming-2025-dual.html">Liczby dualne</a></li>
-<li><a href="../../pages/courses/pwr-programming-2025-functions.html">Hierarchia funkcji</a></li>
-<li><a href="../../pages/courses/pwr-programming-2025-game-of-life.html">Gra w Życie</a></li>
-<li><a href="../../pages/courses/pwr-programming-2025-ruff.html">Ruff - narzędzie do analizy kodu</a></li>
-</ul>
+<section id="użycie-z-poziomu-terminala" class="level2">
+<h2 data-anchor-id="użycie-z-poziomu-terminala">Użycie z poziomu terminala</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># poprawia formatowanie kodu</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="ex">ruff</span> format</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co"># sprawdza kod</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="ex">ruff</span> check</span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co"># sprawdza kod i poprawia błędy które można naprawić automatycznie</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="ex">ruff</span> check <span class="at">--fix</span> <span class="at">--unsafe-fixes</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="polecane-źródła" class="level2">
-<h2 data-anchor-id="polecane-źródła">Polecane źródła</h2>
-<ul>
-<li>Python mniej poważnie. Zabawne projekty programistyczne, które zwiększą Twoje umiejętności, <em>Lee Vaughan</em></li>
-<li>Matematyka konkretna, <em>Graham Ronald L., Knuth Donald E., Oren Patashnik</em></li>
-<li>Wprowadzenie do algorytmów, <em>Cormen Thomas H., Leiserson Charles E., Rivest Ronald L, Clifford Stein</em></li>
-<li>Czysty kod w Pythonie, <em>Sunil Kapil</em></li>
-</ul>
+<section id="dodatkowa-konfiguracja" class="level2">
+<h2 data-anchor-id="dodatkowa-konfiguracja">Dodatkowa konfiguracja</h2>
+<p>Ruff można skonfigurować za pomocą pliku <code>ruff.toml</code>. Przykładowa konfiguracja:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource toml number-lines code-with-copy"><code class="sourceCode toml"><span id="cb3-1"><a href="#cb3-1"></a><span class="dt">line-length</span>    <span class="op">=</span> <span class="dv">88</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="dt">target-version</span> <span class="op">=</span> <span class="st">"py312"</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="kw">[lint]</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>    <span class="dt">select</span> <span class="op">=</span> <span class="op">[</span><span class="st">"ALL"</span><span class="op">]</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>    <span class="dt">ignore</span> <span class="op">=</span> <span class="op">[</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>        <span class="st">"ANN"</span><span class="op">,</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a>        <span class="st">"COM"</span><span class="op">,</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>        <span class="st">"D203"</span><span class="op">,</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a>        <span class="st">"D211"</span><span class="op">,</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a>        <span class="st">"D213"</span><span class="op">,</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a>        <span class="st">"FA"</span><span class="op">,</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a>        <span class="st">"ISC"</span><span class="op">,</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a>        <span class="st">"T"</span><span class="op">,</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a>        <span class="st">"TC"</span><span class="op">,</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a>    <span class="op">]</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a></span>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="kw">[format]</span></span>
+<span id="cb3-19"><a href="#cb3-19"></a>    <span class="dt">docstring-code-format</span> <span class="op">=</span> <span class="cn">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Aby użyć tej konfiguracji, należy uruchomić Ruff z odpowiednim argumentem:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="ex">ruff</span> <span class="at">--config</span> ruff.toml format</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="ex">ruff</span> <span class="at">--config</span> ruff.toml check</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="ex">ruff</span> <span class="at">--config</span> ruff.toml check <span class="at">--fix</span> <span class="at">--unsafe-fixes</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="integracja-z-vscode" class="level2">
+<h2 data-anchor-id="integracja-z-vscode">Integracja z VSCode</h2>
+<ol type="1">
+<li>Instalacja rozszerzenia [ruff].</li>
+<li>Dodanie do pliku <code>.vscode/settings.json</code> następującej konfiguracji.</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource {json} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1"><a href="#cb5-1"></a>{</span>
+<span id="cb5-2"><a href="#cb5-2"></a>   "[python]": {</span>
+<span id="cb5-3"><a href="#cb5-3"></a>        "editor.codeActionsOnSave": {</span>
+<span id="cb5-4"><a href="#cb5-4"></a>            "source.fixAll": "always",</span>
+<span id="cb5-5"><a href="#cb5-5"></a>            "source.organizeImports": "always"</span>
+<span id="cb5-6"><a href="#cb5-6"></a>        },</span>
+<span id="cb5-7"><a href="#cb5-7"></a>        "editor.defaultFormatter": "charliermarsh.ruff",</span>
+<span id="cb5-8"><a href="#cb5-8"></a>        "editor.formatOnSave": true,</span>
+<span id="cb5-9"><a href="#cb5-9"></a>        "editor.formatOnType": true,</span>
+<span id="cb5-10"><a href="#cb5-10"></a>    },</span>
+<span id="cb5-11"><a href="#cb5-11"></a>    "ruff.configuration": "ruff.toml",</span>
+<span id="cb5-12"><a href="#cb5-12"></a>    "ruff.configurationPreference": "filesystemFirst",</span>
+<span id="cb5-13"><a href="#cb5-13"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="zadanie" class="level2">
+<h2 data-anchor-id="zadanie">Zadanie</h2>
+<p>Zainstaluj Ruff i skonfiguruj go w swoim folderze. Użyj go do sprawdzenia i poprawienia kodu rozwiązań z dowolnej listy zadań. Zrób to na kopii kodu, aby nie stracić oryginalnych rozwiązań.</p>
+<p>Najpierw popraw formatowanie kodu, a następnie sprawdź kod pod kątem błędów. Przeanalizuj błędy. Gdy jesteś pewny/a że je rozumiesz, użyj opcji <code>--fix</code> aby poprawić błędy, które można naprawić automatycznie. Popraw ręcznie błędy, które Ruff nie potrafił naprawić.</p>
+<p>Porównaj efekty przed i po użyciu Ruff.</p>
 
 
 </section>
