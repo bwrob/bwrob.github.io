@@ -1,0 +1,61 @@
+---
+title: "Pythonw - tryb oknowy Pythona"
+
+about:
+  template: marquee
+
+execute:
+  freeze: true  # never re-render during project render
+---
+
+## Python vs. Pythonw: Jaka jest różnica?
+
+Zarówno **`python.exe`**, jak i **`pythonw.exe`** to interpretery Pythona, ale działają w nieco inny sposób, szczególnie w kontekście aplikacji graficznych takich jak te pisane w Pygame.
+
+* **`python.exe`**: Kiedy uruchamiasz skrypt Pythona za pomocą `python.exe`, otworzy się **dodatkowe okno konsoli (cmd)**, które będzie działać w tle obok okna gry. W tej konsoli będą wyświetlane wszystkie komunikaty `print()` oraz ewentualne błędy. Dla programisty jest to bardzo przydatne do debugowania, ale dla końcowego użytkownika (czyli grającego w grę) jest to zbędne i może być mylące.
+
+* **`pythonw.exe`**: Służy do uruchamiania skryptów Pythona, które **nie wymagają okna konsoli**. Idealnie nadaje się do aplikacji z graficznym interfejsem użytkownika (GUI), takich jak gry Pygame. Kiedy uruchomisz grę za pomocą `pythonw.exe`, otworzy się tylko okno gry, bez żadnej dodatkowej konsoli. Nie będą wyświetlane żadne komunikaty `print()`.
+To sprawia, że gra wygląda i działa bardziej jak "prawdziwa" aplikacja.
+Dla zasygnalizowania, że skrypt powinien być w trybie często stosuje się rozszerzenie `.pyw` zamiast `.py`, ale nie jest to konieczne.
+
+
+## Tworzenie skrótu do gry Pygame
+
+Stworzenie skrótu jest proste i pozwala na uruchomienie gry jednym kliknięciem.
+
+1.  **Znajdź plik `.py` gry**: Upewnij się, że wiesz, gdzie jest zapisany główny plik `.pyw` twojej gry (np. `moja_gra.pyw`).
+2.  **Znajdź `pythonw.exe`**:
+    * Najczęstsza lokalizacja to folder `Scripts` w katalogu instalacyjnym Pythona. Na przykład: `C:\Users\TwojaNazwaUzytkownika\AppData\Local\Programs\Python\Python39\pythonw.exe` (ścieżka może się różnić w zależności od wersji Pythona i sposobu instalacji).
+    * Możesz też użyć wyszukiwarki plików w Windowsie i poszukać `pythonw.exe`.
+3.  **Utwórz nowy skrót**:
+    * Kliknij prawym przyciskiem myszy na pulpicie (lub w dowolnym innym folderze, gdzie chcesz mieć skrót).
+    * Wybierz **"Nowy"** > **"Skrót"**.
+4.  **Wpisz lokalizację elementu**: W polu "Wpisz lokalizację elementu:" wpisz następującą ścieżkę, zastępując odpowiednie fragmenty:
+
+    ```
+    "C:\Ścieżka\Do\Twojego\Pythona\pythonw.exe" "C:\Ścieżka\Do\Twojej\Gry\moja_gra.py"
+    ```
+
+    **Pamiętaj o cudzysłowach!** Są one ważne, jeśli w ścieżkach są spacje.
+
+    *Przykład:* Jeśli `pythonw.exe` jest w `C:\Python\Python39\pythonw.exe`, a gra `moja_gra.py` jest w `D:\Gry\MojaGra\moja_gra.py`, to ścieżka będzie wyglądać tak:
+
+    ```
+    "C:\Python\Python39\pythonw.exe" "D:\Gry\MojaGra\moja_gra.py"
+    ```
+
+5.  **Nazwij skrót**: Kliknij "Dalej", a następnie wpisz nazwę dla swojego skrótu (np. "Moja Niesamowita Gra").
+6.  **Zakończ**: Kliknij "Zakończ". Teraz masz działający skrót do swojej gry!
+
+## Ustawianie własnej ikony dla skrótu
+
+Standardowa ikona skrótu Pythona nie jest zbyt atrakcyjna dla gry. Możesz ustawić własną ikonę, co sprawi, że skrót będzie wyglądał znacznie lepiej.
+
+1.  **Przygotuj plik ikony**: Potrzebujesz pliku z ikoną w formacie **`.ico`**. Jeśli masz obrazek (np. `.png` lub `.jpg`), możesz go łatwo przekonwertować na `.ico` za pomocą darmowych narzędzi online (np. ICO Converter, Favicon.io). Upewnij się, że ikona ma dobrą rozdzielczość (np. 256x256 pikseli).
+2.  **Lokalizacja pliku ikony**: Umieść plik `.ico` w bezpiecznym miejscu, najlepiej w folderze z grą lub w osobnym folderze `ikony` w katalogu projektu, aby nie został przypadkowo usunięty.
+3.  **Zmień ikonę skrótu**:
+    * Kliknij prawym przyciskiem myszy na nowo utworzonym skrócie.
+    * Wybierz **"Właściwości"**.
+    * W zakładce **"Skrót"** kliknij przycisk **"Zmień ikonę..."**.
+    * Pojawi się okno. Kliknij **"Przeglądaj..."** i znajdź swój plik `.ico`.
+    * Wybierz plik `.ico` i kliknij "Otwórz", a następnie "OK" w oknie "Zmień ikonę" i ponownie "OK" w oknie "Właściwości".
