@@ -356,11 +356,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
   <ul>
   <li><a href="#gra-w-życie" id="toc-gra-w-życie" class="nav-link active" data-scroll-target="#gra-w-życie">Gra w Życie</a></li>
-  <li><a href="#zadanie" id="toc-zadanie" class="nav-link" data-scroll-target="#zadanie">Zadanie</a></li>
+  <li><a href="#zadanie" id="toc-zadanie" class="nav-link" data-scroll-target="#zadanie">Zadanie</a>
+  <ul class="collapse">
   <li><a href="#przykładowe-sterowanie" id="toc-przykładowe-sterowanie" class="nav-link" data-scroll-target="#przykładowe-sterowanie">Przykładowe sterowanie</a></li>
   <li><a href="#przydatne-zasoby" id="toc-przydatne-zasoby" class="nav-link" data-scroll-target="#przydatne-zasoby">Przydatne zasoby:</a></li>
   <li><a href="#przygotowanie-środowiska" id="toc-przygotowanie-środowiska" class="nav-link" data-scroll-target="#przygotowanie-środowiska">Przygotowanie środowiska</a></li>
   <li><a href="#szkielet-kodu" id="toc-szkielet-kodu" class="nav-link" data-scroll-target="#szkielet-kodu">Szkielet kodu</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -398,9 +400,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Dodatkowe wyzwanie:</strong> Zaimplementuj różne początkowe wzory (np. Glider, Gosper glider gun).</li>
 <li><strong>Dodatkowe wyzwanie:</strong> Dodaj kontrolę prędkości symulacji. Zaimplementuj możliwość przewijania generacji.</li>
 </ul>
-</section>
-<section id="przykładowe-sterowanie" class="level2">
-<h2 data-anchor-id="przykładowe-sterowanie">Przykładowe sterowanie</h2>
+<section id="przykładowe-sterowanie" class="level3">
+<h3 data-anchor-id="przykładowe-sterowanie">Przykładowe sterowanie</h3>
 <ul>
 <li><code>Spacja</code>: Wznawia/wstrzymuje symulację.</li>
 <li><code>R</code>: Resetuje siatkę do losowego układu.</li>
@@ -408,8 +409,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>Lewy Przycisk Myszy</code>: Kliknięcie komórki przełącza jej stan (żywa/martwa), ale tylko gdy symulacja jest wstrzymana.</li>
 </ul>
 </section>
-<section id="przydatne-zasoby" class="level2">
-<h2 data-anchor-id="przydatne-zasoby">Przydatne zasoby:</h2>
+<section id="przydatne-zasoby" class="level3">
+<h3 data-anchor-id="przydatne-zasoby">Przydatne zasoby:</h3>
 <ul>
 <li><a href="https://www.pygame.org/docs/ref/pygame.html#pygame.init"><code>pygame.init()</code></a></li>
 <li><a href="https://www.pygame.org/docs/ref/pygame.html#pygame.display.set_mode"><code>pygame.display.set_mode()</code></a></li>
@@ -425,17 +426,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><a href="https://www.pygame.org/docs/ref/pygame.html#pygame.quit"><code>pygame.quit()</code></a></li>
 </ul>
 </section>
-<section id="przygotowanie-środowiska" class="level2">
-<h2 data-anchor-id="przygotowanie-środowiska">Przygotowanie środowiska</h2>
+<section id="przygotowanie-środowiska" class="level3">
+<h3 data-anchor-id="przygotowanie-środowiska">Przygotowanie środowiska</h3>
 <p>Dla tego zadania będziesz potrzebować zainstalować Pygame i NumPy. Możesz to zrobić za pomocą poleceń:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode numberSource {powershell} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1"></a>conda create -n pygame-env python=3.12</span>
 <span id="cb1-2"><a href="#cb1-2"></a>conda activate ppygame-env</span>
 <span id="cb1-3"><a href="#cb1-3"></a>conda config --append channels conda-forge</span>
 <span id="cb1-4"><a href="#cb1-4"></a>conda install numpy pygame</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="szkielet-kodu" class="level2">
-<h2 data-anchor-id="szkielet-kodu">Szkielet kodu</h2>
-<div id="7816e611" class="cell" data-execution_count="1">
+<section id="szkielet-kodu" class="level3">
+<h3 data-anchor-id="szkielet-kodu">Szkielet kodu</h3>
+<div id="1fb5ab47" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">#!/usr/bin/env python3</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="co">"""Conway's Game of Life.</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a></span>
@@ -449,7 +450,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-11"><a href="#cb2-11"></a>WIDTH <span class="op">=</span> <span class="dv">800</span></span>
 <span id="cb2-12"><a href="#cb2-12"></a>HEIGHT <span class="op">=</span> <span class="dv">600</span></span>
 <span id="cb2-13"><a href="#cb2-13"></a>BLACK <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb2-14"><a href="#cb2-14"></a>WHITE <span class="op">=</span> (<span class="dv">255</span>, <span class="dv">255</span>, <span class="dv">255</span>) <span class="bu">tuple</span>[<span class="bu">int</span>, <span class="bu">int</span>, <span class="bu">int</span>]</span>
+<span id="cb2-14"><a href="#cb2-14"></a>WHITE <span class="op">=</span> (<span class="dv">255</span>, <span class="dv">255</span>, <span class="dv">255</span>)</span>
 <span id="cb2-15"><a href="#cb2-15"></a>GREEN <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">200</span>, <span class="dv">0</span>)</span>
 <span id="cb2-16"><a href="#cb2-16"></a>CELL_SIZE <span class="op">=</span> <span class="dv">10</span></span>
 <span id="cb2-17"><a href="#cb2-17"></a>GRID_WIDTH <span class="op">=</span> WIDTH <span class="op">//</span> CELL_SIZE</span>
@@ -460,71 +461,70 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-22"><a href="#cb2-22"></a><span class="kw">def</span> create_random_grid() <span class="op">-&gt;</span> np.ndarray:</span>
 <span id="cb2-23"><a href="#cb2-23"></a>    <span class="co">"""Tworzy losową siatkę złożoną z 0 i 1."""</span></span>
 <span id="cb2-24"><a href="#cb2-24"></a>    rng <span class="op">=</span> np.random.default_rng()</span>
-<span id="cb2-25"><a href="#cb2-25"></a>    <span class="cf">return</span> rng.integers(</span>
-<span id="cb2-26"><a href="#cb2-26"></a>        <span class="dv">0</span>,</span>
-<span id="cb2-27"><a href="#cb2-27"></a>        <span class="dv">2</span>,</span>
-<span id="cb2-28"><a href="#cb2-28"></a>        size<span class="op">=</span>(GRID_HEIGHT, GRID_WIDTH),</span>
-<span id="cb2-29"><a href="#cb2-29"></a>        dtype<span class="op">=</span>np.int8</span>
-<span id="cb2-30"><a href="#cb2-30"></a>    )</span>
-<span id="cb2-31"><a href="#cb2-31"></a></span>
-<span id="cb2-32"><a href="#cb2-32"></a></span>
-<span id="cb2-33"><a href="#cb2-33"></a><span class="kw">def</span> create_empty_grid() <span class="op">-&gt;</span> np.ndarray:</span>
-<span id="cb2-34"><a href="#cb2-34"></a>    <span class="co">"""Tworzy pustą siatkę złożoną z 0."""</span></span>
-<span id="cb2-35"><a href="#cb2-35"></a>    <span class="cf">return</span> np.zeros(</span>
-<span id="cb2-36"><a href="#cb2-36"></a>        (GRID_HEIGHT, GRID_WIDTH),</span>
-<span id="cb2-37"><a href="#cb2-37"></a>        dtype<span class="op">=</span>np.int8,</span>
-<span id="cb2-38"><a href="#cb2-38"></a>    )</span>
-<span id="cb2-39"><a href="#cb2-39"></a></span>
-<span id="cb2-40"><a href="#cb2-40"></a></span>
-<span id="cb2-41"><a href="#cb2-41"></a><span class="kw">def</span> get_next_generation(grid: np.ndarray) <span class="op">-&gt;</span> np.ndarray:</span>
-<span id="cb2-42"><a href="#cb2-42"></a>    <span class="co">"""Oblicza następne pokolenie Gry w Życie."""</span></span>
-<span id="cb2-43"><a href="#cb2-43"></a>    new_grid: np.ndarray <span class="op">=</span> np.copy(grid)</span>
-<span id="cb2-44"><a href="#cb2-44"></a>    <span class="cf">for</span> r <span class="kw">in</span> <span class="bu">range</span>(GRID_HEIGHT):</span>
-<span id="cb2-45"><a href="#cb2-45"></a>        <span class="cf">for</span> c <span class="kw">in</span> <span class="bu">range</span>(GRID_WIDTH):</span>
-<span id="cb2-46"><a href="#cb2-46"></a>            <span class="co"># Użyj max i min do obliczenia granic sąsiedztwa</span></span>
-<span id="cb2-47"><a href="#cb2-47"></a>            r_start <span class="op">=</span> <span class="bu">max</span>(<span class="dv">0</span>, r <span class="op">-</span> <span class="dv">1</span>)</span>
-<span id="cb2-48"><a href="#cb2-48"></a>            r_end <span class="op">=</span> <span class="bu">min</span>(GRID_HEIGHT, r <span class="op">+</span> <span class="dv">2</span>)</span>
-<span id="cb2-49"><a href="#cb2-49"></a>            c_start <span class="op">=</span> <span class="bu">max</span>(<span class="dv">0</span>, c <span class="op">-</span> <span class="dv">1</span>)</span>
-<span id="cb2-50"><a href="#cb2-50"></a>            c_end <span class="op">=</span> <span class="bu">min</span>(GRID_WIDTH, c <span class="op">+</span> <span class="dv">2</span>)</span>
-<span id="cb2-51"><a href="#cb2-51"></a>            <span class="co"># Policz żywych sąsiadów</span></span>
-<span id="cb2-52"><a href="#cb2-52"></a>            live_neighbors <span class="op">=</span> np.<span class="bu">sum</span>(grid[r_start:r_end, c_start:c_end]) <span class="op">-</span> grid[r, c]</span>
-<span id="cb2-53"><a href="#cb2-53"></a>            <span class="co"># Zastosuj reguły Gry w Życie</span></span>
-<span id="cb2-54"><a href="#cb2-54"></a>            <span class="cf">if</span> grid[r, c]:  <span class="co"># Komórka żywa</span></span>
-<span id="cb2-55"><a href="#cb2-55"></a>                <span class="cf">if</span> live_neighbors <span class="kw">not</span> <span class="kw">in</span> (<span class="dv">2</span>, <span class="dv">3</span>):</span>
-<span id="cb2-56"><a href="#cb2-56"></a>                    new_grid[r, c] <span class="op">=</span> <span class="dv">0</span>  <span class="co"># Umiera</span></span>
-<span id="cb2-57"><a href="#cb2-57"></a>            <span class="cf">elif</span> live_neighbors <span class="op">==</span> <span class="dv">3</span>:  <span class="co"># Komórka martwa</span></span>
-<span id="cb2-58"><a href="#cb2-58"></a>                new_grid[r, c] <span class="op">=</span> <span class="dv">1</span>  <span class="co"># Ożywa</span></span>
-<span id="cb2-59"><a href="#cb2-59"></a>    <span class="cf">return</span> new_grid</span>
+<span id="cb2-25"><a href="#cb2-25"></a>    <span class="cf">return</span> rng.integers(<span class="dv">0</span>, <span class="dv">2</span>, size<span class="op">=</span>(GRID_HEIGHT, GRID_WIDTH), dtype<span class="op">=</span>np.int8)</span>
+<span id="cb2-26"><a href="#cb2-26"></a></span>
+<span id="cb2-27"><a href="#cb2-27"></a></span>
+<span id="cb2-28"><a href="#cb2-28"></a><span class="kw">def</span> create_empty_grid() <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb2-29"><a href="#cb2-29"></a>    <span class="co">"""Tworzy pustą siatkę złożoną z 0."""</span></span>
+<span id="cb2-30"><a href="#cb2-30"></a>    <span class="cf">return</span> np.zeros(</span>
+<span id="cb2-31"><a href="#cb2-31"></a>        (GRID_HEIGHT, GRID_WIDTH),</span>
+<span id="cb2-32"><a href="#cb2-32"></a>        dtype<span class="op">=</span>np.int8,</span>
+<span id="cb2-33"><a href="#cb2-33"></a>    )</span>
+<span id="cb2-34"><a href="#cb2-34"></a></span>
+<span id="cb2-35"><a href="#cb2-35"></a></span>
+<span id="cb2-36"><a href="#cb2-36"></a><span class="kw">def</span> get_next_generation(grid: np.ndarray) <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb2-37"><a href="#cb2-37"></a>    <span class="co">"""Oblicza następne pokolenie Gry w Życie."""</span></span>
+<span id="cb2-38"><a href="#cb2-38"></a>    new_grid: np.ndarray <span class="op">=</span> np.copy(grid)</span>
+<span id="cb2-39"><a href="#cb2-39"></a>    <span class="cf">for</span> r <span class="kw">in</span> <span class="bu">range</span>(GRID_HEIGHT):</span>
+<span id="cb2-40"><a href="#cb2-40"></a>        <span class="cf">for</span> c <span class="kw">in</span> <span class="bu">range</span>(GRID_WIDTH):</span>
+<span id="cb2-41"><a href="#cb2-41"></a>            <span class="co"># Użyj max i min do obliczenia granic sąsiedztwa</span></span>
+<span id="cb2-42"><a href="#cb2-42"></a>            r_start <span class="op">=</span> <span class="bu">max</span>(<span class="dv">0</span>, r <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb2-43"><a href="#cb2-43"></a>            r_end <span class="op">=</span> <span class="bu">min</span>(GRID_HEIGHT, r <span class="op">+</span> <span class="dv">2</span>)</span>
+<span id="cb2-44"><a href="#cb2-44"></a>            c_start <span class="op">=</span> <span class="bu">max</span>(<span class="dv">0</span>, c <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb2-45"><a href="#cb2-45"></a>            c_end <span class="op">=</span> <span class="bu">min</span>(GRID_WIDTH, c <span class="op">+</span> <span class="dv">2</span>)</span>
+<span id="cb2-46"><a href="#cb2-46"></a>            <span class="co"># Policz żywych sąsiadów</span></span>
+<span id="cb2-47"><a href="#cb2-47"></a>            live_neighbors <span class="op">=</span> np.<span class="bu">sum</span>(grid[r_start:r_end, c_start:c_end]) <span class="op">-</span> grid[r, c]</span>
+<span id="cb2-48"><a href="#cb2-48"></a>            <span class="co"># Zastosuj reguły Gry w Życie</span></span>
+<span id="cb2-49"><a href="#cb2-49"></a>            <span class="cf">if</span> grid[r, c]:  <span class="co"># Komórka żywa</span></span>
+<span id="cb2-50"><a href="#cb2-50"></a>                <span class="cf">if</span> live_neighbors <span class="kw">not</span> <span class="kw">in</span> (<span class="dv">2</span>, <span class="dv">3</span>):</span>
+<span id="cb2-51"><a href="#cb2-51"></a>                    new_grid[r, c] <span class="op">=</span> <span class="dv">0</span>  <span class="co"># Umiera</span></span>
+<span id="cb2-52"><a href="#cb2-52"></a>            <span class="cf">elif</span> live_neighbors <span class="op">==</span> <span class="dv">3</span>:  <span class="co"># Komórka martwa</span></span>
+<span id="cb2-53"><a href="#cb2-53"></a>                new_grid[r, c] <span class="op">=</span> <span class="dv">1</span>  <span class="co"># Ożywa</span></span>
+<span id="cb2-54"><a href="#cb2-54"></a>    <span class="cf">return</span> new_grid</span>
+<span id="cb2-55"><a href="#cb2-55"></a></span>
+<span id="cb2-56"><a href="#cb2-56"></a></span>
+<span id="cb2-57"><a href="#cb2-57"></a><span class="kw">def</span> draw_grid(screen: pygame.Surface, grid: np.ndarray) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb2-58"><a href="#cb2-58"></a>    <span class="co">"""Rysuje siatkę na ekranie Pygame."""</span></span>
+<span id="cb2-59"><a href="#cb2-59"></a>    <span class="cf">pass</span></span>
 <span id="cb2-60"><a href="#cb2-60"></a></span>
 <span id="cb2-61"><a href="#cb2-61"></a></span>
-<span id="cb2-62"><a href="#cb2-62"></a><span class="kw">def</span> draw_grid(screen: pygame.Surface, grid: np.ndarray) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb2-63"><a href="#cb2-63"></a>    <span class="co">"""Rysuje siatkę na ekranie Pygame."""</span></span>
-<span id="cb2-64"><a href="#cb2-64"></a>    <span class="cf">pass</span></span>
-<span id="cb2-65"><a href="#cb2-65"></a></span>
-<span id="cb2-66"><a href="#cb2-66"></a><span class="kw">def</span> game_event_loop() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb2-67"><a href="#cb2-67"></a>    <span class="co">"""Obsługuje główną pętlę gry, w tym zdarzenia, aktualizacje i rysowanie."""</span></span>
-<span id="cb2-68"><a href="#cb2-68"></a>    paused <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb2-69"><a href="#cb2-69"></a>    running <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb2-70"><a href="#cb2-70"></a>    clock: pygame.time.Clock <span class="op">=</span> pygame.time.Clock()</span>
-<span id="cb2-71"><a href="#cb2-71"></a>    current_grid: np.ndarray <span class="op">=</span> create_random_grid()</span>
-<span id="cb2-72"><a href="#cb2-72"></a>    fps <span class="op">=</span> FPS</span>
-<span id="cb2-73"><a href="#cb2-73"></a>    screen <span class="op">=</span> pygame.display.set_mode((WIDTH, HEIGHT))</span>
+<span id="cb2-62"><a href="#cb2-62"></a><span class="kw">def</span> game_event_loop() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb2-63"><a href="#cb2-63"></a>    <span class="co">"""Obsługuje główną pętlę gry, w tym zdarzenia, aktualizacje i rysowanie."""</span></span>
+<span id="cb2-64"><a href="#cb2-64"></a>    paused <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb2-65"><a href="#cb2-65"></a>    running <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb2-66"><a href="#cb2-66"></a>    clock: pygame.time.Clock <span class="op">=</span> pygame.time.Clock()</span>
+<span id="cb2-67"><a href="#cb2-67"></a>    current_grid: np.ndarray <span class="op">=</span> create_random_grid()</span>
+<span id="cb2-68"><a href="#cb2-68"></a>    fps <span class="op">=</span> DEFAULT_FPS</span>
+<span id="cb2-69"><a href="#cb2-69"></a>    screen <span class="op">=</span> pygame.display.set_mode((WIDTH, HEIGHT))</span>
+<span id="cb2-70"><a href="#cb2-70"></a></span>
+<span id="cb2-71"><a href="#cb2-71"></a>    <span class="cf">while</span> running:</span>
+<span id="cb2-72"><a href="#cb2-72"></a>        <span class="cf">pass</span></span>
+<span id="cb2-73"><a href="#cb2-73"></a></span>
 <span id="cb2-74"><a href="#cb2-74"></a></span>
-<span id="cb2-75"><a href="#cb2-75"></a>    <span class="cf">while</span> running:</span>
-<span id="cb2-76"><a href="#cb2-76"></a>        <span class="cf">pass</span></span>
-<span id="cb2-77"><a href="#cb2-77"></a></span>
-<span id="cb2-78"><a href="#cb2-78"></a><span class="kw">def</span> main() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb2-79"><a href="#cb2-79"></a>    <span class="co">"""Główna funkcja uruchamiająca Grę w Życie."""</span></span>
-<span id="cb2-80"><a href="#cb2-80"></a>    pygame.init()</span>
-<span id="cb2-81"><a href="#cb2-81"></a>    pygame.display.set_caption(<span class="st">"Conway's Game of Life"</span>)</span>
-<span id="cb2-82"><a href="#cb2-82"></a>    game_event_loop()</span>
-<span id="cb2-83"><a href="#cb2-83"></a>    pygame.quit()</span>
-<span id="cb2-84"><a href="#cb2-84"></a></span>
-<span id="cb2-85"><a href="#cb2-85"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
-<span id="cb2-86"><a href="#cb2-86"></a>    main()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-75"><a href="#cb2-75"></a><span class="kw">def</span> main() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb2-76"><a href="#cb2-76"></a>    <span class="co">"""Główna funkcja uruchamiająca Grę w Życie."""</span></span>
+<span id="cb2-77"><a href="#cb2-77"></a>    pygame.init()</span>
+<span id="cb2-78"><a href="#cb2-78"></a>    pygame.display.set_caption(<span class="st">"Conway's Game of Life"</span>)</span>
+<span id="cb2-79"><a href="#cb2-79"></a>    game_event_loop()</span>
+<span id="cb2-80"><a href="#cb2-80"></a>    pygame.quit()</span>
+<span id="cb2-81"><a href="#cb2-81"></a></span>
+<span id="cb2-82"><a href="#cb2-82"></a></span>
+<span id="cb2-83"><a href="#cb2-83"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb2-84"><a href="#cb2-84"></a>    main()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
+</section>
 </section>
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> 
   </div>
@@ -942,7 +942,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       &nbsp;
     </div>   
     <div class="nav-footer-center">
-<p>Copyright 2024, bwrob</p>
+<p>Copyright 2025, bwrob. PRendered with Quarto 1.7.31</p>
 </div>
     <div class="nav-footer-right">
       &nbsp;
