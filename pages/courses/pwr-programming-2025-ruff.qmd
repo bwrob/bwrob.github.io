@@ -1,0 +1,88 @@
+---
+title: "Ruff - narzędzie do analizy kodu"
+
+about:
+  template: marquee
+
+execute:
+  freeze: true  # never re-render during project render
+---
+
+## Instalacja
+
+```bash
+conda install -c conda-forge ruff
+```
+
+## Użycie z poziomu terminala
+
+```bash
+# poprawia formatowanie kodu
+ruff format
+# sprawdza kod
+ruff check
+# sprawdza kod i poprawia błędy które można naprawić automatycznie
+ruff check --fix --unsafe-fixes
+```
+
+## Dodatkowa konfiguracja
+
+Ruff można skonfigurować za pomocą pliku `ruff.toml`. Przykładowa konfiguracja:
+
+```toml
+line-length    = 79
+target-version = "py312"
+
+[lint]
+    select = ["ALL"]
+    ignore = [
+        "COM",
+        "D203",
+        "D211",
+        "D213",
+        "FA",
+        "ISC",
+        "T",
+        "TC",
+    ]
+
+[format]
+    docstring-code-format = true
+```
+
+Aby użyć tej konfiguracji, należy uruchomić Ruff z odpowiednim argumentem:
+
+```bash
+ruff --config ruff.toml format
+ruff --config ruff.toml check
+ruff --config ruff.toml check --fix --unsafe-fixes
+```
+
+## Integracja z VSCode
+
+1. Instalacja rozszerzenia [ruff].
+2. Dodanie do pliku `.vscode/settings.json` następującej konfiguracji.
+
+```{json}
+{
+   "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "always",
+            "source.organizeImports": "always"
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+    },
+    "ruff.configuration": "ruff.toml",
+    "ruff.configurationPreference": "filesystemFirst",
+}
+```
+
+## Zadanie
+
+Zainstaluj Ruff i skonfiguruj go w swoim folderze. Użyj go do sprawdzenia i poprawienia kodu rozwiązań z dowolnej listy zadań. Zrób to na kopii kodu, aby nie stracić oryginalnych rozwiązań.
+
+Najpierw popraw formatowanie kodu, a następnie sprawdź kod pod kątem błędów. Przeanalizuj błędy. Gdy jesteś pewny/a że je rozumiesz, użyj opcji `--fix` aby poprawić błędy, które można naprawić automatycznie. Popraw ręcznie błędy, które Ruff nie potrafił naprawić.
+
+Porównaj efekty przed i po użyciu Ruff.

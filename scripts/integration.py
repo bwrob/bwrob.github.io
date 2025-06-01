@@ -99,6 +99,7 @@ class Integrator:
     """An integrator class.
 
     Allows to perform integration using different schemes as strategies.
+
     """
 
     def __init__(
