@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="bwrob">
+<meta name="dcterms.date" content="2024-08-11">
+<meta name="description" content="How to have a great Python dev setup.">
 
-<title>bwrob blog</title>
+<title>Linux Python Dev Env – bwrob blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,30 +23,63 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./logo/python_mug.png" rel="icon" type="image/png">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ef56b68f8fa1e9d2ba328e99e439f80.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-6bdd2aebeb936dcddaa5f935a5de481c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-0d716042666e05e7be7f906102b73251.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../logo/python_mug.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-4a990d8dcb58f517c7c86712b8f2ac7c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-46f4cc9626f044588a66931b604fc9c8.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-27bdcad6e2c5129c4a00b00c00aa65cc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-cb82ce53a18555e556235c4f85a8b6c9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -71,79 +107,17 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-title','listing-author','listing-date','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
-<link rel="alternate" type="application/rss+xml" title="bwrob blog" href="index.xml" data-external="1"><meta property="og:title" content="bwrob blog">
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="bwrob blog">
 <meta property="og:description" content="bwrob personal and professional blog">
-<meta property="og:image" content="https://bwrob.github.io/logo/python_mug.png">
+<meta property="og:image" content="https://bwrob.github.io/posts/linux-python-dev-env/image.jpg">
 <meta property="og:site_name" content="bwrob blog">
-<meta property="og:image:height" content="2048">
-<meta property="og:image:width" content="2048">
 <meta name="twitter:title" content="bwrob blog">
 <meta name="twitter:description" content="bwrob personal and professional blog">
-<meta name="twitter:image" content="https://bwrob.github.io/logo/python_mug.png">
+<meta name="twitter:image" content="https://bwrob.github.io/posts/linux-python-dev-env/image.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image-height" content="2048">
-<meta name="twitter:image-width" content="2048">
 </head>
 
 <body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -309,14 +283,14 @@ window.Quarto = {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    <img src="./logo/python_mug.png" alt="" class="navbar-logo">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../logo/python_mug.png" alt="" class="navbar-logo">
     </a>
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">bwrob blog</span>
     </a>
   </div>
@@ -327,22 +301,22 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> <i class="bi bi-cpu" role="img">
+    <a class="nav-link" href="../../index.html"> <i class="bi bi-cpu" role="img">
 </i> 
 <span class="menu-text">Posts</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./pages/resume.html"> <i class="bi bi-file-earmark-text" role="img">
+    <a class="nav-link" href="../../pages/resume.html"> <i class="bi bi-file-earmark-text" role="img">
 </i> 
 <span class="menu-text">Resume</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./pages/teaching.html"> <i class="bi bi-tablet-landscape" role="img">
+    <a class="nav-link" href="../../pages/teaching.html"> <i class="bi bi-tablet-landscape" role="img">
 </i> 
 <span class="menu-text">Teaching</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./pages/hobbies.html"> <i class="bi bi-controller" role="img">
+    <a class="nav-link" href="../../pages/hobbies.html"> <i class="bi bi-controller" role="img">
 </i> 
 <span class="menu-text">Hobbies</span></a>
   </li>  
@@ -357,7 +331,7 @@ window.Quarto = {
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="./index.xml"> <i class="bi bi-rss" role="img">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -370,274 +344,97 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Linux Python Dev Env</h1>
+                  <div>
+        <div class="description">
+          How to have a great Python dev setup.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Dev Env</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>bwrob </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 11, 2024</p>
+      </div>
+    </div>
+    
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">June 1, 2025</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(7)</span></div><div class="category" data-category="Q2FyZWVy">Career <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Q29udGV4dCUyME1hbmFnZXJz">Context Managers <span class="quarto-category-count">(1)</span></div><div class="category" data-category="RGVzaWduJTIwUGF0dGVybnM=">Design Patterns <span class="quarto-category-count">(1)</span></div><div class="category" data-category="RGV2JTIwRW52">Dev Env <span class="quarto-category-count">(1)</span></div><div class="category" data-category="RGV2JTIwU2V0dXA=">Dev Setup <span class="quarto-category-count">(1)</span></div><div class="category" data-category="TmV3cw==">News <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UHl0aG9uaWMlMjBEaXN0cmFjdGlvbnM=">Pythonic Distractions <span class="quarto-category-count">(3)</span></div></div></div>
-<!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
-
-
-
-
-
-<div class="quarto-layout-panel" data-layout="[ 30, 70]">
-<div class="quarto-layout-row">
-<div id="first-column" class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-left">
-<figure class="figure">
-<p><img src="logo/python_mug.png" class="img-fluid quarto-figure quarto-figure-left figure-img"></p>
-</figure>
-</div>
-</div>
-<div id="second-column" class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
-<p>This blog is a battleground of sorts, but instead of swords and shields, we wield the weapons of Python and C++. I’m a mathematician turned quantitative analyst turned software engineer. You can expect high standard deviation of topics here.</p>
-<p>Here, I’ll document my coding conquests, from building practical and impractical tools, exploring financial concepts, to playing around with physics simulations.</p>
-<p>Expect a healthy dose of humor alongside the technical discussions. Let’s be honest, even the most complex problems are more enjoyable with a sprinkle of laughter. So, grab a cup of coffee and join me on this exploration – even if it’s just for one interested reader!</p>
-</div>
-</div>
-</div>
-
-
-
-
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-    <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-      <option value="" disabled="" selected="" hidden="">Order By</option>
-      <option value="index" data-direction="asc">Default</option>
-      <option value="listing-title" data-direction="asc">
-        Title
-      </option>
-      <option value="listing-date-sort" data-direction="asc">
-        Date - Oldest
-      </option>
-      <option value="listing-date-sort" data-direction="desc">
-        Date - Newest
-      </option>
-      <option value="listing-author" data-direction="asc">
-        Author
-      </option>
-    </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
     </div>
-</div>
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="Q2FyZWVy" data-listing-date-sort="1742598000000" data-listing-file-modified-sort="1748765037167" data-listing-date-modified-sort="1742598000000" data-listing-reading-time-sort="11" data-listing-word-count-sort="2154">
-<a href="./posts/mathematician-in-finance/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/mathematician-in-finance/financial_whirlpool.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Mathematician in the financial markets (PL)
-</h5>
-<div class="listing-categories">
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
-<div class="listing-category" onclick="window.quartoListingCategory('Q2FyZWVy'); return false;">Career</div>
 
-</div>
-<div class="card-text listing-description delink">
-<p>How to survive in the whirlpool of finance.</p>
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-bwrob
-</div>
-<div class="listing-date">
-Mar 22, 2025
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="RGV2JTIwU2V0dXA=" data-listing-date-sort="1723327200000" data-listing-file-modified-sort="1734811780008" data-listing-date-modified-sort="1724968800000" data-listing-reading-time-sort="6" data-listing-word-count-sort="1049">
-<a href="./posts/linux-in-windows/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/linux-in-windows/image.jpg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Linux in Windows via WSL
-</h5>
-<div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('RGV2JTIwU2V0dXA='); return false;">Dev Setup</div>
 
-</div>
-<div class="card-text listing-description delink">
-<p>How to have a great dev setup and still play CS over a coffee break.</p>
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-bwrob
-</div>
-<div class="listing-date">
-Aug 11, 2024
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="2" data-categories="RGV2JTIwRW52" data-listing-date-sort="1723327200000" data-listing-file-modified-sort="1748765270775" data-listing-date-modified-sort="1748728800000" data-listing-reading-time-sort="1" data-listing-word-count-sort="182">
-<a href="./posts/linux-python-dev-env/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/linux-python-dev-env/image.jpg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Linux Python Dev Env
-</h5>
-<div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('RGV2JTIwRW52'); return false;">Dev Env</div>
 
-</div>
-<div class="card-text listing-description delink">
-<p>How to have a great Python dev setup.</p>
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-bwrob
-</div>
-<div class="listing-date">
-Aug 11, 2024
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="3" data-categories="UHl0aG9uaWMlMjBEaXN0cmFjdGlvbnM=" data-listing-date-sort="1716242400000" data-listing-file-modified-sort="1734811780008" data-listing-date-modified-sort="1724968800000" data-listing-reading-time-sort="13" data-listing-word-count-sort="2571">
-<a href="./posts/startup-script/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/startup-script/win_98.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Python Startup Script
-</h5>
-<div class="listing-categories">
+<p>Installing Python dev tools on Linux is a bit of a pain, but it doesn’t have to be. This post will show you how to set up a great Python dev environment on Linux using <code>brew</code>, <code>pipx</code>, and <code>poetry</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1"></a>brew install python@3.12 python@3.13</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Dev tools should be accessable globally, but should’t be in the defualt global python env. Solution - <code>pipx</code></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a href="#cb2-1"></a>brew install pipx</span>
+<span id="cb2-2"><a href="#cb2-2"></a>pipx ensurepath</span>
+<span id="cb2-3"><a href="#cb2-3"></a>pipx install argcomplete --force</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Add pipix completions to config</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1"><a href="#cb3-1"></a>nano  .zshrc</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a>autoload -U compinit &amp;&amp; compinit</span>
+<span id="cb3-4"><a href="#cb3-4"></a>eval "$(register-python-argcomplete pipx)"</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="1.png" class="img-fluid"></p>
+<p>Install dev tools</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a href="#cb4-1"></a>pipx install poetry poethepoet pre-commit pytest ruff basedpyright</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="2.png" class="img-fluid"></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1"><a href="#cb5-1"></a>nano $(which poetry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="3.png" class="img-fluid"></p>
+<p>Shebang Line (#!): #!/home/bwrob/.local/share/pipx/venvs/poetry/bin/python: This line specifies the interpreter used to run the script. In this case, it’s a Python interpreter located in a specific virtual environment (poetry).</p>
+<p>This script acts as a launcher for the poetry command. It sets up the environment and handles potential script extensions before delegating the actual command execution to the poetry library.</p>
+<p>We can see that each of the toolos install with pipx is installed in its own venv, but is available globally</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a href="#cb6-1"></a>ls /home/bwrob/.local/share/pipx/venvs/ -la</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="4.png" class="img-fluid"></p>
+<p>Copy your</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"><a href="#cb7-1"></a># Instal dependencies</span>
+<span id="cb7-2"><a href="#cb7-2"></a>poetry install</span>
+<span id="cb7-3"><a href="#cb7-3"></a># Install pre-commit</span>
+<span id="cb7-4"><a href="#cb7-4"></a>pre-commit install --install-hooks --overwrite --allow-missing-config</span>
+<span id="cb7-5"><a href="#cb7-5"></a># Update pre-commit</span>
+<span id="cb7-6"><a href="#cb7-6"></a>pre-commit autoupdate</span>
+<span id="cb7-7"><a href="#cb7-7"></a># Run pre-commit to test setup</span>
+<span id="cb7-8"><a href="#cb7-8"></a>pre-commit run --all-files</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9uaWMlMjBEaXN0cmFjdGlvbnM='); return false;">Pythonic Distractions</div>
 
-</div>
-<div class="card-text listing-description delink">
-<p>How to start your day with a cup of coffee, not opening the same apps all over again.</p>
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-bwrob
-</div>
-<div class="listing-date">
-May 21, 2024
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="4" data-categories="UHl0aG9uaWMlMjBEaXN0cmFjdGlvbnMlMkNDb250ZXh0JTIwTWFuYWdlcnM=" data-listing-date-sort="1715464800000" data-listing-file-modified-sort="1734811780005" data-listing-date-modified-sort="1724968800000" data-listing-reading-time-sort="16" data-listing-word-count-sort="3059">
-<a href="./posts/exit-stack/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/exit-stack/flowchart.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Exit stack to the rescue
-</h5>
-<div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9uaWMlMjBEaXN0cmFjdGlvbnM='); return false;">Pythonic Distractions</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Q29udGV4dCUyME1hbmFnZXJz'); return false;">Context Managers</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>How to chain resource managers in an elegant way.</p>
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-bwrob
-</div>
-<div class="listing-date">
-May 12, 2024
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="5" data-categories="UHl0aG9uaWMlMjBEaXN0cmFjdGlvbnMlMkNEZXNpZ24lMjBQYXR0ZXJucw==" data-listing-date-sort="1714255200000" data-listing-file-modified-sort="1734811780011" data-listing-date-modified-sort="1724968800000" data-listing-reading-time-sort="13" data-listing-word-count-sort="2518">
-<a href="./posts/strategy-pattern-integration/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top"><img src="posts/strategy-pattern-integration/Rectangle_rule.gif" style="height: 150px;"  class="thumbnail-image card-img"/></p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Strategies for Numerical Integration
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9uaWMlMjBEaXN0cmFjdGlvbnM='); return false;">Pythonic Distractions</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('RGVzaWduJTIwUGF0dGVybnM='); return false;">Design Patterns</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>How to apply strategy design pattern in Python.</p>
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-bwrob
-</div>
-<div class="listing-date">
-Apr 28, 2024
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="6" data-categories="TmV3cw==" data-listing-date-sort="1713823200000" data-listing-file-modified-sort="1734811780011" data-listing-date-modified-sort="1724968800000" data-listing-reading-time-sort="1" data-listing-word-count-sort="114">
-<a href="./posts/welcome/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./logo/python_mug.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Welcome To My Blog
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('TmV3cw=='); return false;">News</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>How to enjoy the ride with me.</p>
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-bwrob
-</div>
-<div class="listing-date">
-Apr 23, 2024
-</div>
-</div>
-</div>
-</div></a>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
