@@ -706,17 +706,33 @@ Note
 <span id="cb3-2"></span>
 <span id="cb3-3">autoload -U compinit &amp;&amp; compinit</span>
 <span id="cb3-4">eval "$(register-python-argcomplete pipx)"</span></code></pre></div>
-<p><img src="https://bwrob.github.io/posts/linux-python-dev-env/1.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bwrob.github.io/posts/linux-python-dev-env/1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
 <p>Install dev tools</p>
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1">pipx install poetry poethepoet pre-commit pytest ruff basedpyright</span></code></pre></div>
-<p><img src="https://bwrob.github.io/posts/linux-python-dev-env/2.png" class="img-fluid"></p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1">pipx install --force ruff hapless poethepoet poetry pre-commit uv pytest basedpyright</span></code></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bwrob.github.io/posts/linux-python-dev-env/2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
 <div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1">nano $(which poetry)</span></code></pre></div>
-<p><img src="https://bwrob.github.io/posts/linux-python-dev-env/3.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bwrob.github.io/posts/linux-python-dev-env/3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
 <p>Shebang Line (#!): #!/home/bwrob/.local/share/pipx/venvs/poetry/bin/python: This line specifies the interpreter used to run the script. In this case, it’s a Python interpreter located in a specific virtual environment (poetry).</p>
 <p>This script acts as a launcher for the poetry command. It sets up the environment and handles potential script extensions before delegating the actual command execution to the poetry library.</p>
 <p>We can see that each of the toolos install with pipx is installed in its own venv, but is available globally</p>
 <div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1">ls /home/bwrob/.local/share/pipx/venvs/ -la</span></code></pre></div>
-<p><img src="https://bwrob.github.io/posts/linux-python-dev-env/4.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bwrob.github.io/posts/linux-python-dev-env/4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
 <p>Copy your</p>
 <div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"># Instal dependencies</span>
 <span id="cb7-2">poetry install</span>
