@@ -1,14 +1,11 @@
 [tool.poetry]
-    name        = "bwrob-github-io"
-    version     = "0.1.0"
-    description = ""
-    authors     = ["bwrob <bw2002@wp.pl>"]
-    readme      = "README.md"
-    packages    = [{ include = "scripts" }]
+    name         = "bwrob-github-io"
+    version      = "0.1.0"
+    description  = ""
+    authors      = ["bwrob <bw2002@wp.pl>"]
+    readme       = "README.md"
+    package-mode = false
 
-[build-system]
-    requires      = ["poetry-core"]
-    build-backend = "poetry.core.masonry.api"
 
     [tool.poetry.dependencies]
         python = "^3.13"
@@ -19,22 +16,22 @@
         pandas-stubs = "^2.2.3.250527"
         scipy        = "^1.15.3"
         sympy        = "^1.14.0"
+        pygame       = "^2.6.1"
+        rich         = "^14.0.0"
 
     [tool.poetry.group.dev.dependencies]
-        basedpyright = "^1.29.2"
-        hapless      = "^0.8.0"
-        ipython      = "^9.3.0"
-        jupyter      = "^1.1.1"
-        poethepoet   = "^0.34.0"
-        pre-commit   = "^4.2.0"
-        ruff         = "^0.11.12"
+        ipython = "^9.3.0"
+        jupyter = "^1.1.1"
 
 [tool.poe.tasks]
 
     _report_host = "echo 'http://localhost:3333/'"
     _hap_preview = "hap run quarto preview ./index.qmd --port 3333 --quiet"
-    preview      = ["_hap_preview", "_report_host"]
-    publish      = "└─$ quarto publish --no-prompt --no-browser --quiet  gh-pages"
     _fix         = "ruff check --fix --unsafe-fixes --config ruff.toml ."
     _format      = "ruff format --config ruff.toml ."
-    check        = ["_fix", "_format"]
+
+    install-dev-tools = "pipx install --force argcomplete ruff hapless poethepoet poetry pre-commit uv pytest basedpyright"
+    upgrade-dev-tools = "pipx upgrade-all --force"
+    preview           = ["_hap_preview", "_report_host"]
+    publish           = "hap run quarto publish --no-prompt --no-browser --quiet  gh-pages"
+    check             = ["_fix", "_format"]
