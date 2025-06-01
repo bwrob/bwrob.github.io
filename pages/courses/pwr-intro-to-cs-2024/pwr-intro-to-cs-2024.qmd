@@ -1,0 +1,182 @@
+---
+title: "Wstęp do programowania (PWr Zima 2024)"
+
+about:
+  template: marquee
+---
+
+
+Laboratoria komputerowe do wykładu Andrzeja Giniewicza.
+
+
+## Zasady zaliczenia
+
+Ogólne zasady zaliczenia kursu można znaleźć na [stronie kursu u wykładowcy](https://alfa.im.pwr.edu.pl/~giniew/doku.php?id=rok2425:zimowy:wdp).
+
+Doprecyzowania obowiazujace w moich grupach:
+
+:::{.panel-tabset}
+### Listy zadań
+
+Conajmniej pierwsze 4 listy będziemy robić na zajęciach, w systemie deklaracyjnym. Po zajęciach proszę o przesłanie rozwiązań. Kolejne listy zadań będą w formie zadań domowych, do zrobienia i przesłania przed zajęciami. Rozwiązania będą omiawiane i wyrywkowo sprawdzane w trakcie zajęć.
+
+### Zadanie domowe
+
+Wyobraź sobie, że pomagasz młodszemu koledze lub koleżance, którzy dalej są w liceum. Chcesz przygotować interaktywny notebook tłumaczący jakieś zagadnienie z zakresu matematyki, fizyki, informatyki lub chemii. Wybrany temat może, ale nie musi pochodzić z zakresu nauczania w szkole średniej. Ma być zrozumiały i dostępny dla ucznia liceum. *Kod Python nie musi być zrozumiały dla licealisty*. Polecam wybrać temat, który Ciebie też interesuje.
+
+W Twoim dokumencie powinny znaleźć się prawidłowo sformatowane komórki tekstowe, z nagłówkami oraz wzorami. Umieść również obliczenia wykonane w języku Python, jako ilustrację do niektórych przykładów, rozwiązanie zadań, lub wizualizację. Można, ale nie trzeba używać modułów Python nie przedstawionych na kursie.
+
+Za zadanie domowe można dostać maksymalnie 10 punktów. Po 3 za użycie Pythona, skład i formatowanie komórek Markdown oraz treść
+tłumaczaca zagadnienie. Dodatkowy punkt za ogólna schludność i estetykę zeszytu.
+
+Gdybyś chciał wydrukować notatnik, powinien zająć przynajmniej dwie strony A4 przy standardowym rozmiarze kroju pisma (podpowiedź - możesz sprawdzić podgląd wydruku w menu File w narzędziu Jupyter Lab, jeśli trudno ocenić Ci ile już napisałeś).
+
+Termin oddania do 19 listopada (grupa wtorkowa) / 21 listopada (grupa czwartkowa). Zadanie domowe proszę przesyłać mailowo. Proszę załaczyć informację czy zgadzasz się na pokazanie Twojej pracy innym studentom i opublikowanie jej tutaj jako przyklad.
+
+### Odpowiedź ustna
+
+Od 7-mych zajęć można zgłaszać się na ochotnika, co najmniej 3 ochotników jest wymaganych na jednych zajęciach.
+
+### Projekt grupowy
+
+Można się łączyć w grupy w obrębie moich 2 zajęć (wtorek 7:30 i czwartek 7:30), ale nie poza. Zakładam w sumie 5-8 grup projektowych.
+
+### Aktywność
+
+Punkty zostaną przydzielone na zasadzie normalizacji rozkładu aktywności na zajęciach. Gwarantuję, że jedna *duża* aktywność (np. przedstawienie pełnego rozwiązania z listy) będzie dawała co najmniej jeden punkt.
+:::
+
+
+## Python
+
+[Komentarze do list zadań](pwr-intro-to-cs-2024-list-comments.qmd)
+
+## Bash i git
+
+:::{.panel-tabset}
+
+### Nawigacja systemu plików
+
+Przyklady komend uzytych na zajeciach (rozszyfrowanie ich jako zadanie dla czytelnika):
+
+```{bash}
+history -c
+pwd
+cd ~
+mkdir test
+cd test
+touch test.txt
+code test.txt
+cp test.txt test2.txt
+mv test2.txt test3.txt
+rm test2.txt
+echo "Hello World" >> test3.txt
+cat test3.txt
+wc < test3.txt
+cat test.txt test3.txt > test4.txt
+cd ..
+rm -ri test
+ls -la
+history 1 > notatki.txt
+```
+
+### Skryptowanie
+
+Przykladowy skrypt zapisany jako plik `hello.sh`:
+
+```{bash}
+#! bash
+
+echo "Hello $1 !"
+
+if [ "$1"=="Flip" ] ; then
+	echo ”Long time no see ! ”
+elif [ "$1"=="Flap" ] ; then
+	echo "What do you want?"
+else
+	echo "Who are you again ?"
+fi
+
+if ! [ -f log.txt ] ; then
+	touch log.txt
+fi
+echo "$(date) User $1 visited." >> log.txt
+
+for i in $(seq 5 -1 1)
+do
+	echo "Konczymy za $i"
+done
+
+```
+
+Jego wykonanie:
+
+```{bash}
+chmod +x hello.sh
+./hello.sh Flap
+```
+
+Skrypt w pythonie:
+
+```{python}
+# | echo: false
+#! python3
+
+import sys
+
+print(f"Hello !")
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        for x in sys.argv[1:]:
+            print(f"Nice to meet you {x}")
+
+```
+
+Jego wykonanie:
+
+```{bash}
+chmod +x hello.py
+./hello.py Flip Flap Flop
+```
+
+### Git i GitLab
+
+Generowanie klucza SSH (warto przeczytać [oficjalne instrukcje](https://docs.gitlab.com/ee/user/ssh.html#generate-an-ssh-key-pair))
+
+```{bash}
+ssh-keygen -t ed25519 -C "imie nazwisk, indeks"
+```
+
+Klucz publiczny powinien byc w pliku `~/.ssh/id_ed25519.pub`. Na koncie GitLab powinien byc [dodany klucz publiczny SSH](https://docs.gitlab.com/ee/user/ssh.html#add-an-ssh-key-to-your-gitlab-account).
+
+Ustawienie klucza SSH w systemie lokalnym:
+
+```{bash}
+eval $(ssh-agent)
+ssh-add <sciezka klucza>
+ssh git@gitlab.com
+```
+
+Tworzymy repozytorium `lekcja-1`na stronie GitLab. Klikamy na niebieskie przycisk `Code` i kopiujemy to co pod SSH.
+
+Klonujemy repozytorium GitLab, ustawiamy uzycie klucza SSH, tworzymy gałąź `main`.
+```{bash}
+git clone <sciezka ssh>
+git config --global user.name "<imie nazwisko>"
+git config --global user.email "<email pwr>"
+git config --local gpg.format ssh
+git config --local user.signingkey /ścieżka/do/klucza/id_ec25519.pub
+git switch --create main
+```
+
+Tworzymy plik README.md, dodajemy go do repozytorium, commitujemy i pushujemy.
+```{bash}
+touch README.md
+git add README.md
+git commit -S -m "puste readme"
+git status
+git push
+```
+
+:::

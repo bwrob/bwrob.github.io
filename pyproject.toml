@@ -11,49 +11,30 @@
     build-backend = "poetry.core.masonry.api"
 
     [tool.poetry.dependencies]
-        python = "^3.12"
+        python = "^3.13"
 
-        plotly       = "^5.24.1"
-        matplotlib   = "^3.9.2"
-        mplfinance   = "^0.12.10b0"
-        pandas       = "^2.2.2"
-        pandas-stubs = "^2.2.2.240807"
-        scipy        = "^1.14.1"
-        sympy        = "^1.13.3"
-        yfinance     = "^0.2.51"
+        plotly       = "^6.1.2"
+        matplotlib   = "^3.10.3"
+        pandas       = "^2.2.3"
+        pandas-stubs = "^2.2.3.250527"
+        scipy        = "^1.15.3"
+        sympy        = "^1.14.0"
 
     [tool.poetry.group.dev.dependencies]
-        basedpyright = "^1.15.2"
-        hapless      = "^0.7.0"
-        ipython      = "^8.31.0"
-        jupyter      = "^1.0.0"
-        poethepoet   = "^0.31.1"
-        pre-commit   = "^4.0.1"
-        pyright      = "^1.1.374"
-        ruff         = "^0.8.4"
-
-[tool.ruff]
-    include        = ["scripts/*.ipynb", "scripts/*.py"]
-    line-length    = 88
-    target-version = "py312"
-
-    [tool.ruff.lint]
-        select = ["ALL"]
-        ignore = [
-            "COM819",
-            "D203",
-            "D211",
-            "D213",
-            "FA102",
-            "ISC001",
-        ]
-
-    [tool.ruff.format]
-        docstring-code-format = true
-
+        basedpyright = "^1.29.2"
+        hapless      = "^0.8.0"
+        ipython      = "^9.3.0"
+        jupyter      = "^1.1.1"
+        poethepoet   = "^0.34.0"
+        pre-commit   = "^4.2.0"
+        ruff         = "^0.11.12"
 
 [tool.poe.tasks]
 
     _report_host = "echo 'http://localhost:3333/'"
     _hap_preview = "hap run quarto preview ./index.qmd --port 3333 --quiet"
     preview      = ["_hap_preview", "_report_host"]
+    publish      = "└─$ quarto publish --no-prompt --no-browser --quiet  gh-pages"
+    _fix         = "ruff check --fix --unsafe-fixes --config ruff.toml ."
+    _format      = "ruff format --config ruff.toml ."
+    check        = ["_fix", "_format"]
