@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="bwrob">
+<meta name="dcterms.date" content="2025-06-22">
+<meta name="description" content="Risk management in financial markets - exam review">
+
+<title>Risk Management (PL) – bwrob blog</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../logo/python_mug.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-234273d1456647dabc34a594ac50e507.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-0348920b7671f696dc9078d39bff215e.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-27bdcad6e2c5129c4a00b00c00aa65cc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-cb82ce53a18555e556235c4f85a8b6c9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="bwrob blog">
+<meta property="og:description" content="bwrob personal and professional blog">
+<meta property="og:image" content="https://bwrob.github.io/posts/sgh-risk-management/financial_markets.png">
+<meta property="og:site_name" content="bwrob blog">
+<meta property="og:image:height" content="2048">
+<meta property="og:image:width" content="2048">
+<meta name="twitter:title" content="bwrob blog">
+<meta name="twitter:description" content="bwrob personal and professional blog">
+<meta name="twitter:image" content="https://bwrob.github.io/posts/sgh-risk-management/financial_markets.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image-height" content="2048">
+<meta name="twitter:image-width" content="2048">
+</head>
+
+<body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = true;
+    const darkModeDefault = authorPrefersDark;
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../logo/python_mug.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">bwrob blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> <i class="bi bi-cpu" role="img">
+</i> 
+<span class="menu-text">Posts</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../pages/resume.html"> <i class="bi bi-file-earmark-text" role="img">
+</i> 
+<span class="menu-text">Resume</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../pages/teaching.html"> <i class="bi bi-tablet-landscape" role="img">
+</i> 
+<span class="menu-text">Teaching</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../pages/hobbies.html"> <i class="bi bi-controller" role="img">
+</i> 
+<span class="menu-text">Hobbies</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/bartoszmwroblewski/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/bwrob/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Risk Management (PL)</h1>
+                  <div>
+        <div class="description">
+          Risk management in financial markets - exam review
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Financial Markets</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>bwrob </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">June 22, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#ryzyko-na-rynkach-finansowych---przegląd-egzaminacyjny" id="toc-ryzyko-na-rynkach-finansowych---przegląd-egzaminacyjny" class="nav-link active" data-scroll-target="#ryzyko-na-rynkach-finansowych---przegląd-egzaminacyjny">Ryzyko na Rynkach Finansowych - Przegląd Egzaminacyjny</a>
+  <ul class="collapse">
+  <li><a href="#klasyfikacja-ryzyka-finansowego-według-definicji-bank-for-international-settlements-bis" id="toc-klasyfikacja-ryzyka-finansowego-według-definicji-bank-for-international-settlements-bis" class="nav-link" data-scroll-target="#klasyfikacja-ryzyka-finansowego-według-definicji-bank-for-international-settlements-bis">1. Klasyfikacja ryzyka finansowego według definicji Bank for International Settlements (BIS)</a></li>
+  <li><a href="#porównanie-odchylenia-standardowego-i-odchylenia-przeciętnego-jako-miary-ryzyka" id="toc-porównanie-odchylenia-standardowego-i-odchylenia-przeciętnego-jako-miary-ryzyka" class="nav-link" data-scroll-target="#porównanie-odchylenia-standardowego-i-odchylenia-przeciętnego-jako-miary-ryzyka">2. Porównanie odchylenia standardowego i odchylenia przeciętnego jako miary ryzyka</a></li>
+  <li><a href="#scharakteryzuj-czas-trwania-duration-jako-miernik-ryzyka-stopy-procentowej.-wyjaśnij-dlaczego-duration-jest-uznawane-za-konserwatywną-miarę-ryzyka." id="toc-scharakteryzuj-czas-trwania-duration-jako-miernik-ryzyka-stopy-procentowej.-wyjaśnij-dlaczego-duration-jest-uznawane-za-konserwatywną-miarę-ryzyka." class="nav-link" data-scroll-target="#scharakteryzuj-czas-trwania-duration-jako-miernik-ryzyka-stopy-procentowej.-wyjaśnij-dlaczego-duration-jest-uznawane-za-konserwatywną-miarę-ryzyka.">3. Scharakteryzuj czas trwania (duration) jako miernik ryzyka stopy procentowej. Wyjaśnij dlaczego duration jest uznawane za konserwatywną miarę ryzyka.</a></li>
+  <li><a href="#scharakteryzuj-expected-shortfall-jako-miarę-ryzyka.-na-czym-polega-jej-przewaga-nad-miarą-var." id="toc-scharakteryzuj-expected-shortfall-jako-miarę-ryzyka.-na-czym-polega-jej-przewaga-nad-miarą-var." class="nav-link" data-scroll-target="#scharakteryzuj-expected-shortfall-jako-miarę-ryzyka.-na-czym-polega-jej-przewaga-nad-miarą-var.">4. Scharakteryzuj Expected Shortfall jako miarę ryzyka. Na czym polega jej przewaga nad miarą VaR.</a></li>
+  <li><a href="#w-jaki-sposób-można-zbudować-portfel-o-ujemnym-czasie-trwania-duration-i-przed-jakim-rodzajem-ryzyka-taki-portfel-zabezpiecza" id="toc-w-jaki-sposób-można-zbudować-portfel-o-ujemnym-czasie-trwania-duration-i-przed-jakim-rodzajem-ryzyka-taki-portfel-zabezpiecza" class="nav-link" data-scroll-target="#w-jaki-sposób-można-zbudować-portfel-o-ujemnym-czasie-trwania-duration-i-przed-jakim-rodzajem-ryzyka-taki-portfel-zabezpiecza">5. W jaki sposób można zbudować portfel o ujemnym czasie trwania (duration) i przed jakim rodzajem ryzyka taki portfel zabezpiecza?</a></li>
+  <li><a href="#scharakteryzuj-strategię-dopasowania-przepływów-pieniężnych-jako-metodę-zarządzania-ryzykiem-stóp-procentowych." id="toc-scharakteryzuj-strategię-dopasowania-przepływów-pieniężnych-jako-metodę-zarządzania-ryzykiem-stóp-procentowych." class="nav-link" data-scroll-target="#scharakteryzuj-strategię-dopasowania-przepływów-pieniężnych-jako-metodę-zarządzania-ryzykiem-stóp-procentowych.">6. Scharakteryzuj strategię dopasowania przepływów pieniężnych jako metodę zarządzania ryzykiem stóp procentowych.</a></li>
+  <li><a href="#scharakteryzuj-wskaźnik-altmana.-jaki-rodzaj-ryzyka-mierzy-ten-wskaźnik." id="toc-scharakteryzuj-wskaźnik-altmana.-jaki-rodzaj-ryzyka-mierzy-ten-wskaźnik." class="nav-link" data-scroll-target="#scharakteryzuj-wskaźnik-altmana.-jaki-rodzaj-ryzyka-mierzy-ten-wskaźnik.">7. Scharakteryzuj wskaźnik Altmana. Jaki rodzaj ryzyka mierzy ten wskaźnik.</a></li>
+  <li><a href="#wskaż-przynajmniej-dwa-wybrane-przejawy-ryzyka-kredytowego-dwa-rodzaje-zdarzeń-kredytowych-inne-niż-bankructwo." id="toc-wskaż-przynajmniej-dwa-wybrane-przejawy-ryzyka-kredytowego-dwa-rodzaje-zdarzeń-kredytowych-inne-niż-bankructwo." class="nav-link" data-scroll-target="#wskaż-przynajmniej-dwa-wybrane-przejawy-ryzyka-kredytowego-dwa-rodzaje-zdarzeń-kredytowych-inne-niż-bankructwo.">8. Wskaż przynajmniej dwa wybrane przejawy ryzyka kredytowego (dwa rodzaje zdarzeń kredytowych), inne niż bankructwo.</a></li>
+  <li><a href="#zdefiniuj-i-scharakteryzuj-dwie-podstawowe-formy-ryzyka-płynności." id="toc-zdefiniuj-i-scharakteryzuj-dwie-podstawowe-formy-ryzyka-płynności." class="nav-link" data-scroll-target="#zdefiniuj-i-scharakteryzuj-dwie-podstawowe-formy-ryzyka-płynności.">9. Zdefiniuj i scharakteryzuj dwie podstawowe formy ryzyka płynności.</a></li>
+  <li><a href="#co-mierzy-i-jak-należy-intepretować-wskaźnik-nsfr-net-stable-funding-ratio." id="toc-co-mierzy-i-jak-należy-intepretować-wskaźnik-nsfr-net-stable-funding-ratio." class="nav-link" data-scroll-target="#co-mierzy-i-jak-należy-intepretować-wskaźnik-nsfr-net-stable-funding-ratio.">10. Co mierzy i jak należy intepretować wskaźnik NSFR (Net Stable Funding Ratio).</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+
+<section id="ryzyko-na-rynkach-finansowych---przegląd-egzaminacyjny" class="level2">
+<h2 class="anchored" data-anchor-id="ryzyko-na-rynkach-finansowych---przegląd-egzaminacyjny">Ryzyko na Rynkach Finansowych - Przegląd Egzaminacyjny</h2>
+<section id="klasyfikacja-ryzyka-finansowego-według-definicji-bank-for-international-settlements-bis" class="level3">
+<h3 class="anchored" data-anchor-id="klasyfikacja-ryzyka-finansowego-według-definicji-bank-for-international-settlements-bis">1. Klasyfikacja ryzyka finansowego według definicji Bank for International Settlements (BIS)</h3>
+<p>Bank Rozrachunków Międzynarodowych (BIS) jest kluczową instytucją w kształtowaniu globalnych standardów bankowych, w tym w zakresie zarządzania ryzykiem. W ramach swoich ram regulacyjnych, zwłaszcza w porozumieniach Bazylejskich (np. Bazylea II, Bazylea III), BIS definiuje i klasyfikuje ryzyka finansowe, na które narażone są instytucje finansowe. Zrozumienie tej klasyfikacji jest fundamentalne dla efektywnego zarządzania ryzykiem w sektorze finansowym, ponieważ pozwala na systematyczne identyfikowanie, mierzenie, monitorowanie i kontrolowanie różnorodnych zagrożeń. Główne kategorie ryzyka finansowego to:</p>
+<ol type="1">
+<li><strong>Ryzyko kredytowe (Credit Risk):</strong> Ryzyko, że kontrahent (np. kredytobiorca, emitent obligacji) nie wywiąże się ze swoich zobowiązań umownych, co spowoduje stratę dla banku lub innej instytucji finansowej. Jest to jedno z najstarszych i najbardziej znaczących ryzyk w bankowości.
+<ul>
+<li>Obejmuje to ryzyko niewypłacalności (default risk), czyli całkowitą niemożność spłaty długu.</li>
+<li>Ryzyko pogorszenia jakości kredytowej (downgrade risk), gdzie rating kredytowy dłużnika zostaje obniżony, co zwiększa koszt finansowania dla dłużnika i obniża wartość rynkową jego długu.</li>
+<li>Ryzyko koncentracji kredytowej, wynikające z nadmiernego zaangażowania w jednego kontrahenta, branżę, region geograficzny lub rodzaj produktu, co sprawia, że portfel kredytowy jest szczególnie wrażliwy na negatywne zdarzenia w tej konkretnej kategorii.</li>
+<li><strong>Przykład:</strong> Bank udziela kredytu przedsiębiorstwu, które w wyniku pogorszenia koniunktury gospodarczej nie jest w stanie spłacać rat, co prowadzi do straty dla banku.</li>
+</ul></li>
+<li><strong>Ryzyko rynkowe (Market Risk):</strong> Ryzyko strat w pozycjach bilansowych i pozabilansowych (np. instrumenty pochodne) wynikające ze zmian cen rynkowych. Jest to ryzyko związane z wahaniami wartości aktywów i pasywów w wyniku ruchów na rynkach finansowych.
+<ul>
+<li><strong>Ryzyko stopy procentowej (Interest Rate Risk):</strong> Ryzyko strat wynikających ze zmian stóp procentowych, które wpływają na wartość instrumentów dłużnych, kredytów i depozytów.</li>
+<li><strong>Ryzyko kursu walutowego (Foreign Exchange Risk):</strong> Ryzyko strat wynikających ze zmian kursów walutowych, wpływające na wartość aktywów i pasywów denominowanych w obcych walutach.</li>
+<li><strong>Ryzyko cen akcji (Equity Price Risk):</strong> Ryzyko strat wynikających ze zmian cen akcji, wpływające na portfele inwestycyjne i pozycje handlowe.</li>
+<li><strong>Ryzyko cen towarów (Commodity Price Risk):</strong> Ryzyko strat wynikających ze zmian cen towarów (np. ropy naftowej, złota), wpływające na ekspozycje na rynkach surowców.</li>
+<li><strong>Przykład:</strong> Bank posiada duży portfel obligacji o stałym oprocentowaniu. Niespodziewany wzrost stóp procentowych na rynku powoduje spadek wartości tych obligacji, generując stratę dla banku.</li>
+</ul></li>
+<li><strong>Ryzyko operacyjne (Operational Risk):</strong> Ryzyko strat wynikających z nieadekwatnych lub wadliwych procesów wewnętrznych, ludzi i systemów, lub z zewnętrznych zdarzeń. Jest to szeroka kategoria, która może obejmować wiele różnorodnych zdarzeń, często niedocenianych aż do momentu ich wystąpienia.
+<ul>
+<li>Obejmuje to błędy ludzkie (np. błędne wprowadzenie danych, nieprawidłowa obsługa klienta), awarie systemów (np. awarie IT, cyberataki), oszustwa (wewnętrzne lub zewnętrzne), a także zdarzenia zewnętrzne takie jak klęski żywiołowe (np. pożar, powódź niszcząca infrastrukturę banku) czy ataki terrorystyczne.</li>
+<li><strong>Przykład:</strong> Błąd w oprogramowaniu bankowym powoduje podwójne zaksięgowanie transakcji, co skutkuje stratami finansowymi i koniecznością ręcznej korekty wielu rekordów. Inny przykład to cyberatak prowadzący do wycieku danych klientów i związanych z tym kar regulacyjnych oraz utraty reputacji.</li>
+</ul></li>
+<li><strong>Ryzyko płynności (Liquidity Risk):</strong> Ryzyko, że bank nie będzie w stanie wywiązać się ze swoich krótkoterminowych zobowiązań finansowych w terminie i po rozsądnej cenie. Jest to ryzyko krytyczne, ponieważ jego materializacja może prowadzić do natychmiastowej niewypłacalności, nawet jeśli bank jest solventny długoterminowo. Dzieli się na:
+<ul>
+<li><strong>Ryzyko płynności finansowania (Funding Liquidity Risk):</strong> Ryzyko niemożności pozyskania środków na spłatę zobowiązań (np. depozytów, krótkoterminowych pożyczek) bez ponoszenia nadmiernych kosztów lub znacznych strat. Może wynikać z utraty zaufania inwestorów lub zakłóceń na rynkach międzybankowych.</li>
+<li><strong>Ryzyko płynności rynkowej (Market Liquidity Risk):</strong> Ryzyko niemożności szybkiej likwidacji pozycji po cenie rynkowej z powodu niewystarczającej głębokości lub szerokości rynku. Oznacza to, że sprzedaż aktywów w celu pozyskania gotówki może wiązać się ze znacznym spadkiem ich ceny.</li>
+<li><strong>Przykład:</strong> Bank nagle traci dostęp do rynku międzybankowego, z którego pozyskiwał krótkoterminowe finansowanie, i musi sprzedać część swoich aktywów po zaniżonych cenach, aby zaspokoić bieżące zobowiązania.</li>
+</ul></li>
+<li><strong>Ryzyko reputacji (Reputational Risk):</strong> Ryzyko utraty zaufania klientów, kontrahentów, inwestorów lub opinii publicznej, co może prowadzić do strat finansowych (np. odpływ depozytów, spadek cen akcji, utrata klientów) lub utraty wartości rynkowej firmy. Jest to ryzyko często wynikające z materializacji innych ryzyk (np. operacyjnego, prawnego) lub z nieetycznych zachowań.
+<ul>
+<li><strong>Przykład:</strong> Bank zostaje uwikłany w skandal związany z praniem pieniędzy, co prowadzi do masowego wycofywania depozytów przez klientów i znaczącego spadku wartości akcji banku.</li>
+</ul></li>
+<li><strong>Ryzyko strategiczne (Strategic Risk):</strong> Ryzyko strat wynikających z błędnych decyzji biznesowych, nieefektywnej realizacji strategii, braku reakcji na zmiany w otoczeniu biznesowym (np. nowe technologie, zmiany regulacyjne, konkurencja) lub nieodpowiedniego planowania.
+<ul>
+<li><strong>Przykład:</strong> Bank ignoruje rosnące znaczenie bankowości cyfrowej, inwestując wyłącznie w tradycyjne oddziały, co prowadzi do utraty udziału w rynku na rzecz bardziej innowacyjnych konkurentów.</li>
+</ul></li>
+<li><strong>Ryzyko systemowe (Systemic Risk):</strong> Ryzyko upadku całego systemu finansowego lub jego znaczącej części, spowodowane upadkiem jednej lub kilku dużych instytucji finansowych (tzw. “too big to fail”), co prowadzi do efektu domina (contagion effect) i może destabilizować całą gospodarkę. Jest to ryzyko makroekonomiczne, które jest monitorowane i zarządzane na poziomie regulatorów i banków centralnych.
+<ul>
+<li><strong>Przykład:</strong> Upadek dużego banku inwestycyjnego wywołuje panikę na rynkach finansowych, prowadząc do masowego wycofywania środków z innych instytucji i zamrożenia rynku międzybankowego, co destabilizuje cały system finansowy.</li>
+</ul></li>
+</ol>
+<p><em>Źródło: Bank for International Settlements (BIS) - Basel Committee on Banking Supervision (BCBS) Frameworks, np. Basel II, Basel III. Szczegółowe informacje dostępne na stronie BIS: <a href="https://www.bis.org/bcbs/">www.bis.org/bcbs/</a></em></p>
+<hr>
+</section>
+<section id="porównanie-odchylenia-standardowego-i-odchylenia-przeciętnego-jako-miary-ryzyka" class="level3">
+<h3 class="anchored" data-anchor-id="porównanie-odchylenia-standardowego-i-odchylenia-przeciętnego-jako-miary-ryzyka">2. Porównanie odchylenia standardowego i odchylenia przeciętnego jako miary ryzyka</h3>
+<p>Zarówno odchylenie standardowe, jak i odchylenie przeciętne są miarami rozproszenia, używanymi do kwantyfikacji ryzyka, rozumianego jako zmienność wyników. Mimo że obie miary informują o stopniu rozproszenia danych wokół średniej, ich konstrukcja matematyczna i implikacje praktyczne różnią się znacząco.</p>
+<p><strong>Odchylenie standardowe (<span class="math inline">\(\sigma\)</span>)</strong></p>
+<p>Odchylenie standardowe jest najczęściej używaną miarą ryzyka w finansach, zwłaszcza w kontekście teorii portfela Markowitza i Modelu Wyceny Aktywów Kapitałowych (CAPM). Mierzy ono średnie odchylenie poszczególnych obserwacji od średniej arytmetycznej, podniesione do kwadratu, a następnie spierwiastkowane. Podnoszenie do kwadratu ma na celu wyeliminowanie problemu sumowania odchyleń dodatnich i ujemnych, które wzajemnie by się znosiły.</p>
+<ul>
+<li><p><strong>Wzór (dla próby):</strong></p>
+<p><span class="math display">\[\sigma = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2}\]</span></p>
+<p>gdzie:</p>
+<ul>
+<li><span class="math inline">\(x_i\)</span> to <span class="math inline">\(i\)</span>-ta obserwacja (np. stopa zwrotu aktywa)</li>
+<li><span class="math inline">\(\bar{x}\)</span> to średnia arytmetyczna stóp zwrotu</li>
+<li><span class="math inline">\(n\)</span> to liczba obserwacji</li>
+</ul></li>
+<li><p><strong>Charakterystyka:</strong></p>
+<ul>
+<li><strong>Wrażliwość na wartości odstające:</strong> Ze względu na podnoszenie odchyleń do kwadratu, odchylenie standardowe jest bardzo wrażliwe na duże odchylenia od średniej (wartości odstające, tzw. <em>outliery</em>). Duże odchylenia są wagi podwójnie, co może być zarówno zaletą (podkreśla ekstremalne zdarzenia, które są kluczowe w zarządzaniu ryzykiem), jak i wadą (może zniekształcać obraz ryzyka dla danych z silnymi wartościami odstającymi, które nie są reprezentatywne dla typowej zmienności).</li>
+<li><strong>Własności matematyczne:</strong> Jest podstawą wariancji (<span class="math inline">\(\sigma^2\)</span>), która jest addytywna dla niezależnych zmiennych losowych. Posiada doskonałe własności matematyczne, co ułatwia jego wykorzystanie w zaawansowanych modelach optymalizacyjnych, takich jak optymalizacja portfela Markowitza (minimalizacja wariancji portfela dla danego poziomu zwrotu) czy w modelach wyceny aktywów (np. CAPM, gdzie ryzyko systematyczne jest mierzone przez beta, które jest pochodną kowariancji i wariancji). Te własności sprawiają, że jest to preferowana miara w teorii finansów.</li>
+<li><strong>Założenie o rozkładzie:</strong> W kontekście ryzyka rynkowego, często zakłada się, że stopy zwrotu mają rozkład normalny, dla którego odchylenie standardowe jest kompletną miarą ryzyka (wraz ze średnią). W praktyce jednak stopy zwrotu aktywów finansowych często wykazują grube ogony (większe prawdopodobieństwo wystąpienia ekstremalnych zdarzeń) i skośność (asymetria rozkładu), co sprawia, że samo odchylenie standardowe może nie w pełni oddawać obraz ryzyka.</li>
+</ul></li>
+</ul>
+<p><strong>Odchylenie przeciętne (Mean Absolute Deviation, MAD)</strong></p>
+<p>Odchylenie przeciętne mierzy średnią arytmetyczną bezwzględnych wartości odchyleń poszczególnych obserwacji od średniej arytmetycznej. Jest to prostsza miara, która unika problemu znoszenia się odchyleń poprzez zastosowanie wartości bezwzględnej.</p>
+<ul>
+<li><p><strong>Wzór (dla próby):</strong></p>
+<p><span class="math display">\[MAD = \frac{1}{n}\sum_{i=1}^{n}|x_i - \bar{x}|\]</span></p>
+<p>gdzie symbole mają takie samo znaczenie jak powyżej.</p></li>
+<li><p><strong>Charakterystyka:</strong></p>
+<ul>
+<li><strong>Mniejsza wrażliwość na wartości odstające:</strong> Ponieważ używa wartości bezwzględnych zamiast kwadratów, jest mniej wrażliwe na ekstremalne wartości odstające niż odchylenie standardowe. Duże odchylenia nie są “karywane” podwójnie. To może być zaletą, jeśli chcemy uzyskać bardziej “typowy” obraz zmienności, mniej zniekształcony przez rzadkie, ekstremalne zdarzenia.</li>
+<li><strong>Intuicyjność:</strong> Jest bardziej intuicyjne w interpretacji, ponieważ przedstawia “przeciętne” odchylenie od średniej. Łatwiej jest wyjaśnić, że “średnie odchylenie wynosi X” niż “pierwiastek z średniej kwadratów odchyleń wynosi X”.</li>
+<li><strong>Własności matematyczne:</strong> Posiada mniej pożądane własności matematyczne niż odchylenie standardowe. Funkcja wartości bezwzględnej nie jest różniczkowalna w punkcie 0, co znacząco komplikuje jego zastosowanie w zaawansowanych modelach statystycznych i optymalizacyjnych, które często opierają się na metodach gradientowych. Z tego powodu MAD jest rzadziej wykorzystywane w praktyce rynkowej i akademickiej do budowy kompleksowych modeli ryzyka.</li>
+</ul></li>
+</ul>
+<p><strong>Podsumowanie porównania:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 43%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Cecha</th>
+<th style="text-align: left;">Odchylenie Standardowe (<span class="math inline">\(\sigma\)</span>)</th>
+<th style="text-align: left;">Odchylenie Przeciętne (MAD)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Wrażliwość na Outliery</strong></td>
+<td style="text-align: left;">Wysoka (kwadratowe odchylenia)</td>
+<td style="text-align: left;">Niższa (bezwzględne odchylenia)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Własności Mat.</strong></td>
+<td style="text-align: left;">Dobre, używane w optymalizacji portfela (wariancja addytywna, różniczkowalność)</td>
+<td style="text-align: left;">Gorsze (funkcja wartości bezwzględnej nie jest różniczkowalna)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Powszechność użycia</strong></td>
+<td style="text-align: left;">Bardzo powszechne w finansach (teoria portfela, CAPM)</td>
+<td style="text-align: left;">Rzadziej używane w praktyce rynkowej</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Interpretacja</strong></td>
+<td style="text-align: left;">Mniej intuicyjna (jednostki kwadratowe)</td>
+<td style="text-align: left;">Bardziej intuicyjna (przeciętne odchylenie)</td>
+</tr>
+</tbody>
+</table>
+<p>W praktyce rynkowej i akademickiej, odchylenie standardowe jest zdecydowanie preferowaną miarą ryzyka ze względu na jego lepsze własności matematyczne, które pozwalają na rozwój bardziej złożonych modeli ryzyka i optymalizacji portfela. Mimo to, w niektórych kontekstach, zwłaszcza w analizach, gdzie prostota interpretacji i mniejsza wrażliwość na ekstremalne, rzadkie zdarzenia są pożądane, MAD może znaleźć zastosowanie. <em>Źródło: Podstawy statystyki i ekonometrii, np. podręczniki J. Woś, W. Kufel. Dodatkowe informacje na temat miar ryzyka w finansach można znaleźć w publikacjach CFA Institute: <a href="https://www.cfainstitute.org/">www.cfainstitute.org</a></em></p>
+<hr>
+</section>
+<section id="scharakteryzuj-czas-trwania-duration-jako-miernik-ryzyka-stopy-procentowej.-wyjaśnij-dlaczego-duration-jest-uznawane-za-konserwatywną-miarę-ryzyka." class="level3">
+<h3 class="anchored" data-anchor-id="scharakteryzuj-czas-trwania-duration-jako-miernik-ryzyka-stopy-procentowej.-wyjaśnij-dlaczego-duration-jest-uznawane-za-konserwatywną-miarę-ryzyka.">3. Scharakteryzuj czas trwania (duration) jako miernik ryzyka stopy procentowej. Wyjaśnij dlaczego duration jest uznawane za konserwatywną miarę ryzyka.</h3>
+<p><strong>Czas trwania (Duration)</strong> jest kluczową miarą wrażliwości ceny instrumentu dłużnego (np. obligacji) na zmiany stóp procentowych. Jest to miara, która łączy w sobie zarówno termin zapadalności obligacji, jak i strukturę jej przepływów pieniężnych (kuponów). Istnieją dwie główne koncepcje duration: Macaulay Duration i Modified Duration.</p>
+<p><strong>Macaulay Duration (<span class="math inline">\(D_{Mac}\)</span>)</strong></p>
+<p>Macaulay Duration jest średnią ważoną okresów, w których otrzymywane są przepływy pieniężne z obligacji, gdzie wagami są zdyskontowane wartości tych przepływów w stosunku do bieżącej ceny obligacji. Jest to miara wyrażona w latach i może być interpretowana jako efektywny termin zapadalności obligacji, uwzględniający wszystkie płatności.</p>
+<ul>
+<li><p><strong>Wzór:</strong></p>
+<p><span class="math display">\[D_{Mac} = \frac{\sum_{t=1}^{N} t \cdot \frac{CF_t}{(1+y)^t}}{P}\]</span></p>
+<p>gdzie:</p>
+<ul>
+<li><span class="math inline">\(t\)</span> to okres, w którym następuje przepływ pieniężny (np. rok, półrocze)</li>
+<li><span class="math inline">\(CF_t\)</span> to przepływ pieniężny (kupon lub wykup) w okresie <span class="math inline">\(t\)</span></li>
+<li><span class="math inline">\(y\)</span> to stopa dochodu do wykupu (yield to maturity, YTM) dla danego okresu</li>
+<li><span class="math inline">\(P\)</span> to bieżąca cena obligacji</li>
+<li><span class="math inline">\(N\)</span> to liczba okresów do wykupu</li>
+</ul></li>
+</ul>
+<p><strong>Modified Duration (<span class="math inline">\(D_{Mod}\)</span>)</strong></p>
+<p>Modified Duration jest bardziej praktyczną miarą wrażliwości ceny obligacji na zmianę stopy dochodu do wykupu. Przybliża procentową zmianę ceny obligacji dla danej zmiany stopy dochodu do wykupu. Jest to miara, która bezpośrednio wskazuje, o ile procent zmieni się cena obligacji, jeśli YTM zmieni się o jeden punkt procentowy (100 punktów bazowych).</p>
+<ul>
+<li><p><strong>Wzór:</strong></p>
+<p><span class="math display">\[D_{Mod} = \frac{D_{Mac}}{1 + \frac{y}{k}}\]</span></p>
+<p>gdzie:</p>
+<ul>
+<li><span class="math inline">\(y\)</span> to <strong>annualizowana</strong> stopa dochodu do wykupu (yield to maturity, YTM)</li>
+<li><span class="math inline">\(k\)</span> to liczba okresów płatności kuponów w roku (np. 2 dla płatności półrocznych, 1 dla płatności rocznych).</li>
+<li>W uproszczeniu, dla stopy ciągłej lub rocznej kapitalizacji: <span class="math inline">\(D_{Mod} = \frac{D_{Mac}}{1+y}\)</span>.</li>
+</ul></li>
+<li><p><strong>Interpretacja:</strong></p>
+<p><span class="math display">\[\% \Delta P \approx -D_{Mod} \times \Delta y\]</span></p>
+<p>gdzie:</p>
+<ul>
+<li><span class="math inline">\(\% \Delta P\)</span> to procentowa zmiana ceny obligacji</li>
+<li><span class="math inline">\(\Delta y\)</span> to zmiana stopy dochodu do wykupu (w ułamku dziesiętnym, np. 0.01 dla 1% lub 100 punktów bazowych)</li>
+<li>Znak minus wskazuje na odwrotną zależność między ceną obligacji a stopą dochodu do wykupu.</li>
+</ul></li>
+</ul>
+<p><strong>Wyjaśnienie Yield to Maturity (YTM):</strong></p>
+<p><strong>Yield to Maturity (YTM)</strong>, czyli stopa dochodu do wykupu, to całkowita stopa zwrotu, jaką inwestor może oczekiwać od obligacji, jeśli utrzyma ją do terminu wykupu, a wszystkie płatności kuponowe zostaną reinwestowane po tej samej stopie. Jest to zdyskontowana stopa, która zrównuje bieżącą cenę obligacji z sumą zdyskontowanych przyszłych przepływów pieniężnych (płatności kuponowych i kapitału w terminie wykupu). YTM jest często traktowana jako miara efektywnej stopy procentowej obligacji i jest kluczowym wskaźnikiem do porównywania różnych obligacji o różnych kuponach i terminach zapadalności. Jest to również stopa, która jest używana do dyskontowania przepływów pieniężnych w celu obliczenia Macaulay Duration.</p>
+<p><strong>Dlaczego duration jest uznawane za konserwatywną miarę ryzyka?</strong></p>
+<p>Duration jest uznawane za konserwatywną miarę ryzyka z kilku powodów, wynikających głównie z jej charakteru jako <strong>liniowej aproksymacji</strong> nieliniowej zależności między ceną obligacji a stopą procentową. Ta nieliniowość jest kluczowa i jest opisywana przez miarę zwaną <strong>konweksyjnością (convexity)</strong>.</p>
+<ol type="1">
+<li><p><strong>Liniowa aproksymacja nieliniowej zależności:</strong> Duration zakłada liniową zależność między zmianą stopy procentowej a zmianą ceny obligacji. W rzeczywistości, zależność ta jest nieliniowa i wypukła (konweksyjna), co oznacza, że krzywa ceny w funkcji stopy procentowej jest wygięta, a nie prosta.</p>
+<ul>
+<li>Dla małych zmian stóp procentowych, duration jest dobrym przybliżeniem. Jednak dla <strong>dużych zmian stóp procentowych</strong>, liniowa aproksymacja staje się mniej dokładna.</li>
+<li><strong>W przypadku spadku stóp procentowych:</strong> Rzeczywisty wzrost ceny obligacji jest <strong>większy</strong> niż przewiduje duration. Liniowa aproksymacja niedoszacowuje potencjalnych zysków. Dzieje się tak, ponieważ w miarę spadku stóp, duration obligacji rośnie, co zwiększa jej wrażliwość na dalsze spadki stóp.</li>
+<li><strong>W przypadku wzrostu stóp procentowych:</strong> Rzeczywisty spadek ceny obligacji jest <strong>mniejszy</strong> niż przewiduje duration. Liniowa aproksymacja przeszacowuje potencjalne straty. Wzrost stóp procentowych powoduje spadek duration, co zmniejsza wrażliwość obligacji na dalsze wzrosty stóp.</li>
+<li>Zatem, duration <strong>niedoszacowuje korzyści</strong> ze spadku stóp i <strong>przecenia straty</strong> ze wzrostu stóp. To sprawia, że jest ona “konserwatywna” w sensie, że nie daje pełnego obrazu potencjalnych zysków ani strat w ekstremalnych scenariuszach, co może prowadzić do nadmiernie ostrożnych decyzji.</li>
+</ul></li>
+<li><p><strong>Brak uwzględnienia konweksyjności:</strong> Wypukłość (convexity) to miara drugiego rzędu, która koryguje błąd aproksymacji duration. Konweksyjność mierzy, jak szybko zmienia się duration wraz ze zmianą stóp procentowych. Im większa konweksyjność, tym większa jest różnica między rzeczywistą zmianą ceny a zmianą przewidywaną przez duration. Ponieważ duration ignoruje konweksyjność, jest to miara “konserwatywna” w tym sensie, że nie uwzględnia pełnego zakresu potencjalnych zmian cen, szczególnie tych korzystnych, które wynikają z wypukłości. W praktyce, obligacje o wyższej konweksyjności są bardziej pożądane, ponieważ oferują większe zyski przy spadku stóp i mniejsze straty przy wzroście stóp niż obligacje o niższej konweksyjności, co jest dla inwestora korzystnym zjawiskiem.</p></li>
+<li><p><strong>Założenie o równoległych przesunięciach krzywej dochodowości:</strong> Duration zakłada, że cała krzywa dochodowości przesuwa się równolegle (wszystkie stopy procentowe dla różnych terminów zapadalności zmieniają się o tę samą wartość). W rzeczywistości, zmiany stóp procentowych rzadko są równoległe; często obserwuje się skręty (twist) lub spłaszczenia (flattening/steepening) krzywej dochodowości, gdzie krótkoterminowe stopy mogą zmieniać się bardziej niż długoterminowe, lub odwrotnie. To uproszczenie wprowadza dodatkowy błąd do estymacji ryzyka, zwłaszcza dla portfeli z rozłożonymi terminami zapadalności, ponieważ różne segmenty krzywej dochodowości mogą reagować odmiennie na czynniki makroekonomiczne.</p></li>
+</ol>
+<p>W praktyce, aby uzyskać dokładniejszą estymację wrażliwości ceny obligacji na zmiany stóp procentowych, analitycy często używają duration w połączeniu z konweksyjnością:</p>
+<p><span class="math display">\[\% \Delta P \approx -D_{Mod} \times \Delta y + \frac{1}{2} \times Convexity \times (\Delta y)^2\]</span></p>
+<p>Podsumowując, duration jest konserwatywną miarą, ponieważ jej liniowa natura prowadzi do niedoszacowania potencjalnych zysków i przeszacowania potencjalnych strat w przypadku dużych zmian stóp procentowych, a także ignoruje efekt konweksyjności i złożoność ruchów krzywej dochodowości. Mimo to, jest to niezwykle użyteczne narzędzie do zarządzania ryzykiem stopy procentowej, zwłaszcza dla małych zmian stóp, i stanowi fundament dla bardziej zaawansowanych modeli ryzyka. <em>Źródło: Z. Jędrzejczyk, “Ryzyko finansowe i jego pomiar”, PWE 2008. Dodatkowe informacje: <a href="https://corporatefinanceinstitute.com/resources/fixed-income/duration/">Corporate Finance Institute - Duration</a></em></p>
+<hr>
+</section>
+<section id="scharakteryzuj-expected-shortfall-jako-miarę-ryzyka.-na-czym-polega-jej-przewaga-nad-miarą-var." class="level3">
+<h3 class="anchored" data-anchor-id="scharakteryzuj-expected-shortfall-jako-miarę-ryzyka.-na-czym-polega-jej-przewaga-nad-miarą-var.">4. Scharakteryzuj Expected Shortfall jako miarę ryzyka. Na czym polega jej przewaga nad miarą VaR.</h3>
+<p><strong>Expected Shortfall (ES)</strong>, znany również jako Conditional Value at Risk (CVaR) lub Average Value at Risk (AVaR), jest miarą ryzyka, która kwantyfikuje średnią oczekiwaną stratę, która wystąpi, jeśli strata przekroczy wartość VaR na danym poziomie ufności. Innymi słowy, ES odpowiada na pytanie: “Jeśli już poniesiemy stratę przekraczającą VaR, to jak duża będzie ta strata średnio?”. Jest to miara, która dostarcza bardziej kompleksowego obrazu ryzyka niż VaR, szczególnie w kontekście ekstremalnych zdarzeń.</p>
+<ul>
+<li><strong>Definicja:</strong> Dla danego poziomu ufności <span class="math inline">\(\alpha\)</span> (np. 95% lub 99%), Expected Shortfall to oczekiwana wartość strat, które są większe niż VaR na tym samym poziomie <span class="math inline">\(\alpha\)</span>. <span class="math display">\[ES_{\alpha} = E[L | L &gt; VaR_{\alpha}]\]</span> gdzie:
+<ul>
+<li><span class="math inline">\(L\)</span> to zmienna losowa reprezentująca stratę portfela</li>
+<li><span class="math inline">\(VaR_{\alpha}\)</span> to Value at Risk na poziomie ufności <span class="math inline">\(\alpha\)</span>, czyli kwantyl rozkładu strat.</li>
+</ul></li>
+<li><strong>Charakterystyka:</strong>
+<ul>
+<li><strong>Miara ogona rozkładu (Tail Risk):</strong> ES koncentruje się na “ogonie” rozkładu strat, czyli na ekstremalnych, rzadziej występujących, ale potencjalnie bardzo dużych stratach. Jest to kluczowe w zarządzaniu ryzykiem, ponieważ największe straty często pochodzą z tych rzadkich, ale katastrofalnych zdarzeń, które mogą zagrozić stabilności całej instytucji. ES dostarcza informacji o skali tych “najgorszych scenariuszy”.</li>
+<li><strong>Koherentna miara ryzyka:</strong> W przeciwieństwie do VaR (którego koherencja jest warunkowa i często nie jest spełniana w praktyce, zwłaszcza dla portfeli zawierających instrumenty pochodne lub dla rozkładów o “grubych ogonach”), ES jest koherentną miarą ryzyka, co oznacza, że spełnia cztery aksjomaty koherencji (zdefiniowane przez Artznera i in.):
+<ol type="1">
+<li><strong>Monotoniczność:</strong> Jeśli portfel <span class="math inline">\(X\)</span> zawsze generuje mniejsze lub równe straty niż portfel <span class="math inline">\(Y\)</span>, to miara ryzyka dla <span class="math inline">\(X\)</span> jest mniejsza lub równa niż dla <span class="math inline">\(Y\)</span>. Oznacza to, że bardziej ryzykowne portfele są oceniane jako takie.</li>
+<li><strong>Translacyjna niezmienniczość:</strong> Dodanie bezryzykowego aktywa o wartości <span class="math inline">\(k\)</span> do portfela zmniejsza miarę ryzyka o <span class="math inline">\(k\)</span>. Oznacza to, że miara ryzyka poprawnie odzwierciedla wolne środki dostępne do pokrycia strat.</li>
+<li><strong>Pozytywna jednorodność:</strong> Pomnożenie portfela przez stałą <span class="math inline">\(c &gt; 0\)</span> powoduje, że miara ryzyka również jest pomnożona przez <span class="math inline">\(c\)</span>. Odzwierciedla skalę inwestycji – większa inwestycja powinna wiązać się z proporcjonalnie większym ryzykiem.</li>
+<li><strong>Subaddytywność:</strong> Ryzyko połączonego portfela jest mniejsze lub równe sumie ryzyk poszczególnych portfeli (ryzyko dywersyfikacji). Jest to kluczowa własność, której VaR nie zawsze spełnia. Brak subaddytywności VaR oznacza, że dywersyfikacja może pozornie zwiększać ryzyko, co jest sprzeczne z podstawowymi zasadami zarządzania portfelem i zdrowym rozsądkiem finansowym. Subaddytywność ES promuje dywersyfikację jako narzędzie redukcji ryzyka.</li>
+</ol></li>
+</ul></li>
+</ul>
+<p><strong>Przewaga Expected Shortfall nad VaR:</strong></p>
+<ol type="1">
+<li><p><strong>Koherencja (Subaddytywność):</strong> To najważniejsza przewaga. Jak wspomniano, VaR nie zawsze jest subaddytywny, zwłaszcza w przypadku portfeli z nieliniowymi instrumentami (np. opcjami) lub w warunkach rynkowych o “grubych ogonach”. Oznacza to, że VaR połączonego portfela może być większy niż suma VaR poszczególnych portfeli, co zniechęca do dywersyfikacji. ES zawsze spełnia warunek subaddytywności, co czyni go bardziej odpowiednim do optymalizacji portfela i alokacji kapitału, ponieważ promuje dywersyfikację jako sposób na redukcję ryzyka. Jest to kluczowe w kontekście regulacyjnym, gdzie banki są zachęcane do dywersyfikacji swoich ekspozycji w celu zwiększenia stabilności systemu finansowego.</p></li>
+<li><p><strong>Ujęcie ryzyka ogona (Tail Risk):</strong> VaR informuje jedynie o maksymalnej stracie, która nie zostanie przekroczona z danym prawdopodobieństwem (np. 99% VaR = 1 mln USD oznacza, że z 1% prawdopodobieństwem strata przekroczy 1 mln USD), ale nic nie mówi o wielkości strat, które przekroczą tę wartość. Może to być 1,1 mln USD, ale równie dobrze 10 mln USD, a nawet 100 mln USD, co w praktyce czyni VaR niewystarczającym w przypadku naprawdę ekstremalnych zdarzeń. ES idzie o krok dalej, kwantyfikując średnią wielkość tych ekstremalnych strat. W ten sposób ES dostarcza pełniejszego obrazu ryzyka, szczególnie w przypadku zdarzeń o “grubych ogonach” (fat tails), które są charakterystyczne dla rynków finansowych (np. kryzysy finansowe, “czarne łabędzie”, czyli nieprzewidywalne, rzadkie wydarzenia o ogromnym wpływie). Właśnie te rzadkie, ale katastrofalne zdarzenia są najbardziej interesujące dla zarządzających ryzykiem, ponieważ mogą doprowadzić do upadku instytucji.</p></li>
+<li><p><strong>Lepsze dla optymalizacji:</strong> Ze względu na swoją koherencję i własność wypukłości (convexity), ES jest łatwiejszy do optymalizacji niż VaR. Minimalizacja ES jest problemem wypukłym, co ułatwia znajdowanie globalnego optimum w problemach alokacji kapitału i zarządzania portfelem, ponieważ funkcja celu jest “dobrze zachowująca się” (nie ma wielu lokalnych minimów). Minimalizacja VaR jest często problemem niewypukłym i nieciągłym, co utrudnia znalezienie optymalnego rozwiązania i może prowadzić jedynie do lokalnych minimów, co jest dużym utrudnieniem w praktycznym zastosowaniu.</p></li>
+<li><p><strong>Bardziej stabilny:</strong> ES jest zazwyczaj bardziej stabilny w estymacji niż VaR, ponieważ uśrednia wartości z ogona rozkładu, co zmniejsza wpływ pojedynczych, ekstremalnych obserwacji. Estymacja VaR, jako kwantylu, może być bardziej wrażliwa na pojedyncze, skrajne wartości w danych historycznych, co prowadzi do większej zmienności w czasie i utrudnia porównywanie wyników.</p></li>
+</ol>
+<p>Mimo że VaR jest nadal szeroko stosowany ze względu na swoją prostotę i długą historię, ES zyskuje na znaczeniu jako preferowana miara ryzyka, zwłaszcza w kontekście regulacyjnym. Bazylejski Komitet Nadzoru Bankowego (BCBS) w ramach <strong>Fundamental Review of the Trading Book (FRTB)</strong> w Bazylei III zaleca stosowanie ES jako podstawowej miary ryzyka rynkowego dla portfeli handlowych, zastępując dotychczasowe wykorzystanie VaR. Podkreśla to uznanie dla ES jako bardziej kompleksowego i odpornego narzędzia do zarządzania ryzykiem ekstremalnym. <em>Źródło: P. Jorion, “Value at Risk: The New Benchmark for Managing Financial Risk”, McGraw-Hill. Dodatkowe informacje o ES i VaR: <a href="https://www.investopedia.com/articles/investing/012915/expected-shortfall-vs-var.asp">Investopedia - Expected Shortfall vs.&nbsp;VaR</a></em></p>
+<hr>
+</section>
+<section id="w-jaki-sposób-można-zbudować-portfel-o-ujemnym-czasie-trwania-duration-i-przed-jakim-rodzajem-ryzyka-taki-portfel-zabezpiecza" class="level3">
+<h3 class="anchored" data-anchor-id="w-jaki-sposób-można-zbudować-portfel-o-ujemnym-czasie-trwania-duration-i-przed-jakim-rodzajem-ryzyka-taki-portfel-zabezpiecza">5. W jaki sposób można zbudować portfel o ujemnym czasie trwania (duration) i przed jakim rodzajem ryzyka taki portfel zabezpiecza?</h3>
+<p><strong>Portfel o ujemnym czasie trwania (Negative Duration Portfolio)</strong> to portfel aktywów i/lub pasywów, którego wartość rośnie, gdy stopy procentowe rosną, i maleje, gdy stopy procentowe spadają. Jest to odwrotność zachowania typowych instrumentów dłużnych (takich jak obligacje o stałym oprocentowaniu), których ceny spadają wraz ze wzrostem stóp procentowych i rosną wraz ze spadkiem stóp. Budowa takiego portfela jest kluczowa w strategiach zabezpieczających przed ryzykiem stopy procentowej, szczególnie dla instytucji, które posiadają znaczące ekspozycje na stałe stopy procentowe.</p>
+<p><strong>Jak zbudować portfel o ujemnym duration:</strong></p>
+<p>Budowa portfela o ujemnym duration wymaga zastosowania strategii, które generują zyski w środowisku rosnących stóp procentowych. Główne metody to:</p>
+<ol type="1">
+<li><strong>Sprzedaż krótka (short selling) długoterminowych obligacji:</strong>
+<ul>
+<li>Strategia polega na pożyczeniu długoterminowych obligacji (które z natury mają wysokie, dodatnie duration) i natychmiastowej ich sprzedaży na rynku. Inwestor oczekuje, że stopy procentowe wzrosną, co spowoduje spadek cen tych obligacji. Następnie obligacje są odkupywane po niższej cenie i zwracane pożyczkodawcy, generując zysk z różnicy cen. Ponieważ pozycja krótka na obligacjach o dodatnim duration efektywnie tworzy ujemną ekspozycję na zmiany stóp procentowych, cały portfel zyskuje ujemne duration. Jest to prosta, ale niosąca ryzyko płynności strategia, gdyż znalezienie odpowiednich obligacji do pożyczenia i możliwość ich odkupienia w przyszłości po niższej cenie nie zawsze są gwarantowane.</li>
+</ul></li>
+<li><strong>Wykorzystanie instrumentów pochodnych na stopy procentowe:</strong> Instrumenty pochodne są często najbardziej efektywnym i elastycznym sposobem na uzyskanie ujemnego duration, ponieważ pozwalają na precyzyjne dostosowanie ekspozycji na zmiany stóp procentowych bez konieczności fizycznego posiadania bazowych instrumentów dłużnych. Pozwalają one na znacznie większą dźwignię finansową, co oznacza, że mniejszy kapitał początkowy może zabezpieczyć większą ekspozycję.
+<ul>
+<li><strong>Interest Rate Swaps (IRS):</strong> W IRS dwie strony wymieniają się przepływami odsetkowymi w oparciu o ustaloną wartość nominalną. Aby uzyskać ujemne duration (czyli zyskać na wzroście stóp), należy zawrzeć swap typu <strong>“płać stałą stopę, otrzymuj zmienną stopę” (Pay Fixed, Receive Floating)</strong>.
+<ul>
+<li>Gdy rynkowe stopy procentowe (np. LIBOR, EURIBOR, SOFR) rosną, zmienne płatności, które otrzymujesz, zwiększają się, podczas gdy stałe płatności, które ponosisz, pozostają niezmienione. To generuje dodatni przepływ pieniężny dla posiadacza swapu, a tym samym zwiększa wartość swapu. Wzrost wartości swapu w odpowiedzi na wzrost stóp procentowych przekłada się na efektywne ujemne duration dla tej pozycji. Jest to typowa strategia banków, które mają aktywa o stałym oprocentowaniu (np. kredyty hipoteczne) i pasywa o zmiennym oprocentowaniu (np. depozyty).</li>
+</ul></li>
+<li><strong>Kontrakty Futures/Forward na obligacje:</strong> Sprzedaż kontraktów futures lub forward na długoterminowe obligacje. Wzrost stóp procentowych spowoduje spadek cen bazowych obligacji, co z kolei obniży wartość kontraktów futures/forward. Pozycja krótka na tych kontraktach przyniesie zysk, co efektywnie nadaje portfelowi ujemne duration. Jest to często wykorzystywane przez zarządzających portfelami do szybkiego dostosowania duration.</li>
+<li><strong>Opcje na stopy procentowe (Interest Rate Options):</strong> Opcje oferują asymetryczną strukturę zysków i strat, co czyni je elastycznym narzędziem hedgingowym.
+<ul>
+<li><strong>Opcje put na obligacje:</strong> Zakup opcji put na obligacje. Wzrost stóp procentowych obniża cenę obligacji, zwiększając wewnętrzną wartość opcji put (prawo do sprzedaży po wyższej cenie wykonania), co przynosi zysk.</li>
+<li><strong>Opcje call na stopy procentowe:</strong> Zakup opcji call na stopy procentowe lub swaptions. Wzrost stóp procentowych zwiększa wartość opcji call na stopy procentowe (prawo do ustalenia wyższej stopy).</li>
+<li><strong>Swaptions (Opcje na swapy):</strong> Są to opcje dające posiadaczowi prawo, ale nie obowiązek, do zawarcia w przyszłości określonego swapu stopy procentowej. Aby uzyskać ujemne duration, można kupić swaption, który daje prawo do zawarcia swapu typu <strong>“płać zmienną, otrzymuj stałą” (Receive Fixed, Pay Floating)</strong>. Wartość tego swaptionu wzrośnie wraz ze wzrostem stóp procentowych, ponieważ możliwość zabezpieczenia się przed dalszymi wzrostami stóp staje się cenniejsza. Alternatywnie, można sprzedać swaption, który daje prawo do zawarcia swapu typu “płać stałą, otrzymuj zmienną” (Pay Fixed, Receive Floating), ponieważ spadek jego wartości (zysk dla sprzedającego opcję) nastąpi wraz ze wzrostem stóp.</li>
+<li><strong>Interest Rate Caps (Capy):</strong> Są to serie opcji call na stopy procentowe, które chronią kupującego przed wzrostem stóp procentowych powyżej określonego poziomu (strike rate). Cap działa jak ubezpieczenie od wzrostu stóp procentowych. Kupujący cap otrzymuje płatność, gdy zmienna stopa referencyjna (np. LIBOR) przekroczy uzgodnioną stopę maksymalną. Posiadanie capów generuje zyski, gdy stopy procentowe rosną, co efektywnie nadaje portfelowi ujemne duration w zakresie wzrostu stóp. Capy są szczególnie użyteczne dla podmiotów z zobowiązaniami o zmiennym oprocentowaniu (np. kredyty o zmiennej stopie), które chcą ograniczyć swoje ryzyko wzrostu kosztów.</li>
+</ul></li>
+</ul></li>
+<li><strong>Obligacje o zmiennym oprocentowaniu (Floating Rate Notes, FRN) z ujemnym spreadem lub Inverse Floaters:</strong>
+<ul>
+<li><strong>Inverse Floaters:</strong> Są to obligacje, których kupon porusza się w odwrotnym kierunku do stóp rynkowych (np. Kupon = <span class="math inline">\(X - Y \times\)</span> LIBOR). Gdy LIBOR rośnie, kupon maleje, a cena obligacji spada. Ze względu na tę odwrotną zależność, ich duration jest często ujemne. Są to instrumenty bardziej złożone i rzadziej spotykane na rynku.</li>
+<li><strong>FRN z ujemnym spreadem:</strong> Rzadziej spotykane, ale teoretycznie możliwe konstrukcje FRN, które reagują negatywnie na wzrost stóp, choć ich duration jest zazwyczaj bliskie zeru.</li>
+</ul></li>
+</ol>
+<p><strong>Przed jakim rodzajem ryzyka taki portfel zabezpiecza?</strong></p>
+<p>Portfel o ujemnym czasie trwania zabezpiecza przede wszystkim przed <strong>ryzykiem wzrostu stóp procentowych (Interest Rate Risk - Rising Rates)</strong>.</p>
+<ul>
+<li>Wzrost stóp procentowych zazwyczaj powoduje spadek wartości tradycyjnych, długoterminowych instrumentów dłużnych (o dodatnim duration), co prowadzi do strat kapitałowych dla ich posiadaczy. Dzieje się tak, ponieważ istniejące obligacje o niższym oprocentowaniu stają się mniej atrakcyjne w porównaniu do nowo emitowanych obligacji z wyższymi kuponami.</li>
+<li>Portfel o ujemnym duration jest skonstruowany tak, aby generować zyski na wzroście stóp procentowych. Te zyski mają na celu kompensację strat poniesionych na innych aktywach w portfelu (np. na posiadanych obligacjach o dodatnim duration, kredytach o stałym oprocentowaniu) lub na zobowiązaniach (np. gdy bank ma stałe oprocentowanie na aktywach i zmienne na pasywach, wzrost stóp zwiększa koszt finansowania depozytów).</li>
+</ul>
+<p>Jest to kluczowa strategia dla instytucji, które są narażone na ryzyko wzrostu stóp procentowych, np.: * <strong>Banki</strong> posiadające duże portfele <strong>kredytów o stałym oprocentowaniu</strong> (ich wartość rynkowa spada, gdy stopy rosną, a bank musi płacić więcej za pozyskanie depozytów o zmiennym oprocentowaniu). * <strong>Fundusze emerytalne i firmy ubezpieczeniowe</strong> z długoterminowymi zobowiązaniami, których zdyskontowana wartość wzrasta wraz ze spadkiem stóp, ale koszty ich obsługi mogą wzrosnąć w miarę wzrostu stóp. * <strong>Firmy</strong> z dużym zadłużeniem o zmiennym oprocentowaniu, które chcą zabezpieczyć się przed wzrostem kosztów obsługi długu.</p>
+<p>Poprzez dodanie aktywów lub pozycji pochodnych o ujemnym duration, można zimmunizować portfel przed niekorzystnymi ruchami stóp procentowych, stabilizując jego wartość lub przepływy pieniężne. Jest to forma <strong>hedgingu</strong>, która ma na celu zminimalizowanie niepewności związanej ze zmianami stóp procentowych. <em>Źródło: F. Fabozzi, “Fixed Income Analysis”, CFA Institute Investment Series. Dodatkowe informacje o duration i strategiach zarządzania ryzykiem stopy procentowej: <a href="https://corporatefinanceinstitute.com/resources/fixed-income/duration/">Corporate Finance Institute - Duration</a></em></p>
+<hr>
+</section>
+<section id="scharakteryzuj-strategię-dopasowania-przepływów-pieniężnych-jako-metodę-zarządzania-ryzykiem-stóp-procentowych." class="level3">
+<h3 class="anchored" data-anchor-id="scharakteryzuj-strategię-dopasowania-przepływów-pieniężnych-jako-metodę-zarządzania-ryzykiem-stóp-procentowych.">6. Scharakteryzuj strategię dopasowania przepływów pieniężnych jako metodę zarządzania ryzykiem stóp procentowych.</h3>
+<p><strong>Strategia dopasowania przepływów pieniężnych (Cash Flow Matching)</strong> jest pasywną, ale niezwykle skuteczną metodą zarządzania ryzykiem stóp procentowych, która ma na celu <strong>immunizację portfela</strong> przed ryzykiem zmian stóp procentowych poprzez precyzyjne dopasowanie przyszłych przepływów pieniężnych z aktywów do przyszłych zobowiązań. W przeciwieństwie do bardziej dynamicznych strategii opartych na duration, cash flow matching dąży do całkowitego wyeliminowania ryzyka reinwestycji i ryzyka cenowego poprzez dokładne synchronizowanie wpływów i wypływów gotówki.</p>
+<p><strong>Charakterystyka strategii:</strong></p>
+<ol type="1">
+<li><p><strong>Cel:</strong> Głównym celem jest zapewnienie, że instytucja będzie miała wystarczające środki finansowe w odpowiednim czasie, aby pokryć wszystkie swoje przyszłe, z góry określone zobowiązania, niezależnie od tego, jak zmienią się stopy procentowe na rynku. Jest to strategia “ustaw i zapomnij” w sensie, że po jej wdrożeniu nie wymaga ciągłych korekt ani rebalansowania, co redukuje koszty i złożoność zarządzania. Jej głównym zadaniem jest eliminacja niepewności co do przyszłych przepływów pieniężnych.</p></li>
+<li><p><strong>Mechanizm:</strong> Strategia polega na zakupie instrumentów dłużnych (np. obligacji zerokuponowych, obligacji kuponowych, czy nawet niestandardowych instrumentów dostosowanych do potrzeb), których terminy płatności kuponów i wykupu oraz ich wartości <strong>dokładnie odpowiadają</strong> terminom i wartościom przyszłych zobowiązań instytucji.</p>
+<ul>
+<li>Dla każdego przyszłego zobowiązania (np. płatności emerytalnej, spłaty długu korporacyjnego, wypłaty odszkodowania ubezpieczeniowego, kosztów operacyjnych w przyszłości) identyfikuje się odpowiedni instrument finansowy (lub kombinację instrumentów), który wygeneruje przepływ pieniężny o tej samej wartości i w tym samym terminie.</li>
+<li>Jeśli zobowiązania są rozłożone w czasie (co jest typowe dla funduszy emerytalnych czy firm ubezpieczeniowych), tworzy się portfel obligacji z różnymi terminami zapadalności i strukturami kuponowymi, tak aby suma przepływów pieniężnych z aktywów w każdym okresie była równa lub większa niż zobowiązania w tym okresie. Proces ten często rozpoczyna się od najdalszych zobowiązań i cofa się w czasie, aby zoptymalizować wykorzystanie przepływów kuponowych w taki sposób, by minimalizować nadwyżki gotówki.</li>
+</ul></li>
+<li><p><strong>Pasywne zarządzanie:</strong> Po skonstruowaniu portfela, zarządzanie jest minimalne. Nie wymaga ciągłego monitorowania i rebalansowania portfela w odpowiedzi na zmiany stóp procentowych, w przeciwieństwie do strategii immunizacji duration, która wymaga regularnego rebalansowania (ponieważ duration portfela zmienia się w czasie i wraz ze zmianami stóp). W cash flow matching, przepływy pieniężne są z góry ustalone i nie zależą od przyszłych stóp, co czyni ją odporną na ich wahania.</p></li>
+<li><p><strong>Brak ryzyka reinwestycji i ryzyka cenowego:</strong></p>
+<ul>
+<li><strong>Ryzyko reinwestycji:</strong> Zostaje praktycznie wyeliminowane, ponieważ otrzymane przepływy pieniężne są bezpośrednio wykorzystywane do pokrycia zobowiązań, a nie reinwestowane po niepewnych przyszłych stopach rynkowych. To jest kluczowa przewaga nad strategiami duration, które zakładają reinwestycję kuponów po rynkowej stopie, która może być niższa niż oczekiwano.</li>
+<li><strong>Ryzyko cenowe:</strong> Zostaje wyeliminowane, ponieważ obligacje w portfelu są utrzymywane do terminu wykupu, a ich bieżące ceny rynkowe stają się mniej istotne. Zmiany cen rynkowych obligacji w portfelu nie mają wpływu na zdolność instytucji do pokrycia zobowiązań, o ile obligacje zostaną utrzymane do wykupu i emitent nie zbankrutuje.</li>
+</ul></li>
+</ol>
+<p><strong>Zalety:</strong></p>
+<ul>
+<li><strong>Prostota i przejrzystość:</strong> Koncepcja jest stosunkowo łatwa do zrozumienia i wdrożenia, zwłaszcza dla prostych struktur zobowiązań. Jej logiczność jest intuicyjna, co ułatwia komunikację z interesariuszami.</li>
+<li><strong>Wysoka skuteczność immunizacji:</strong> Jest to jedna z najbardziej skutecznych metod eliminacji ryzyka stopy procentowej, ponieważ nie opiera się na aproksymacjach (jak duration), lecz na bezpośrednim dopasowaniu przepływów pieniężnych. Zapewnia niemal całkowitą pewność pokrycia przyszłych zobowiązań, co jest kluczowe dla instytucji o ściśle określonych płatnościach.</li>
+<li><strong>Minimalne zarządzanie po wdrożeniu:</strong> Po początkowej konstrukcji portfela, wymaga niewielkich interwencji, co obniża koszty zarządzania w dłuższej perspektywie w porównaniu do aktywnych strategii hedgingowych.</li>
+</ul>
+<p><strong>Wady:</strong></p>
+<ul>
+<li><strong>Wysokie koszty transakcyjne:</strong> Znalezienie i zakup precyzyjnie dopasowanych instrumentów dla każdego zobowiązania może być kosztowne, zwłaszcza jeśli zobowiązania są liczne, rozłożone w czasie i o nieregularnych wartościach. Rynek może nie oferować idealnie dopasowanych obligacji, co zmusza do zakupu instrumentów o zbliżonych terminach i wartościach, co może generować nadwyżki gotówki (i w konsekwencji ryzyko reinwestycji nadwyżek) lub niedobory.</li>
+<li><strong>Ograniczona elastyczność:</strong> Strategia jest bardzo sztywna. Wszelkie zmiany w harmonogramie zobowiązań (np. wcześniejsze spłaty kredytów, nowe zobowiązania, zmiany w prognozach wypłat emerytalnych, czy nawet opcje call/put w obligacjach) wymagają całkowitej przebudowy portfela, co jest kosztowne i czasochłonne. Może to być problematyczne dla zobowiązań o niepewnym harmonogramie.</li>
+<li><strong>Trudność w znalezieniu idealnych dopasowań:</strong> Na rynku może być trudno znaleźć instrumenty dłużne, które idealnie pasują do wszystkich przyszłych zobowiązań pod względem terminu i wartości. Może to wymagać zakupu większej liczby instrumentów niż jest to ściśle konieczne, co zwiększa koszty i może obniżyć efektywność kapitałową portfela. Obligacje zerokuponowe są idealne do cash flow matching, ale ich dostępność na wszystkie terminy zapadalności jest ograniczona.</li>
+<li><strong>Wymaga znacznego kapitału początkowego:</strong> Zazwyczaj wymaga zainwestowania dużej kwoty kapitału na początku, aby pokryć wszystkie przyszłe zobowiązania, co może być wyzwaniem dla instytucji z ograniczonymi środkami. W przeciwieństwie do duration matching, nie można wykorzystać reinwestycji kuponów do zmniejszenia początkowej inwestycji.</li>
+</ul>
+<p>Strategia dopasowania przepływów pieniężnych jest często stosowana przez instytucje z długoterminowymi i przewidywalnymi zobowiązaniami, takie jak fundusze emerytalne, firmy ubezpieczeniowe (zwłaszcza te oferujące renty dożywotnie i inne długoterminowe polisy) oraz rządy (w zarządzaniu długiem publicznym), gdzie pewność pokrycia przyszłych płatności jest absolutnym priorytetem, a elastyczność ma mniejsze znaczenie w porównaniu do pewności finansowej. <em>Źródło: Z. Jędrzejczyk, “Zarządzanie ryzykiem finansowym”, PWE 2011. Dodatkowe informacje o cash flow matching: <a href="https://corporatefinanceinstitute.com/resources/fixed-income/cash-flow-matching/">Corporate Finance Institute - Cash Flow Matching</a></em></p>
+<hr>
+</section>
+<section id="scharakteryzuj-wskaźnik-altmana.-jaki-rodzaj-ryzyka-mierzy-ten-wskaźnik." class="level3">
+<h3 class="anchored" data-anchor-id="scharakteryzuj-wskaźnik-altmana.-jaki-rodzaj-ryzyka-mierzy-ten-wskaźnik.">7. Scharakteryzuj wskaźnik Altmana. Jaki rodzaj ryzyka mierzy ten wskaźnik.</h3>
+<p><strong>Wskaźnik Altmana (Altman Z-Score)</strong> to model statystyczny opracowany przez Edwarda I. Altmana w 1968 roku na podstawie analizy danych finansowych amerykańskich przedsiębiorstw przemysłowych. Służy on do prognozowania prawdopodobieństwa bankructwa przedsiębiorstwa w ciągu najbliższych dwóch lat. Jest to wielowymiarowy model dyskryminacyjny, który łączy pięć kluczowych wskaźników finansowych w jedną, zagregowaną wartość, pozwalając na kompleksową ocenę kondycji finansowej firmy. Model ten zdobył dużą popularność ze względu na swoją prostotę i relatywnie wysoką skuteczność.</p>
+<p><strong>Wzór (dla spółek publicznych):</strong></p>
+<p><span class="math display">\[Z = 1.2A + 1.4B + 3.3C + 0.6D + 1.0E\]</span></p>
+<p>gdzie: * <strong>A = Kapitał obrotowy / Aktywa ogółem</strong> (Working Capital / Total Assets) * <strong>Rationale:</strong> Mierzy płynność operacyjną i wielkość aktywów obrotowych w stosunku do całkowitych aktywów. Wskazuje na zdolność firmy do pokrywania bieżących zobowiązań z aktywów obrotowych, które szybko mogą zostać zamienione na gotówkę. Niski wskaźnik może sygnalizować problemy z płynnością krótkoterminową i wskazywać na potrzebę restrukturyzacji operacyjnej. * <strong>B = Zyski zatrzymane / Aktywa ogółem</strong> (Retained Earnings / Total Assets) * <strong>Rationale:</strong> Mierzy skumulowane zyski (lub straty) w stosunku do całkowitych aktywów. Jest to wskaźnik efektywności firmy w generowaniu zysków w dłuższym okresie i ich reinwestowaniu w rozwój lub spłatę zobowiązań. Ujemne lub bardzo niskie zyski zatrzymane wskazują, że firma ma długą historię nierentowności lub znacznych strat, co osłabia jej bazę kapitałową i zwiększa uzależnienie od zewnętrznego finansowania. * <strong>C = Zysk przed odsetkami i podatkami (EBIT) / Aktywa ogółem</strong> (Earnings Before Interest and Taxes / Total Assets) * <strong>Rationale:</strong> Mierzy efektywność operacyjną firmy w generowaniu zysków z jej aktywów, niezależnie od struktury finansowania (wpływ odsetek) i obciążeń podatkowych. Jest to kluczowy wskaźnik rentowności operacyjnej, wskazujący na zdolność aktywów do generowania dochodu. Wysoki wskaźnik C świadczy o efektywnym wykorzystaniu aktywów i silnej rentowności podstawowej działalności, co jest fundamentalne dla zdolności do obsługi długu. * <strong>D = Wartość rynkowa kapitału własnego / Zobowiązania ogółem</strong> (Market Value of Equity / Total Liabilities) * <strong>Rationale:</strong> Mierzy, ile aktywów firmy jest finansowanych przez kapitał własny (wartość rynkowa odzwierciedlająca oczekiwania inwestorów co do przyszłych zysków i stabilności firmy) w stosunku do długu. Jest to wskaźnik dźwigni finansowej i zdolności firmy do pokrycia swoich zobowiązań. Wysoka wartość rynkowa kapitału własnego w stosunku do długu wskazuje na silną pozycję finansową, niskie zadłużenie i zaufanie rynku, co jest kluczowe dla pozyskiwania dalszego finansowania. Niska wartość sugeruje wysokie zadłużenie i niskie zaufanie inwestorów. * <strong>E = Sprzedaż / Aktywa ogółem</strong> (Sales / Total Assets) * <strong>Rationale:</strong> Mierzy efektywność wykorzystania aktywów do generowania sprzedaży (tzw. wskaźnik rotacji aktywów). Niska wartość może wskazywać na nieefektywne zarządzanie aktywami, przestarzałe aktywa lub problemy ze sprzedażą produktów/usług firmy, co finalnie przekłada się na niższe zyski. Wysoki wskaźnik oznacza efektywne wykorzystanie zasobów do generowania przychodów.</p>
+<p><strong>Interpretacja wskaźnika Z-Score (dla spółek publicznych):</strong></p>
+<p>Altman zaproponował następujące strefy interpretacji, które są powszechnie stosowane:</p>
+<ul>
+<li><strong>Z &gt; 2.99:</strong> “<strong>Bezpieczna strefa</strong>” – niskie prawdopodobieństwo bankructwa. Firma jest w dobrej kondycji finansowej i wykazuje stabilność.</li>
+<li><strong>1.81 &lt; Z &lt; 2.99:</strong> “<strong>Szara strefa</strong>” – umiarkowane prawdopodobieństwo bankructwa. Firma wykazuje pewne symptomy problemów finansowych i wymaga monitorowania. Decyzje kredytowe wobec takiej firmy powinny być podejmowane z większą ostrożnością, a inwestorzy mogą żądać wyższej premii za ryzyko.</li>
+<li><strong>Z &lt; 1.81:</strong> “<strong>Strefa zagrożenia</strong>” – wysokie prawdopodobieństwo bankructwa w ciągu dwóch lat. Firma znajduje się w poważnych tarapatach finansowych, a ryzyko defaultu jest znaczące.</li>
+</ul>
+<p><strong>Jaki rodzaj ryzyka mierzy ten wskaźnik?</strong></p>
+<p>Wskaźnik Altmana mierzy przede wszystkim <strong>ryzyko kredytowe (Credit Risk)</strong>, a dokładniej <strong>ryzyko niewypłacalności (Default Risk)</strong> lub <strong>ryzyko bankructwa (Bankruptcy Risk)</strong> przedsiębiorstwa.</p>
+<p>Dostarcza on syntetycznej oceny kondycji finansowej firmy, wskazując na jej zdolność do generowania zysków, zarządzania aktywami i płynnością, oraz na jej strukturę kapitałową. Niski wynik Z-Score sygnalizuje, że firma ma słabą płynność (niski kapitał obrotowy), niską rentowność (niskie zyski zatrzymane i EBIT), wysoką dźwignię finansową (niska wartość rynkowa kapitału własnego w stosunku do długu) i/lub nieefektywnie wykorzystuje swoje aktywa (niska rotacja sprzedaży), co zwiększa ryzyko, że nie będzie w stanie spłacać swoich zobowiązań i w konsekwencji zbankrutuje.</p>
+<p>Wskaźnik ten jest szeroko używany przez banki do oceny zdolności kredytowej potencjalnych kredytobiorców, przez analityków kredytowych do monitorowania portfeli kredytowych i oceny kondycji dłużników, przez inwestorów do oceny ryzyka inwestycji w obligacje korporacyjne oraz przez zarządzających do wczesnego wykrywania problemów finansowych w swoich własnych firmach i podejmowania działań korygujących. Należy jednak pamiętać, że model Altmana został opracowany na danych z sektora przemysłowego i może wymagać modyfikacji dla innych sektorów (np. finansowego, usługowego) oraz dla firm prywatnych (gdzie brakuje wartości rynkowej kapitału własnego, stąd powstają modyfikacje takie jak Altman Z’-score). <em>Źródło: E.I. Altman, “Financial Ratios, Discriminant Analysis and the Prediction of Corporate Bankruptcy”, The Journal of Finance, Vol. 23, No.&nbsp;4 (Sep., 1968), pp.&nbsp;589-609. Dodatkowe informacje: <a href="https://www.investopedia.com/terms/a/altmanzscore.asp">Investopedia - Altman Z-Score</a></em></p>
+<hr>
+</section>
+<section id="wskaż-przynajmniej-dwa-wybrane-przejawy-ryzyka-kredytowego-dwa-rodzaje-zdarzeń-kredytowych-inne-niż-bankructwo." class="level3">
+<h3 class="anchored" data-anchor-id="wskaż-przynajmniej-dwa-wybrane-przejawy-ryzyka-kredytowego-dwa-rodzaje-zdarzeń-kredytowych-inne-niż-bankructwo.">8. Wskaż przynajmniej dwa wybrane przejawy ryzyka kredytowego (dwa rodzaje zdarzeń kredytowych), inne niż bankructwo.</h3>
+<p><strong>Ryzyko kredytowe</strong> to ryzyko, że dłużnik nie wywiąże się ze swoich zobowiązań finansowych, co spowoduje stratę dla wierzyciela. Chociaż bankructwo jest najbardziej radykalnym i ostatecznym przejawem ryzyka kredytowego, istnieje wiele innych zdarzeń kredytowych (credit events), które sygnalizują pogorszenie zdolności kredytowej dłużnika i mogą prowadzić do znaczących strat dla wierzycieli, zanim dojdzie do formalnego bankructwa. Te zdarzenia są często precyzyjnie definiowane w umowach kredytowych, emisjach obligacji oraz w instrumentach pochodnych (np. Credit Default Swaps), ponieważ ich wystąpienie może wywołać klauzule umowne lub aktywować zabezpieczenia.</p>
+<p>Poniżej dwa przykłady zdarzeń kredytowych innych niż bankructwo, wraz z ich konsekwencjami:</p>
+<ol type="1">
+<li><strong>Niewykonanie zobowiązania (Default) / Opóźnienie w płatności (Payment Default):</strong>
+<ul>
+<li>Jest to sytuacja, w której dłużnik nie dokonuje płatności odsetek lub kapitału w ustalonym terminie, zgodnie z warunkami umowy kredytowej, obligacji lub innego instrumentu dłużnego. Choć nie jest to jeszcze bankructwo (które zazwyczaj wiąże się z oficjalnym postępowaniem sądowym, np. ogłoszeniem upadłości lub likwidacją), jest to wyraźny i poważny sygnał problemów finansowych dłużnika oraz naruszenie umowy. Często umowy precyzują, po jakim czasie opóźnienia płatność jest traktowana jako default (np. po 30 dniach).</li>
+<li><strong>Konsekwencje dla wierzyciela:</strong> Opóźnienie w płatności może być krótkotrwałe (np. kilka dni), ale nawet takie może prowadzić do naliczania kar umownych i wzrostu kosztów. W przypadku dłuższego opóźnienia, default może skutkować wszczęciem procedur windykacyjnych, restrukturyzacji długu lub ostatecznie do bankructwa. Dla wierzyciela oznacza to utratę oczekiwanych przepływów pieniężnych, konieczność odpisów aktualizujących wartość należności w księgach oraz potencjalne straty kapitałowe. Ponadto, default jednej płatności może wywołać tzw. <strong>cross-default</strong>, czyli klauzule w innych umowach dłużnika, które automatycznie uznają go za niewypłacalnego również w stosunku do innych wierzycieli, znacząco pogarszając jego sytuację.</li>
+<li><strong>Przykład:</strong> Firma “Z” udzieliła bankowi kredytu w formie obligacji. Z powodu nagłych problemów z płynnością firma ta nie jest w stanie zapłacić kuponu od swoich obligacji w dniu jego wymagalności. Mimo że firma nadal prowadzi działalność, to zdarzenie jest uznawane za <em>payment default</em> i aktywuje klauzule w umowach z innymi kredytodawcami, które mogą żądać natychmiastowej spłaty całego długu.</li>
+</ul></li>
+<li><strong>Restrukturyzacja długu (Debt Restructuring):</strong>
+<ul>
+<li>To zmiana pierwotnych warunków umowy kredytowej lub obligacji, zazwyczaj inicjowana przez dłużnika w obliczu trudności finansowych, aby uniknąć bankructwa i umożliwić mu kontynuowanie działalności. Restrukturyzacja jest często wynikiem intensywnych negocjacji między dłużnikiem a jego wierzycielami. Może przyjąć różne formy i zazwyczaj wiąże się z ustępstwami ze strony wierzycieli, co oznacza dla nich stratę (częściową lub całkowitą) w stosunku do pierwotnych, korzystniejszych warunków.</li>
+<li><strong>Przykłady typowych zmian w restrukturyzacji:</strong>
+<ul>
+<li><strong>Obniżenie stopy procentowej:</strong> Zmniejszenie obciążeń odsetkowych dla dłużnika, co zmniejsza jego bieżące wydatki.</li>
+<li><strong>Wydłużenie terminu spłaty:</strong> Dłużnik ma więcej czasu na spłatę kapitału, co poprawia jego płynność i obniża roczne raty.</li>
+<li><strong>Odroczone płatności (deferral):</strong> Przesunięcie terminów płatności odsetek lub kapitału na późniejszy okres, dając dłużnikowi czas na poprawę sytuacji finansowej.</li>
+<li><strong>Częściowe umorzenie długu (haircut):</strong> Wierzyciele zgadzają się na umorzenie części kapitału długu. Jest to bezpośrednia, definitywna strata dla wierzyciela, często akceptowana w zamian za większe prawdopodobieństwo odzyskania pozostałej części.</li>
+<li><strong>Konwersja długu na kapitał własny (debt-to-equity swap):</strong> Wierzyciele zamieniają swoje roszczenia z tytułu długu na udziały w kapitale własnym dłużnika, stając się jego współwłaścicielami. Ma to na celu zmniejszenie obciążenia dłużnika długiem, ale dla wierzyciela oznacza zmianę formy roszczenia (z długu na kapitał własny, który jest bardziej ryzykowny) i często utratę części wartości.</li>
+</ul></li>
+<li><strong>Konsekwencje dla wierzyciela:</strong> Dla wierzyciela restrukturyzacja oznacza zazwyczaj zmniejszenie wartości odzyskiwanej z długu (recovery rate) w porównaniu do pierwotnych warunków. Jest to zdarzenie kredytowe, ponieważ wskazuje na istotne pogorszenie zdolności kredytowej dłużnika i konieczność modyfikacji warunków w celu uniknięcia jeszcze większych strat (np. z bankructwa). Jest to często preferowane rozwiązanie dla wierzycieli, jeśli pozwala uniknąć pełnej utraty kapitału w przypadku bankructwa dłużnika.</li>
+<li><strong>Przykład:</strong> Kraj Y, mający poważne problemy z obsługą zadłużenia publicznego, negocjuje z międzynarodowymi wierzycielami (bankami komercyjnymi, funduszami inwestycyjnymi, innymi państwami) wydłużenie terminów spłaty swoich obligacji i obniżenie oprocentowania. Wierzyciele zgadzają się na te ustępstwa, aby uniknąć niewykonania zobowiązania przez państwo, co mogłoby mieć jeszcze bardziej destabilizujące konsekwencje.</li>
+</ul></li>
+</ol>
+<p>Inne istotne przejawy ryzyka kredytowego, poza bankructwem, to m.in.: * <strong>Obniżenie ratingu kredytowego (Credit Rating Downgrade):</strong> Agencje ratingowe (np. Moody’s, S&amp;P, Fitch) obniżają ocenę zdolności kredytowej dłużnika. Choć nie jest to bezpośredni default, sygnalizuje to wzrost ryzyka defaultu i zazwyczaj prowadzi do wzrostu kosztów finansowania dla dłużnika oraz spadku wartości rynkowej jego długu, utrudniając pozyskanie nowego kapitału. * <strong>Naruszenie kowenantów (Covenant Breach):</strong> Dłużnik narusza określone warunki finansowe lub operacyjne zawarte w umowie kredytowej (tzw. kowenanty), np. nieutrzymanie określonego wskaźnika zadłużenia do EBITDA, nieosiągnięcie minimalnego poziomu płynności, przekroczenie limitów inwestycyjnych. Naruszenie kowenantów może skutkować natychmiastową wymagalnością całego długu (tzw. <em>acceleration clause</em>), co stawia dłużnika w sytuacji bliskiej defaultu. * <strong>Repudiacja/Moratorium (Repudiation/Moratorium):</strong> Odmowa dłużnika (często państwa) spłaty długu lub ogłoszenie tymczasowego zawieszenia płatności. Jest to jednostronne działanie, które jest równoznaczne z defaultem, nawet jeśli nie ma formalnego postępowania upadłościowego. <em>Źródło: Podręczniki z zakresu zarządzania ryzykiem kredytowym, np. J. C. Hull, “Risk Management and Financial Institutions”. Dodatkowe informacje: <a href="https://www.investopedia.com/terms/c/creditevent.asp">Investopedia - Credit Event</a></em></p>
+<hr>
+</section>
+<section id="zdefiniuj-i-scharakteryzuj-dwie-podstawowe-formy-ryzyka-płynności." class="level3">
+<h3 class="anchored" data-anchor-id="zdefiniuj-i-scharakteryzuj-dwie-podstawowe-formy-ryzyka-płynności.">9. Zdefiniuj i scharakteryzuj dwie podstawowe formy ryzyka płynności.</h3>
+<p><strong>Ryzyko płynności (Liquidity Risk)</strong> to fundamentalne ryzyko w sektorze finansowym, które odnosi się do zagrożenia, że instytucja finansowa nie będzie w stanie wywiązać się ze swoich krótkoterminowych zobowiązań finansowych w terminie i po rozsądnej cenie. Materializacja tego ryzyka może prowadzić do poważnych problemów finansowych, a nawet do bankructwa, nawet jeśli instytucja jest solventna długoterminowo (tj. jej aktywa przewyższają pasywa). Dzieje się tak, ponieważ brak gotówki do pokrycia bieżących wypłat uniemożliwia kontynuowanie działalności. Wyróżnia się dwie podstawowe, wzajemnie powiązane formy ryzyka płynności:</p>
+<ol type="1">
+<li><strong>Ryzyko płynności finansowania (Funding Liquidity Risk / Cash Flow Liquidity Risk):</strong>
+<ul>
+<li><strong>Definicja:</strong> Jest to ryzyko, że instytucja nie będzie w stanie pozyskać wystarczających środków finansowych (gotówki lub aktywów łatwo zamienialnych na gotówkę) w odpowiednim czasie i po rozsądnej cenie, aby pokryć swoje bieżące i przyszłe zobowiązania. Dotyczy to zdolności do generowania gotówki w celu zaspokojenia potrzeb finansowych wynikających z napływów i wypływów środków.</li>
+<li><strong>Charakterystyka:</strong>
+<ul>
+<li><strong>Źródło:</strong> Wynika z niedopasowania terminów zapadalności aktywów i pasywów (tzw. <em>maturity mismatch</em>, np. finansowanie długoterminowych kredytów krótkoterminowymi depozytami, które mogą być wycofane w dowolnym momencie), nagłych i nieoczekiwanych wypłat środków (np. masowe wycofywanie depozytów przez klientów w wyniku paniki lub utraty zaufania, tzw. <em>bank run</em>), niemożności rolowania krótkoterminowego zadłużenia (np. krótkoterminowych pożyczek międzybankowych, emisji krótkoterminowych papierów dłużnych), utraty dostępu do rynków finansowania (np. z powodu pogorszenia ratingu kredytowego banku) lub znacznego wzrostu kosztów pozyskania finansowania.</li>
+<li><strong>Skutki:</strong> Może prowadzić do konieczności sprzedaży aktywów po niekorzystnych cenach (tzw. <em>fire sale</em>), aby szybko pozyskać gotówkę, co generuje straty i może prowadzić do spadku wartości aktywów bilansowych. Długoterminowo może skutkować utratą reputacji, odpływem klientów i w skrajnych przypadkach do upadłości instytucji. W kontekście systemowym, problem jednego banku z płynnością finansowania może rozprzestrzenić się na cały system.</li>
+<li><strong>Zarządzanie:</strong> Wymaga utrzymywania odpowiednich buforów płynności (np. gotówki, wysokiej jakości płynnych aktywów, takich jak obligacje rządowe, które są łatwo zbywalne), dywersyfikacji źródeł finansowania (np. depozyty detaliczne, depozyty hurtowe, emisje długu, linie kredytowe od innych banków) oraz aktywnego monitorowania i prognozowania przepływów pieniężnych (tzw. <em>cash flow forecasting</em>). Banki często tworzą plany awaryjne (Contingency Funding Plans) na wypadek kryzysu płynności.</li>
+<li><strong>Przykład:</strong> Bank A jest silnie uzależniony od krótkoterminowych pożyczek na rynku międzybankowym. W wyniku nagłego kryzysu zaufania na rynku, inne banki odmawiają mu udzielenia pożyczek, co sprawia, że Bank A nie jest w stanie pokryć bieżących wypłat depozytów i musi sprzedawać swoje aktywa po znacznie zaniżonych cenach.</li>
+</ul></li>
+</ul></li>
+<li><strong>Ryzyko płynności rynkowej (Market Liquidity Risk / Asset Liquidity Risk):</strong>
+<ul>
+<li><strong>Definicja:</strong> Jest to ryzyko, że instytucja nie będzie w stanie szybko i efektywnie zrealizować transakcji na rynku (kupić lub sprzedać aktywa) po cenie zbliżonej do ostatniej ceny rynkowej, z powodu niewystarczającej głębokości lub szerokości rynku. Dotyczy to zdolności do szybkiej konwersji aktywów na gotówkę bez znaczącego wpływu na ich cenę.</li>
+<li><strong>Charakterystyka:</strong>
+<ul>
+<li><strong>Źródło:</strong> Wynika z niskiej płynności danego aktywa (np. instrumenty niestandardowe, duże pakiety akcji małych spółek, niestandardowe instrumenty pochodne, obligacje o niskim wolumenie obrotu), braku wystarczającej liczby kupujących lub sprzedających na rynku, wysokich spreadów bid-ask (różnicy między ceną kupna a ceną sprzedaży, która stanowi koszt transakcyjny), lub ogólnego załamania płynności na rynku (tzw. <em>flight to quality</em> w czasie kryzysu, gdy inwestorzy wycofują się z ryzykownych aktywów i koncentrują się na bezpiecznych, płynnych instrumentach).</li>
+<li><strong>Skutki:</strong> Może prowadzić do konieczności akceptowania znacznie niższych cen sprzedaży (lub wyższych cen zakupu) niż oczekiwano, co generuje straty transakcyjne i kapitałowe. Może również uniemożliwić instytucji zrealizowanie zaplanowanych strategii handlowych, zabezpieczających lub restrukturyzacyjnych, ponieważ niemożność wyjścia z pozycji lub wejścia w nią po rozsądnej cenie staje się barierą.</li>
+<li><strong>Zarządzanie:</strong> Wymaga regularnej oceny płynności posiadanych aktywów (np. poprzez analizę wolumenu obrotu, spreadów bid-ask, głębokości rynku), unikania nadmiernej koncentracji w aktywach o niskiej płynności oraz posiadania planów awaryjnych na wypadek spadku płynności rynkowej, w tym możliwości sekurytyzacji aktywów lub wykorzystania repo.</li>
+<li><strong>Przykład:</strong> Fundusz inwestycyjny musi szybko sprzedać duży pakiet akcji spółki notowanej na mniej płynnym rynku, aby sprostać żądaniom wykupu jednostek przez inwestorów. Ze względu na brak zainteresowania kupujących, fundusz jest zmuszony sprzedać akcje po cenie znacznie niższej niż ich ostatnia wycena, co generuje straty dla funduszu i jego klientów.</li>
+</ul></li>
+</ul></li>
+</ol>
+<p>Obie formy ryzyka płynności są ze sobą ściśle powiązane i często wzajemnie się wzmacniają, tworząc tzw. <strong>spiralę płynnościową</strong>. Problemy z płynnością finansowania (np. nagły odpływ depozytów) mogą zmusić instytucję do sprzedaży aktywów. Jeśli te aktywa są mało płynne lub rynek jest w stresie, bank ujawni ryzyko płynności rynkowej, co doprowadzi do sprzedaży po zaniżonych cenach, generując straty i obniżając współczynniki kapitałowe. To z kolei może jeszcze bardziej podważyć zaufanie i pogłębić problemy z płynnością finansowania. Skuteczne zarządzanie płynnością wymaga holistycznego podejścia do obu tych aspektów i uwzględnienia ich interakcji. <em>Źródło: Basel Committee on Banking Supervision (BCBS) - “Principles for Sound Liquidity Risk Management and Supervision”. Dodatkowe informacje: <a href="https://www.investopedia.com/terms/l/liquidityrisk.asp">Investopedia - Liquidity Risk</a></em></p>
+<hr>
+</section>
+<section id="co-mierzy-i-jak-należy-intepretować-wskaźnik-nsfr-net-stable-funding-ratio." class="level3">
+<h3 class="anchored" data-anchor-id="co-mierzy-i-jak-należy-intepretować-wskaźnik-nsfr-net-stable-funding-ratio.">10. Co mierzy i jak należy intepretować wskaźnik NSFR (Net Stable Funding Ratio).</h3>
+<p><strong>Wskaźnik NSFR (Net Stable Funding Ratio)</strong>, czyli Wskaźnik Stabilnego Finansowania Netto, jest kluczowym wskaźnikiem płynności wprowadzonym w ramach regulacji <strong>Bazylea III</strong> przez Bazylejski Komitet Nadzoru Bankowego (BCBS). Jego głównym celem jest zapewnienie, że banki utrzymują wystarczającą ilość stabilnego finansowania, aby pokryć swoje długoterminowe aktywa i działalność pozabilansową. Ma to na celu zmniejszenie ryzyka płynności finansowania w horyzoncie długoterminowym (ponad jeden rok) i strukturalne wzmocnienie bilansów banków, aby były mniej podatne na przyszłe kryzysy finansowe.</p>
+<p><strong>Co mierzy NSFR:</strong></p>
+<p>NSFR mierzy stosunek <strong>dostępnego stabilnego finansowania (Available Stable Funding, ASF)</strong> do <strong>wymaganego stabilnego finansowania (Required Stable Funding, RSF)</strong> w horyzoncie jednego roku. Wskaźnik ten ma na celu promowanie strukturalnej stabilności finansowania banków poprzez zapewnienie, że banki finansują swoje długoterminowe aktywa i zobowiązania pozabilansowe stabilnymi źródłami, które są mniej podatne na nagłe wycofanie w warunkach rynkowych napięć.</p>
+<ul>
+<li><strong>Dostępne Stabilne Finansowanie (ASF):</strong> Obejmuje te komponenty bilansu i pozycji pozabilansowych, które są uznawane za stabilne źródła finansowania na horyzoncie jednego roku lub dłużej. Wartości poszczególnych pozycji są ważone współczynnikami stabilności (stable funding factors), odzwierciedlającymi ich trwałość i odporność na wycofanie w warunkach stresowych. Im dłuższy termin zapadalności i bardziej stabilne źródło finansowania, tym wyższa waga przypisana do ASF.
+<ul>
+<li><strong>Przykłady i ich wagi (przykładowe):</strong>
+<ul>
+<li><strong>Kapitał własny banku:</strong> (np. kapitał zakładowy, zyski zatrzymane, rezerwy) - waga 100% (najbardziej stabilne źródło).</li>
+<li><strong>Zobowiązania długoterminowe:</strong> (np. wyemitowane obligacje z terminem zapadalności powyżej 1 roku, długoterminowe kredyty bankowe) - waga 100% (jeśli termin zapadalności jest bardzo długi, np. &gt;5 lat) lub niższe wagi (np. 50% dla terminów 6 miesięcy - 1 rok).</li>
+<li><strong>Depozyty klientów:</strong> Ich stabilność zależy od typu depozytu i relacji z klientem.
+<ul>
+<li><strong>Depozyty detaliczne (np. oszczędnościowe, bieżące):</strong> często stabilne, szczególnie te ubezpieczone i te, które nie są operacyjnie powiązane z dużymi firmami (waga 90-95%).</li>
+<li><strong>Depozyty operacyjne (firm, które muszą utrzymywać środki w banku do rozliczeń):</strong> również wysoka waga (np. 85-90%).</li>
+<li><strong>Depozyty hurtowe (od dużych firm, innych banków):</strong> niższa waga (np. 50% lub 0% dla bardzo krótkoterminowych), ponieważ są mniej stabilne i bardziej podatne na szybkie wycofanie.</li>
+</ul></li>
+<li><strong>Inne zobowiązania:</strong> (np. pożyczki od innych instytucji finansowych z terminem zapadalności powyżej 1 roku) - wagi zależne od terminu i kontrahenta.</li>
+</ul></li>
+</ul></li>
+<li><strong>Wymagane Stabilne Finansowanie (RSF):</strong> Odzwierciedla zapotrzebowanie na stabilne finansowanie, wynikające z posiadanych aktywów oraz pozycji pozabilansowych. Wartości aktywów i pozycji pozabilansowych są ważone współczynnikami (required stable funding factors), które odzwierciedlają ich płynność, długość terminu utrzymywania w bilansie banku oraz ryzyko. Aktywa o dłuższym terminie zapadalności, niższej płynności lub wyższym ryzyku wymagają większego stabilnego finansowania.
+<ul>
+<li><strong>Przykłady i ich wagi (przykładowe):</strong>
+<ul>
+<li><strong>Gotówka i rezerwy w banku centralnym:</strong> 0% RSF (są to najbardziej płynne aktywa, nie wymagają dodatkowego stabilnego finansowania).</li>
+<li><strong>Wysokiej jakości płynne aktywa (HQLA):</strong> (np. obligacje rządowe o wysokim ratingu) - niskie RSF, np. 5-10%, ponieważ są łatwo zbywalne.</li>
+<li><strong>Kredyty dla klientów:</strong> (np. kredyty hipoteczne, kredyty korporacyjne) - wymagają wysokiego RSF, np. 65-85%, ponieważ są długoterminowe i mniej płynne.</li>
+<li><strong>Aktywa o bardzo niskiej płynności:</strong> (np. nieruchomości, udziały w spółkach zależnych, inwestycje w infrastrukturę) - 100% RSF.</li>
+<li><strong>Instrumenty pochodne i pozycje pozabilansowe:</strong> (np. niewykorzystane linie kredytowe, gwarancje, zobowiązania wynikające z transakcji finansowania papierów wartościowych) - również generują zapotrzebowanie na RSF, w zależności od ich charakteru i prawdopodobieństwa aktywacji w warunkach stresu.</li>
+</ul></li>
+</ul></li>
+</ul>
+<p><strong>Wzór NSFR:</strong></p>
+<p><span class="math display">\[NSFR = \frac{\text{Dostępne Stabilne Finansowanie (ASF)}}{\text{Wymagane Stabilne Finansowanie (RSF)}} \ge 100\%\]</span></p>
+<p><strong>Jak należy interpretować wskaźnik NSFR:</strong></p>
+<ul>
+<li><strong>NSFR <span class="math inline">\(\ge 100\%\)</span>:</strong> Oznacza, że bank posiada wystarczającą ilość dostępnego stabilnego finansowania, aby pokryć swoje wymagane stabilne finansowanie. Jest to minimalny wymóg regulacyjny, który wszedł w życie 1 stycznia 2018 r. dla większości jurysdykcji. Banki dążą do utrzymywania NSFR powyżej 100%, co świadczy o ich stabilności finansowej, odporności na szoki płynnościowe i zdolności do finansowania długoterminowych aktywów za pomocą stabilnych źródeł. Wyższy wskaźnik oznacza większą odporność na potencjalne kryzysy płynnościowe. Organy nadzoru monitorują ten wskaźnik, aby upewnić się, że banki są odpowiednio przygotowane na długoterminowe wyzwania.</li>
+<li><strong>NSFR <span class="math inline">\(&lt; 100\%\)</span>:</strong> Oznacza, że bank nie posiada wystarczającej ilości stabilnego finansowania w stosunku do swoich aktywów i działalności pozabilansowej. Taka sytuacja sygnalizuje podwyższone ryzyko płynności finansowania, ponieważ bank jest nadmiernie uzależniony od krótkoterminowego, niestabilnego finansowania. W przypadku trudności na rynkach finansowania, bank może mieć problem z rolowaniem długu lub pozyskaniem nowych środków, co może prowadzić do problemów z płynnością, konieczności sprzedaży aktywów po zaniżonych cenach i utraty zaufania. Niski NSFR może prowadzić do interwencji regulacyjnych i narzucenia dodatkowych wymogów kapitałowych lub płynnościowych.</li>
+</ul>
+<p><strong>Cel i znaczenie NSFR:</strong></p>
+<p>Głównym celem wprowadzenia NSFR jest:</p>
+<ul>
+<li><strong>Zwiększenie długoterminowej stabilności finansowania banków:</strong> Poprzez promowanie finansowania aktywów długoterminowych stabilnymi źródłami, NSFR zmniejsza ryzyko niedopasowania terminów zapadalności między aktywami a pasywami, które było jednym z kluczowych czynników kryzysu finansowego w 2008 roku.</li>
+<li><strong>Zmniejszenie zależności od krótkoterminowego finansowania hurtowego:</strong> Wskaźnik ten zniechęca banki do nadmiernego polegania na niestabilnych, wrażliwych na wahania rynkowe źródłach finansowania (np. krótkoterminowych pożyczkach międzybankowych), które mogą szybko zniknąć w czasie kryzysu finansowego.</li>
+<li><strong>Poprawa odporności na szoki finansowania:</strong> Wzmacnia zdolność banków do przetrwania okresów stresu rynkowego, gdy dostęp do finansowania jest ograniczony lub jego koszt gwałtownie wzrasta, bez konieczności interwencji publicznych.</li>
+<li><strong>Wspieranie zdrowych praktyk zarządzania płynnością:</strong> Zachęca banki do bardziej ostrożnego i konserwatywnego zarządzania strukturą bilansu i źródłami finansowania, promując długoterminowe i stabilne źródła kapitału oraz minimalizując ryzykowne strategie finansowania.</li>
+</ul>
+<p>NSFR jest uzupełnieniem innego kluczowego wskaźnika płynności z Bazylei III – Wskaźnika Pokrycia Płynności (Liquidity Coverage Ratio, LCR), który koncentruje się na krótkoterminowej (30-dniowej) odporności na szoki płynnościowe. Podczas gdy LCR zapewnia, że bank ma wystarczające płynne aktywa, aby przetrwać krótkotrwały kryzys, NSFR ma szerszy horyzont (1 rok) i koncentruje się na strukturalnej stabilności finansowania banku, zapewniając, że jego długoterminowa działalność jest odpowiednio finansowana. Razem, te dwa wskaźniki tworzą kompleksowy zestaw narzędzi regulacyjnych do zarządzania ryzykiem płynności. <em>Źródło: Basel Committee on Banking Supervision (BCBS) - “Basel III: The Net Stable Funding Ratio”. Pełna dokumentacja: <a href="https://www.bis.org/bcbs/publ/d295.pdf">www.bis.org/bcbs/publ/d295.pdf</a></em></p>
+
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/bwrob\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright 2025, bwrob. Rendered with Quarto 1.7.32</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
