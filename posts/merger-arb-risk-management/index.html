@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="bwrob">
+<meta name="dcterms.date" content="2025-07-04">
+<meta name="description" content="How to manage market risk of merger arbitrage portfolios?">
+
+<title>Risk Management of Merger Arbitrage Portfolios – bwrob blog</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../logo/python_mug.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-234273d1456647dabc34a594ac50e507.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-0348920b7671f696dc9078d39bff215e.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-27bdcad6e2c5129c4a00b00c00aa65cc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-cb82ce53a18555e556235c4f85a8b6c9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="bwrob blog">
+<meta property="og:description" content="bwrob personal and professional blog">
+<meta property="og:image" content="https://bwrob.github.io/posts/merger-arb-risk-management/merger_arb.png">
+<meta property="og:site_name" content="bwrob blog">
+<meta property="og:image:height" content="2048">
+<meta property="og:image:width" content="2048">
+<meta name="twitter:title" content="bwrob blog">
+<meta name="twitter:description" content="bwrob personal and professional blog">
+<meta name="twitter:image" content="https://bwrob.github.io/posts/merger-arb-risk-management/merger_arb.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image-height" content="2048">
+<meta name="twitter:image-width" content="2048">
+</head>
+
+<body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = true;
+    const darkModeDefault = authorPrefersDark;
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../logo/python_mug.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">bwrob blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> <i class="bi bi-cpu" role="img">
+</i> 
+<span class="menu-text">Posts</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../pages/resume.html"> <i class="bi bi-file-earmark-text" role="img">
+</i> 
+<span class="menu-text">Resume</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../pages/teaching.html"> <i class="bi bi-tablet-landscape" role="img">
+</i> 
+<span class="menu-text">Teaching</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../pages/hobbies.html"> <i class="bi bi-controller" role="img">
+</i> 
+<span class="menu-text">Hobbies</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/bartoszmwroblewski/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/bwrob/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Risk Management of Merger Arbitrage Portfolios</h1>
+                  <div>
+        <div class="description">
+          How to manage market risk of merger arbitrage portfolios?
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Financial Markets</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>bwrob </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 4, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#merger-arbitrage" id="toc-merger-arbitrage" class="nav-link active" data-scroll-target="#merger-arbitrage">Merger Arbitrage</a>
+  <ul class="collapse">
+  <li><a href="#arbitrageurs-in-financial-markets" id="toc-arbitrageurs-in-financial-markets" class="nav-link" data-scroll-target="#arbitrageurs-in-financial-markets">Arbitrageurs in Financial Markets</a></li>
+  <li><a href="#mergers-and-acquisitions" id="toc-mergers-and-acquisitions" class="nav-link" data-scroll-target="#mergers-and-acquisitions">Mergers and Acquisitions</a></li>
+  <li><a href="#sec:merger_arbitrage" id="toc-sec:merger_arbitrage" class="nav-link" data-scroll-target="#sec\:merger_arbitrage">Merger Arbitrage</a></li>
+  <li><a href="#sec:merger_arbitrage_risk_and_return" id="toc-sec:merger_arbitrage_risk_and_return" class="nav-link" data-scroll-target="#sec\:merger_arbitrage_risk_and_return">Risk and Return</a></li>
+  </ul></li>
+  <li><a href="#ch:risk_management" id="toc-ch:risk_management" class="nav-link" data-scroll-target="#ch\:risk_management">Risk Management</a>
+  <ul class="collapse">
+  <li><a href="#general-risk-management-metrics" id="toc-general-risk-management-metrics" class="nav-link" data-scroll-target="#general-risk-management-metrics">General Risk Management Metrics</a></li>
+  <li><a href="#the-case-of-merger-arbitrage" id="toc-the-case-of-merger-arbitrage" class="nav-link" data-scroll-target="#the-case-of-merger-arbitrage">The Case of Merger Arbitrage</a></li>
+  </ul></li>
+  <li><a href="#exposure-limits-and-expected-losses" id="toc-exposure-limits-and-expected-losses" class="nav-link" data-scroll-target="#exposure-limits-and-expected-losses">Exposure Limits and Expected Losses</a>
+  <ul class="collapse">
+  <li><a href="#estimation-of-probabilities-of-closing" id="toc-estimation-of-probabilities-of-closing" class="nav-link" data-scroll-target="#estimation-of-probabilities-of-closing">Estimation of Probabilities of Closing</a></li>
+  <li><a href="#estimating-severity-of-loss" id="toc-estimating-severity-of-loss" class="nav-link" data-scroll-target="#estimating-severity-of-loss">Estimating severity of loss</a></li>
+  <li><a href="#calculating-exposure-limits-and-expected-losses" id="toc-calculating-exposure-limits-and-expected-losses" class="nav-link" data-scroll-target="#calculating-exposure-limits-and-expected-losses">Calculating Exposure Limits and Expected Losses</a></li>
+  </ul></li>
+  <li><a href="#stress-testing" id="toc-stress-testing" class="nav-link" data-scroll-target="#stress-testing">Stress Testing</a>
+  <ul class="collapse">
+  <li><a href="#merger-arbitrage-as-a-short-put-option" id="toc-merger-arbitrage-as-a-short-put-option" class="nav-link" data-scroll-target="#merger-arbitrage-as-a-short-put-option">Merger Arbitrage as a Short Put Option</a></li>
+  <li><a href="#the-practice-of-stress-testing" id="toc-the-practice-of-stress-testing" class="nav-link" data-scroll-target="#the-practice-of-stress-testing">The Practice of Stress Testing</a></li>
+  </ul></li>
+  <li><a href="#option-pricing" id="toc-option-pricing" class="nav-link" data-scroll-target="#option-pricing">Option Pricing</a>
+  <ul class="collapse">
+  <li><a href="#options-on-ma-targets" id="toc-options-on-ma-targets" class="nav-link" data-scroll-target="#options-on-ma-targets">Options on M&amp;A Targets</a></li>
+  <li><a href="#option-pricing-on-stocks-involved-in-ma" id="toc-option-pricing-on-stocks-involved-in-ma" class="nav-link" data-scroll-target="#option-pricing-on-stocks-involved-in-ma">Option Pricing on Stocks Involved in M&amp;A</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a>
+  <ul class="collapse">
+  <li><a href="#books" id="toc-books" class="nav-link" data-scroll-target="#books">Books</a></li>
+  <li><a href="#articles" id="toc-articles" class="nav-link" data-scroll-target="#articles">Articles</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="merger_arb.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%"></p>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This post is a reprint of my graduate thesis for postgraduate studies in Investment Banking at the Warsaw School of Economics.</p>
+</div>
+</div>
+<section id="merger-arbitrage" class="level2">
+<h2 class="anchored" data-anchor-id="merger-arbitrage">Merger Arbitrage</h2>
+<p>Financial markets serve as a meeting place where a diverse range of participants interacts through trading. The two primary entities being traded are capital and risk. Capital represents the money exchanged for the expectation of a future return, while risk embodies the uncertainty associated with that return.</p>
+<section id="arbitrageurs-in-financial-markets" class="level3">
+<h3 class="anchored" data-anchor-id="arbitrageurs-in-financial-markets">Arbitrageurs in Financial Markets</h3>
+<p>Market participants can be categorized based on their motivations for engaging in markets:</p>
+<ul>
+<li><p><em>Speculators</em> – They are willing to assume risk with the goal of generating a profit. They adopt a positional view on the assets and instruments they acquire or sell. This category encompasses a wide array of participants, ranging from specialized investment funds to individual investors saving for retirement.</p></li>
+<li><p><em>Hedgers</em> – Their aim is to mitigate their existing risk exposure. They may be consumers or producers of the underlying asset, or speculators seeking to adjust their risk profile.</p></li>
+<li><p><em>Market makers</em> – They provide liquidity, profiting from the bid-ask spread, deal premiums, fees, and commissions.</p></li>
+<li><p><em>Arbitrageurs</em> – They aim to capitalize on price discrepancies between different markets or instruments. They do not have a positional view on the market but try to identify and exploit inefficiencies in the market.</p></li>
+</ul>
+<p>Among these four groups, arbitrageurs are often considered the most sophisticated market participants. The <em>efficient market hypothesis</em> assumes that market prices reflect all available information. However, markets are not always perfectly efficient. Situations arise where temporary inefficiencies occur, stemming from various sources such as information asymmetry, transaction costs, or behavioral biases. Arbitrageurs seek to exploit these inefficiencies to generate a profit. This is typically achieved by simultaneously buying and selling related assets in different markets or instruments, capitalizing on the price discrepancies.</p>
+</section>
+<section id="mergers-and-acquisitions" class="level3">
+<h3 class="anchored" data-anchor-id="mergers-and-acquisitions">Mergers and Acquisitions</h3>
+<p>Mergers and acquisitions (M&amp;A) is a general term that refers to the consolidation of companies or assets through various types of financial transactions. A merger is a term used to describe the combination of two companies into a single entity, while an acquisition refers to the purchase of one company by another. The motive for both is that consolidation would create synergies, which would lead to increased efficiency and profitability. This includes:</p>
+<ul>
+<li><p><strong>Increased market share</strong> – Companies increase their market share and gain a competitive advantage.</p></li>
+<li><p><strong>Economies of scale</strong> – Larger companies can achieve economies of scale, reducing costs and increasing profitability.</p></li>
+<li><p><strong>Diversification</strong> – Companies can diversify their product lines and reduce risk by entering new markets.</p></li>
+<li><p><strong>Horizontal integration</strong> – Companies acquire players upstream or downstream in the supply chain, increasing their control over the production process.</p></li>
+<li><p><strong>Access to new technology</strong> – Companies can acquire new technology or intellectual property, enhancing their competitive position.</p></li>
+</ul>
+</section>
+<section id="sec:merger_arbitrage" class="level3">
+<h3 class="anchored" data-anchor-id="sec:merger_arbitrage">Merger Arbitrage</h3>
+<p>Merger arbitrage is an investment strategy that involves trading in the stocks of companies involved in mergers and acquisitions (M&amp;A). There are two main types of M&amp;A transactions – <em>cash offers</em> and <em>stock (or share-for-share) offers</em>. The basic investment premise of an arbitrageur in each of those can follow these hypothetical scenarios:</p>
+<ul>
+<li><p><strong>Cash offer</strong> – Company <span class="math inline">\(A\)</span>, the <em>buyer</em>, announces an acquisition of company <span class="math inline">\(B\)</span>, the <em>target</em>, for a cash payment of <span class="math inline">\(\$30\)</span> per share. The last trading price of company <span class="math inline">\(B\)</span> was <span class="math inline">\(\$20\)</span>. After the announcement, the price of company <span class="math inline">\(B\)</span> rises to <span class="math inline">\(\$28\)</span>. There is still a <span class="math inline">\(\$2\)</span> <em>spread</em> between the current price and the acquisition price. This represents the risk that the acquisition may not be completed. Merger-arbitrage traders will buy shares of company <span class="math inline">\(B\)</span> at <span class="math inline">\(\$28\)</span> and wait for the acquisition to be completed. They would pocket the <span class="math inline">\(\$2\)</span> spread if the acquisition is successful.</p></li>
+<li><p><strong>Stock offer</strong> – Company <span class="math inline">\(A\)</span> announces an acquisition of company <span class="math inline">\(B\)</span> for a share-for-share exchange with a ratio of <span class="math inline">\(0.25\)</span>. This means that <span class="math inline">\(A\)</span> is offering to exchange one of its shares for four shares of company <span class="math inline">\(B\)</span>. The last trading price of company <span class="math inline">\(B\)</span> was <span class="math inline">\(15\%\)</span> of the price of company <span class="math inline">\(A\)</span>. After the announcement, the price of company <span class="math inline">\(B\)</span> rises to <span class="math inline">\(22\%\)</span> of the price of company <span class="math inline">\(A\)</span>. Merger-arbitrage traders will buy shares of company <span class="math inline">\(B\)</span> at <span class="math inline">\(22\%\)</span> of the price of company <span class="math inline">\(A\)</span> and at the same time short a quarter of the equivalent amount of shares of company <span class="math inline">\(A\)</span>. They would pocket the <span class="math inline">\(3\%\)</span> spread if the acquisition is successful.</p></li>
+</ul>
+<p>Merger arbitrage is a popular strategy among hedge funds and institutional investors, as it can provide attractive risk-adjusted returns. It hinges on the investor’s ability to accurately assess the likelihood of a merger or acquisition being completed successfully. This requires a deep understanding of the regulatory environment, the motivations of the companies involved, and the potential impact on their stock prices. Institutional arbitrageurs, like hedge funds, are often present in the courtroom during the merger process. They analyze the legal documents, financial statements, attend hearings, and compare the particular merger with similar transactions in the past. F</p>
+</section>
+<section id="sec:merger_arbitrage_risk_and_return" class="level3">
+<h3 class="anchored" data-anchor-id="sec:merger_arbitrage_risk_and_return">Risk and Return</h3>
+<p>The main components crucial for evaluating an investment are:</p>
+<ul>
+<li><p><strong>Expected return</strong> – The expected return is the average return that an investor can expect to earn from an investment over a specific period of time.</p></li>
+<li><p><strong>Time horizon</strong> – The time horizon is the period of time over which an investor expects to hold an investment before selling it.</p></li>
+<li><p><strong>Risk</strong> – Risk is the uncertainty associated with the expected return of an investment, often measured by the standard deviation of the returns.</p></li>
+</ul>
+<p>After a merger announcement, the volatility of the target company decreases after the initial spike. Another way to think about it is that the portfolio of the arbitrageur is not a portfolio of stocks but a portfolio of merger spreads. The decreased risk and market neutrality make even a more modest return attractive.</p>
+<p>The arbitrageur needs to be wary of the time horizon of the investment, as the merger may take a long time to be completed. In such a case, the spread they managed to capture may underperform the risk-free rate over that period. Historically, the average merger arbitrage spread has been around <span class="math inline">\(5\%\)</span> to <span class="math inline">\(10\%\)</span> per year, depending on market conditions and the specific deals involved. The source of this surplus return is explained by other sources of risk, as we’ll see in the next post.</p>
+</section>
+</section>
+<section id="ch:risk_management" class="level2">
+<h2 class="anchored" data-anchor-id="ch:risk_management">Risk Management</h2>
+<p>A cornerstone of modern finance is the principle that risk can be quantified, analyzed, managed, and traded. The primary concepts employed in risk quantification are volatility and correlation. However, in the context of merger arbitrage, these concepts, and the metrics derived from them as cornerstones of modern portfolio theory, have limited applicability. This is largely due to the relatively uncorrelated nature of the merger arbitrage strategy. The goal of pursuing such strategies is to generate alpha, which exhibits low correlation with broader market movements. While this can be a significant advantage, particularly during periods of market instability, it also presents a unique set of challenges for risk management.</p>
+<section id="general-risk-management-metrics" class="level3">
+<h3 class="anchored" data-anchor-id="general-risk-management-metrics">General Risk Management Metrics</h3>
+<p>When a risk officer assesses the risk of an investment portfolio, they employ a range of metrics to quantify that risk. A key consideration is the portfolio’s target return, which directly influences the risk appetite, i.e., the amount of risk the portfolio manager is willing to assume. The most common risk metrics used in the industry include:</p>
+<ul>
+<li><p><strong>Sensitivities</strong> – These metrics measure how the value of a portfolio changes in response to changes in underlying factors. The most common sensitivities are the Greeks, which quantify the sensitivity of the portfolio value to changes in underlying asset prices, interest rates, and volatility. There are also more structured measures that involve multi-dimensional market objects, like DV01 (1 basis point parallel change in the yield curve) or CS01 (1 basis point parallel change in the credit spread curve).</p></li>
+<li><p><strong>Variance-based measures</strong> – These metrics assess the risk of a portfolio by examining the statistics of its returns. Common variance-based measures include standard deviation and beta. Beta is a measure of correlation between the portfolio and the general market, typically materialized as a benchmark index such as the S&amp;P 500. Another important measure is the Sharpe ratio, which evaluates the risk-adjusted return of a portfolio. It is calculated as the excess return of the portfolio over the risk-free rate, divided by the standard deviation of the portfolio returns.</p></li>
+<li><p><strong>Quantile-based measures</strong> – These metrics gauge the risk of a portfolio by analyzing the distribution of its returns. The most common quantile-based measures are Value at Risk (VaR) and Expected Shortfall (ES). VaR represents the maximum potential loss on a portfolio over a given time horizon with a specified confidence level. ES, also known as Conditional VaR, represents the expected loss conditional on the loss exceeding the VaR.</p></li>
+<li><p><strong>Exposure limits</strong> – These constraints define the maximum amount of risk that can be assumed for a single position or within a particular market segment. Adhering to these limits is crucial for maintaining a diversified portfolio and preventing excessive concentration in any single position. This is typically expressed as the maximum potential loss that can be incurred.</p></li>
+<li><p><strong>Liquidity measures</strong> – These metrics quantify the speed and ease with which a position can be entered or exited. Even the best investment prospects are worthless if they cannot be executed at a scale justifying research and infrastructure costs. On the other hand, if conditions turn unfavorable, a swift exit is crucial to limit losses. Examples of liquidity measures include trade volume and the time required to liquidate a position.</p></li>
+<li><p><strong>Stress testing</strong> – This technique evaluates the risk of a portfolio by assessing its performance under extreme market conditions. The scenarios applied to the portfolio can be either synthetic (e.g., a <span class="math inline">\(10\%\)</span> drop in the S&amp;P 500, considering asset correlations) or historical (e.g., the 2008 financial crisis). Stress testing exercises are important for determining capital requirements and are often mandated by regulators. It involves analyzing not only the portfolio’s performance under the prescribed scenario but also the behavior of other risk metrics.</p></li>
+</ul>
+<p>Risk management of a particular portfolio depends heavily on its characteristics – there is no single recipe that applies to all. The selection of appropriate risk metrics depends on the portfolio manager’s risk appetite and the specific investment strategy. Strategies that are highly specialized, like arbitrage, may require a different set of risk metrics and special considerations to be taken into account.</p>
+</section>
+<section id="the-case-of-merger-arbitrage" class="level3">
+<h3 class="anchored" data-anchor-id="the-case-of-merger-arbitrage">The Case of Merger Arbitrage</h3>
+<p>Now we examine the specific case of risk management for merger arbitrage portfolios.</p>
+<p><em>Sensitivities</em> can be particularly important, especially when derivatives are used to leverage positions. However, standard derivative valuation models may not be suitable for stocks involved in M&amp;A transactions. This is evident in cash mergers, where the stock price is bounded by the cash offer price. Consequently, the Black-Scholes model’s assumption of a log-normal distribution of the stock price is violated. We will examine an alternative option pricing model better suited for stocks involved in M&amp;A in later sections.</p>
+<p><em>Variance-based and quantile-based measures</em> have limited utility for merger arbitrage portfolios. A fundamental assumption underlying these metrics, which rely on statistical analysis of returns time series, is stationarity—the invariance of the statistical properties of the returns process. This assumption is crucial for historical approaches to estimating distribution-based metrics. However, a stock’s price dynamics change dramatically following a merger announcement, making it unreasonable to assume that its past behavior is predictive of future performance. This means that historically observed standard deviation, beta, and VaR are not reliable measures of risk for merger arbitrage portfolios.</p>
+<p>A rigorous approach to <em>position limits</em> is essential for the successful execution of a merger arbitrage strategy. Taking on a large position in a single stock can be very risky, given the non-negligible probability of a deal’s failure. Therefore, portfolios should be diversified across a range of stocks and sectors. We discuss this in more detail in the next section.</p>
+<p><em>Liquidity</em> and order book depth are crucial for merger arbitrage portfolios, as they can significantly impact the execution of trades. Usually, a merger offer includes a significant premium to the last trading price, which causes the stock price to jump up close to the offer price. This incentivizes long-term investors to sell their shares, as from their perspective, there is little upside in holding the stock. The arbitrageur, on the other hand, is interested in the spread between the offer price and the stock price – they provide liquidity to the sellers. Overall liquidity, trading volume, and bid-ask spread need to be monitored closely by the arbitrageur from this point onwards. If an event that endangers the merger occurs, there might not be enough buyers, and the arbitrageur may be unable to exit their position without incurring significant losses.</p>
+<p>Special attention should be given to <em>stress testing</em> of merger arbitrage portfolios. The prices of stocks under merger offer revert to their historical correlation with the market during periods of market distress. This presents a unique modeling challenge, and merger arbitrage portfolios need to be treated separately from other portfolios.</p>
+<p>We proceed by delving into some of the specific considerations and idiosyncrasies that arise in the risk management of merger arbitrage portfolios.</p>
+</section>
+</section>
+<section id="exposure-limits-and-expected-losses" class="level2">
+<h2 class="anchored" data-anchor-id="exposure-limits-and-expected-losses">Exposure Limits and Expected Losses</h2>
+<p>Exposure limits are a critical component of risk management for merger arbitrage portfolios. A key aspect of managing a merger arbitrage strategy is determining the maximum amount of risk that can be taken in a single position or a particular market segment. Limiting exposure reduces the probability of incurring significant losses from a single deal break.</p>
+<p>This has the obvious implication that a purely merger arbitrage portfolio needs to invest in multiple merger opportunities at any given point. The portfolio managers target a specific number of deals to be included in their strategy. Arbitrageurs can be "concentrated" (few deals, in-depth analysis) or "diversified" (many deals, spreading risk). According to a survey of risk management practices, merger arbitrageurs held an average of 36 positions, with a minimum of 25 and a maximum of 40. The maximum viable position size for each holding should be determined based on the specific investment goals.</p>
+<p>The most straightforward approach to position limits is to cap the size of a single merger position within a portfolio, such as a 5% limit. These limits can be strict, meaning they are never exceeded, or flexible, allowing them to be exceeded if the arbitrageur has a strong belief in a deal’s success. In the latter case, there are usually two types of limits: a hard limit, which is the absolute maximum position size (red light), and a soft limit, which is the maximum position size that can be exceeded with justification (yellow light).</p>
+<p>A more advanced approach to position limits is to set them based on the expected loss from a position and limit that to a certain percentage of the portfolio. We present a simplified procedure for calculating these limits, in the next sections.</p>
+<p>There are other dimensions to consider when setting exposure limits. For example, the portfolio manager may want to limit the maximum exposure to a single sector or industry, which can help mitigate the risk of sector-specific events affecting multiple positions. This is, however, an easier task in theory than in practice, as the merger arbitrage universe is relatively small, and many deals are concentrated in a few sectors. As different industries go through cycles semi-independently, mergers might be concentrated in a few sectors at a time, making diversification difficult.</p>
+<p>Limits can also be set on the types of transactions, such as restricting exposure to leveraged buyouts (LBOs), stock-for-stock transactions, etc., depending on the views and goals of the portfolio manager or the firm.</p>
+<p>Another important risk management concept that is closely related to our calculation of exposure limits is the expected loss from a position. In the context of merger arbitrage, expected loss is the probability-weighted loss that an arbitrageur may incur if a merger deal fails to close. This is akin to the expected loss in the case of counterparty credit risk, where the expected loss is calculated as the product of the probability of default and the loss given default.</p>
+<section id="estimation-of-probabilities-of-closing" class="level3">
+<h3 class="anchored" data-anchor-id="estimation-of-probabilities-of-closing">Estimation of Probabilities of Closing</h3>
+<p>Determining the probability of a merger closing is a crucial and often the most difficult step in the merger arbitrage process. Even for experienced arbitrageurs, estimating the probability of a merger closing involves a lot of guesswork and subjective judgment. The arbitrageur assumes the merger will close and will profit only if it does. They need to determine the influence of various factors that may cause a deal break. This includes:</p>
+<ul>
+<li><p><strong>Financing risks</strong> – The financial health of the acquirer and their ability to raise capital is crucial for the success of the merger. This is especially important for leveraged buyouts (LBOs), where the acquirer relies heavily on debt financing.</p></li>
+<li><p><strong>Changes in market conditions</strong> – Even though merger arbitrage is primarily an event-driven, market-neutral strategy, the overall market or specific industry conditions can have a significant impact on the success of a merger. A significant decline in the business environment is called <em>material adverse change</em> in legal terms. The merger agreement may include provisions that allow the acquirer to back out of the deal if a material adverse change occurs.</p></li>
+<li><p><strong>Regulatory risks</strong> – Regulatory approval is often a significant hurdle for mergers and acquisitions, especially in industries with high levels of competition or where the merger may create a monopoly. In some instances, for example, cross-border deals, the merger of big entities can be politicized and lead to significant delays or even cancellation of the deal.</p></li>
+<li><p><strong>Market cap sizes of the acquirer and target</strong> – A merger is more likely to succeed if the acquirer is significantly larger than the target. According to historical data, the probability of a merger closing is higher when the acquirer is included in large-cap indices such as the S&amp;P 500 or the Russell 1000.</p></li>
+<li><p><strong>Shareholder and management sentiment</strong> – Long-term holders on either side of the deal may oppose the merger, especially if they believe it will not be beneficial for the company. Successful shareholder opposition campaigns are, however, rarely successful, especially if the merger premium over the trading price is significant.</p></li>
+</ul>
+<p>The arbitrageur needs to consider all of these factors and assign a probability of closing to each deal. They may also use historical data regarding the proceedings of similar deals and statistical models to help estimate the probability of a merger closing. Another source of information could be overall market sentiment, which can be gauged from the media coverage of the deal and market pricing, for example, option prices.</p>
+</section>
+<section id="estimating-severity-of-loss" class="level3">
+<h3 class="anchored" data-anchor-id="estimating-severity-of-loss">Estimating severity of loss</h3>
+<p>The severity of loss from a merger arbitrage position is the loss that the arbitrageur incurs if the merger fails to close. Severity is analogous to the loss given default (LGD) in credit risk management. The equation for calculating the severity is deceptively simple:</p>
+<p><span class="math display">\[L =P_{\mathrm{p}} - P_{\mathrm{s}}\]</span></p>
+<p>where <span class="math inline">\(P_{\mathrm{p}}\)</span> is the arbitrageur’s purchase price, and <span class="math inline">\(P_{\mathrm{s}}\)</span> is the estimated price of the stock at the time of the merger failure. The hard part is estimating <span class="math inline">\(P_{\mathrm{s}}\)</span>, which might involve even more guesswork than estimating the probability of closing. The purchase price for the arbitrageur has already included the merger premium, but there might have already been some rumors about the possible merger before the announcement, and the stock price might have already reflected some of the merger premium. Or the merger proceedings might unearth some negative information about the target company that was not public previously and affect the outlook on the target. The arbitrageur needs to be conservative and apply punitive estimates of <span class="math inline">\(P_{\mathrm{s}}\)</span> to avoid underestimating the severity of loss.</p>
+</section>
+<section id="calculating-exposure-limits-and-expected-losses" class="level3">
+<h3 class="anchored" data-anchor-id="calculating-exposure-limits-and-expected-losses">Calculating Exposure Limits and Expected Losses</h3>
+<p>Following the above considerations, the next step is straightforward. The estimate of the <em>expected loss</em> from a position is calculated as follows: <span class="math display">\[\mathbf{E}[L] = ( 1 - \mathbf{P}_{\mathrm{success}} ) \cdot L\]</span> where <span class="math inline">\(\mathbf{P}_{\mathrm{success}}\)</span> is the probability of the merger closing, and <span class="math inline">\(L\)</span> is the loss incurred if the merger fails.</p>
+<p>The <em>severity-based position limit</em> is calculated as a percentage of the portfolio’s value and is set such that the severity of loss does not exceed a certain threshold.</p>
+</section>
+</section>
+<section id="stress-testing" class="level2">
+<h2 class="anchored" data-anchor-id="stress-testing">Stress Testing</h2>
+<p>As emphasized in previous chapters, merger arbitrage portfolios exhibit low sensitivity to broader market movements. It is useful to conceptualize a merger announcement as a phase transition wherein the target company’s stock price loses its historical correlation with the general market and its industry.</p>
+<p>However, certain events can cause the stock price to revert from this phase transition and resume behaving like a typical stock. The most obvious example is the failure of the merger. Other events can also trigger this shift. For instance, during periods of market distress, risk arbitrage returns tend to become positively correlated with the market. This dual effect – uncorrelated returns in normal times and positive correlation with the market during distress – needs to be addressed in the context of stress testing. The whole goal is to assess the risk of a portfolio in extreme market conditions, so the modeling approach should take into account any non-linearities and regime-switching phenomena the portfolio may exhibit.</p>
+<section id="merger-arbitrage-as-a-short-put-option" class="level3">
+<h3 class="anchored" data-anchor-id="merger-arbitrage-as-a-short-put-option">Merger Arbitrage as a Short Put Option</h3>
+<p>The described behavior of arbitrage strategies resembles that of a short position in an out-of-the-money (OTM) put option on a market index. This regime-switching phenomenon was initially observed by Mitchell and Pulvino, who noted that merger arbitrage performs poorly in sharply declining markets. They propose to model the merger arbitrage returns using a <em>piecewise-linear CAPM-type model</em> (broken-stick regression), i.e.,</p>
+<p><span class="math display">\[\begin{aligned}
+R_{\mathrm{Risk Arb}} - R_f &amp;= (1 - \delta)[\alpha_{\mathrm{Mkt Low}} + \beta_{\mathrm{Mkt Low}}(R_{\mathrm{Mkt}} - R_f)] \\
+&amp;+ \delta[\alpha_{\mathrm{Mkt High}} + \beta_{\mathrm{Mkt High}}(R_{\mathrm{Mkt}} - R_f)],
+\end{aligned}\]</span></p>
+<p>where <span class="math inline">\(\delta\)</span> is an indicator function – equal to one if the excess return is above a threshold level and zero otherwise. To ensure model continuity, it needs to be imposed that the two linear functions are equal at the threshold level, which translates into the following equation:</p>
+<p><span class="math display">\[\alpha_{\mathrm{Mkt Low}} + \beta_{\mathrm{Mkt Low}}(\mathrm{Threshold}) = \alpha_{\mathrm{Mkt High}} + \beta_{\mathrm{Mkt High}}(\mathrm{Threshold}) .\]</span></p>
+<p>According to their study, in instances where the market index drops by more than <span class="math inline">\(4\%\)</span> in a month, the average merger arbitrage portfolio suffers a decline as well, with an average beta value of around <span class="math inline">\(0.5\)</span>. In a bullish market, the average beta is essentially zero, so the strategy misses the market upside. The conclusion is that the merger arbitrage alpha is partially a compensation for assuming the downside market risk without benefiting from the upside. This is analogous to the arbitrageur underwriting uncovered market index put options.</p>
+<p>A simple strategy to mitigate merger arbitrage losses involves buying out-of-the-money index put options. While these options usually expire worthless (resulting in the loss of the option premium), they can offset losses from collapsing deals during market downturns. This strategy improves the risk profile but slightly lowers returns in most market conditions due to the cost of the options.</p>
+<p>Managing downside risk with equity put options may be insufficient, as this method often overhedges but underhedges when the hedge is most needed. More sophisticated models were developed to model arbitrage strategy returns during market downturns. For instance, Tashman proposes an approach using finite mixtures that includes multiple explanatory variables. Despite the complexity of the model, the main conclusion remains the same: the merger arbitrage strategy exhibits a regime-switching behavior, with a beta of around <span class="math inline">\(0.39\)</span> during market downturns and a beta of around <span class="math inline">\(0.01\)</span> during normal times.</p>
+</section>
+<section id="the-practice-of-stress-testing" class="level3">
+<h3 class="anchored" data-anchor-id="the-practice-of-stress-testing">The Practice of Stress Testing</h3>
+<p>The above findings suggest a proper way to stress test a merger arbitrage portfolio. The arbitrageur can mimic the regime-switching behavior of the portfolio by substituting the arbitrage spread positions with a short put option on the market index for certain risk-management calculations. More specifically, the position should be represented as:</p>
+<ul>
+<li><p><em>A merger spread</em>, i.e., itself, for purposes of calculating market sensitivities, standard deviation, Sharpe ratio, position limits, and normal quantile-level VaR.</p></li>
+<li><p><em>A short put index option</em> for purposes of calculating stress test scenarios, extreme quantile-level VaR, and Stress VaR (i.e., VaR under a stressed historical scenario). The chosen index should be the one that best represents the portfolio’s risk profile, typically the S&amp;P 500, but it can also be a sector index or a custom index.</p></li>
+</ul>
+<p>This approach is referred to as <em>position proxying</em> and is a common practice[^1] in the industry. It is simple (if not crude) but effective in properly assessing arbitrage portfolio performance under stress. Without the proxying, the losses would be underestimated, resulting in a false sense of security and inadequate capital reserves to cover the drawdowns.</p>
+</section>
+</section>
+<section id="option-pricing" class="level2">
+<h2 class="anchored" data-anchor-id="option-pricing">Option Pricing</h2>
+<p>Merger arbitrage is comparatively a low-volatility strategy, being a market-neutral investment. To amplify the returns, arbitrageurs often employ leverage. Two main vectors of leverage are available: borrowing cash (through margin or loans) to increase the size of the position, or using derivatives to increase the exposure to the underlying stock.</p>
+<section id="options-on-ma-targets" class="level3">
+<h3 class="anchored" data-anchor-id="options-on-ma-targets">Options on M&amp;A Targets</h3>
+<p>Often, purchasing derivatives is the more efficient way to achieve the desired exposure. Derivative instruments are priced based on risk-free interest rates; hence, the associated costs can be lower than borrowing cash. They also allow for more precise engineering of the exposure, as they can be sold or bought depending on the turning market conditions. Purchasing calls on the target stock can be a cost-effective way of obtaining leverage. The option premia are typically low after the announcement of a merger, as the volatility of the stock price drops.</p>
+<p>There are other ways that options on M&amp;A targets can be utilized. One is to purchase puts to limit the downside risk of a merger failure. This incurs a premium cost, as mostly the options would expire worthless, but it can allow for a more aggressive overall position size. Finally, option prices can convey information about the market’s expectations regarding the merger outcome. Just as in the general case, option quotes can be used to infer the market’s expectations of the future volatility of the underlying stock; for M&amp;A targets, this can be used to gauge the market’s expectations of the merger outcome. All three of the aforementioned uses require a proper pricing model for the options.</p>
+</section>
+<section id="option-pricing-on-stocks-involved-in-ma" class="level3">
+<h3 class="anchored" data-anchor-id="option-pricing-on-stocks-involved-in-ma">Option Pricing on Stocks Involved in M&amp;A</h3>
+<p>As signaled, the standard Black-Scholes model is not suitable for valuation in the context of stocks under a merger process. More complex mathematical models are needed to account for their unique characteristics. This complexity arises from the fact that, unlike typical stocks, the stock price in an M&amp;A scenario does not follow a continuous process. Instead, it is characterized by discrete price movements, or "jumps." For a stock undergoing a merger, the price would undergo a sudden, instantaneous drop if the merger were to fall through.</p>
+<p>Ajay Subramanian made an early attempt to model this, proposing a framework for pricing options on stocks under M&amp;A. His work models option prices of two stocks undergoing a merger, one of which is the target and the other is the acquirer. The pricing model is based on the assumption that the stock price dynamics are governed by the following stochastic differential equations (SDEs):</p>
+<p><span class="math display">\[\begin{aligned}
+dS_1(t)|_{N(t)=0} &amp;= 1_{N(t)=0} [(\mu_1(t) - d_1)S_1(t-)dt + \sigma'_1 S_1(t-)dW_1(t)] \\
+dS_2(t)|_{N(t)=0} &amp;= 1_{N(t)=0} [(\mu_2(t) - d_2)S_2(t-)dt + \sigma'_2 S_2(t-)dW_2(t)]
+\end{aligned}\]</span> where</p>
+<ul>
+<li><p><span class="math inline">\(S_1, S_2\)</span> are the prices of the stocks.</p></li>
+<li><p><span class="math inline">\(\mu_1, \mu_2\)</span> are the drifts of the diffusion processes.</p></li>
+<li><p><span class="math inline">\(\sigma'_1, \sigma'_2\)</span> are the respective volatilities before the jump.</p></li>
+<li><p><span class="math inline">\(1_{N(t)=0}\)</span> is 1 before the jump, <span class="math inline">\(1_{N(t)=1}\)</span> is 1 after a jump, if any.</p></li>
+<li><p><span class="math inline">\(t-\)</span> is a notation for the time just prior to <span class="math inline">\(t\)</span>.</p></li>
+<li><p><span class="math inline">\(d_1, d_2\)</span> are the respective dividend yields.</p></li>
+<li><p><span class="math inline">\(W_1, W_2\)</span> are Brownian motions.</p></li>
+</ul>
+<p>If the merger fails, the stocks would revert to a standard Black-Scholes process:</p>
+<p><span class="math display">\[\begin{aligned}
+dS_1(t)|_{N(t)=1} &amp;= 1_{N(t)=1} [(\mu_1(t) - d_1)S_1(t-)dt + \sigma_1 S_1(t-)dW_3(t)]  \\
+dS_2(t)|_{N(t)=1} &amp;= 1_{N(t)=1} [(\mu_2(t) - d_2)S_2(t-)dt + \sigma_2 S_2(t-)dW_4(t)]
+\end{aligned}\]</span> where</p>
+<ul>
+<li><p><span class="math inline">\(\sigma_1, \sigma_2\)</span> are the respective volatilities after the jump.</p></li>
+<li><p><span class="math inline">\(W_3, W_4\)</span> are Brownian motions.</p></li>
+</ul>
+<p>The study also provides a closed-form solution for the option price, which is given by the following formula:</p>
+<p><span class="math display">\[\begin{aligned}
+P_1(0, T_0, K) &amp;= e^{-\lambda T_0} \left\{ S_1(0) e^{-d_1 T_0} \frac{e^{i T_0} + A_1}{1 + A_1} N(\alpha'_1) - K e^{-r T_0} N(\alpha'_2) \right\} \\
+&amp;+ \frac{\lambda S_1(0) e^{-d_1 T_0} e^{\frac{\lambda \sigma^2 T_0}{2}}}{ (1 + A_1)(\sigma'^2 - \sigma^2)} A_1 \int_{2T_0}^{\sigma^2 2T_0} dt e^{\frac{\lambda t}{\sigma'^2 - \sigma^2}} N\left( \frac{x + 0.5t}{\sqrt{t}} \right) \\
+&amp;- \frac{\lambda K e^{-r T_0} e^{\frac{\lambda \sigma^2 T_0}{2}}}{(\sigma'^2 - \sigma^2)} \int_{2T_0}^{\sigma^2 2T_0} dt e^{-\frac{\lambda t}{\sigma'^2 - \sigma^2}} N\left( \frac{x - 0.5t}{\sqrt{t}} \right)
+\end{aligned}\]</span> where:</p>
+<ul>
+<li><p><span class="math inline">\(x = \log \left[ \frac{S_1(0)}{K(1+A_1)} \right] + (r - d_1)T_0.\)</span></p></li>
+<li><p><span class="math inline">\(A_1, A_2\)</span> are chosen so that the stock jumps by a factor<br>
+<span class="math inline">\(\beta_i(t) = A_i \exp(t(-\lambda))/(1 + A_i \exp(-\lambda t))\)</span> if the deal breaks.</p></li>
+<li><p><span class="math inline">\(\lambda\)</span> is the risk-neutral probability density of the deal breaking.</p></li>
+</ul>
+<p>The formula is quite complex, and the derivation of the closed-form solution is beyond the scope of this post. An important aspect is that the model has some practical utility and can be used to extract information about the market’s expectations of the merger outcome. It is used to derive the implied probability of the merger closing, similar to the implied volatility in the standard Black-Scholes model.</p>
+<p>The empirical results of the study show that the market option prices, combined with the model, are suitable predictors of the merger outcome. The model-implied closing probabilities are derived for a set of merger deals. For the merger deals that closed, the model-implied closing probabilities were significantly higher than for the deals that failed to close. The probability implied by this model could be a useful input for the arbitrageur’s decision-making process and be taken into account when estimating the expected loss from a position.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>The risk management of merger arbitrage portfolios is a complex and multifaceted task that requires careful consideration of its unique characteristics. The main feature of merger arbitrage is its low correlation with the broader market under normal market conditions, which provides an attractive risk-return profile. However, this low correlation can shift to a positive correlation during periods of market distress, which can lead to significant losses for arbitrageurs. Even during flat or bullish markets, the arbitrageur is exposed to the risk of the merger failing, which can result in a substantial drawdown. This requires unique expertise and constant monitoring of the merger proceedings, as well as the overall market outlook on the merger target and acquirer. Merger arbitrage is an interesting case study for risk management, as it challenges traditional risk management techniques and requires a tailored approach to effectively manage the risks associated with this strategy.</p>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<section id="books" class="level3">
+<h3 class="anchored" data-anchor-id="books">Books</h3>
+<ul>
+<li><strong>McNeil, Alexander J; Frey, Rüdiger; Embrechts, Paul.</strong> (2015). <em>Quantitative Risk Management: Concepts, Techniques, and Tools</em> (Revised Edition). Princeton University Press, Princeton Series in Finance. ISBN: 978-0-691-16679-3</li>
+<li><strong>Kirchner, Thomas.</strong> (2016). <em>Merger arbitrage: How to profit from global event-driven arbitrage</em> (Second ed.). John Wiley &amp; Sons.</li>
+<li><strong>Moore, Keith M.</strong> (2018). <em>Risk arbitrage: An investor’s guide</em> (Second ed.). John Wiley &amp; Sons.</li>
+<li><strong>Boyle, Patrick &amp; McDougall, Jesse.</strong> (2018). <em>Trading and Pricing Financial Derivatives: A Guide to Futures, Options, and Swaps</em>. De Gruyter Press. ISBN: 9781547417308</li>
+<li><strong>Welling, Kate &amp; Gabelli, Mario J.</strong> (2018). <em>Merger Masters: Tales of Arbitrage</em>. Columbia University Press. ISBN: 9780231190428</li>
+<li><strong>Hull, John C.</strong> (2018). <em>Risk Management and Financial Institutions</em> (Fifth Edition). John Wiley &amp; Sons. ISBN: 978-1-119-42468-5</li>
+</ul>
+</section>
+<section id="articles" class="level3">
+<h3 class="anchored" data-anchor-id="articles">Articles</h3>
+<ul>
+<li><strong>Fung, William &amp; Hsieh, David A.</strong> (1997). “Empirical characteristics of dynamic trading strategies: the case of hedge funds.” <em>Rev.&nbsp;Finan. Stud.</em>, 10, 275–302.</li>
+<li><strong>Mitchell, Mark &amp; Pulvino, Todd.</strong> (2001). “Characteristics of risk and return in risk arbitrage.” <em>The Journal of Finance</em>, 56(6), 2135–2175. Wiley for the American Finance Association.</li>
+<li><strong>Cont, Rama.</strong> (2001). “Empirical properties of asset returns: stylized facts and statistical issues.” <em>Quantitative Finance</em>, 1(3), 223–236. Taylor &amp; Francis.</li>
+<li><strong>Baker, Malcolm &amp; Savaşoğlu, Serkan.</strong> (2002). “Limited arbitrage in mergers and acquisitions.” <em>Journal of Financial Economics</em>, 64(1), 91–115. Elsevier.</li>
+<li><strong>Subramanian, Ajay.</strong> (2004). “Option pricing on stocks in mergers and acquisitions.” <em>The Journal of Finance</em>, 59(2), 633–671. Wiley for the American Finance Association.</li>
+<li><strong>Moore, Keith; Lai, Gene; Oppenheimer, Henry.</strong> (2006). “The Behavior of Risk Arbitrageurs in Mergers and Acquisitions.” <em>Journal of Alternative Investments</em>, 9, 19–29.</li>
+<li><strong>Branch, Ben &amp; Wang, Jia.</strong> (2008). “Risk-Arbitrage Spreads and Performance of Risk Arbitrage.” <em>The Journal of Alternative Investments</em>, 11(1), 9–22. Institutional Investor.</li>
+<li><strong>Tashman, Adam &amp; Frey, Robert J.</strong> (2009). “Modeling risk in arbitrage strategies using finite mixtures.” <em>Quantitative Finance</em>, 9(5), 495–503. Taylor &amp; Francis.</li>
+<li><strong>Hall, Jason; Pinnuck, Matthew; Thorne, Matthew.</strong> (2012). “Market risk exposure of merger arbitrage in Australia.” <em>Accounting &amp; Finance</em>, aop(aop). Wiley Online Library.</li>
+<li><strong>Wall, Douglas Erik Leonard &amp; Theodorsen, Olav Henrik Klingenberg.</strong> (2022). “Risk and return of the merger arbitrage strategy in the European market.” Handelshøyskolen BI.</li>
+</ul>
+
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/bwrob\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright 2025, bwrob. Rendered with Quarto 1.7.32</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
