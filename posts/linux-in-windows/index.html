@@ -461,15 +461,37 @@ Note
 <div class="sourceCode" id="cb1"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1"></a>wsl --update</span>
 <span id="cb1-2"><a href="#cb1-2"></a>wsl --version</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>These commands ensure that WSL is up-to-date and displays the installed WSL version.</p>
-<p><img src="1.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
 <p>Our next command will be:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a href="#cb2-1"></a>wsl -l -o</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This yields a curated list of pre-packaged Linux distributions that Microsoft provides, making the process almost effortless.</p>
-<p><img src="2.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
 <p>For the installation itself:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1"><a href="#cb3-1"></a>wsl --install -d 'Ubuntu-24.04'</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="3.png" class="img-fluid"></p>
-<p>Reboot the Windows system and you’ll see `Ubuntu’ among your applications. <img src="4.png" class="img-fluid"> <img src="5.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+<p>Reboot the Windows system and you’ll see `Ubuntu’ among your applications.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
 </section>
 <section id="base-setup-new-shell-and-package-manager" class="level2">
 <h2 class="anchored" data-anchor-id="base-setup-new-shell-and-package-manager">Base setup — new shell and package manager</h2>
@@ -483,11 +505,19 @@ Note
 <p>Execute the installation script for Homebrew:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1"><a href="#cb5-1"></a>INSTALL_PATH="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"</span>
 <span id="cb5-2"><a href="#cb5-2"></a>/bin/bash -c "$(curl -fsSL $INSTALL_PATH)"</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="6.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="6.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
 <p>To make Homebrew accessible from your shell, you need to load its environment variables. The following command achieves this and subsequently runs a diagnostic check:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a href="#cb6-1"></a>eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"</span>
 <span id="cb6-2"><a href="#cb6-2"></a>brew doctor</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="7.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="7.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
 <p>Doctor’s orders to append brew to some set of paths! Let’s do this then:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"><a href="#cb7-1"></a>echo 'export XDG_DATA_DIRS="/home/linuxbrew/.linuxbrew/share:$XDG_DATA_DIRS"' &gt;&gt; ~/.profile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
@@ -498,7 +528,12 @@ Note
 <div class="sourceCode" id="cb8"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1"><a href="#cb8-1"></a>brew install zsh</span>
 <span id="cb8-2"><a href="#cb8-2"></a>zsh --version</span>
 <span id="cb8-3"><a href="#cb8-3"></a>zsh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>This will take you to interactive <code>.zshrc</code> file setup. The file contains commands that are run each time a shell is spawned. You can either generate empty file with <code>0</code> or go through the interactive setup with <code>1</code>. <img src="8.png" class="img-fluid"></p>
+<p>This will take you to interactive <code>.zshrc</code> file setup. The file contains commands that are run each time a shell is spawned. You can either generate empty file with <code>0</code> or go through the interactive setup with <code>1</code>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
 <p>Add the brew initialization to <code>.zshrc</code> file as well. This way <code>brew</code> will always be by your side!</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb9-1"><a href="#cb9-1"></a>(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') &gt;&gt; /home/bwrob/.zshrc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Check the default shell and set it to <code>zsh</code>:</p>
@@ -511,7 +546,11 @@ Note
 <p>Remember <code>git != GitHub</code>, we need a way to authenticate and use Github from CLI. There’s a tool for that!</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1"><a href="#cb11-1"></a>brew install gh</span>
 <span id="cb11-2"><a href="#cb11-2"></a>gh auth login</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="9.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
 <p>Now create a convenient directory and copy your favourite <code>GitHub</code> repo:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb12-1"><a href="#cb12-1"></a>mkdir repos &amp;&amp; cd repos</span>
 <span id="cb12-2"><a href="#cb12-2"></a>gh repo clone python_playground</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -525,7 +564,11 @@ Note
 <li><p><strong>Launching VSC from WSL</strong>: Within your WSL terminal, you can directly invoke VSC as if it were running natively on Windows. Use the following command:</p></li>
 </ul>
 <div class="sourceCode" id="cb13"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1"><a href="#cb13-1"></a>code ~\repos\python_playground</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="10.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="10.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
 <p>In the <a href="">next post</a> I will show you how to set up Python environment in Linux. Stay tuned :) .</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
