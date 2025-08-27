@@ -119,7 +119,7 @@ def path_files(
             yield file, delay
 
 
-def with_optional_delay(
+def with_optional_delay[T](
     task_worker: Callable[[TaskList[T]], None],
 ) -> Callable[[TaskListOptionalDelay[T]], None]:
     """Add default delay to all non-tuple items.
