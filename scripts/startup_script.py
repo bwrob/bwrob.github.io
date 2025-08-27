@@ -39,7 +39,6 @@ def filter_excluded(
     Args:
     ----
         path: Path to filter.
-
     """
     return (path.stem not in NAME_EXCLUDES) and (path.suffix not in EXT_EXCLUDES)
 
@@ -64,7 +63,6 @@ def start_process(
         name: Name of the process to start.
         path: Path to the target.
         delay: Time to wait after starting the process.
-
     """
     if path.is_dir():
         logger.info("Opening folder %s", name)
@@ -88,7 +86,6 @@ def run_command(
     ----
         command: Command to run.
         delay: Time to wait after starting the process.
-
     """
     _ = subprocess.call(  # noqa: S603
         f"powershell.exe {command}",
@@ -107,7 +104,6 @@ def path_files(
     Args:
     ----
         directory_tasks: List of tasks with paths to work folders.
-
     """
     for folder, delay in directory_tasks:
         yield folder, delay
@@ -127,17 +123,16 @@ def with_optional_delay[T](
     Args:
     ----
         task_worker: A function that takes a list of tasks.
-
     """
 
     @wraps(task_worker)
     def task_defaulted_worker(task_list: TaskListOptionalDelay[T]) -> None:
-        """Add a default delay to tasks in a task list if no delay is specified.
+        """Add a default delay to tasks in a task list if no delay is
+        specified.
 
         Args:
         ----
             task_list: A list of tasks with optional delays.
-
         """
         tasks_with_defaulted_delays: TaskList[T] = [
             item if isinstance(item, tuple) else (item, DEFAULT_DELAY_SECONDS)
@@ -159,7 +154,6 @@ def start_programs(
         programs: List of programs to start.
             Can be a string or a tuple. If a tuple is given, the first
             element is the name, the second is the delay.
-
     """
     for program, delay in programs:
         start_process(
@@ -178,7 +172,6 @@ def start_work_files(
     Args:
     ----
         directory_tasks: List of tasks with paths to work folders.
-
     """
     for path, delay in path_files(directory_tasks):
         start_process(
@@ -197,7 +190,6 @@ def run_commands(
     Args:
     ----
         commands: List of commands to run.
-
     """
     for command, delay in commands:
         run_command(command, delay)

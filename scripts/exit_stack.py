@@ -29,7 +29,6 @@ def mock_object(object_type: MockObject) -> str:
     Args:
     ----
         object_type: Type of object.
-
     """
     return f"{object_type}_{uuid4()}"
 
@@ -41,7 +40,6 @@ def mock_preparation(object_type: MockObject, **kwargs: str) -> None:
     ----
         object_type: Type of object.
         **kwargs: Keyword arguments for the preparation.
-
     """
     msg = f"Preparing {object_type}" + (f" using {kwargs}" if kwargs else ".")
     logger.info(msg)
@@ -53,7 +51,6 @@ def mock_clean_up(object_uuid: str) -> None:
     Args:
     ----
         object_uuid: Uuid of the object.
-
     """
     msg = f"Cleaning up after {object_uuid}."
     logger.info(msg)
@@ -77,7 +74,6 @@ def analysis(
     Args:
     ----
         benchmark_uuid: Uuid of the benchmark.
-
     """
     mock_preparation(
         MockObject.ANALYSIS,
@@ -95,7 +91,6 @@ def benchmark() -> Generator[str]:
     Args:
     ----
         otc_products_uuid: Uuid of the otc products.
-
     """
     mock_preparation(
         MockObject.BENCHMARK,
@@ -112,7 +107,6 @@ def otc_products() -> Generator[str]:
     Args:
     ----
         otc_products_uuid: Uuid of the otc products.
-
     """
     mock_preparation(MockObject.OTC_PRODUCTS)
     otcs_uuid = mock_object(MockObject.OTC_PRODUCTS)
@@ -132,7 +126,6 @@ def portfolio(
     ----
         portfolio_name: Name of the portfolio.
         otc_products_uuid: Uuid of the otc products.
-
     """
     mock_preparation(
         MockObject.PORTFOLIO,
@@ -157,7 +150,6 @@ def analysis_results(
     ----
         analysis_uuid: Uuid of the analysis.
         portfolio_uuid: Uuid of the portfolio.
-
     """
     msg = f"Running analysis {analysis_uuid} on portfolio {portfolio_uuid}."
     logger.info(msg)
@@ -214,7 +206,6 @@ def run_analysis_with_exit_stack_2(
     Args:
     ----
         clean_up: Whether to clean up after the objects.
-
     """
     with ExitStack() as stack:
         otc_uuid = stack.enter_context(otc_products())
@@ -249,7 +240,6 @@ def run_analysis_with_exit_stack_3(
     Args:
     ----
         clean_up: Whether to clean up after the objects.
-
     """
     with ExitStack() as stack:
         otc_uuid = stack.enter_context(otc_products())
