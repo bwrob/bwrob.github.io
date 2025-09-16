@@ -1,12 +1,7 @@
 [project]
-    name = "bwrob-github-io"
-    version = "0.1.0"
-    description = ""
     authors = [
         { name = "bwrob", email = "bartosz.marcin.wroblewski@gmail.com" },
     ]
-    requires-python = ">=3.13"
-    readme = "README.md"
     dependencies = [
         "jupyter>=1.1.1",
         "matplotlib>=3.10.3,<4",
@@ -19,6 +14,11 @@
         "scipy>=1.16.0,<2",
         "sympy>=1.14.0,<2",
     ]
+    description = ""
+    name = "bwrob-github-io"
+    readme = "README.md"
+    requires-python = ">=3.13"
+    version = "0.1.0"
 
 
 [tool.uv]
@@ -26,11 +26,14 @@
 
 [tool.poe.tasks]
 
-    _report_host = "echo 'http://localhost:3333/'"
-    _hap_preview = "hap run quarto preview ./index.qmd --port 3333 --quiet"
     _fix         = "ruff check --fix --unsafe-fixes --config ruff.toml ."
     _format      = "ruff format --config ruff.toml ."
+    _hap_preview = "hap run quarto preview ./index.qmd --port 3333 --quiet"
+    _report_host = "echo 'http://localhost:3333/'"
 
     preview = ["_hap_preview", "_report_host"]
     publish = "hap run quarto publish --no-prompt --no-browser --quiet  gh-pages"
-    check   = ["_fix", "_format"]
+
+    [tool.poe.tasks.check]
+    sequence = ["_fix", "_format"]
+    ignore_fail = "return_zero"
