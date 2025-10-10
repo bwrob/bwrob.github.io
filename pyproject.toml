@@ -14,7 +14,7 @@
         "scipy>=1.16.0,<2",
         "sympy>=1.14.0,<2",
     ]
-    description = ""
+    description = "Personal blog about programming, finance, and physics."
     name = "bwrob-github-io"
     readme = "README.md"
     requires-python = ">=3.13"
@@ -28,12 +28,12 @@
 
     _fix         = "ruff check --fix --unsafe-fixes --config ruff.toml ."
     _format      = "ruff format --config ruff.toml ."
-    _hap_preview = "hap run quarto preview ./index.qmd --port 3333 --quiet"
+    _hap_preview = "hap run quarto preview ./index.qmd --port 3333"
     _report_host = "echo 'http://localhost:3333/'"
 
     preview = ["_hap_preview", "_report_host"]
-    publish = "hap run quarto publish --no-prompt --no-browser --quiet  gh-pages"
+    publish = "hap run quarto publish --no-prompt --no-browser gh-pages"
 
     [tool.poe.tasks.check]
-    sequence = ["_fix", "_format"]
-    ignore_fail = "return_zero"
+        ignore_fail = "return_zero"
+        sequence    = ["_fix", "_format"]
