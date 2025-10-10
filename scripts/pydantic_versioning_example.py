@@ -19,6 +19,7 @@ class UserV1(VersionedBaseModel, schema_version=1):
 
         Returns:
             The transformed data dictionary for version 1.
+
         """
         return data
 
@@ -42,6 +43,7 @@ class UserV2(VersionedBaseModel, schema_version=2):
 
         Returns:
             The transformed data dictionary for version 2.
+
         """
         logger.debug(f"  Applying UserV2 migration (v1 -> v2). Data: {data}")
         return {
@@ -67,6 +69,7 @@ class AddressV1(VersionedBaseModel, schema_version=1):
 
         Returns:
             The transformed data dictionary for version 1.
+
         """
         return data
 
@@ -91,6 +94,7 @@ class UserV3(VersionedBaseModel, schema_version=3):
 
         Returns:
             The transformed data dictionary for version 3.
+
         """
         logger.debug(f"  Applying UserV3 migration (v2 -> v3). Data: {data}")
         return {
@@ -120,6 +124,7 @@ class AddressV2(VersionedBaseModel, schema_version=2):
 
         Returns:
             The transformed data dictionary for version 2.
+
         """
         logger.debug(f"    Applying AddressV2 migration (v1 -> v2). Data: {data}")
         transformed_data = data.copy()
@@ -147,6 +152,7 @@ class UserV4(VersionedBaseModel, schema_version=4):
 
         Returns:
             The transformed data dictionary for version 4.
+
         """
         logger.debug(f"  Applying UserV4 migration (v3 -> v4). Data: {data}")
         transformed_data = data.copy()

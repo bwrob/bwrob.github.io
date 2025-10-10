@@ -16,7 +16,8 @@ class MigrationError(Exception):
 
 class VersionedModelMeta(ModelMetaclass):
     """Custom metaclass for Pydantic V2 models to manage schema versions and
-    migrations."""
+    migrations.
+    """
 
     _model_registry: ClassVar[dict[tuple[str, int], type["VersionedBaseModel"]]] = {}
 
@@ -39,6 +40,7 @@ class VersionedModelMeta(ModelMetaclass):
             A dictionary mapping 'from_version' to the 'update' method,
             or an empty dictionary if 'update' is not found or does not
             match the expected signature.
+
         """
         migration_methods = {}
         update_method = attrs.get("update")
@@ -73,6 +75,7 @@ class VersionedModelMeta(ModelMetaclass):
         Raises:
             TypeError: If 'schema_version' is missing or invalid, or if a
                        duplicate model registration occurs.
+
         """
         schema_version = kwargs.pop("schema_version", None)
 
@@ -147,6 +150,7 @@ class VersionedBaseModel(BaseModel, metaclass=VersionedModelMeta):
 
         Raises:
             MigrationError: If the model for the specified version is not found.
+
         """
         model_class = VersionedModelMeta._model_registry.get(
             (cls._model_family_name, version)
@@ -174,6 +178,7 @@ class VersionedBaseModel(BaseModel, metaclass=VersionedModelMeta):
         Raises:
             MigrationError: If no historical version successfully validates the
                             data.
+
         """
         model_family_name = cls._model_family_name
         model_versions_for_family = sorted(
@@ -225,6 +230,7 @@ class VersionedBaseModel(BaseModel, metaclass=VersionedModelMeta):
             NotImplementedError: If a required N -> N+1 migration step is
                                  missing.
             MigrationError: If any validation or migration step fails.
+
         """
         target_version = cls._current_schema_version
         current_data_payload = raw_data.copy()
@@ -332,5 +338,6 @@ class VersionedBaseModel(BaseModel, metaclass=VersionedModelMeta):
 
         Returns:
             An instance of the latest VersionedBaseModel with migrated data.
+
         """
         return cls._migrate_and_validate(raw_data)

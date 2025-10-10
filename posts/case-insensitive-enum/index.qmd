@@ -1,0 +1,108 @@
+---
+title: "Case Insensitive Enum"
+description: "How to create a case-insensitive enum in Python."
+author: "bwrob"
+date: "2025-10-10"
+date-modified: "2025-10-10"
+categories: [Python Recipes]
+image: ../../logo/python_mug.jpeg
+format-links: [html]
+---
+
+When working with enums in Python, you might want to create an enum that is case-insensitive. This can be particularly useful when you want to allow users to input values without worrying about the case. Here's how you can achieve this by subclassing `StrEnum`.
+
+To enforce that all enum members are defined in lowercase, we can use a mixin class with `__init_subclass__`.
+
+
+## Implementation
+
+
+```{python}
+from __future__ import annotations
+
+import sys
+
+if sys.version_info >= (3, 11):
+    from enum import StrEnum, auto
+    from typing import Self, override
+else:
+    from backports.strenum import StrEnum
+    from enum import auto
+    from typing_extensions import Self, override
+
+class CaseInsensitiveStrEnum(StrEnum):
+    """A case-insensitive string enum.
+
+    This class extends the `StrEnum` class to provide case-insensitive member lookup.
+    It also provides a custom `_generate_next_value_` method that returns the
+    lowercase version of the member name for use with `auto()`.
+    """
+
+    @classmethod
+    def __init_subclass__(cls, **kwargs) -> None:
+        """The `__init_subclass__` is a special hook that is called when a class is subclassed. 
+        
+        It allows us to customize the class creation process without using metaclasses.
+        """
+        super().__init_subclass__(**kwargs)
+        
+        for member in cls:
+            if not member.islower() or not member.value.islower():
+                raise TypeError(f"Enum member '{member}' and its value {member.value} must be lowercase.")
+
+    @override
+    @staticmethod
+    def _generate_next_value_(
+        name: str, start: int, count: int, last_values: list[str]
+    ) -> str:
+        """Return the lower-cased version of the member name.
+
+        This method is overridden to ensure that when `auto()` is used to create
+        enum members, their values are the lowercase version of their names.
+        """
+        return name.lower()
+
+    @override
+    @classmethod
+    def _missing_(cls, value: object) ->  Self | None:
+        """
+        Provide case-insensitive member lookup.
+
+        This method is called when a value is not found in the enum. 
+        It is overridden to perform a case-insensitive search for the member.
+        """
+        if not isinstance(value, str):
+            return None
+
+        value = value.lower()
+        for member in cls:
+            if member.name.lower() == value:
+                return member
+
+        return None
+```
+
+
+## Example Usage
+
+
+Here is an example of how to use the `CaseInsensitiveStrEnum` class:
+
+```{python}
+class TestEnum(CaseInsensitiveStrEnum):
+    test = auto()
+    enumz = auto()
+
+print(f"List of members: {[member.name for member in TestEnum]}")
+print(f"List of values: {[member.value for member in TestEnum]}")
+print(f'Accessing "Test": {TestEnum("Test")}')
+print(f'Accessing "test": {TestEnum("test")}')
+print(f'Accessing "ENUMZ": {TestEnum("ENUMZ")}')
+
+
+try:
+    class TestEnum(CaseInsensitiveStrEnum):
+        TEST = "TEST"  # This will raise a TypeError
+except TypeError as e:
+    print(e)
+```
