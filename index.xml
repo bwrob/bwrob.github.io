@@ -31,7 +31,9 @@
 
 <p>When working with enums in Python, you might want to create an enum that is case-insensitive. This can be particularly useful when you want to allow users to input values without worrying about the case. Here’s how you can achieve this by subclassing <code>StrEnum</code>.</p>
 <p>To enforce that all enum members are defined in lowercase, we can use a mixin class with <code>__init_subclass__</code>.</p>
-<div id="07d6c25a" class="cell" data-execution_count="1">
+<section id="implementation" class="level2">
+<h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
+<div id="b4a889e5" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> __future__ <span class="im" style="color: #00769E;
@@ -144,14 +146,20 @@ font-weight: bold;
 font-style: inherit;">for</span> member <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">in</span> cls.__members__:</span>
+font-style: inherit;">in</span> cls:</span>
 <span id="cb1-30">            <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">if</span> <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">not</span> member.islower():</span>
+font-style: inherit;">not</span> member.islower() <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">or</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> member.value.islower():</span>
 <span id="cb1-31">                <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -165,7 +173,15 @@ font-style: inherit;">{</span>member<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">' must be lowercase."</span>)</span>
+font-style: inherit;">' and its value </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>member<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>value<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> must be lowercase."</span>)</span>
 <span id="cb1-32"></span>
 <span id="cb1-33">    <span class="at" style="color: #657422;
 background-color: null;
@@ -291,10 +307,11 @@ font-style: inherit;">return</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">None</span></span></code></pre></div></div>
 </div>
-<section id="example-usage" class="level3">
-<h3 class="anchored" data-anchor-id="example-usage">Example Usage</h3>
+</section>
+<section id="example-usage" class="level2">
+<h2 class="anchored" data-anchor-id="example-usage">Example Usage</h2>
 <p>Here is an example of how to use the <code>CaseInsensitiveStrEnum</code> class:</p>
-<div id="5140da15" class="cell" data-execution_count="2">
+<div id="94893fb7" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -413,7 +430,7 @@ List of values: ['test', 'enumz']
 Accessing "Test": test
 Accessing "test": test
 Accessing "ENUMZ": enumz
-Enum member 'TEST' must be lowercase.</code></pre>
+Enum member 'TEST' and its value TEST must be lowercase.</code></pre>
 </div>
 </div>
 
