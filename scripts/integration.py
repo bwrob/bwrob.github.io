@@ -1,5 +1,6 @@
 """An integrator class that allows to perform integration using different
-schemes."""
+schemes.
+"""
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable
@@ -125,6 +126,7 @@ class Integrator:
         Args:
         ----
             scheme: integration scheme
+
         """
         logger.info("Using %s.", scheme)
         return scheme.integrate(

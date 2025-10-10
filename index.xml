@@ -16,8 +16,416 @@
 <height>144</height>
 <width>144</width>
 </image>
-<generator>quarto-1.7.34</generator>
-<lastBuildDate>Sat, 05 Jul 2025 22:00:00 GMT</lastBuildDate>
+<generator>quarto-1.8.25</generator>
+<lastBuildDate>Thu, 09 Oct 2025 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>Case Insensitive Enum</title>
+  <dc:creator>bwrob </dc:creator>
+  <link>https://bwrob.github.io/posts/case-insensitive-enum/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+
+<p>When working with enums in Python, you might want to create an enum that is case-insensitive. This can be particularly useful when you want to allow users to input values without worrying about the case. Here’s how you can achieve this by subclassing <code>StrEnum</code>.</p>
+<p>To enforce that all enum members are defined in lowercase, we can use a mixin class with <code>__init_subclass__</code>.</p>
+<div id="07d6c25a" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> __future__ <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> annotations</span>
+<span id="cb1-2"></span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> sys</span>
+<span id="cb1-4"></span>
+<span id="cb1-5"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> sys.version_info <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11</span>):</span>
+<span id="cb1-6">    <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> StrEnum, auto</span>
+<span id="cb1-7">    <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Self, override</span>
+<span id="cb1-8"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span>:</span>
+<span id="cb1-9">    <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> backports.strenum <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> StrEnum</span>
+<span id="cb1-10">    <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> auto</span>
+<span id="cb1-11">    <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> typing_extensions <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Self, override</span>
+<span id="cb1-12"></span>
+<span id="cb1-13"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> CaseInsensitiveStrEnum(StrEnum):</span>
+<span id="cb1-14">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""A case-insensitive string enum.</span></span>
+<span id="cb1-15"></span>
+<span id="cb1-16"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    This class extends the `StrEnum` class to provide case-insensitive member lookup.</span></span>
+<span id="cb1-17"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    It also provides a custom `_generate_next_value_` method that returns the</span></span>
+<span id="cb1-18"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    lowercase version of the member name for use with `auto()`.</span></span>
+<span id="cb1-19"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb1-20"></span>
+<span id="cb1-21">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@classmethod</span></span>
+<span id="cb1-22">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__init_subclass__</span>(cls, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span>kwargs) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb1-23">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""The `__init_subclass__` is a special hook that is called when a class is subclassed. </span></span>
+<span id="cb1-24"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        </span></span>
+<span id="cb1-25"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        It allows us to customize the class creation process without using metaclasses.</span></span>
+<span id="cb1-26"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        """</span></span>
+<span id="cb1-27">        <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">super</span>().<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__init_subclass__</span>(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span>kwargs)</span>
+<span id="cb1-28">        </span>
+<span id="cb1-29">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> member <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> cls.__members__:</span>
+<span id="cb1-30">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> member.islower():</span>
+<span id="cb1-31">                <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">raise</span> <span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">TypeError</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Enum member '</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>member<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">' must be lowercase."</span>)</span>
+<span id="cb1-32"></span>
+<span id="cb1-33">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@override</span></span>
+<span id="cb1-34">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@staticmethod</span></span>
+<span id="cb1-35">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> _generate_next_value_(</span>
+<span id="cb1-36">        name: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, start: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>, count: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>, last_values: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>]</span>
+<span id="cb1-37">    ) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>:</span>
+<span id="cb1-38">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Return the lower-cased version of the member name.</span></span>
+<span id="cb1-39"></span>
+<span id="cb1-40"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        This method is overridden to ensure that when `auto()` is used to create</span></span>
+<span id="cb1-41"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        enum members, their values are the lowercase version of their names.</span></span>
+<span id="cb1-42"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        """</span></span>
+<span id="cb1-43">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> name.lower()</span>
+<span id="cb1-44"></span>
+<span id="cb1-45">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@override</span></span>
+<span id="cb1-46">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@classmethod</span></span>
+<span id="cb1-47">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> _missing_(cls, value: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">object</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span>  Self <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb1-48">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""</span></span>
+<span id="cb1-49"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Provide case-insensitive member lookup.</span></span>
+<span id="cb1-50"></span>
+<span id="cb1-51"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        This method is called when a value is not found in the enum. </span></span>
+<span id="cb1-52"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        It is overridden to perform a case-insensitive search for the member.</span></span>
+<span id="cb1-53"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        """</span></span>
+<span id="cb1-54">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">isinstance</span>(value, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>):</span>
+<span id="cb1-55">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span></span>
+<span id="cb1-56"></span>
+<span id="cb1-57">        value <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> value.lower()</span>
+<span id="cb1-58">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> member <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> cls:</span>
+<span id="cb1-59">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> member.name.lower() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> value:</span>
+<span id="cb1-60">                <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> member</span>
+<span id="cb1-61"></span>
+<span id="cb1-62">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span></span></code></pre></div></div>
+</div>
+<section id="example-usage" class="level3">
+<h3 class="anchored" data-anchor-id="example-usage">Example Usage</h3>
+<p>Here is an example of how to use the <code>CaseInsensitiveStrEnum</code> class:</p>
+<div id="5140da15" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> TestEnum(CaseInsensitiveStrEnum):</span>
+<span id="cb2-2">    test <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> auto()</span>
+<span id="cb2-3">    enumz <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> auto()</span>
+<span id="cb2-4"></span>
+<span id="cb2-5"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"List of members: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>[member.name <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> member <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> TestEnum]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb2-6"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"List of values: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>[member.value <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> member <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> TestEnum]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb2-7"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Accessing "Test": </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>TestEnum(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Test"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span>
+<span id="cb2-8"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Accessing "test": </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>TestEnum(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"test"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span>
+<span id="cb2-9"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Accessing "ENUMZ": </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>TestEnum(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ENUMZ"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span>
+<span id="cb2-10"></span>
+<span id="cb2-11"></span>
+<span id="cb2-12"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">try</span>:</span>
+<span id="cb2-13">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> TestEnum(CaseInsensitiveStrEnum):</span>
+<span id="cb2-14">        TEST <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"TEST"</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># This will raise a TypeError</span></span>
+<span id="cb2-15"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">except</span> <span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">TypeError</span> <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> e:</span>
+<span id="cb2-16">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(e)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of members: ['test', 'enumz']
+List of values: ['test', 'enumz']
+Accessing "Test": test
+Accessing "test": test
+Accessing "ENUMZ": enumz
+Enum member 'TEST' must be lowercase.</code></pre>
+</div>
+</div>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
+  <category>Python Recipes</category>
+  <guid>https://bwrob.github.io/posts/case-insensitive-enum/</guid>
+  <pubDate>Thu, 09 Oct 2025 22:00:00 GMT</pubDate>
+  <media:content url="https://bwrob.github.io/logo/python_mug.jpeg" medium="image" type="image/jpeg"/>
+</item>
 <item>
   <title>Python Resources</title>
   <dc:creator>bwrob </dc:creator>
@@ -435,7 +843,7 @@ Note
 <h2 class="anchored" data-anchor-id="rodzaje-analityków-ilościowych">Rodzaje analityków ilościowych</h2>
 <div id="045c5474" class="cell" data-collapse="true" data-execution_count="1">
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" aria-controls="tabset-1-1" aria-selected="true">Front Office Quant</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" aria-controls="tabset-1-2" aria-selected="false">Market Risk Quant</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" aria-controls="tabset-1-3" aria-selected="false">Credit Risk Quant</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" aria-controls="tabset-1-4" aria-selected="false">Validation Quant</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" aria-controls="tabset-1-5" aria-selected="false">Quant Researcher</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-6" aria-controls="tabset-1-6" aria-selected="false">Algorithmic Trader</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-7-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-7" aria-controls="tabset-1-7" aria-selected="false">Quant Developer</a></li></ul>
+<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" aria-controls="tabset-1-1" aria-selected="true" href="">Front Office Quant</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" aria-controls="tabset-1-2" aria-selected="false" href="">Market Risk Quant</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" aria-controls="tabset-1-3" aria-selected="false" href="">Credit Risk Quant</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" aria-controls="tabset-1-4" aria-selected="false" href="">Validation Quant</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" aria-controls="tabset-1-5" aria-selected="false" href="">Quant Researcher</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-6" aria-controls="tabset-1-6" aria-selected="false" href="">Algorithmic Trader</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-7-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-7" aria-controls="tabset-1-7" aria-selected="false" href="">Quant Developer</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" aria-labelledby="tabset-1-1-tab">
 <p>Opracowuje i stosuje modele ilościowe do wyceny, zarządzania ryzykiem i strategii handlowych w dziale transakcyjnym instytucji finansowej.</p>
@@ -690,7 +1098,7 @@ if (outputEl) {{
 <section id="potencjali-pracodawcy" class="level2">
 <h2 class="anchored" data-anchor-id="potencjali-pracodawcy">Potencjali pracodawcy</h2>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" aria-controls="tabset-2-1" aria-selected="true">Wrocław</a></li><li class="nav-item"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" aria-controls="tabset-2-2" aria-selected="false">Polska</a></li></ul>
+<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" aria-controls="tabset-2-1" aria-selected="true" href="">Wrocław</a></li><li class="nav-item"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" aria-controls="tabset-2-2" aria-selected="false" href="">Polska</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" aria-labelledby="tabset-2-1-tab">
 <ul>
@@ -789,21 +1197,21 @@ if (outputEl) {{
 <section id="oh-my-posh" class="level2">
 <h2 class="anchored" data-anchor-id="oh-my-posh">Oh my posh</h2>
 <p>Oh My Posh is a prompt theme engine for any shell, including Zsh. It allows you to customize your terminal prompt with themes and segments.</p>
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1">brew install jandedobbeleer/oh-my-posh/oh-my-posh</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1">brew install jandedobbeleer/oh-my-posh/oh-my-posh</span>
 <span id="cb1-2">echo 'eval "$(oh-my-posh init zsh)"' &gt;&gt; .zshrc</span>
-<span id="cb1-3">echo 'OH_MY_POSH_THEME="kali"' &gt;&gt; .zshrc</span></code></pre></div>
+<span id="cb1-3">echo 'OH_MY_POSH_THEME="kali"' &gt;&gt; .zshrc</span></code></pre></div></div>
 </section>
 <section id="autosuggestions" class="level2">
 <h2 class="anchored" data-anchor-id="autosuggestions">autosuggestions</h2>
 <p>Zsh autosuggestions provide command suggestions based on your history and current input, enhancing your command line experience.</p>
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1">brew install zsh-autosuggestions</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1">brew install zsh-autosuggestions</span>
 <span id="cb2-2"># To activate the autosuggestions, add the following at the end of your .zshrc:</span>
-<span id="cb2-3">source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh</span></code></pre></div>
+<span id="cb2-3">source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh</span></code></pre></div></div>
 </section>
 <section id="aliases" class="level2">
 <h2 class="anchored" data-anchor-id="aliases">Aliases</h2>
 <p>Create a file <code>~/.bash_aliases</code> and add your aliases there, or directly in <code>.zshrc</code>.</p>
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1"># Alias definitions.</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1"># Alias definitions.</span>
 <span id="cb3-2"># You may want to put all your additions into a separate file like</span>
 <span id="cb3-3"># ~/.bash_aliases, instead of adding them here directly.</span>
 <span id="cb3-4"># See /usr/share/doc/bash-doc/examples in the bash-doc package.</span>
@@ -813,41 +1221,41 @@ if (outputEl) {{
 <span id="cb3-8">fi</span>
 <span id="cb3-9"></span>
 <span id="cb3-10">alias zshconfig='nano ~/.zshrc'</span>
-<span id="cb3-11">alias ls='eza -la --group-directories-first --icons'</span></code></pre></div>
+<span id="cb3-11">alias ls='eza -la --group-directories-first --icons'</span></code></pre></div></div>
 </section>
 <section id="minor-packages" class="level2">
 <h2 class="anchored" data-anchor-id="minor-packages">Minor packages</h2>
 <section id="fzf" class="level3">
 <h3 class="anchored" data-anchor-id="fzf">fzf</h3>
 <p>Fuzzy finder for command line, useful for searching files, history, etc.</p>
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1">brew install fzf</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1">brew install fzf</span>
 <span id="cb4-2"># Set up fzf key bindings and fuzzy completion</span>
-<span id="cb4-3">echo 'source &lt;(fzf --zsh)' &gt;&gt; .zshrc</span></code></pre></div>
+<span id="cb4-3">echo 'source &lt;(fzf --zsh)' &gt;&gt; .zshrc</span></code></pre></div></div>
 </section>
 <section id="eza" class="level3">
 <h3 class="anchored" data-anchor-id="eza">eza</h3>
 <p>Better alternative to <code>ls</code> with icons and better defaults.</p>
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1">brew install eza</span>
-<span id="cb5-2">echo 'alias ls='eza -la --group-directories-first --icons'' &gt;&gt; .zshrc</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1">brew install eza</span>
+<span id="cb5-2">echo 'alias ls='eza -la --group-directories-first --icons'' &gt;&gt; .zshrc</span></code></pre></div></div>
 </section>
 <section id="thefuck" class="level3">
 <h3 class="anchored" data-anchor-id="thefuck">thefuck</h3>
 <p>A tool to correct mistyped commands in the terminal.</p>
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1">brew install thefuck</span>
-<span id="cb6-2">echo 'eval $(thefuck --alias)' &gt;&gt; .zshrc</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1">brew install thefuck</span>
+<span id="cb6-2">echo 'eval $(thefuck --alias)' &gt;&gt; .zshrc</span></code></pre></div></div>
 </section>
 <section id="tmux" class="level3">
 <h3 class="anchored" data-anchor-id="tmux">tmux</h3>
 <p>A terminal multiplexer that allows you to manage multiple terminal sessions from a single window.</p>
-<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1">brew install tmux</span>
-<span id="cb7-2">echo 'alias tmux="tmux -2"' &gt;&gt; .zshrc</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1">brew install tmux</span>
+<span id="cb7-2">echo 'alias tmux="tmux -2"' &gt;&gt; .zshrc</span></code></pre></div></div>
 </section>
 <section id="fastfetch" class="level3">
 <h3 class="anchored" data-anchor-id="fastfetch">fastfetch</h3>
 <p>A tool to display system information in the terminal, similar to neofetch but faster.</p>
-<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1">brew install fastfetch</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1">brew install fastfetch</span>
 <span id="cb8-2">echo 'alias ff="fastfetch"' &gt;&gt; .zshrc</span>
-<span id="cb8-3">echo 'ff' &gt;&gt; .zshrc</span></code></pre></div>
+<span id="cb8-3">echo 'ff' &gt;&gt; .zshrc</span></code></pre></div></div>
 
 
 </section>
@@ -909,8 +1317,8 @@ Note
 <section id="installing-and-setting-up-wsl" class="level2">
 <h2 class="anchored" data-anchor-id="installing-and-setting-up-wsl">Installing and setting up WSL</h2>
 <p>First, we need to set up the WSL and install a chosen Linux distribution. Fortunately, this is “super easy, barely an inconvenience”. You can choose from a list of distros pre-packaged by Microsoft or download and build an image from scratch. You can even build Arch and be legally allowed to say <code>BTW, I use Arch (on Windows)</code>. For this guide, we’ll take a more conventional approach and opt for the long-term support (LTS) version of Ubuntu. Now, open the Powershell with administrative privileges and run:</p>
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1">wsl --update</span>
-<span id="cb1-2">wsl --version</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1">wsl --update</span>
+<span id="cb1-2">wsl --version</span></code></pre></div></div>
 <p>These commands ensure that WSL is up-to-date and displays the installed WSL version.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -918,7 +1326,7 @@ Note
 </figure>
 </div>
 <p>Our next command will be:</p>
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1">wsl -l -o</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1">wsl -l -o</span></code></pre></div></div>
 <p>This yields a curated list of pre-packaged Linux distributions that Microsoft provides, making the process almost effortless.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -926,7 +1334,7 @@ Note
 </figure>
 </div>
 <p>For the installation itself:</p>
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1">wsl --install -d 'Ubuntu-24.04'</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1">wsl --install -d 'Ubuntu-24.04'</span></code></pre></div></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://bwrob.github.io/posts/linux-in-windows/3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
@@ -951,34 +1359,34 @@ Note
 <h3 class="anchored" data-anchor-id="brewing-starts">Brewing starts</h3>
 <p>Before we dive into installing Homebrew, we need to equip our system with the essential tools. The build-essential package provides a collection of compilers and libraries necessary for building software from the source code. Git is a version control system used for managing code projects.</p>
 <p>Let’s install these prerequisites using the following command:</p>
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1">sudo apt-get upgrade -y</span>
-<span id="cb4-2">sudo apt-get install build-essential git -y</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1">sudo apt-get upgrade -y</span>
+<span id="cb4-2">sudo apt-get install build-essential git -y</span></code></pre></div></div>
 <p>Execute the installation script for Homebrew:</p>
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1">INSTALL_PATH="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"</span>
-<span id="cb5-2">/bin/bash -c "$(curl -fsSL $INSTALL_PATH)"</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1">INSTALL_PATH="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"</span>
+<span id="cb5-2">/bin/bash -c "$(curl -fsSL $INSTALL_PATH)"</span></code></pre></div></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://bwrob.github.io/posts/linux-in-windows/6.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 <p>To make Homebrew accessible from your shell, you need to load its environment variables. The following command achieves this and subsequently runs a diagnostic check:</p>
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1">eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"</span>
-<span id="cb6-2">brew doctor</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1">eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"</span>
+<span id="cb6-2">brew doctor</span></code></pre></div></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://bwrob.github.io/posts/linux-in-windows/7.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 <p>Doctor’s orders to append brew to some set of paths! Let’s do this then:</p>
-<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1">echo 'export XDG_DATA_DIRS="/home/linuxbrew/.linuxbrew/share:$XDG_DATA_DIRS"' &gt;&gt; ~/.profile</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1">echo 'export XDG_DATA_DIRS="/home/linuxbrew/.linuxbrew/share:$XDG_DATA_DIRS"' &gt;&gt; ~/.profile</span></code></pre></div></div>
 </section>
 </section>
 <section id="z-shell-sea-shell" class="level2">
 <h2 class="anchored" data-anchor-id="z-shell-sea-shell">Z-shell — sea-shell</h2>
 <p>Homebrew makes package management a breeze. Let’s install <code>zsh</code>, a powerful and customizable shell.</p>
-<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1">brew install zsh</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1">brew install zsh</span>
 <span id="cb8-2">zsh --version</span>
-<span id="cb8-3">zsh</span></code></pre></div>
+<span id="cb8-3">zsh</span></code></pre></div></div>
 <p>This will take you to interactive <code>.zshrc</code> file setup. The file contains commands that are run each time a shell is spawned. You can either generate empty file with <code>0</code> or go through the interactive setup with <code>1</code>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -986,25 +1394,25 @@ Note
 </figure>
 </div>
 <p>Add the brew initialization to <code>.zshrc</code> file as well. This way <code>brew</code> will always be by your side!</p>
-<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb9-1">(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') &gt;&gt; /home/bwrob/.zshrc</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb9-1">(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') &gt;&gt; /home/bwrob/.zshrc</span></code></pre></div></div>
 <p>Check the default shell and set it to <code>zsh</code>:</p>
-<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb10-1">echo $SHELL</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb10-1">echo $SHELL</span>
 <span id="cb10-2">sudo chsh -s $(which zsh)</span>
-<span id="cb10-3">echo $SHELL</span></code></pre></div>
+<span id="cb10-3">echo $SHELL</span></code></pre></div></div>
 </section>
 <section id="github-command-line-tool" class="level2">
 <h2 class="anchored" data-anchor-id="github-command-line-tool">GitHub command line tool</h2>
 <p>Remember <code>git != GitHub</code>, we need a way to authenticate and use Github from CLI. There’s a tool for that!</p>
-<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1">brew install gh</span>
-<span id="cb11-2">gh auth login</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1">brew install gh</span>
+<span id="cb11-2">gh auth login</span></code></pre></div></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://bwrob.github.io/posts/linux-in-windows/9.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 <p>Now create a convenient directory and copy your favourite <code>GitHub</code> repo:</p>
-<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb12-1">mkdir repos &amp;&amp; cd repos</span>
-<span id="cb12-2">gh repo clone python_playground</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb12-1">mkdir repos &amp;&amp; cd repos</span>
+<span id="cb12-2">gh repo clone python_playground</span></code></pre></div></div>
 </section>
 <section id="connect-to-visual-studio-code" class="level2">
 <h2 class="anchored" data-anchor-id="connect-to-visual-studio-code">Connect to Visual Studio Code</h2>
@@ -1014,7 +1422,7 @@ Note
 <li><p><strong>Install the WSL Extension in VSC</strong>: Fire up VSC on your Windows machine and head over to the Extensions tab. Search for “WSL” and install the official extension by Microsoft: <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl">WSL extension</a>.</p></li>
 <li><p><strong>Launching VSC from WSL</strong>: Within your WSL terminal, you can directly invoke VSC as if it were running natively on Windows. Use the following command:</p></li>
 </ul>
-<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1">code ~\repos\python_playground</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1">code ~\repos\python_playground</span></code></pre></div></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://bwrob.github.io/posts/linux-in-windows/10.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
@@ -1056,29 +1464,29 @@ Note
 
 
 <p>Installing Python dev tools on Linux is a bit of a pain, but it doesn’t have to be. This post will show you how to set up a great Python dev environment on Linux using <code>brew</code>, <code>pipx</code>, and <code>poetry</code>.</p>
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1">brew install python@3.12 python@3.13</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1">brew install python@3.12 python@3.13</span></code></pre></div></div>
 <p>Dev tools should be accessable globally, but should’t be in the defualt global python env. Solution - <code>pipx</code></p>
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1">brew install pipx</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1">brew install pipx</span>
 <span id="cb2-2">pipx ensurepath</span>
-<span id="cb2-3">pipx install argcomplete --force</span></code></pre></div>
+<span id="cb2-3">pipx install argcomplete --force</span></code></pre></div></div>
 <p>Add pipix completions to config</p>
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1">nano  .zshrc</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1">nano  .zshrc</span>
 <span id="cb3-2"></span>
 <span id="cb3-3">autoload -U compinit &amp;&amp; compinit</span>
-<span id="cb3-4">eval "$(register-python-argcomplete pipx)"</span></code></pre></div>
+<span id="cb3-4">eval "$(register-python-argcomplete pipx)"</span></code></pre></div></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://bwrob.github.io/posts/linux-python-dev-env/1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 <p>Install dev tools</p>
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1">pipx install --force ruff hapless poethepoet poetry pre-commit uv pytest basedpyright</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1">pipx install --force ruff hapless poethepoet poetry pre-commit uv pytest basedpyright</span></code></pre></div></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://bwrob.github.io/posts/linux-python-dev-env/2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1">nano $(which poetry)</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1">nano $(which poetry)</span></code></pre></div></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://bwrob.github.io/posts/linux-python-dev-env/3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
@@ -1087,21 +1495,21 @@ Note
 <p>Shebang Line (#!): #!/home/bwrob/.local/share/pipx/venvs/poetry/bin/python: This line specifies the interpreter used to run the script. In this case, it’s a Python interpreter located in a specific virtual environment (poetry).</p>
 <p>This script acts as a launcher for the poetry command. It sets up the environment and handles potential script extensions before delegating the actual command execution to the poetry library.</p>
 <p>We can see that each of the toolos install with pipx is installed in its own venv, but is available globally</p>
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1">ls /home/bwrob/.local/share/pipx/venvs/ -la</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1">ls /home/bwrob/.local/share/pipx/venvs/ -la</span></code></pre></div></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://bwrob.github.io/posts/linux-python-dev-env/4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 <p>Copy your</p>
-<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"># Instal dependencies</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"># Instal dependencies</span>
 <span id="cb7-2">poetry install</span>
 <span id="cb7-3"># Install pre-commit</span>
 <span id="cb7-4">pre-commit install --install-hooks --overwrite --allow-missing-config</span>
 <span id="cb7-5"># Update pre-commit</span>
 <span id="cb7-6">pre-commit autoupdate</span>
 <span id="cb7-7"># Run pre-commit to test setup</span>
-<span id="cb7-8">pre-commit run --all-files</span></code></pre></div>
+<span id="cb7-8">pre-commit run --all-files</span></code></pre></div></div>
 
 
 
@@ -1147,7 +1555,7 @@ Note
 </ul>
 <p>We can start by creating the public interface, see what we want to achieve and later deal with filling in a working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:</p>
 <div id="3e2d3fc9" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="kw" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> run_startup_script() <span class="op" style="color: #5E5E5E;
@@ -1189,7 +1597,7 @@ background-color: null;
 font-style: inherit;">".temp"</span>])</span>
 <span id="cb1-12">    run_commands([<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Write-Output "test"'</span>])</span></code></pre></div>
+font-style: inherit;">'Write-Output "test"'</span>])</span></code></pre></div></div>
 </div>
 <p>We specify programs to be launched, open all files in a chosen temp folder and run a list of shell commands. After each step there should be some delay to avoid spamming system with process calls. Certain steps might be more time consuming, like cloud services authorization. Those need longer delay. On the other hand, specifying delay for each task would be cumbersome, most cases would be fine with some default value. We end up with a design that our soon-to-be workers <code>start_programs</code>, <code>start_work_files</code>, and <code>run_commands</code> expect lists of either <code>task</code> or <code>(task, delay_seconds)</code>. We can now start the implementation by figuring out how the delay time should be defaulted if not specified.</p>
 </section>
@@ -1198,7 +1606,7 @@ font-style: inherit;">'Write-Output "test"'</span>])</span></code></pre></div>
 <p>Now we can start the implementation. We want the workers to be called with a list of tasks, but a task can be either a command or a tuple including the delay. Let’s not include some complicated conditionals in each of the workers — that would be annoying and potentially get out of sync at some point.</p>
 <p>Other way to do this is to add a default delay to all non-tuple items. We can implement that as a separate defaulting function, which we would call in each worker. But — being more clever! — we could also use a decorator that changes the workers’s signature.</p>
 <div id="882fc9dd" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> functools <span class="im" style="color: #00769E;
 background-color: null;
@@ -1334,7 +1742,7 @@ font-style: inherit;">return</span> task_worker(tasks_with_defaulted_delays)</sp
 <span id="cb2-39">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">return</span> task_defaulted_worker</span></code></pre></div>
+font-style: inherit;">return</span> task_defaulted_worker</span></code></pre></div></div>
 </div>
 <p>First, for convenience, let’s define a template type annotation:</p>
 <ul>
@@ -1349,7 +1757,7 @@ font-style: inherit;">return</span> task_defaulted_worker</span></code></pre></d
 <h3 class="anchored" data-anchor-id="main-workers">Main workers</h3>
 <p>With the preparation done, we can start with the workers. For the programs we will be launching, we need to look up the exact paths of the executables. Let’s define a <code>Program</code> enum that would wrap those up in readable nice names. For working with system paths we will use <code>pathlib.Path</code> that provides high-level interface.</p>
 <div id="82b7123b" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
 background-color: null;
@@ -1459,11 +1867,11 @@ font-style: inherit;">Firefox</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">.</span><span class="vs" style="color: #20794D;
 background-color: null;
-font-style: inherit;">lnk"</span>)</span></code></pre></div>
+font-style: inherit;">lnk"</span>)</span></code></pre></div></div>
 </div>
 <p>Other than that, the main workers <code>start_programs</code>, <code>start_work_files</code>, and <code>run_commands</code> are simple. They just iterate over the provided <code>TaskList</code> and do the respective action for a given <code>Task</code>.</p>
 <div id="391190f7" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">@with_optional_delay</span></span>
 <span id="cb4-2"><span class="kw" style="color: #003B4F;
@@ -1608,7 +2016,7 @@ font-style: inherit;">for</span> command, delay <span class="kw" style="color: #
 background-color: null;
 font-weight: bold;
 font-style: inherit;">in</span> commands:</span>
-<span id="cb4-53">        run_command(command, delay)</span></code></pre></div>
+<span id="cb4-53">        run_command(command, delay)</span></code></pre></div></div>
 </div>
 </section>
 <section id="list-all-files-in-list-of-directories" class="level3">
@@ -1621,7 +2029,7 @@ font-style: inherit;">in</span> commands:</span>
 </ul>
 <p>Here we’ll have all three of them combined!</p>
 <div id="ca35ac80" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">NAME_EXCLUDES <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">NAME_EXCLUDES <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> (<span class="st" style="color: #20794D;
 background-color: null;
@@ -1756,7 +2164,7 @@ background-color: null;
 font-weight: bold;
 font-style: inherit;">yield</span> <span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">file</span>, delay</span></code></pre></div>
+font-style: inherit;">file</span>, delay</span></code></pre></div></div>
 </div>
 <p>The <code>filter_excluded</code> function filters out files based on exclusions in name and extension lists. <code>Path.stem</code> and <code>Path.suffix</code> are used to check if the file name or extension is in the lists respectively.</p>
 </section>
@@ -1764,7 +2172,7 @@ font-style: inherit;">file</span>, delay</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="interacting-with-the-os">Interacting with the OS</h3>
 <p>With all of the framework prepared, the next step is to interact with the OS. To open a file, folder or run an app, we can use the <code>os.startfile</code> function. All the rest of the <code>start_process</code> function is just utility logging. For running a shell command we can use the <code>subprocess</code> module, calling powershell with the <code>powershell.exe</code> and adding the command to run.</p>
 <div id="7c023ff4" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> os</span>
 <span id="cb6-2"><span class="im" style="color: #00769E;
@@ -1937,7 +2345,7 @@ font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">False</span>,</span>
 <span id="cb6-55">    )</span>
-<span id="cb6-56">    time.sleep(delay)</span></code></pre></div>
+<span id="cb6-56">    time.sleep(delay)</span></code></pre></div></div>
 </div>
 </section>
 </section>
@@ -2032,7 +2440,7 @@ Note
 <h3 class="anchored" data-anchor-id="mock-functions">Mock functions</h3>
 <p>The setup described above comes from a real-life situation I worked through. I can’t show you the actual API usage or data (or even the name of RMS itself), so we need to define some mocker functions. Mocks like this are actually not an uncommon thing — such approach is prevalent in testing API client code. In our case it would look like this:</p>
 <div id="ac9a7de2" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
 background-color: null;
@@ -2202,7 +2610,7 @@ font-style: inherit;">{</span>object_uuid<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">."</span>)</span></code></pre></div>
+font-style: inherit;">."</span>)</span></code></pre></div></div>
 </div>
 <p>For each of the four types of resources we mock the preparation, object (ex. API response, some id of definition on server) and the clean up process.</p>
 </section>
@@ -2210,7 +2618,7 @@ font-style: inherit;">."</span>)</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="context-managers">Context managers</h3>
 <p>Easiest way to define a CM is through <code>contextlib.contextmanager</code> decorator. To use it, you need a function that returns a generator. Code executed on enter should come before <code>yield</code> statement and the one for the exit afterwards. The generator yields the result of the CM (ex. handle to an opened file), the <code>y</code> in <code>with x(*args) as y:</code>.</p>
 <div id="ab673008" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> contextlib <span class="im" style="color: #00769E;
 background-color: null;
@@ -2273,12 +2681,12 @@ font-style: inherit;">=</span> mock_object(MockObject.ANALYSIS)</span>
 background-color: null;
 font-weight: bold;
 font-style: inherit;">yield</span> analysis_uuid</span>
-<span id="cb2-22">    mock_clean_up(analysis_uuid)</span></code></pre></div>
+<span id="cb2-22">    mock_clean_up(analysis_uuid)</span></code></pre></div></div>
 </div>
 <p>Modern approach to Python development leans heavily towards type annotations. Dynamical typing is powerful but can lead to unwieldy code. To properly annotate the <code>analysis</code> function we need to import <code>Generator</code> from <code>typing</code> module. Remember, the <code>@contextmanager</code> decorator takes the function and turns it into CM — a class with <code>__enter__</code> and <code>__exit__</code> methods. The <code>Generator</code> needs three inputs but in our case only the first one is important — <code>YieldType</code>, here <code>str</code> (<a href="https://docs.python.org/3/library/typing.html#typing.Generator">see</a> for more).</p>
 <p>With this done implementing the 3 remaining CMs is easy, just remember our flow chart.</p>
 <div id="df38a5b0" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">@contextmanager</span></span>
 <span id="cb3-2"><span class="kw" style="color: #003B4F;
@@ -2412,14 +2820,14 @@ font-style: inherit;">=</span> mock_object(MockObject.PORTFOLIO)</span>
 background-color: null;
 font-weight: bold;
 font-style: inherit;">yield</span> portfolio_uuid</span>
-<span id="cb3-47">    mock_clean_up(portfolio_uuid)</span></code></pre></div>
+<span id="cb3-47">    mock_clean_up(portfolio_uuid)</span></code></pre></div></div>
 </div>
 </section>
 <section id="analysis-results" class="level3">
 <h3 class="anchored" data-anchor-id="analysis-results">Analysis results</h3>
 <p>No stress or complexity here, to run the analysis we need to specify which analysis to run on which portfolio.</p>
 <div id="c826dae0" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
 background-color: null;
@@ -2481,7 +2889,7 @@ font-style: inherit;">."</span>)</span>
 <span id="cb4-17">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">return</span> pd.DataFrame()</span></code></pre></div>
+font-style: inherit;">return</span> pd.DataFrame()</span></code></pre></div></div>
 </div>
 </section>
 </section>
@@ -2492,7 +2900,7 @@ font-style: inherit;">return</span> pd.DataFrame()</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="using-contexts-directly">Using contexts directly</h3>
 <p>First, we use the managers directly through <code>with</code> clause, remembering the dependencies from our flow chart.</p>
 <div id="e29fdf47" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">PORTFOLIO <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">PORTFOLIO <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
@@ -2555,11 +2963,11 @@ font-style: inherit;">=</span>portfolio_uuid,</span>
 <span id="cb5-18">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">return</span> results</span></code></pre></div>
+font-style: inherit;">return</span> results</span></code></pre></div></div>
 </div>
 <p>This is terrible! I am already getting lost, needed few tries to get it right. We ended up with <strong>6</strong> levels of indentation, the code is confusing, the flow is obtuse. Let’s run it either way, to see if at least works.</p>
 <div id="fd75b2b5" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> print_title(title: <span class="bu" style="color: null;
@@ -2599,7 +3007,7 @@ font-style: inherit;">"</span>)</span>
 <span id="cb6-5">print_title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Running analysis."</span>)</span>
-<span id="cb6-6">run_analysis()</span></code></pre></div>
+<span id="cb6-6">run_analysis()</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 ---------------------Running analysis.----------------------
@@ -2618,7 +3026,7 @@ Cleaning up after otc_products_7dc52675-8e46-484f-b04e-a59cdc468787.</code></pre
 <div>
 
 
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -2662,7 +3070,7 @@ Cleaning up after otc_products_7dc52675-8e46-484f-b04e-a59cdc468787.</code></pre
 </div>
 <p>So the flow is exactly the same as in our first attempt. Let’s try it!</p>
 <div id="99e66d80" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> contextlib <span class="im" style="color: #00769E;
 background-color: null;
@@ -2721,14 +3129,14 @@ font-style: inherit;">=</span>analysis_uuid,</span>
 <span id="cb8-21">            portfolio_uuid<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>portfolio_uuid,</span>
-<span id="cb8-22">        )</span></code></pre></div>
+<span id="cb8-22">        )</span></code></pre></div></div>
 </div>
 <p>That’s amazing (if the approach works)! In our code we end up with only single <code>with</code> clause and the outputs of CMs are defined just like the regular variables. We just need to wrap the CM calls in <code>stack.enter_context</code> method that pushes each CM to the stack.</p>
 <div id="f61ecb9f" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1">print_title(<span class="st" style="color: #20794D;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1">print_title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Running analysis with exit stack."</span>)</span>
-<span id="cb9-2">run_analysis_with_exit_stack()</span></code></pre></div>
+<span id="cb9-2">run_analysis_with_exit_stack()</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 -------------Running analysis with exit stack.--------------
@@ -2749,7 +3157,7 @@ Cleaning up after otc_products_a91c6898-0963-4ab3-87fb-5c590616799c.</code></pre
 <h3 class="anchored" data-anchor-id="disabling-the-clean-up">Disabling the clean up</h3>
 <p>Working with API is tricky and debugging could be a painful experience. If we notice something iffy with the results we are reciving, it could be due to a bug at any of the stages. In such case disabling the artifact clean up and examining them is a good way to investigate. How do we do that? Comment out the exit code in our resource CMs? Nope, now we know better. With exit stack approach we just need to clean up the stack before exiting its context.</p>
 <div id="582d4f58" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="kw" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> run_analysis_with_exit_stack(</span>
@@ -2836,18 +3244,18 @@ font-style: inherit;">=</span> stack.pop_all()</span>
 <span id="cb11-31">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">return</span> results</span></code></pre></div>
+font-style: inherit;">return</span> results</span></code></pre></div></div>
 </div>
 <p>The <code>_ = some_function()</code> is a Pythonic way of disregarding outputs of <code>some_function</code>. Method <code>pop_all</code> actually moves the stack contents to a new stack, but we don’t care about that. We just want to get rid of them from our current one.</p>
 <div id="d4a2ce6c" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1">print_title(<span class="st" style="color: #20794D;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1">print_title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Running analysis with exit stack and no clean up."</span>)</span>
 <span id="cb12-2">run_analysis_with_exit_stack(clean_up<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">False</span>)</span></code></pre></div>
+font-style: inherit;">False</span>)</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 -----Running analysis with exit stack and no clean up.------
@@ -2862,7 +3270,7 @@ Running analysis analysis_b1a8a7ee-dd71-49d0-aab5-a9b0bbc25240 on portfolio port
 <div>
 
 
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -2880,7 +3288,7 @@ Running analysis analysis_b1a8a7ee-dd71-49d0-aab5-a9b0bbc25240 on portfolio port
 <h3 class="anchored" data-anchor-id="multiple-portfolios">Multiple portfolios</h3>
 <p>Benefit #2 — what do we do if we have multiple managers and many portfolios to re-run for? Or — outside of the example scope — we want to held multiple files open at the same time? Easy, we just push to the stack in a loop or a list comprehension.</p>
 <div id="8f6e4e1f" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1">PORTFOLIOS <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1">PORTFOLIOS <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
 background-color: null;
@@ -3000,7 +3408,7 @@ font-style: inherit;">"Running analysis with exit stack on multiple portfolios."
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">True</span>)</span></code></pre></div>
+font-style: inherit;">True</span>)</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 --Running analysis with exit stack on multiple portfolios.--
@@ -3025,7 +3433,7 @@ Cleaning up after otc_products_a8f0d217-b2bc-4683-bcfa-f4cd491ba9f9.</code></pre
 <div>
 
 
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -3111,7 +3519,7 @@ Note
 <h2 class="anchored" data-anchor-id="abstract-schema">Abstract schema</h2>
 <p>Each scheme that we’d come up with, even the most complex ones, would have the same main purpose — ‘integrate’. To make the implementation for it, we create a template class that all concrete schemes will inherit from.</p>
 <div id="b4e9facf" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> abc <span class="im" style="color: #00769E;
 background-color: null;
@@ -3161,7 +3569,7 @@ background-color: null;
 font-style: inherit;">float</span>:</span>
 <span id="cb1-15">        <span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"""Abstract method for integrating a function."""</span></span></code></pre></div>
+font-style: inherit;">"""Abstract method for integrating a function."""</span></span></code></pre></div></div>
 </div>
 <p>Unpacking this, we already used some nifty Pythonic tricks in those few lines:</p>
 <ul>
@@ -3179,7 +3587,7 @@ font-style: inherit;">"""Abstract method for integrating a function."""</span></
 <p><a href="https://en.wikipedia.org/wiki/File:Rectangle_rule.gif"><img src="https://bwrob.github.io/posts/strategy-pattern-integration/Rectangle_rule.gif" class="img-fluid" style="width:100.0%"></a></p>
 <p>Implementing this idea is trivial when using <a href="https://numpy.org/">numpy</a>, but let’s add some syntactic sugar so the class is sweeter to work with.</p>
 <div id="37072775" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
 background-color: null;
@@ -3320,7 +3728,7 @@ font-style: inherit;">return</span> np.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">sum</span>(values) <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">*</span> dx</span></code></pre></div>
+font-style: inherit;">*</span> dx</span></code></pre></div></div>
 </div>
 <ul>
 <li><code>RectangleScheme</code> subclasses <code>IntegrationScheme</code> so we need to implement the <code>integrate</code> method.</li>
@@ -3339,7 +3747,7 @@ font-style: inherit;">*</span> dx</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="simple-monte-carlo">Simple Monte Carlo</h3>
 <p>This guy sounds fancy with its luxurious Monaco vibes, but it’s just a peasant in a nice suit. Instead of looking at equaly-spaced points, we shuffle them from uniform distribution on the interval of integration. We calculate the integrand function values at those points and sum them up. Then multiply the sum by the average distance between points and through the magic of probability theory (and not opening actual probability textbook in 10 years) you get a good probabilistic estimator of the integral value. The implementation is analogous to the <code>RectangleScheme</code>.</p>
 <div id="d8017138" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
 background-color: null;
@@ -3535,7 +3943,7 @@ font-style: inherit;">return</span> np.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">sum</span>(values) <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">*</span> average_dx</span></code></pre></div>
+font-style: inherit;">*</span> average_dx</span></code></pre></div></div>
 </div>
 <ul>
 <li><code>Optional[int]</code> annotation means that the value of <code>random_seed</code> can be a <code>float</code> or <code>None</code>. With a set seed we get a reproducable results — good for testing but not for actual usage. Hence the default value here is <code>None</code>.</li>
@@ -3559,7 +3967,7 @@ Note
 <h2 class="anchored" data-anchor-id="integrator">Integrator</h2>
 <p>What’s left is to have a way of defining the problem to solve and define how our schemes (strategies) interact with it.</p>
 <div id="90c6461e" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">"""An integrator class that allows to perform integration using different schemas."""</span></span>
 <span id="cb4-2"><span class="im" style="color: #00769E;
@@ -3696,7 +4104,7 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>.__interval_end,</span>
-<span id="cb4-36">        )</span></code></pre></div>
+<span id="cb4-36">        )</span></code></pre></div></div>
 </div>
 <ul>
 <li>The <code>__init__</code> takes in the obvious parameters — function to integrate, start and end of the interval. It also checks if it’s a proper integral.</li>
@@ -3707,7 +4115,7 @@ font-style: inherit;">self</span>.__interval_end,</span>
 <h2 class="anchored" data-anchor-id="lets-integrate">Let’s integrate!</h2>
 <p>Ok, now to the integrating! Let’s set up the stage:</p>
 <div id="36e55099" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">start, end <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">start, end <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -3732,12 +4140,12 @@ background-color: null;
 font-weight: bold;
 font-style: inherit;">return</span> np.sin(x) <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">+</span> np.cos(x)</span></code></pre></div>
+font-style: inherit;">+</span> np.cos(x)</span></code></pre></div></div>
 </div>
 <p>Excited? Don’t be… yet.</p>
 <p>We should get some benchmark value first. As none of us would bother to integrate this by hand, we’ll use SciPy. Unexpectedly (SciPy uses C and Fortran underneath), we get the result in a breeze and it is very close to <a href="https://www.wolframalpha.com/input?i=integrate+sin%28x%29+%2B+cos%28x%29+over+0+to+pi%2F2">actual value of 2.0</a>.</p>
 <div id="2c69ee38" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> scipy.integrate <span class="im" style="color: #00769E;
 background-color: null;
@@ -3748,14 +4156,14 @@ background-color: null;
 font-style: inherit;">=</span> quad(f, start, end)</span>
 <span id="cb6-4"><span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">print</span>(scipy_quad)</span></code></pre></div>
+font-style: inherit;">print</span>(scipy_quad)</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>1.9999999999999998</code></pre>
 </div>
 </div>
 <p>Now let’s use our <code>Integrator</code> class and see.</p>
 <div id="8be25e69" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1">integrator <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1">integrator <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Integrator(</span>
 <span id="cb8-2">    f,</span>
@@ -3836,7 +4244,7 @@ font-style: inherit;">{</span>mc_results<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">."</span>)</span></code></pre></div>
+font-style: inherit;">."</span>)</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Using Rectangle schema with 1 steps.
 Using Rectangle schema with 32 steps.

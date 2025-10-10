@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.34">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -70,16 +70,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../logo/python_mug.png" rel="icon" type="image/png">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-9582434199d49cc9e91654cdeeb4866b.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-8dcd8563ea6803ab7cbb3d71ca5772e1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-969ddfa49e00a70eb3423444dbc81f6c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-27bdcad6e2c5129c4a00b00c00aa65cc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-cb82ce53a18555e556235c4f85a8b6c9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-4fb5871a2fa2869b4ddfc9dbc86feb8e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-443f7be31c8200b488db8514bbe704f0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -122,7 +123,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -317,7 +318,8 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../logo/python_mug.png" alt="" class="navbar-logo">
+    <img src="../../logo/python_mug.png" alt="" class="navbar-logo light-content">
+    <img src="../../logo/python_mug.png" alt="" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">bwrob blog</span>
@@ -484,7 +486,7 @@ Note
 <h2 class="anchored" data-anchor-id="abstract-schema">Abstract schema</h2>
 <p>Each scheme that we’d come up with, even the most complex ones, would have the same main purpose — ‘integrate’. To make the implementation for it, we create a template class that all concrete schemes will inherit from.</p>
 <div id="b4e9facf" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="im">from</span> typing <span class="im">import</span> Callable</span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
 <span id="cb1-4"><a href="#cb1-4"></a><span class="kw">class</span> IntegrationScheme(ABC):</span>
@@ -498,7 +500,7 @@ Note
 <span id="cb1-12"><a href="#cb1-12"></a>        start: <span class="bu">float</span>,</span>
 <span id="cb1-13"><a href="#cb1-13"></a>        end: <span class="bu">float</span>,</span>
 <span id="cb1-14"><a href="#cb1-14"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb1-15"><a href="#cb1-15"></a>        <span class="co">"""Abstract method for integrating a function."""</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-15"><a href="#cb1-15"></a>        <span class="co">"""Abstract method for integrating a function."""</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Unpacking this, we already used some nifty Pythonic tricks in those few lines:</p>
 <ul>
@@ -516,7 +518,7 @@ Note
 <p><a href="https://en.wikipedia.org/wiki/File:Rectangle_rule.gif"><img src="Rectangle_rule.gif" class="img-fluid" style="width:100.0%"></a></p>
 <p>Implementing this idea is trivial when using <a href="https://numpy.org/">numpy</a>, but let’s add some syntactic sugar so the class is sweeter to work with.</p>
 <div id="37072775" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb2-2"><a href="#cb2-2"></a></span>
 <span id="cb2-3"><a href="#cb2-3"></a><span class="kw">class</span> RectangleScheme(IntegrationScheme):</span>
 <span id="cb2-4"><a href="#cb2-4"></a>    <span class="co">"""Schema for rectangle integration."""</span></span>
@@ -545,7 +547,7 @@ Note
 <span id="cb2-27"><a href="#cb2-27"></a>        x_points <span class="op">=</span> np.linspace(start, end, <span class="va">self</span>._steps)</span>
 <span id="cb2-28"><a href="#cb2-28"></a>        values <span class="op">=</span> integrand(x_points)</span>
 <span id="cb2-29"><a href="#cb2-29"></a>        dx <span class="op">=</span> (end <span class="op">-</span> start) <span class="op">/</span> np.float64(<span class="va">self</span>._steps)</span>
-<span id="cb2-30"><a href="#cb2-30"></a>        <span class="cf">return</span> np.<span class="bu">sum</span>(values) <span class="op">*</span> dx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-30"><a href="#cb2-30"></a>        <span class="cf">return</span> np.<span class="bu">sum</span>(values) <span class="op">*</span> dx</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li><code>RectangleScheme</code> subclasses <code>IntegrationScheme</code> so we need to implement the <code>integrate</code> method.</li>
@@ -564,7 +566,7 @@ Note
 <h3 class="anchored" data-anchor-id="simple-monte-carlo">Simple Monte Carlo</h3>
 <p>This guy sounds fancy with its luxurious Monaco vibes, but it’s just a peasant in a nice suit. Instead of looking at equaly-spaced points, we shuffle them from uniform distribution on the interval of integration. We calculate the integrand function values at those points and sum them up. Then multiply the sum by the average distance between points and through the magic of probability theory (and not opening actual probability textbook in 10 years) you get a good probabilistic estimator of the integral value. The implementation is analogous to the <code>RectangleScheme</code>.</p>
 <div id="d8017138" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">from</span> typing <span class="im">import</span> Optional</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">from</span> typing <span class="im">import</span> Optional</span>
 <span id="cb3-2"><a href="#cb3-2"></a></span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="kw">class</span> MonteCarloScheme(IntegrationScheme):</span>
 <span id="cb3-4"><a href="#cb3-4"></a>    <span class="co">"""Schema for Monte Carlo integration."""</span></span>
@@ -598,7 +600,7 @@ Note
 <span id="cb3-32"><a href="#cb3-32"></a>        x_points <span class="op">=</span> np.random.uniform(start, end, <span class="va">self</span>.__random_points)</span>
 <span id="cb3-33"><a href="#cb3-33"></a>        values <span class="op">=</span> integrand(x_points)</span>
 <span id="cb3-34"><a href="#cb3-34"></a>        average_dx <span class="op">=</span> (end <span class="op">-</span> start) <span class="op">/</span> np.float64(<span class="va">self</span>.__random_points)</span>
-<span id="cb3-35"><a href="#cb3-35"></a>        <span class="cf">return</span> np.<span class="bu">sum</span>(values) <span class="op">*</span> average_dx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-35"><a href="#cb3-35"></a>        <span class="cf">return</span> np.<span class="bu">sum</span>(values) <span class="op">*</span> average_dx</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li><code>Optional[int]</code> annotation means that the value of <code>random_seed</code> can be a <code>float</code> or <code>None</code>. With a set seed we get a reproducable results — good for testing but not for actual usage. Hence the default value here is <code>None</code>.</li>
@@ -622,7 +624,7 @@ Note
 <h2 class="anchored" data-anchor-id="integrator">Integrator</h2>
 <p>What’s left is to have a way of defining the problem to solve and define how our schemes (strategies) interact with it.</p>
 <div id="90c6461e" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="co">"""An integrator class that allows to perform integration using different schemas."""</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="co">"""An integrator class that allows to perform integration using different schemas."""</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="im">from</span> typing <span class="im">import</span> Callable</span>
 <span id="cb4-3"><a href="#cb4-3"></a></span>
 <span id="cb4-4"><a href="#cb4-4"></a><span class="kw">class</span> Integrator:</span>
@@ -657,7 +659,7 @@ Note
 <span id="cb4-33"><a href="#cb4-33"></a>            <span class="va">self</span>.__integrand,</span>
 <span id="cb4-34"><a href="#cb4-34"></a>            start<span class="op">=</span><span class="va">self</span>.__interval_start,</span>
 <span id="cb4-35"><a href="#cb4-35"></a>            end<span class="op">=</span><span class="va">self</span>.__interval_end,</span>
-<span id="cb4-36"><a href="#cb4-36"></a>        )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-36"><a href="#cb4-36"></a>        )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li>The <code>__init__</code> takes in the obvious parameters — function to integrate, start and end of the interval. It also checks if it’s a proper integral.</li>
@@ -668,25 +670,25 @@ Note
 <h2 class="anchored" data-anchor-id="lets-integrate">Let’s integrate!</h2>
 <p>Ok, now to the integrating! Let’s set up the stage:</p>
 <div id="36e55099" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>start, end <span class="op">=</span> <span class="dv">0</span>, np.pi <span class="op">/</span> <span class="fl">2.0</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>start, end <span class="op">=</span> <span class="dv">0</span>, np.pi <span class="op">/</span> <span class="fl">2.0</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a></span>
 <span id="cb5-3"><a href="#cb5-3"></a><span class="kw">def</span> f(x: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb5-4"><a href="#cb5-4"></a>    <span class="cf">return</span> np.sin(x) <span class="op">+</span> np.cos(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-4"><a href="#cb5-4"></a>    <span class="cf">return</span> np.sin(x) <span class="op">+</span> np.cos(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Excited? Don’t be… yet.</p>
 <p>We should get some benchmark value first. As none of us would bother to integrate this by hand, we’ll use SciPy. Unexpectedly (SciPy uses C and Fortran underneath), we get the result in a breeze and it is very close to <a href="https://www.wolframalpha.com/input?i=integrate+sin%28x%29+%2B+cos%28x%29+over+0+to+pi%2F2">actual value of 2.0</a>.</p>
 <div id="2c69ee38" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">from</span> scipy.integrate <span class="im">import</span> quad</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">from</span> scipy.integrate <span class="im">import</span> quad</span>
 <span id="cb6-2"><a href="#cb6-2"></a></span>
 <span id="cb6-3"><a href="#cb6-3"></a>scipy_quad, err <span class="op">=</span> quad(f, start, end)</span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="bu">print</span>(scipy_quad)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="bu">print</span>(scipy_quad)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>1.9999999999999998</code></pre>
 </div>
 </div>
 <p>Now let’s use our <code>Integrator</code> class and see.</p>
 <div id="8be25e69" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>integrator <span class="op">=</span> Integrator(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>integrator <span class="op">=</span> Integrator(</span>
 <span id="cb8-2"><a href="#cb8-2"></a>    f,</span>
 <span id="cb8-3"><a href="#cb8-3"></a>    interval_start<span class="op">=</span>start,</span>
 <span id="cb8-4"><a href="#cb8-4"></a>    interval_end<span class="op">=</span>end,</span>
@@ -697,7 +699,7 @@ Note
 <span id="cb8-9"><a href="#cb8-9"></a>mc_results <span class="op">=</span> [integrator(MonteCarloScheme(random_points<span class="op">=</span>i)) <span class="cf">for</span> i <span class="kw">in</span> iterations]</span>
 <span id="cb8-10"><a href="#cb8-10"></a></span>
 <span id="cb8-11"><a href="#cb8-11"></a><span class="bu">print</span>(<span class="ss">f"Rectangle schema results:</span><span class="ch">\n</span><span class="sc">{</span>rectangle_results<span class="sc">}</span><span class="ss">."</span>)</span>
-<span id="cb8-12"><a href="#cb8-12"></a><span class="bu">print</span>(<span class="ss">f"Monte Carlo schema results:</span><span class="ch">\n</span><span class="sc">{</span>mc_results<span class="sc">}</span><span class="ss">."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="bu">print</span>(<span class="ss">f"Monte Carlo schema results:</span><span class="ch">\n</span><span class="sc">{</span>mc_results<span class="sc">}</span><span class="ss">."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Using Rectangle schema with 1 steps.
 Using Rectangle schema with 32 steps.
@@ -800,13 +802,14 @@ Note
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
@@ -1155,7 +1158,7 @@ Note
       &nbsp;
     </div>   
     <div class="nav-footer-center">
-<p>Copyright 2025, bwrob. Rendered with Quarto 1.7.34</p>
+<p>Copyright 2025, bwrob. Rendered with Quarto 1.8.25</p>
 </div>
     <div class="nav-footer-right">
       &nbsp;
