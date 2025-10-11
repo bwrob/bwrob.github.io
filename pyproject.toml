@@ -4,6 +4,7 @@
     ]
     dependencies = [
         "backports.strenum>=1.0.2,<2",
+        "basedpyright>=1.31.7",
         "jupyter>=1.1.1",
         "matplotlib>=3.10.3,<4",
         "pandas-stubs>=2.3.0.250703,<3",
@@ -27,14 +28,21 @@
 
 [tool.poe.tasks]
 
+    _check       = "ruff check --config ruff.toml ."
     _fix         = "ruff check --fix --unsafe-fixes --config ruff.toml ."
     _format      = "ruff format --config ruff.toml ."
     _hap_preview = "hap run quarto preview ./index.qmd --port 3333"
     _report_host = "echo 'http://localhost:3333/'"
+    _type_check  = "basedpyright ."
 
     preview = ["_hap_preview", "_report_host"]
     publish = "hap run quarto publish --no-prompt --no-browser gh-pages"
 
     [tool.poe.tasks.check]
         ignore_fail = "return_zero"
-        sequence    = ["_fix", "_format"]
+        sequence = [
+            "_fix",
+            "_format",
+            "_check",
+            "_type_check",
+        ]
