@@ -17,7 +17,939 @@
 <width>144</width>
 </image>
 <generator>quarto-1.8.25</generator>
-<lastBuildDate>Fri, 10 Oct 2025 22:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sat, 11 Oct 2025 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>A Collection of Iterator Utilities</title>
+  <dc:creator>bwrob </dc:creator>
+  <link>https://bwrob.github.io/posts/python-iterator-recipes/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+
+<p>Working with iterables is a cornerstone of Python programming. While the built-in <code>itertools</code> module provides a powerful toolkit, sometimes you need a specific recipe for a common problem. This post collects a few handy and (mostly!) type-safe utility functions for working with iterators and iterables, complete with explanations and examples.</p>
+<section id="batched" class="level2">
+<h2 class="anchored" data-anchor-id="batched">batched</h2>
+<p>This function splits an iterable into non-overlapping batches of a given size. It’s a common requirement when processing large datasets or making batch API calls. A similar function was added to <code>itertools</code> in Python 3.12, but this implementation is useful for older Python versions or as a standalone utility.</p>
+<div id="9274fa3c" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> __future__ <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> annotations</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> collections.abc <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Iterable</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> itertools <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> islice</span>
+<span id="cb1-4"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sys <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> maxsize</span>
+<span id="cb1-5"></span>
+<span id="cb1-6"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> batched[T](</span>
+<span id="cb1-7">    iterable: Iterable[T],</span>
+<span id="cb1-8">    n: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>,</span>
+<span id="cb1-9">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>,</span>
+<span id="cb1-10">    strict: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">bool</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>,</span>
+<span id="cb1-11">) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Iterable[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">tuple</span>[T, ...]]:</span>
+<span id="cb1-12">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Split an iterable into batches of size n."""</span></span>
+<span id="cb1-13">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;=</span> n <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;=</span> maxsize:</span>
+<span id="cb1-14">        msg <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Batch size n must be at least one and at most sys.maxsize."</span></span>
+<span id="cb1-15">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">raise</span> <span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">ValueError</span>(msg)</span>
+<span id="cb1-16"></span>
+<span id="cb1-17">    iterator <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">iter</span>(iterable)</span>
+<span id="cb1-18">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">while</span> batch <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">tuple</span>(islice(iterator, n)):</span>
+<span id="cb1-19">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> strict <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">and</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(batch) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!=</span> n:</span>
+<span id="cb1-20">            msg <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Incomplete batch for strict batching."</span></span>
+<span id="cb1-21">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">raise</span> <span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">ValueError</span>(msg)</span>
+<span id="cb1-22">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">yield</span> batch</span></code></pre></div></div>
+</div>
+<section id="example" class="level3">
+<h3 class="anchored" data-anchor-id="example">Example</h3>
+<div id="855b50bf" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"batched(range(10), 3): </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>(batched(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>batched(range(10), 3): [(0, 1, 2), (3, 4, 5), (6, 7, 8), (9,)]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="unbox" class="level2">
+<h2 class="anchored" data-anchor-id="unbox">unbox</h2>
+<p>Sometimes you have an iterable that is expected to contain exactly one item. This function ‘unboxes’ it, returning the single element. It raises a <code>ValueError</code> if the iterable is empty or contains more than one element, ensuring that your assumptions about the data are met.</p>
+<div id="3562da30" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> unbox[T](iterable: Iterable[T]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> T:</span>
+<span id="cb4-2">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Unbox an iterable if it contains a single element."""</span></span>
+<span id="cb4-3">    iterator <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">iter</span>(iterable)</span>
+<span id="cb4-4">    first_value <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">next</span>(iterator)</span>
+<span id="cb4-5">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">try</span>:</span>
+<span id="cb4-6">        _ <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">next</span>(iterator)</span>
+<span id="cb4-7">        msg <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Iterable contains more than one element."</span></span>
+<span id="cb4-8">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">raise</span> <span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">ValueError</span>(msg)</span>
+<span id="cb4-9">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">except</span> <span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">StopIteration</span>:</span>
+<span id="cb4-10">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> first_value</span></code></pre></div></div>
+</div>
+<section id="example-1" class="level3">
+<h3 class="anchored" data-anchor-id="example-1">Example</h3>
+<div id="e6d74877" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"unbox([42]): </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>unbox([<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">42</span>])<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb5-2"></span>
+<span id="cb5-3"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">try</span>:</span>
+<span id="cb5-4">    _ <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> unbox([<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>])</span>
+<span id="cb5-5"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">except</span> <span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">ValueError</span> <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> e:</span>
+<span id="cb5-6">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"unbox([1, 2]): </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>e<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>unbox([42]): 42
+unbox([1, 2]): Iterable contains more than one element.</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="unzip" class="level2">
+<h2 class="anchored" data-anchor-id="unzip">unzip</h2>
+<p>The <code>unzip</code> function is the reverse of the built-in <code>zip</code>. Given an iterable of tuples, it separates the elements into a tuple of iterables, where each iterable contains the elements from the corresponding position in the input tuples.</p>
+<div id="649f8fc2" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> unzip[T](iterable: Iterable[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">tuple</span>[T, ...]]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">tuple</span>[Iterable[T], ...]:</span>
+<span id="cb7-2">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Unzip an iterable of tuples."""</span></span>
+<span id="cb7-3">    zipped <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">zip</span>(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>iterable, strict<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb7-4">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">tuple</span>(zipped)</span></code></pre></div></div>
+</div>
+<section id="example-2" class="level3">
+<h3 class="anchored" data-anchor-id="example-2">Example</h3>
+<div id="ce006b13" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1">zipped_data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"a"</span>), (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"b"</span>), (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"c"</span>)]</span>
+<span id="cb8-2">unzipped_data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> unzip(zipped_data)</span>
+<span id="cb8-3"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"unzip(</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>zipped_data<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">): </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>(it) <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> it <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> unzipped_data]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>unzip([(1, 'a'), (2, 'b'), (3, 'c')]): [[1, 2, 3], ['a', 'b', 'c']]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="flatten_iterable" class="level2">
+<h2 class="anchored" data-anchor-id="flatten_iterable">flatten_iterable</h2>
+<p>Dealing with nested lists or other iterables is a common task. <code>flatten_iterable</code> recursively traverses a nested structure of iterables and yields a single, flat list of all the non-iterable elements. It’s careful to not flatten strings, which are often treated as atomic values rather than iterables of characters.</p>
+<div id="a6184f36" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> collections.abc <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Generator</span>
+<span id="cb10-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> cast</span>
+<span id="cb10-3"></span>
+<span id="cb10-4"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">type</span> NestedIterable[T] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Iterable[NestedIterable[T] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> T]</span>
+<span id="cb10-5"></span>
+<span id="cb10-6"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> flatten_iterable[T](iterable: NestedIterable[T]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>[T]:</span>
+<span id="cb10-7">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Flatten an iterable of iterables."""</span></span>
+<span id="cb10-8"></span>
+<span id="cb10-9">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> _helper(lst: NestedIterable[T]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Generator[T]:</span>
+<span id="cb10-10">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> item <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> lst:</span>
+<span id="cb10-11">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">isinstance</span>(item, Iterable) <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">and</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">isinstance</span>(item, (<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">bytes</span>)):</span>
+<span id="cb10-12">                <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">yield</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">from</span> _helper(cast(NestedIterable[T], item))</span>
+<span id="cb10-13">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span>:</span>
+<span id="cb10-14">                <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">yield</span> cast(T, item)</span>
+<span id="cb10-15"></span>
+<span id="cb10-16">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>(_helper(iterable))</span></code></pre></div></div>
+</div>
+<section id="example-3" class="level3">
+<h3 class="anchored" data-anchor-id="example-3">Example</h3>
+<div id="fa8d8751" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1">nested_list <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"a"</span>, [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>]], <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"b"</span>]</span>
+<span id="cb11-2"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"flatten_iterable(</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>nested_list<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">): </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>flatten_iterable(nested_list)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>flatten_iterable([1, [2, 'a', [3]], 'b']): [1, 2, 'a', 3, 'b']</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="flatten_string_key_dict" class="level2">
+<h2 class="anchored" data-anchor-id="flatten_string_key_dict">flatten_string_key_dict</h2>
+<p>This function flattens a nested dictionary into a single-level dictionary by concatenating the keys with a dot (<code>.</code>). This is particularly useful for handling configuration files or nested JSON objects where you want a simple key-value representation.</p>
+<div id="855904c1" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> collections.abc <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Mapping</span>
+<span id="cb13-2"></span>
+<span id="cb13-3"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">type</span> NestedDict[T] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Mapping[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, NestedDict[T] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> T]</span>
+<span id="cb13-4"></span>
+<span id="cb13-5"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> flatten_string_key_dict[T](dictionary: NestedDict[T]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">dict</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, T]:</span>
+<span id="cb13-6">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Flatten a nested string-keyed dictionary."""</span></span>
+<span id="cb13-7"></span>
+<span id="cb13-8">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> _generate_items(</span>
+<span id="cb13-9">        d: NestedDict[T] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> T, prefix: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span></span>
+<span id="cb13-10">    ) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Generator[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">tuple</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, T]]:</span>
+<span id="cb13-11">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">isinstance</span>(d, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">dict</span>):</span>
+<span id="cb13-12">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> key, value <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> d.items():</span>
+<span id="cb13-13">                <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">yield</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">from</span> _generate_items(value, prefix <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> key <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"."</span>)</span>
+<span id="cb13-14">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span>:</span>
+<span id="cb13-15">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">yield</span> prefix[:<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], cast(T, d)</span>
+<span id="cb13-16"></span>
+<span id="cb13-17">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">dict</span>(_generate_items(dictionary))</span></code></pre></div></div>
+</div>
+<section id="example-4" class="level3">
+<h3 class="anchored" data-anchor-id="example-4">Example</h3>
+<div id="8e9e234c" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1">nested_dict <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"a"</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"b"</span>: {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"c"</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"d"</span>: {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"e"</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>}}, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"f"</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>}</span>
+<span id="cb14-2"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(</span>
+<span id="cb14-3">    <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"flatten_string_key_dict(</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>nested_dict<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">): "</span></span>
+<span id="cb14-4">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>flatten_string_key_dict(nested_dict)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span></span>
+<span id="cb14-5">)</span></code></pre></div></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>flatten_string_key_dict({'a': 1, 'b': {'c': 2, 'd': {'e': 3}}, 'f': 4}): {'a': 1, 'b.c': 2, 'b.d.e': 3, 'f': 4}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="group_by_non_consecutive" class="level2">
+<h2 class="anchored" data-anchor-id="group_by_non_consecutive">group_by_non_consecutive</h2>
+<p>The standard <code>itertools.groupby</code> requires the input iterable to be sorted by the grouping key. This utility simplifies the process by first sorting the entire iterable before grouping. This is less memory-efficient for very large iterables but is very convenient for smaller datasets where the input is not pre-sorted.</p>
+<div id="d852cd45" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> itertools</span>
+<span id="cb16-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> collections.abc <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Callable, Iterator</span>
+<span id="cb16-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Any, Protocol, Self</span>
+<span id="cb16-4"></span>
+<span id="cb16-5"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> _SupportsLessThan(Protocol):</span>
+<span id="cb16-6">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__lt__</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, other: Self) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">bool</span>: ...</span>
+<span id="cb16-7"></span>
+<span id="cb16-8"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> group_by_non_consecutive[T, SLT: _SupportsLessThan](</span>
+<span id="cb16-9">    iterable: Iterable[T],</span>
+<span id="cb16-10">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>,</span>
+<span id="cb16-11">    key: Callable[[T], SLT] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>,</span>
+<span id="cb16-12">    reverse: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">bool</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>,</span>
+<span id="cb16-13">) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Iterator[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">tuple</span>[SLT, Iterator[T]]]:</span>
+<span id="cb16-14">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Sort and group an iterable by a key function.</span></span>
+<span id="cb16-15"></span>
+<span id="cb16-16"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Unlike itertools.groupby, this function does not require the iterable</span></span>
+<span id="cb16-17"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    to be pre-sorted. It first sorts the entire iterable and then applies</span></span>
+<span id="cb16-18"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    the grouping.</span></span>
+<span id="cb16-19"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb16-20">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> key <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">is</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb16-21"></span>
+<span id="cb16-22">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> default_key(x: T) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> SLT:</span>
+<span id="cb16-23">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> cast(SLT, x)</span>
+<span id="cb16-24"></span>
+<span id="cb16-25">        key <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> default_key</span>
+<span id="cb16-26">    sorted_iterable <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sorted</span>(iterable, key<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>key, reverse<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>reverse)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># type: ignore[arg-type]</span></span>
+<span id="cb16-27">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> itertools.groupby(sorted_iterable, key<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>key)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># type: ignore[arg-type]</span></span></code></pre></div></div>
+</div>
+<section id="example-5" class="level3">
+<h3 class="anchored" data-anchor-id="example-5">Example</h3>
+<div id="8d829590" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># With key function</span></span>
+<span id="cb17-2">data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"apple"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"banana"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ant"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bear"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"apricot"</span>]</span>
+<span id="cb17-3"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"group_by_non_consecutive(</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>data<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">, key=lambda x: x[0])"</span>)</span>
+<span id="cb17-4"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> key, group <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> group_by_non_consecutive(data, key<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">lambda</span> x: x[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]):</span>
+<span id="cb17-5">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"  </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>key<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>(group)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb17-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Without key function</span></span>
+<span id="cb17-7">data_nums <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb17-8"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"group_by_non_consecutive(</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>data_nums<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)"</span>)</span>
+<span id="cb17-9"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> key, group <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> group_by_non_consecutive(data_nums):</span>
+<span id="cb17-10">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"  </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>key<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>(group)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>group_by_non_consecutive(['apple', 'banana', 'ant', 'bear', 'apricot'], key=lambda x: x[0])
+  a: ['apple', 'ant', 'apricot']
+  b: ['banana', 'bear']
+group_by_non_consecutive([1, 2, 1, 3, 2, 1])
+  1: [1, 1, 1]
+  2: [2, 2]
+  3: [3]</code></pre>
+</div>
+</div>
+<p>These recipes provide robust, type-safe solutions to common problems when working with iterables in Python. Feel free to use them in your own projects. You can download the complete script with all the utilities and examples below.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Download the whole code <a href="../../scripts/iter_utils.py">here</a>.</p>
+</div>
+</div>
+
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
+  <category>Python Recipes</category>
+  <guid>https://bwrob.github.io/posts/python-iterator-recipes/</guid>
+  <pubDate>Sat, 11 Oct 2025 22:00:00 GMT</pubDate>
+  <media:content url="https://bwrob.github.io/pages/images/python_recipes.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
 <item>
   <title>Visualizing Pydantic Models</title>
   <dc:creator>bwrob </dc:creator>
@@ -33,7 +965,7 @@
 <section id="the-script" class="level2">
 <h2 class="anchored" data-anchor-id="the-script">The Script</h2>
 <p>The script uses the <code>rich</code> library to make the output colorful and easy to read.</p>
-<div id="1038b4a8" class="cell" data-execution_count="1">
+<div id="27f2cd3f" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># ruff: noqa: ANN401</span></span>
@@ -608,7 +1540,7 @@ font-style: inherit;">print</span>(tree)</span></code></pre></div></div>
 <section id="example-usage" class="level2">
 <h2 class="anchored" data-anchor-id="example-usage">Example Usage</h2>
 <p>When you run the script, it will display the structure of the <code>Root</code> model as a tree:</p>
-<div id="d2a214ff" class="cell" data-execution_count="2">
+<div id="4b4102ba" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -729,6 +1661,19 @@ font-style: inherit;">str</span></span>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
 <p>This script is a simple way to see what your Pydantic models look like. The <code>rich</code> library helps make the output clear and colorful, which is a big help when you’re dealing with complex data.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Download the whole code <a href="../../scripts/tree_walker.py">here</a>.</p>
+</div>
+</div>
 
 
 </section>
@@ -738,7 +1683,7 @@ font-style: inherit;">str</span></span>
   <category>Pydantic</category>
   <guid>https://bwrob.github.io/posts/pydantic-tree-walker/</guid>
   <pubDate>Fri, 10 Oct 2025 22:00:00 GMT</pubDate>
-  <media:content url="https://bwrob.github.io/logo/python_mug.jpeg" medium="image" type="image/jpeg"/>
+  <media:content url="https://bwrob.github.io/pages/images/python_recipes.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>Case Insensitive Enum</title>
@@ -751,11 +1696,10 @@ font-style: inherit;">str</span></span>
 
 
 
-<p>When working with enums in Python, you might want to create an enum that is case-insensitive. This can be particularly useful when you want to allow users to input values without worrying about the case. Here’s how you can achieve this by subclassing <code>StrEnum</code>.</p>
-<p>To enforce that all enum members are defined in lowercase, we can use a mixin class with <code>__init_subclass__</code>.</p>
+<p>When working with enums in Python, you might want to create an enum that is case-insensitive. This can be particularly useful when you want to allow users to input values without worrying about the case. Here’s how you can achieve this by subclassing <code>StrEnum</code>. To enforce that all enum members are defined in lowercase, we can use a hook <code>__init_subclass__</code>.</p>
 <section id="implementation" class="level2">
 <h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
-<div id="b4a889e5" class="cell" data-execution_count="1">
+<div id="3037b109" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> __future__ <span class="im" style="color: #00769E;
@@ -780,7 +1724,7 @@ font-style: inherit;">11</span>):</span>
 background-color: null;
 font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
 background-color: null;
-font-style: inherit;">import</span> StrEnum, auto</span>
+font-style: inherit;">import</span> StrEnum</span>
 <span id="cb1-7">    <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
@@ -797,14 +1741,10 @@ background-color: null;
 font-style: inherit;">import</span> StrEnum</span>
 <span id="cb1-10">    <span class="im" style="color: #00769E;
 background-color: null;
-font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> auto</span>
-<span id="cb1-11">    <span class="im" style="color: #00769E;
-background-color: null;
 font-style: inherit;">from</span> typing_extensions <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> Self, override</span>
+<span id="cb1-11"></span>
 <span id="cb1-12"></span>
 <span id="cb1-13"><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -837,17 +1777,19 @@ font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__init_subclass__</span>(cls, <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">**</span>kwargs) <span class="op" style="color: #5E5E5E;
+font-style: inherit;">**</span>kwargs: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">dict</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, Any]) <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">None</span>:</span>
 <span id="cb1-23">        <span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"""The `__init_subclass__` is a special hook that is called when a class is subclassed. </span></span>
-<span id="cb1-24"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">        </span></span>
+font-style: inherit;">"""Implement the special hook that is called when a class is subclassed.</span></span>
+<span id="cb1-24"></span>
 <span id="cb1-25"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">        It allows us to customize the class creation process without using metaclasses.</span></span>
@@ -861,7 +1803,7 @@ background-color: null;
 font-style: inherit;">__init_subclass__</span>(<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">**</span>kwargs)</span>
-<span id="cb1-28">        </span>
+<span id="cb1-28"></span>
 <span id="cb1-29">        <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -882,20 +1824,17 @@ font-style: inherit;">or</span> <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">not</span> member.value.islower():</span>
-<span id="cb1-31">                <span class="cf" style="color: #003B4F;
+<span id="cb1-31">                msg <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-weight: bold;
-font-style: inherit;">raise</span> <span class="pp" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">TypeError</span>(<span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">f"Enum member '</span><span class="sc" style="color: #5E5E5E;
+font-style: inherit;">f"Member '</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">{</span>member<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">' and its value </span><span class="sc" style="color: #5E5E5E;
+font-style: inherit;">' and value </span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">{</span>member<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -903,19 +1842,25 @@ font-style: inherit;">.</span>value<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;"> must be lowercase."</span>)</span>
-<span id="cb1-32"></span>
-<span id="cb1-33">    <span class="at" style="color: #657422;
+font-style: inherit;"> must be lowercase."</span></span>
+<span id="cb1-32">                <span class="cf" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">@override</span></span>
+font-weight: bold;
+font-style: inherit;">raise</span> <span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">TypeError</span>(msg)</span>
+<span id="cb1-33"></span>
 <span id="cb1-34">    <span class="at" style="color: #657422;
 background-color: null;
+font-style: inherit;">@override</span></span>
+<span id="cb1-35">    <span class="at" style="color: #657422;
+background-color: null;
 font-style: inherit;">@staticmethod</span></span>
-<span id="cb1-35">    <span class="kw" style="color: #003B4F;
+<span id="cb1-36">    <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> _generate_next_value_(</span>
-<span id="cb1-36">        name: <span class="bu" style="color: null;
+<span id="cb1-37">        name: <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">str</span>, start: <span class="bu" style="color: null;
 background-color: null;
@@ -926,57 +1871,54 @@ background-color: null;
 font-style: inherit;">list</span>[<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">str</span>]</span>
-<span id="cb1-37">    ) <span class="op" style="color: #5E5E5E;
+<span id="cb1-38">    ) <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-&gt;</span> <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">str</span>:</span>
-<span id="cb1-38">        <span class="co" style="color: #5E5E5E;
+<span id="cb1-39">        <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">"""Return the lower-cased version of the member name.</span></span>
-<span id="cb1-39"></span>
-<span id="cb1-40"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">        This method is overridden to ensure that when `auto()` is used to create</span></span>
+<span id="cb1-40"></span>
 <span id="cb1-41"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">        enum members, their values are the lowercase version of their names.</span></span>
+font-style: inherit;">        This method is overridden to ensure that when `auto()` is used to create</span></span>
 <span id="cb1-42"><span class="co" style="color: #5E5E5E;
 background-color: null;
+font-style: inherit;">        enum members, their values are the lowercase version of their names.</span></span>
+<span id="cb1-43"><span class="co" style="color: #5E5E5E;
+background-color: null;
 font-style: inherit;">        """</span></span>
-<span id="cb1-43">        <span class="cf" style="color: #003B4F;
+<span id="cb1-44">        <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">return</span> name.lower()</span>
-<span id="cb1-44"></span>
-<span id="cb1-45">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">@override</span></span>
+<span id="cb1-45"></span>
 <span id="cb1-46">    <span class="at" style="color: #657422;
 background-color: null;
+font-style: inherit;">@override</span></span>
+<span id="cb1-47">    <span class="at" style="color: #657422;
+background-color: null;
 font-style: inherit;">@classmethod</span></span>
-<span id="cb1-47">    <span class="kw" style="color: #003B4F;
+<span id="cb1-48">    <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> _missing_(cls, value: <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">object</span>) <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">-&gt;</span>  Self <span class="op" style="color: #5E5E5E;
+font-style: inherit;">-&gt;</span> Self <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">None</span>:</span>
-<span id="cb1-48">        <span class="co" style="color: #5E5E5E;
+<span id="cb1-49">        <span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"""</span></span>
-<span id="cb1-49"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">        Provide case-insensitive member lookup.</span></span>
+font-style: inherit;">"""Provide case-insensitive member lookup.</span></span>
 <span id="cb1-50"></span>
 <span id="cb1-51"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">        This method is called when a value is not found in the enum. </span></span>
+font-style: inherit;">        This method is called when a value is not found in the enum.</span></span>
 <span id="cb1-52"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">        It is overridden to perform a case-insensitive search for the member.</span></span>
@@ -1033,19 +1975,25 @@ font-style: inherit;">None</span></span></code></pre></div></div>
 <section id="example-usage" class="level2">
 <h2 class="anchored" data-anchor-id="example-usage">Example Usage</h2>
 <p>Here is an example of how to use the <code>CaseInsensitiveStrEnum</code> class:</p>
-<div id="94893fb7" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="kw" style="color: #003B4F;
+<div id="3ff9fa18" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> auto</span>
+<span id="cb2-2"></span>
+<span id="cb2-3"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">class</span> TestEnum(CaseInsensitiveStrEnum):</span>
-<span id="cb2-2">    test <span class="op" style="color: #5E5E5E;
+<span id="cb2-4">    test <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> auto()</span>
-<span id="cb2-3">    enumz <span class="op" style="color: #5E5E5E;
+<span id="cb2-5">    enumz <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> auto()</span>
-<span id="cb2-4"></span>
-<span id="cb2-5"><span class="bu" style="color: null;
+<span id="cb2-6"></span>
+<span id="cb2-7"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -1062,7 +2010,7 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span>
-<span id="cb2-6"><span class="bu" style="color: null;
+<span id="cb2-8"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -1079,7 +2027,7 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span>
-<span id="cb2-7"><span class="bu" style="color: null;
+<span id="cb2-9"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -1092,7 +2040,7 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'</span>)</span>
-<span id="cb2-8"><span class="bu" style="color: null;
+<span id="cb2-10"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -1105,7 +2053,7 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'</span>)</span>
-<span id="cb2-9"><span class="bu" style="color: null;
+<span id="cb2-11"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -1118,24 +2066,24 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'</span>)</span>
-<span id="cb2-10"></span>
-<span id="cb2-11"></span>
-<span id="cb2-12"><span class="cf" style="color: #003B4F;
+<span id="cb2-12"></span>
+<span id="cb2-13"></span>
+<span id="cb2-14"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">try</span>:</span>
-<span id="cb2-13">    <span class="kw" style="color: #003B4F;
+<span id="cb2-15">    <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">class</span> TestEnum(CaseInsensitiveStrEnum):</span>
-<span id="cb2-14">        TEST <span class="op" style="color: #5E5E5E;
+<span id="cb2-16">        TEST <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"TEST"</span>  <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># This will raise a TypeError</span></span>
-<span id="cb2-15"><span class="cf" style="color: #003B4F;
+<span id="cb2-17"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">except</span> <span class="pp" style="color: #AD0000;
@@ -1143,7 +2091,7 @@ background-color: null;
 font-style: inherit;">TypeError</span> <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> e:</span>
-<span id="cb2-16">    <span class="bu" style="color: null;
+<span id="cb2-18">    <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(e)</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
@@ -1152,7 +2100,20 @@ List of values: ['test', 'enumz']
 Accessing "Test": test
 Accessing "test": test
 Accessing "ENUMZ": enumz
-Enum member 'TEST' and its value TEST must be lowercase.</code></pre>
+Member 'TEST' and value TEST must be lowercase.</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Download the whole code <a href="../../scripts/case_insensitive_enum.py">here</a>.</p>
 </div>
 </div>
 
@@ -1163,7 +2124,7 @@ Enum member 'TEST' and its value TEST must be lowercase.</code></pre>
   <category>Python Recipes</category>
   <guid>https://bwrob.github.io/posts/case-insensitive-enum/</guid>
   <pubDate>Thu, 09 Oct 2025 22:00:00 GMT</pubDate>
-  <media:content url="https://bwrob.github.io/logo/python_mug.jpeg" medium="image" type="image/jpeg"/>
+  <media:content url="https://bwrob.github.io/pages/images/python_recipes.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>Python Resources</title>

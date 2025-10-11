@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="bwrob">
-<meta name="dcterms.date" content="2025-10-10">
-<meta name="description" content="How to create a case-insensitive enum in Python.">
+<meta name="dcterms.date" content="2025-10-12">
+<meta name="description" content="How to use and implement useful iterator utilities in Python.">
 
-<title>Case Insensitive Enum – bwrob blog</title>
+<title>A Collection of Iterator Utilities – bwrob blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -358,10 +358,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Case Insensitive Enum</h1>
+      <h1 class="title">A Collection of Iterator Utilities</h1>
                   <div>
         <div class="description">
-          How to create a case-insensitive enum in Python.
+          How to use and implement useful iterator utilities in Python.
         </div>
       </div>
                           <div class="quarto-categories">
@@ -383,16 +383,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">October 10, 2025</p>
+        <p class="date">October 12, 2025</p>
       </div>
     </div>
     
-      <div>
-      <div class="quarto-title-meta-heading">Modified</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date-modified">October 11, 2025</p>
-      </div>
-    </div>
       
     </div>
     
@@ -404,9 +398,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
-  <ul>
-  <li><a href="#implementation" id="toc-implementation" class="nav-link active" data-scroll-target="#implementation">Implementation</a></li>
-  <li><a href="#example-usage" id="toc-example-usage" class="nav-link" data-scroll-target="#example-usage">Example Usage</a></li>
+  <ul class="collapse">
+  <li><a href="#batched" id="toc-batched" class="nav-link active" data-scroll-target="#batched">batched</a></li>
+  <li><a href="#unbox" id="toc-unbox" class="nav-link" data-scroll-target="#unbox">unbox</a></li>
+  <li><a href="#unzip" id="toc-unzip" class="nav-link" data-scroll-target="#unzip">unzip</a></li>
+  <li><a href="#flatten_iterable" id="toc-flatten_iterable" class="nav-link" data-scroll-target="#flatten_iterable">flatten_iterable</a></li>
+  <li><a href="#flatten_string_key_dict" id="toc-flatten_string_key_dict" class="nav-link" data-scroll-target="#flatten_string_key_dict">flatten_string_key_dict</a></li>
+  <li><a href="#group_by_non_consecutive" id="toc-group_by_non_consecutive" class="nav-link" data-scroll-target="#group_by_non_consecutive">group_by_non_consecutive</a></li>
   </ul>
 </nav>
     </div>
@@ -418,105 +416,238 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>When working with enums in Python, you might want to create an enum that is case-insensitive. This can be particularly useful when you want to allow users to input values without worrying about the case. Here’s how you can achieve this by subclassing <code>StrEnum</code>. To enforce that all enum members are defined in lowercase, we can use a hook <code>__init_subclass__</code>.</p>
-<section id="implementation" class="level2">
-<h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
-<div id="3037b109" class="cell" data-execution_count="1">
+<p>Working with iterables is a cornerstone of Python programming. While the built-in <code>itertools</code> module provides a powerful toolkit, sometimes you need a specific recipe for a common problem. This post collects a few handy and (mostly!) type-safe utility functions for working with iterators and iterables, complete with explanations and examples.</p>
+<section id="batched" class="level2">
+<h2 class="anchored" data-anchor-id="batched">batched</h2>
+<p>This function splits an iterable into non-overlapping batches of a given size. It’s a common requirement when processing large datasets or making batch API calls. A similar function was added to <code>itertools</code> in Python 3.12, but this implementation is useful for older Python versions or as a standalone utility.</p>
+<div id="9274fa3c" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> __future__ <span class="im">import</span> annotations</span>
-<span id="cb1-2"><a href="#cb1-2"></a></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> sys</span>
-<span id="cb1-4"><a href="#cb1-4"></a></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="cf">if</span> sys.version_info <span class="op">&gt;=</span> (<span class="dv">3</span>, <span class="dv">11</span>):</span>
-<span id="cb1-6"><a href="#cb1-6"></a>    <span class="im">from</span> enum <span class="im">import</span> StrEnum</span>
-<span id="cb1-7"><a href="#cb1-7"></a>    <span class="im">from</span> typing <span class="im">import</span> Self, override</span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="cf">else</span>:</span>
-<span id="cb1-9"><a href="#cb1-9"></a>    <span class="im">from</span> backports.strenum <span class="im">import</span> StrEnum</span>
-<span id="cb1-10"><a href="#cb1-10"></a>    <span class="im">from</span> typing_extensions <span class="im">import</span> Self, override</span>
-<span id="cb1-11"><a href="#cb1-11"></a></span>
-<span id="cb1-12"><a href="#cb1-12"></a></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="kw">class</span> CaseInsensitiveStrEnum(StrEnum):</span>
-<span id="cb1-14"><a href="#cb1-14"></a>    <span class="co">"""A case-insensitive string enum.</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a></span>
-<span id="cb1-16"><a href="#cb1-16"></a><span class="co">    This class extends the `StrEnum` class to provide case-insensitive member lookup.</span></span>
-<span id="cb1-17"><a href="#cb1-17"></a><span class="co">    It also provides a custom `_generate_next_value_` method that returns the</span></span>
-<span id="cb1-18"><a href="#cb1-18"></a><span class="co">    lowercase version of the member name for use with `auto()`.</span></span>
-<span id="cb1-19"><a href="#cb1-19"></a><span class="co">    """</span></span>
-<span id="cb1-20"><a href="#cb1-20"></a></span>
-<span id="cb1-21"><a href="#cb1-21"></a>    <span class="at">@classmethod</span></span>
-<span id="cb1-22"><a href="#cb1-22"></a>    <span class="kw">def</span> <span class="fu">__init_subclass__</span>(cls, <span class="op">**</span>kwargs: <span class="bu">dict</span>[<span class="bu">str</span>, Any]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb1-23"><a href="#cb1-23"></a>        <span class="co">"""Implement the special hook that is called when a class is subclassed.</span></span>
-<span id="cb1-24"><a href="#cb1-24"></a></span>
-<span id="cb1-25"><a href="#cb1-25"></a><span class="co">        It allows us to customize the class creation process without using metaclasses.</span></span>
-<span id="cb1-26"><a href="#cb1-26"></a><span class="co">        """</span></span>
-<span id="cb1-27"><a href="#cb1-27"></a>        <span class="bu">super</span>().<span class="fu">__init_subclass__</span>(<span class="op">**</span>kwargs)</span>
-<span id="cb1-28"><a href="#cb1-28"></a></span>
-<span id="cb1-29"><a href="#cb1-29"></a>        <span class="cf">for</span> member <span class="kw">in</span> cls:</span>
-<span id="cb1-30"><a href="#cb1-30"></a>            <span class="cf">if</span> <span class="kw">not</span> member.islower() <span class="kw">or</span> <span class="kw">not</span> member.value.islower():</span>
-<span id="cb1-31"><a href="#cb1-31"></a>                msg <span class="op">=</span> <span class="ss">f"Member '</span><span class="sc">{</span>member<span class="sc">}</span><span class="ss">' and value </span><span class="sc">{</span>member<span class="sc">.</span>value<span class="sc">}</span><span class="ss"> must be lowercase."</span></span>
-<span id="cb1-32"><a href="#cb1-32"></a>                <span class="cf">raise</span> <span class="pp">TypeError</span>(msg)</span>
-<span id="cb1-33"><a href="#cb1-33"></a></span>
-<span id="cb1-34"><a href="#cb1-34"></a>    <span class="at">@override</span></span>
-<span id="cb1-35"><a href="#cb1-35"></a>    <span class="at">@staticmethod</span></span>
-<span id="cb1-36"><a href="#cb1-36"></a>    <span class="kw">def</span> _generate_next_value_(</span>
-<span id="cb1-37"><a href="#cb1-37"></a>        name: <span class="bu">str</span>, start: <span class="bu">int</span>, count: <span class="bu">int</span>, last_values: <span class="bu">list</span>[<span class="bu">str</span>]</span>
-<span id="cb1-38"><a href="#cb1-38"></a>    ) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb1-39"><a href="#cb1-39"></a>        <span class="co">"""Return the lower-cased version of the member name.</span></span>
-<span id="cb1-40"><a href="#cb1-40"></a></span>
-<span id="cb1-41"><a href="#cb1-41"></a><span class="co">        This method is overridden to ensure that when `auto()` is used to create</span></span>
-<span id="cb1-42"><a href="#cb1-42"></a><span class="co">        enum members, their values are the lowercase version of their names.</span></span>
-<span id="cb1-43"><a href="#cb1-43"></a><span class="co">        """</span></span>
-<span id="cb1-44"><a href="#cb1-44"></a>        <span class="cf">return</span> name.lower()</span>
-<span id="cb1-45"><a href="#cb1-45"></a></span>
-<span id="cb1-46"><a href="#cb1-46"></a>    <span class="at">@override</span></span>
-<span id="cb1-47"><a href="#cb1-47"></a>    <span class="at">@classmethod</span></span>
-<span id="cb1-48"><a href="#cb1-48"></a>    <span class="kw">def</span> _missing_(cls, value: <span class="bu">object</span>) <span class="op">-&gt;</span> Self <span class="op">|</span> <span class="va">None</span>:</span>
-<span id="cb1-49"><a href="#cb1-49"></a>        <span class="co">"""Provide case-insensitive member lookup.</span></span>
-<span id="cb1-50"><a href="#cb1-50"></a></span>
-<span id="cb1-51"><a href="#cb1-51"></a><span class="co">        This method is called when a value is not found in the enum.</span></span>
-<span id="cb1-52"><a href="#cb1-52"></a><span class="co">        It is overridden to perform a case-insensitive search for the member.</span></span>
-<span id="cb1-53"><a href="#cb1-53"></a><span class="co">        """</span></span>
-<span id="cb1-54"><a href="#cb1-54"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(value, <span class="bu">str</span>):</span>
-<span id="cb1-55"><a href="#cb1-55"></a>            <span class="cf">return</span> <span class="va">None</span></span>
-<span id="cb1-56"><a href="#cb1-56"></a></span>
-<span id="cb1-57"><a href="#cb1-57"></a>        value <span class="op">=</span> value.lower()</span>
-<span id="cb1-58"><a href="#cb1-58"></a>        <span class="cf">for</span> member <span class="kw">in</span> cls:</span>
-<span id="cb1-59"><a href="#cb1-59"></a>            <span class="cf">if</span> member.name.lower() <span class="op">==</span> value:</span>
-<span id="cb1-60"><a href="#cb1-60"></a>                <span class="cf">return</span> member</span>
-<span id="cb1-61"><a href="#cb1-61"></a></span>
-<span id="cb1-62"><a href="#cb1-62"></a>        <span class="cf">return</span> <span class="va">None</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">from</span> collections.abc <span class="im">import</span> Iterable</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">from</span> itertools <span class="im">import</span> islice</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="im">from</span> sys <span class="im">import</span> maxsize</span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="kw">def</span> batched[T](</span>
+<span id="cb1-7"><a href="#cb1-7"></a>    iterable: Iterable[T],</span>
+<span id="cb1-8"><a href="#cb1-8"></a>    n: <span class="bu">int</span>,</span>
+<span id="cb1-9"><a href="#cb1-9"></a>    <span class="op">*</span>,</span>
+<span id="cb1-10"><a href="#cb1-10"></a>    strict: <span class="bu">bool</span> <span class="op">=</span> <span class="va">False</span>,</span>
+<span id="cb1-11"><a href="#cb1-11"></a>) <span class="op">-&gt;</span> Iterable[<span class="bu">tuple</span>[T, ...]]:</span>
+<span id="cb1-12"><a href="#cb1-12"></a>    <span class="co">"""Split an iterable into batches of size n."""</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>    <span class="cf">if</span> <span class="kw">not</span> <span class="dv">1</span> <span class="op">&lt;=</span> n <span class="op">&lt;=</span> maxsize:</span>
+<span id="cb1-14"><a href="#cb1-14"></a>        msg <span class="op">=</span> <span class="st">"Batch size n must be at least one and at most sys.maxsize."</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(msg)</span>
+<span id="cb1-16"><a href="#cb1-16"></a></span>
+<span id="cb1-17"><a href="#cb1-17"></a>    iterator <span class="op">=</span> <span class="bu">iter</span>(iterable)</span>
+<span id="cb1-18"><a href="#cb1-18"></a>    <span class="cf">while</span> batch <span class="op">:=</span> <span class="bu">tuple</span>(islice(iterator, n)):</span>
+<span id="cb1-19"><a href="#cb1-19"></a>        <span class="cf">if</span> strict <span class="kw">and</span> <span class="bu">len</span>(batch) <span class="op">!=</span> n:</span>
+<span id="cb1-20"><a href="#cb1-20"></a>            msg <span class="op">=</span> <span class="st">"Incomplete batch for strict batching."</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(msg)</span>
+<span id="cb1-22"><a href="#cb1-22"></a>        <span class="cf">yield</span> batch</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="example" class="level3">
+<h3 class="anchored" data-anchor-id="example">Example</h3>
+<div id="855b50bf" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="bu">print</span>(<span class="ss">f"batched(range(10), 3): </span><span class="sc">{</span><span class="bu">list</span>(batched(<span class="bu">range</span>(<span class="dv">10</span>), <span class="dv">3</span>))<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>batched(range(10), 3): [(0, 1, 2), (3, 4, 5), (6, 7, 8), (9,)]</code></pre>
+</div>
 </div>
 </section>
-<section id="example-usage" class="level2">
-<h2 class="anchored" data-anchor-id="example-usage">Example Usage</h2>
-<p>Here is an example of how to use the <code>CaseInsensitiveStrEnum</code> class:</p>
-<div id="3ff9fa18" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> enum <span class="im">import</span> auto</span>
-<span id="cb2-2"><a href="#cb2-2"></a></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">class</span> TestEnum(CaseInsensitiveStrEnum):</span>
-<span id="cb2-4"><a href="#cb2-4"></a>    test <span class="op">=</span> auto()</span>
-<span id="cb2-5"><a href="#cb2-5"></a>    enumz <span class="op">=</span> auto()</span>
-<span id="cb2-6"><a href="#cb2-6"></a></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="bu">print</span>(<span class="ss">f"List of members: </span><span class="sc">{</span>[member.name <span class="cf">for</span> member <span class="kw">in</span> TestEnum]<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="bu">print</span>(<span class="ss">f"List of values: </span><span class="sc">{</span>[member.value <span class="cf">for</span> member <span class="kw">in</span> TestEnum]<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="bu">print</span>(<span class="ss">f'Accessing "Test": </span><span class="sc">{</span>TestEnum(<span class="st">"Test"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb2-10"><a href="#cb2-10"></a><span class="bu">print</span>(<span class="ss">f'Accessing "test": </span><span class="sc">{</span>TestEnum(<span class="st">"test"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="bu">print</span>(<span class="ss">f'Accessing "ENUMZ": </span><span class="sc">{</span>TestEnum(<span class="st">"ENUMZ"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb2-12"><a href="#cb2-12"></a></span>
-<span id="cb2-13"><a href="#cb2-13"></a></span>
-<span id="cb2-14"><a href="#cb2-14"></a><span class="cf">try</span>:</span>
-<span id="cb2-15"><a href="#cb2-15"></a>    <span class="kw">class</span> TestEnum(CaseInsensitiveStrEnum):</span>
-<span id="cb2-16"><a href="#cb2-16"></a>        TEST <span class="op">=</span> <span class="st">"TEST"</span>  <span class="co"># This will raise a TypeError</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a><span class="cf">except</span> <span class="pp">TypeError</span> <span class="im">as</span> e:</span>
-<span id="cb2-18"><a href="#cb2-18"></a>    <span class="bu">print</span>(e)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="unbox" class="level2">
+<h2 class="anchored" data-anchor-id="unbox">unbox</h2>
+<p>Sometimes you have an iterable that is expected to contain exactly one item. This function ‘unboxes’ it, returning the single element. It raises a <code>ValueError</code> if the iterable is empty or contains more than one element, ensuring that your assumptions about the data are met.</p>
+<div id="3562da30" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">def</span> unbox[T](iterable: Iterable[T]) <span class="op">-&gt;</span> T:</span>
+<span id="cb4-2"><a href="#cb4-2"></a>    <span class="co">"""Unbox an iterable if it contains a single element."""</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>    iterator <span class="op">=</span> <span class="bu">iter</span>(iterable)</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    first_value <span class="op">=</span> <span class="bu">next</span>(iterator)</span>
+<span id="cb4-5"><a href="#cb4-5"></a>    <span class="cf">try</span>:</span>
+<span id="cb4-6"><a href="#cb4-6"></a>        _ <span class="op">=</span> <span class="bu">next</span>(iterator)</span>
+<span id="cb4-7"><a href="#cb4-7"></a>        msg <span class="op">=</span> <span class="st">"Iterable contains more than one element."</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(msg)</span>
+<span id="cb4-9"><a href="#cb4-9"></a>    <span class="cf">except</span> <span class="pp">StopIteration</span>:</span>
+<span id="cb4-10"><a href="#cb4-10"></a>        <span class="cf">return</span> first_value</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="example-1" class="level3">
+<h3 class="anchored" data-anchor-id="example-1">Example</h3>
+<div id="e6d74877" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="bu">print</span>(<span class="ss">f"unbox([42]): </span><span class="sc">{</span>unbox([<span class="dv">42</span>])<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="cf">try</span>:</span>
+<span id="cb5-4"><a href="#cb5-4"></a>    _ <span class="op">=</span> unbox([<span class="dv">1</span>, <span class="dv">2</span>])</span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="cf">except</span> <span class="pp">ValueError</span> <span class="im">as</span> e:</span>
+<span id="cb5-6"><a href="#cb5-6"></a>    <span class="bu">print</span>(<span class="ss">f"unbox([1, 2]): </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
-<pre><code>List of members: ['test', 'enumz']
-List of values: ['test', 'enumz']
-Accessing "Test": test
-Accessing "test": test
-Accessing "ENUMZ": enumz
-Member 'TEST' and value TEST must be lowercase.</code></pre>
+<pre><code>unbox([42]): 42
+unbox([1, 2]): Iterable contains more than one element.</code></pre>
 </div>
 </div>
+</section>
+</section>
+<section id="unzip" class="level2">
+<h2 class="anchored" data-anchor-id="unzip">unzip</h2>
+<p>The <code>unzip</code> function is the reverse of the built-in <code>zip</code>. Given an iterable of tuples, it separates the elements into a tuple of iterables, where each iterable contains the elements from the corresponding position in the input tuples.</p>
+<div id="649f8fc2" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">def</span> unzip[T](iterable: Iterable[<span class="bu">tuple</span>[T, ...]]) <span class="op">-&gt;</span> <span class="bu">tuple</span>[Iterable[T], ...]:</span>
+<span id="cb7-2"><a href="#cb7-2"></a>    <span class="co">"""Unzip an iterable of tuples."""</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>    zipped <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>iterable, strict<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-4"><a href="#cb7-4"></a>    <span class="cf">return</span> <span class="bu">tuple</span>(zipped)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="example-2" class="level3">
+<h3 class="anchored" data-anchor-id="example-2">Example</h3>
+<div id="ce006b13" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>zipped_data <span class="op">=</span> [(<span class="dv">1</span>, <span class="st">"a"</span>), (<span class="dv">2</span>, <span class="st">"b"</span>), (<span class="dv">3</span>, <span class="st">"c"</span>)]</span>
+<span id="cb8-2"><a href="#cb8-2"></a>unzipped_data <span class="op">=</span> unzip(zipped_data)</span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="bu">print</span>(<span class="ss">f"unzip(</span><span class="sc">{</span>zipped_data<span class="sc">}</span><span class="ss">): </span><span class="sc">{</span>[<span class="bu">list</span>(it) <span class="cf">for</span> it <span class="kw">in</span> unzipped_data]<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>unzip([(1, 'a'), (2, 'b'), (3, 'c')]): [[1, 2, 3], ['a', 'b', 'c']]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="flatten_iterable" class="level2">
+<h2 class="anchored" data-anchor-id="flatten_iterable">flatten_iterable</h2>
+<p>Dealing with nested lists or other iterables is a common task. <code>flatten_iterable</code> recursively traverses a nested structure of iterables and yields a single, flat list of all the non-iterable elements. It’s careful to not flatten strings, which are often treated as atomic values rather than iterables of characters.</p>
+<div id="a6184f36" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="im">from</span> collections.abc <span class="im">import</span> Generator</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="im">from</span> typing <span class="im">import</span> cast</span>
+<span id="cb10-3"><a href="#cb10-3"></a></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="bu">type</span> NestedIterable[T] <span class="op">=</span> Iterable[NestedIterable[T] <span class="op">|</span> T]</span>
+<span id="cb10-5"><a href="#cb10-5"></a></span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="kw">def</span> flatten_iterable[T](iterable: NestedIterable[T]) <span class="op">-&gt;</span> <span class="bu">list</span>[T]:</span>
+<span id="cb10-7"><a href="#cb10-7"></a>    <span class="co">"""Flatten an iterable of iterables."""</span></span>
+<span id="cb10-8"><a href="#cb10-8"></a></span>
+<span id="cb10-9"><a href="#cb10-9"></a>    <span class="kw">def</span> _helper(lst: NestedIterable[T]) <span class="op">-&gt;</span> Generator[T]:</span>
+<span id="cb10-10"><a href="#cb10-10"></a>        <span class="cf">for</span> item <span class="kw">in</span> lst:</span>
+<span id="cb10-11"><a href="#cb10-11"></a>            <span class="cf">if</span> <span class="bu">isinstance</span>(item, Iterable) <span class="kw">and</span> <span class="kw">not</span> <span class="bu">isinstance</span>(item, (<span class="bu">str</span>, <span class="bu">bytes</span>)):</span>
+<span id="cb10-12"><a href="#cb10-12"></a>                <span class="cf">yield</span> <span class="cf">from</span> _helper(cast(NestedIterable[T], item))</span>
+<span id="cb10-13"><a href="#cb10-13"></a>            <span class="cf">else</span>:</span>
+<span id="cb10-14"><a href="#cb10-14"></a>                <span class="cf">yield</span> cast(T, item)</span>
+<span id="cb10-15"><a href="#cb10-15"></a></span>
+<span id="cb10-16"><a href="#cb10-16"></a>    <span class="cf">return</span> <span class="bu">list</span>(_helper(iterable))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="example-3" class="level3">
+<h3 class="anchored" data-anchor-id="example-3">Example</h3>
+<div id="fa8d8751" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>nested_list <span class="op">=</span> [<span class="dv">1</span>, [<span class="dv">2</span>, <span class="st">"a"</span>, [<span class="dv">3</span>]], <span class="st">"b"</span>]</span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="bu">print</span>(<span class="ss">f"flatten_iterable(</span><span class="sc">{</span>nested_list<span class="sc">}</span><span class="ss">): </span><span class="sc">{</span>flatten_iterable(nested_list)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>flatten_iterable([1, [2, 'a', [3]], 'b']): [1, 2, 'a', 3, 'b']</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="flatten_string_key_dict" class="level2">
+<h2 class="anchored" data-anchor-id="flatten_string_key_dict">flatten_string_key_dict</h2>
+<p>This function flattens a nested dictionary into a single-level dictionary by concatenating the keys with a dot (<code>.</code>). This is particularly useful for handling configuration files or nested JSON objects where you want a simple key-value representation.</p>
+<div id="855904c1" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="im">from</span> collections.abc <span class="im">import</span> Mapping</span>
+<span id="cb13-2"><a href="#cb13-2"></a></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="bu">type</span> NestedDict[T] <span class="op">=</span> Mapping[<span class="bu">str</span>, NestedDict[T] <span class="op">|</span> T]</span>
+<span id="cb13-4"><a href="#cb13-4"></a></span>
+<span id="cb13-5"><a href="#cb13-5"></a><span class="kw">def</span> flatten_string_key_dict[T](dictionary: NestedDict[T]) <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, T]:</span>
+<span id="cb13-6"><a href="#cb13-6"></a>    <span class="co">"""Flatten a nested string-keyed dictionary."""</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a></span>
+<span id="cb13-8"><a href="#cb13-8"></a>    <span class="kw">def</span> _generate_items(</span>
+<span id="cb13-9"><a href="#cb13-9"></a>        d: NestedDict[T] <span class="op">|</span> T, prefix: <span class="bu">str</span> <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb13-10"><a href="#cb13-10"></a>    ) <span class="op">-&gt;</span> Generator[<span class="bu">tuple</span>[<span class="bu">str</span>, T]]:</span>
+<span id="cb13-11"><a href="#cb13-11"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(d, <span class="bu">dict</span>):</span>
+<span id="cb13-12"><a href="#cb13-12"></a>            <span class="cf">for</span> key, value <span class="kw">in</span> d.items():</span>
+<span id="cb13-13"><a href="#cb13-13"></a>                <span class="cf">yield</span> <span class="cf">from</span> _generate_items(value, prefix <span class="op">+</span> key <span class="op">+</span> <span class="st">"."</span>)</span>
+<span id="cb13-14"><a href="#cb13-14"></a>        <span class="cf">else</span>:</span>
+<span id="cb13-15"><a href="#cb13-15"></a>            <span class="cf">yield</span> prefix[:<span class="op">-</span><span class="dv">1</span>], cast(T, d)</span>
+<span id="cb13-16"><a href="#cb13-16"></a></span>
+<span id="cb13-17"><a href="#cb13-17"></a>    <span class="cf">return</span> <span class="bu">dict</span>(_generate_items(dictionary))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="example-4" class="level3">
+<h3 class="anchored" data-anchor-id="example-4">Example</h3>
+<div id="8e9e234c" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>nested_dict <span class="op">=</span> {<span class="st">"a"</span>: <span class="dv">1</span>, <span class="st">"b"</span>: {<span class="st">"c"</span>: <span class="dv">2</span>, <span class="st">"d"</span>: {<span class="st">"e"</span>: <span class="dv">3</span>}}, <span class="st">"f"</span>: <span class="dv">4</span>}</span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="bu">print</span>(</span>
+<span id="cb14-3"><a href="#cb14-3"></a>    <span class="ss">f"flatten_string_key_dict(</span><span class="sc">{</span>nested_dict<span class="sc">}</span><span class="ss">): "</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a>    <span class="op">+</span> <span class="ss">f"</span><span class="sc">{</span>flatten_string_key_dict(nested_dict)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb14-5"><a href="#cb14-5"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>flatten_string_key_dict({'a': 1, 'b': {'c': 2, 'd': {'e': 3}}, 'f': 4}): {'a': 1, 'b.c': 2, 'b.d.e': 3, 'f': 4}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="group_by_non_consecutive" class="level2">
+<h2 class="anchored" data-anchor-id="group_by_non_consecutive">group_by_non_consecutive</h2>
+<p>The standard <code>itertools.groupby</code> requires the input iterable to be sorted by the grouping key. This utility simplifies the process by first sorting the entire iterable before grouping. This is less memory-efficient for very large iterables but is very convenient for smaller datasets where the input is not pre-sorted.</p>
+<div id="d852cd45" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="im">import</span> itertools</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="im">from</span> collections.abc <span class="im">import</span> Callable, Iterator</span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="im">from</span> typing <span class="im">import</span> Any, Protocol, Self</span>
+<span id="cb16-4"><a href="#cb16-4"></a></span>
+<span id="cb16-5"><a href="#cb16-5"></a><span class="kw">class</span> _SupportsLessThan(Protocol):</span>
+<span id="cb16-6"><a href="#cb16-6"></a>    <span class="kw">def</span> <span class="fu">__lt__</span>(<span class="va">self</span>, other: Self) <span class="op">-&gt;</span> <span class="bu">bool</span>: ...</span>
+<span id="cb16-7"><a href="#cb16-7"></a></span>
+<span id="cb16-8"><a href="#cb16-8"></a><span class="kw">def</span> group_by_non_consecutive[T, SLT: _SupportsLessThan](</span>
+<span id="cb16-9"><a href="#cb16-9"></a>    iterable: Iterable[T],</span>
+<span id="cb16-10"><a href="#cb16-10"></a>    <span class="op">*</span>,</span>
+<span id="cb16-11"><a href="#cb16-11"></a>    key: Callable[[T], SLT] <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb16-12"><a href="#cb16-12"></a>    reverse: <span class="bu">bool</span> <span class="op">=</span> <span class="va">False</span>,</span>
+<span id="cb16-13"><a href="#cb16-13"></a>) <span class="op">-&gt;</span> Iterator[<span class="bu">tuple</span>[SLT, Iterator[T]]]:</span>
+<span id="cb16-14"><a href="#cb16-14"></a>    <span class="co">"""Sort and group an iterable by a key function.</span></span>
+<span id="cb16-15"><a href="#cb16-15"></a></span>
+<span id="cb16-16"><a href="#cb16-16"></a><span class="co">    Unlike itertools.groupby, this function does not require the iterable</span></span>
+<span id="cb16-17"><a href="#cb16-17"></a><span class="co">    to be pre-sorted. It first sorts the entire iterable and then applies</span></span>
+<span id="cb16-18"><a href="#cb16-18"></a><span class="co">    the grouping.</span></span>
+<span id="cb16-19"><a href="#cb16-19"></a><span class="co">    """</span></span>
+<span id="cb16-20"><a href="#cb16-20"></a>    <span class="cf">if</span> key <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb16-21"><a href="#cb16-21"></a></span>
+<span id="cb16-22"><a href="#cb16-22"></a>        <span class="kw">def</span> default_key(x: T) <span class="op">-&gt;</span> SLT:</span>
+<span id="cb16-23"><a href="#cb16-23"></a>            <span class="cf">return</span> cast(SLT, x)</span>
+<span id="cb16-24"><a href="#cb16-24"></a></span>
+<span id="cb16-25"><a href="#cb16-25"></a>        key <span class="op">=</span> default_key</span>
+<span id="cb16-26"><a href="#cb16-26"></a>    sorted_iterable <span class="op">=</span> <span class="bu">sorted</span>(iterable, key<span class="op">=</span>key, reverse<span class="op">=</span>reverse)  <span class="co"># type: ignore[arg-type]</span></span>
+<span id="cb16-27"><a href="#cb16-27"></a>    <span class="cf">return</span> itertools.groupby(sorted_iterable, key<span class="op">=</span>key)  <span class="co"># type: ignore[arg-type]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="example-5" class="level3">
+<h3 class="anchored" data-anchor-id="example-5">Example</h3>
+<div id="8d829590" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># With key function</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a>data <span class="op">=</span> [<span class="st">"apple"</span>, <span class="st">"banana"</span>, <span class="st">"ant"</span>, <span class="st">"bear"</span>, <span class="st">"apricot"</span>]</span>
+<span id="cb17-3"><a href="#cb17-3"></a><span class="bu">print</span>(<span class="ss">f"group_by_non_consecutive(</span><span class="sc">{</span>data<span class="sc">}</span><span class="ss">, key=lambda x: x[0])"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4"></a><span class="cf">for</span> key, group <span class="kw">in</span> group_by_non_consecutive(data, key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">0</span>]):</span>
+<span id="cb17-5"><a href="#cb17-5"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span><span class="bu">list</span>(group)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb17-6"><a href="#cb17-6"></a><span class="co"># Without key function</span></span>
+<span id="cb17-7"><a href="#cb17-7"></a>data_nums <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>]</span>
+<span id="cb17-8"><a href="#cb17-8"></a><span class="bu">print</span>(<span class="ss">f"group_by_non_consecutive(</span><span class="sc">{</span>data_nums<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb17-9"><a href="#cb17-9"></a><span class="cf">for</span> key, group <span class="kw">in</span> group_by_non_consecutive(data_nums):</span>
+<span id="cb17-10"><a href="#cb17-10"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span><span class="bu">list</span>(group)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>group_by_non_consecutive(['apple', 'banana', 'ant', 'bear', 'apricot'], key=lambda x: x[0])
+  a: ['apple', 'ant', 'apricot']
+  b: ['banana', 'bear']
+group_by_non_consecutive([1, 2, 1, 3, 2, 1])
+  1: [1, 1, 1]
+  2: [2, 2]
+  3: [3]</code></pre>
+</div>
+</div>
+<p>These recipes provide robust, type-safe solutions to common problems when working with iterables in Python. Feel free to use them in your own projects. You can download the complete script with all the utilities and examples below.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -527,11 +658,12 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Download the whole code <a href="../../scripts/case_insensitive_enum.py">here</a>.</p>
+<p>Download the whole code <a href="../../scripts/iter_utils.py">here</a>.</p>
 </div>
 </div>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
