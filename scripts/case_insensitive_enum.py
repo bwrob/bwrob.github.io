@@ -1,31 +1,7 @@
----
-title: "Case Insensitive Enum"
-description: "How to create a case-insensitive enum in Python."
-author: "bwrob"
-date: "2025-10-10"
-date-modified: "2025-10-11"
-categories: [Python Recipes]
-image: ../../logo/python_mug.jpeg
-format-links: [html]
----
-
-When working with enums in Python, you might want to create an enum that is case-insensitive. This can be particularly useful when you want to allow users to input values without worrying about the case. Here's how you can achieve this by subclassing `StrEnum`. To enforce that all enum members are defined in lowercase, we can use a hook `__init_subclass__`.
-
-
-## Implementation
-
-
-```{python}
 from __future__ import annotations
 
-import sys
-
-if sys.version_info >= (3, 11):
-    from enum import StrEnum
-    from typing import Self, override
-else:
-    from backports.strenum import StrEnum
-    from typing_extensions import Self, override
+from enum import StrEnum
+from typing import Any, Self, override
 
 
 class CaseInsensitiveStrEnum(StrEnum):
@@ -78,32 +54,3 @@ class CaseInsensitiveStrEnum(StrEnum):
                 return member
 
         return None
-
-```
-
-
-## Example Usage
-
-
-Here is an example of how to use the `CaseInsensitiveStrEnum` class:
-
-```{python}
-from enum import auto
-
-class TestEnum(CaseInsensitiveStrEnum):
-    test = auto()
-    enumz = auto()
-
-print(f"List of members: {[member.name for member in TestEnum]}")
-print(f"List of values: {[member.value for member in TestEnum]}")
-print(f'Accessing "Test": {TestEnum("Test")}')
-print(f'Accessing "test": {TestEnum("test")}')
-print(f'Accessing "ENUMZ": {TestEnum("ENUMZ")}')
-
-
-try:
-    class TestEnum(CaseInsensitiveStrEnum):
-        TEST = "TEST"  # This will raise a TypeError
-except TypeError as e:
-    print(e)
-```
