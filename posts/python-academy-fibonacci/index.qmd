@@ -1,6 +1,6 @@
 ---
 title: "Fibonacci case study"
-author: "Bartosz Wróblewski"
+author: "bwrob"
 description: "How to efficiently calculate Fibonacci numbers in Python."
 
 date: "2025-10-12"
@@ -37,10 +37,10 @@ This approach is very intuitive, but it is also very slow. For `n=40`, it alread
 from time import perf_counter
 
 start = perf_counter()
-fibonacci_recursive(40)
+_ = fibonacci_recursive(40)
 end = perf_counter()
 
-print(end - start)
+print(f"Execution taken {end - start:.2f} seconds")
 ```
 
 ## Visualizing the Call Stack
@@ -73,7 +73,7 @@ def fibonacci_recursive_talkative(n: int) -> int:
 For `n=6`, the call tree looks like this:
 
 ```{python}
-fibonacci_recursive_talkative(6)
+_ = fibonacci_recursive_talkative(6)
 ```
 
 As you can see, many values are calculated multiple times. For example, `fibonacci_recursive(4)` is calculated twice, `fibonacci_recursive(3)` is calculated three times, and so on. This is the reason for the inefficiency.
@@ -83,7 +83,8 @@ As you can see, many values are calculated multiple times. For example, `fibonac
 We can improve the performance by storing the results of the function calls in a cache (a dictionary). This technique is called memoization.
 
 ```{python}
-__CACHE: dict[int, int] = {}
+FIBONACCI_CACHE: dict[int, int] = {}
+
 
 def fibonacci_recursive_cached(n: int) -> int:
     """Calculate the nth Fibonacci number using recursion with memoization."""
@@ -92,11 +93,13 @@ def fibonacci_recursive_cached(n: int) -> int:
     if n < 2:
         return n
 
-    if n in __CACHE:
-        return __CACHE[n]
-    __CACHE[n] = fibonacci_recursive_cached(n - 1) + fibonacci_recursive_cached(n - 2)
+    if n in FIBONACCI_CACHE:
+        return FIBONACCI_CACHE[n]
 
-    return __CACHE[n]
+    result = fibonacci_recursive_cached(n - 1) + fibonacci_recursive_cached(n - 2)
+
+    FIBONACCI_CACHE[n] = result
+    return result
 ```
 
 This version is much faster. However, it will fail for large `n` (e.g., `n=8_000`) because of Python's recursion depth limit.
@@ -150,6 +153,83 @@ def fibonacci_iterative(n: int) -> int:
 ```
 
 This is the most efficient way (we'll see)to calculate Fibonacci numbers in Python. It has a linear time complexity and constant space complexity.
+
+## Performance Comparison
+
+To compare the performance of these implementations, we can use the `perfplot` library. It allows us to easily benchmark different functions over a range of input sizes.
+
+```{python}
+# | code-fold: true
+# | code-summary: "Show the code"
+
+import numba
+import perfplot
+
+
+def fibonacci_internal_cached_decorator(n: int) -> int:
+    """Calculate the nth Fibonacci number using recursion with memoization.
+
+
+    This version uses an internal helper function decorated with @cache.
+    This forces the cache to be local to this function.
+    """
+
+    @cache
+    def helper(n: int) -> int:
+        """Calculate the nth Fibonacci number using recursion with memoization."""
+        if n < 0:
+            raise ValueError("Fibonacci is not defined for negative numbers.")
+        if n < 2:
+            return n
+        return helper(n - 1) + helper(n - 2)
+
+    return helper(n)
+
+
+fibonacci_iterative_jit = numba.njit(fibonacci_iterative)
+
+perfplot.show(
+    setup=lambda n: n,
+    kernels=[
+        fibonacci_recursive,
+        fibonacci_internal_cached_decorator,
+        fibonacci_iterative,
+    ],
+    n_range=[i for i in range(2, 30)],  # 8
+    xlabel="n",
+    labels=[
+        "recursive",
+        "recursive cached",
+        "iterative",
+    ],
+    title="Recursive vs cached vs iterative",
+    show_progress=False,
+    equality_check=False,
+    logx=False,
+    logy=True,
+)
+
+
+perfplot.show(
+    setup=lambda n: n,
+    kernels=[
+        fibonacci_iterative,
+        fibonacci_iterative_jit,
+    ],
+    n_range=[2**i for i in range(16)],  # 16
+    xlabel="n",
+    labels=[
+        "iterative",
+        "iterative (numba jit)",
+    ],
+    title="Iterative approach - native vs numba jit",
+    equality_check=False,
+    show_progress=False,
+    logx=False,
+    logy=True,
+)
+
+```
 
 ::: callout-note
 Download the whole code [here](../../scripts/fibonacci.py).
