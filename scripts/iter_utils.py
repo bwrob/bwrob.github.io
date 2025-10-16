@@ -6,7 +6,7 @@ import itertools
 from collections.abc import Callable, Generator, Iterable, Iterator, Mapping
 from itertools import islice
 from sys import maxsize
-from typing import Any, Protocol, Self, cast
+from typing import Protocol, Self, cast
 
 type NestedDict[T] = Mapping[str, NestedDict[T] | T]
 type NestedIterable[T] = Iterable[NestedIterable[T] | T]
