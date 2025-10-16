@@ -11,14 +11,14 @@ toc-depth: 2
 toc: true
 ---
 
-Working with iterables is a cornerstone of Python programming. 
-While the built-in `itertools` module provides a powerful toolkit, sometimes you need a specific recipe for a common problem. 
+Working with iterables is a cornerstone of Python programming.
+While the built-in `itertools` module provides a powerful toolkit, sometimes you need a specific recipe for a common problem.
 This post collects a few handy and (mostly!) type-safe utility functions for working with iterators and iterables, complete with explanations and examples.
 
 ## batched
 
-This function splits an iterable into non-overlapping batches of a given size. 
-It's a common requirement when processing large datasets or making batch API calls. 
+This function splits an iterable into non-overlapping batches of a given size.
+It's a common requirement when processing large datasets or making batch API calls.
 A similar function was added to `itertools` in Python 3.12, but this implementation is useful for older Python versions or as a standalone utility.
 
 ```{python}
@@ -58,8 +58,8 @@ print(f"batched(range(10), 3): {list(batched(range(10), 3))}")
 
 ## unbox
 
-Sometimes you have an iterable that is expected to contain exactly one item. 
-This function 'unboxes' it, returning the single element. 
+Sometimes you have an iterable that is expected to contain exactly one item.
+This function 'unboxes' it, returning the single element.
 It raises a `ValueError` if the iterable is empty or contains more than one element, ensuring that your assumptions about the data are met.
 
 ```{python}
@@ -92,7 +92,7 @@ except ValueError as e:
 
 ## unzip
 
-The `unzip` function is the reverse of the built-in `zip`. 
+The `unzip` function is the reverse of the built-in `zip`.
 Given an iterable of tuples, it separates the elements into a tuple of iterables, where each iterable contains the elements from the corresponding position in the input tuples.
 
 ```{python}
@@ -150,7 +150,7 @@ print(f"flatten_iterable({nested_list}): {flatten_iterable(nested_list)}")
 
 ## flatten_string_key_dict
 
-This function flattens a nested dictionary into a single-level dictionary by concatenating the keys with a dot (`.`). 
+This function flattens a nested dictionary into a single-level dictionary by concatenating the keys with a dot (`.`).
 This is particularly useful for handling configuration files or nested JSON objects where you want a simple key-value representation.
 
 ```{python}
@@ -190,9 +190,9 @@ print(
 
 ## group_by_non_consecutive
 
-The standard `itertools.groupby` requires the input iterable to be sorted by the grouping key. 
+The standard `itertools.groupby` requires the input iterable to be sorted by the grouping key.
 This utility simplifies the process by first sorting the entire iterable before grouping.
-This is less memory-efficient for very large iterables but is very convenient for smaller datasets where the input is not pre-sorted. 
+This is less memory-efficient for very large iterables but is very convenient for smaller datasets where the input is not pre-sorted.
 
 ```{python}
 import itertools
