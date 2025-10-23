@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="bwrob">
+<meta name="dcterms.date" content="2025-10-23">
+<meta name="description" content="How to treat your functions well.">
 
-<title>untitled-1 – bwrob blog</title>
+<title>Functions, Closures and Decorators – bwrob blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -58,7 +61,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
@@ -105,21 +108,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-<script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="bwrob blog">
 <meta property="og:description" content="bwrob personal and professional blog">
-<meta property="og:image" content="https://bwrob.github.io/posts/python-academy-fibonacci/logo/python_mug.png">
+<meta property="og:image" content="https://bwrob.github.io/pages/images/python_academy.png">
 <meta property="og:site_name" content="bwrob blog">
+<meta property="og:image:height" content="1024">
+<meta property="og:image:width" content="1024">
 <meta name="twitter:title" content="bwrob blog">
 <meta name="twitter:description" content="bwrob personal and professional blog">
-<meta name="twitter:image" content="https://bwrob.github.io/posts/python-academy-fibonacci/logo/python_mug.png">
+<meta name="twitter:image" content="https://bwrob.github.io/pages/images/python_academy.png">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image-height" content="1024">
+<meta name="twitter:image-width" content="1024">
 </head>
 
 <body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -352,11 +384,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block"></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Functions, Closures and Decorators</h1>
+                  <div>
+        <div class="description">
+          How to treat your functions well.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Python Academy</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>bwrob </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 23, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#functions" id="toc-functions" class="nav-link active" data-scroll-target="#functions">Functions</a></li>
+  <li><a href="#benchmarking-fibonacci-implementations" id="toc-benchmarking-fibonacci-implementations" class="nav-link" data-scroll-target="#benchmarking-fibonacci-implementations">Benchmarking Fibonacci Implementations</a></li>
+  <li><a href="#closures" id="toc-closures" class="nav-link" data-scroll-target="#closures">Closures</a></li>
+  <li><a href="#decorators" id="toc-decorators" class="nav-link" data-scroll-target="#decorators">Decorators</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
@@ -365,171 +442,258 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<div id="388f16b6" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> numba <span class="im">as</span> nb</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> perfplot</span>
-<span id="cb1-4"><a href="#cb1-4"></a></span>
-<span id="cb1-5"><a href="#cb1-5"></a></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co"># --- Function 2: NumPy linalg Matrix Power ---</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># Note: No @nb.jit decorator here</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="kw">def</span> fib_linalg_numpy(n):</span>
-<span id="cb1-9"><a href="#cb1-9"></a>    <span class="cf">if</span> n <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
-<span id="cb1-10"><a href="#cb1-10"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a>    <span class="cf">if</span> n <span class="op">==</span> <span class="dv">1</span>:</span>
-<span id="cb1-12"><a href="#cb1-12"></a>        <span class="cf">return</span> <span class="dv">1</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a>    Q <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">1</span>], [<span class="dv">1</span>, <span class="dv">0</span>]], dtype<span class="op">=</span>np.uint64)</span>
-<span id="cb1-14"><a href="#cb1-14"></a>    <span class="co"># This is the line that cannot be compiled by Numba in nopython mode</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a>    result_matrix <span class="op">=</span> np.linalg.matrix_power(Q, n <span class="op">-</span> <span class="dv">1</span>)</span>
-<span id="cb1-16"><a href="#cb1-16"></a>    <span class="cf">return</span> result_matrix[<span class="dv">0</span>, <span class="dv">0</span>]</span>
-<span id="cb1-17"><a href="#cb1-17"></a></span>
-<span id="cb1-18"><a href="#cb1-18"></a></span>
-<span id="cb1-19"><a href="#cb1-19"></a><span class="at">@nb.njit</span>(nb.uint64(nb.uint64), cache<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-20"><a href="#cb1-20"></a><span class="kw">def</span> fibonacci_iterative(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
-<span id="cb1-21"><a href="#cb1-21"></a>    <span class="co">"""Calculate the nth Fibonacci number using an iterative approach."""</span></span>
-<span id="cb1-22"><a href="#cb1-22"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
-<span id="cb1-23"><a href="#cb1-23"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
-<span id="cb1-24"><a href="#cb1-24"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
-<span id="cb1-25"><a href="#cb1-25"></a>        <span class="cf">return</span> n</span>
-<span id="cb1-26"><a href="#cb1-26"></a></span>
-<span id="cb1-27"><a href="#cb1-27"></a>    a, b <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span></span>
-<span id="cb1-28"><a href="#cb1-28"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n <span class="op">-</span> <span class="dv">1</span>):</span>
-<span id="cb1-29"><a href="#cb1-29"></a>        a, b <span class="op">=</span> b, a <span class="op">+</span> b</span>
-<span id="cb1-30"><a href="#cb1-30"></a>    <span class="cf">return</span> b</span>
-<span id="cb1-31"><a href="#cb1-31"></a></span>
-<span id="cb1-32"><a href="#cb1-32"></a></span>
-<span id="cb1-33"><a href="#cb1-33"></a>fibonacci_iterative(<span class="dv">10</span>)  <span class="co"># Warm-up for JIT compilation</span></span>
-<span id="cb1-34"><a href="#cb1-34"></a>fib_linalg_numpy(<span class="dv">10</span>)  <span class="co"># Warm-up for any initial overhead</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="30">
-<pre><code>np.uint64(55)</code></pre>
+
+<p>In this part of the Python Academy, we’ll look at how Python’s functions work. We’ll start with the basics and then check out some more advanced topics like closures and decorators. Getting a handle on these concepts will help you write cleaner and more efficient Python code.</p>
+<section id="functions" class="level2">
+<h2 class="anchored" data-anchor-id="functions">Functions</h2>
+<p>In Python, functions are “first-class citizens”. This just means you can treat them like any other variable. You can:</p>
+<ul>
+<li>assign them to variables,</li>
+<li>pass them as arguments to other functions,</li>
+<li>return them from functions.</li>
+</ul>
+<p>This is a core concept in Python that allows for some powerful patterns. Let’s use a function from our previous post on Fibonacci numbers to see this in action.</p>
+<div id="54f9c089" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">def</span> fibonacci_iterative(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb1-2"><a href="#cb1-2"></a>    <span class="co">"""Calculate the nth Fibonacci number using an iterative approach."""</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb1-4"><a href="#cb1-4"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
+<span id="cb1-5"><a href="#cb1-5"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb1-6"><a href="#cb1-6"></a>        <span class="cf">return</span> n</span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a>    a, b <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb1-10"><a href="#cb1-10"></a>        a, b <span class="op">=</span> b, a <span class="op">+</span> b</span>
+<span id="cb1-11"><a href="#cb1-11"></a>    <span class="cf">return</span> b</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</div>
-<div id="747a3167" class="cell" data-execution_count="20">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="im">import</span> numba <span class="im">as</span> nb</span>
-<span id="cb3-3"><a href="#cb3-3"></a></span>
-<span id="cb3-4"><a href="#cb3-4"></a></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="at">@nb.njit</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="kw">def</span> fib_matrix_procedural_fixed(n):</span>
-<span id="cb3-7"><a href="#cb3-7"></a>    <span class="co">"""</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="co">    Calculates the n-th Fibonacci number with fixes for Numba compatibility.</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co">    """</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a>    <span class="cf">if</span> n <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
-<span id="cb3-11"><a href="#cb3-11"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
-<span id="cb3-12"><a href="#cb3-12"></a>    <span class="cf">if</span> n <span class="op">==</span> <span class="dv">1</span>:</span>
-<span id="cb3-13"><a href="#cb3-13"></a>        <span class="cf">return</span> <span class="dv">1</span></span>
-<span id="cb3-14"><a href="#cb3-14"></a></span>
-<span id="cb3-15"><a href="#cb3-15"></a>    exponent <span class="op">=</span> n <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb3-16"><a href="#cb3-16"></a></span>
-<span id="cb3-17"><a href="#cb3-17"></a>    <span class="co"># FIX 1: Change dtype to np.float64 for BLAS compatibility</span></span>
-<span id="cb3-18"><a href="#cb3-18"></a>    base <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">1</span>], [<span class="dv">1</span>, <span class="dv">0</span>]], dtype<span class="op">=</span>np.float64)</span>
-<span id="cb3-19"><a href="#cb3-19"></a>    result <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">1</span>]], dtype<span class="op">=</span>np.float64)</span>
-<span id="cb3-20"><a href="#cb3-20"></a></span>
-<span id="cb3-21"><a href="#cb3-21"></a>    <span class="cf">while</span> exponent <span class="op">&gt;</span> <span class="dv">0</span>:</span>
-<span id="cb3-22"><a href="#cb3-22"></a>        <span class="cf">if</span> exponent <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">1</span>:</span>
-<span id="cb3-23"><a href="#cb3-23"></a>            <span class="co"># FIX 2: Use the @ operator for matrix multiplication</span></span>
-<span id="cb3-24"><a href="#cb3-24"></a>            result <span class="op">=</span> result <span class="op">@</span> base</span>
-<span id="cb3-25"><a href="#cb3-25"></a></span>
-<span id="cb3-26"><a href="#cb3-26"></a>        <span class="co"># Use the @ operator here as well</span></span>
-<span id="cb3-27"><a href="#cb3-27"></a>        base <span class="op">=</span> base <span class="op">@</span> base</span>
-<span id="cb3-28"><a href="#cb3-28"></a>        exponent <span class="op">//=</span> <span class="dv">2</span></span>
-<span id="cb3-29"><a href="#cb3-29"></a></span>
-<span id="cb3-30"><a href="#cb3-30"></a>    <span class="co"># The result is a float, but it represents an integer.</span></span>
-<span id="cb3-31"><a href="#cb3-31"></a>    <span class="co"># We can safely cast it to an integer type for the final return.</span></span>
-<span id="cb3-32"><a href="#cb3-32"></a>    <span class="cf">return</span> np.uint64(result[<span class="dv">0</span>, <span class="dv">0</span>])</span>
-<span id="cb3-33"><a href="#cb3-33"></a></span>
-<span id="cb3-34"><a href="#cb3-34"></a></span>
-<span id="cb3-35"><a href="#cb3-35"></a><span class="co"># --- Example Usage ---</span></span>
-<span id="cb3-36"><a href="#cb3-36"></a>n <span class="op">=</span> <span class="dv">90</span></span>
-<span id="cb3-37"><a href="#cb3-37"></a>fib_n <span class="op">=</span> fib_matrix_procedural_fixed(n)</span>
-<span id="cb3-38"><a href="#cb3-38"></a></span>
-<span id="cb3-39"><a href="#cb3-39"></a><span class="bu">print</span>(<span class="ss">f"The </span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">-th Fibonacci number is: </span><span class="sc">{</span>fib_n<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb3-40"><a href="#cb3-40"></a><span class="co"># Correctly returns: 2880067194370816120</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Because functions are objects, they come with some handy attributes. For instance, you can get the docstring with <code>__doc__</code> and the function’s name with <code>__name__</code>.</p>
+<div id="0374abf0" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="bu">print</span>(fibonacci_iterative.__doc__)</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="bu">print</span>(fibonacci_iterative.<span class="va">__name__</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The 90-th Fibonacci number is: 2.880067194370816e+18</code></pre>
+<pre><code>Calculate the nth Fibonacci number using an iterative approach.
+fibonacci_iterative</code></pre>
 </div>
 </div>
-<div id="71e078fb" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># --- Perfplot Benchmark ---</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>perfplot.show(</span>
-<span id="cb5-3"><a href="#cb5-3"></a>    setup<span class="op">=</span><span class="kw">lambda</span> n: n,</span>
-<span id="cb5-4"><a href="#cb5-4"></a>    kernels<span class="op">=</span>[fib_linalg_numpy, fibonacci_iterative],</span>
-<span id="cb5-5"><a href="#cb5-5"></a>    n_range<span class="op">=</span>[<span class="dv">2</span><span class="op">**</span>i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>)],</span>
-<span id="cb5-6"><a href="#cb5-6"></a>    xlabel<span class="op">=</span><span class="st">"nth Fibonacci Number"</span>,</span>
-<span id="cb5-7"><a href="#cb5-7"></a>    title<span class="op">=</span><span class="st">"Fibonacci Algorithm Performance Comparison"</span>,</span>
-<span id="cb5-8"><a href="#cb5-8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"d50ddfe10eb5478097379c71d1e474df","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
-<div class="cell-output cell-output-display">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
-</div>
-<div class="cell-output cell-output-error">
-<div class="ansi-escaped-output">
-<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">PerfplotError</span>                             Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[31]</span><span class="ansi-green-fg">, line 2</span>
-<span class="ansi-green-fg">      1</span> <span style="font-style:italic;color:rgb(95,135,135)"># --- Perfplot Benchmark ---</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">2</span> <span class="ansi-yellow-bg">perfplot</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">show</span><span class="ansi-yellow-bg">(</span>
-<span class="ansi-green-fg">      3</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">setup</span><span class="ansi-yellow-bg">=</span><span style="font-weight:bold;color:rgb(0,135,0)" class="ansi-yellow-bg">lambda</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">n</span><span class="ansi-yellow-bg">:</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">n</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">      4</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">kernels</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-bg">fib_linalg_numpy</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">fibonacci_iterative</span><span class="ansi-yellow-bg">]</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">      5</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">n_range</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">[</span><span class="ansi-green-fg ansi-yellow-bg">2</span><span class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">i</span><span class="ansi-yellow-bg"> </span><span style="font-weight:bold;color:rgb(0,135,0)" class="ansi-yellow-bg">for</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">i</span><span class="ansi-yellow-bg"> </span><span style="font-weight:bold;color:rgb(175,0,255)" class="ansi-yellow-bg">in</span><span class="ansi-yellow-bg"> </span><span style="color:rgb(0,135,0)" class="ansi-yellow-bg">range</span><span class="ansi-yellow-bg">(</span><span class="ansi-green-fg ansi-yellow-bg">10</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg">]</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">      6</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">xlabel</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-fg ansi-yellow-bg">"</span><span class="ansi-yellow-fg ansi-yellow-bg">nth Fibonacci Number</span><span class="ansi-yellow-fg ansi-yellow-bg">"</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">      7</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">title</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-fg ansi-yellow-bg">"</span><span class="ansi-yellow-fg ansi-yellow-bg">Fibonacci Algorithm Performance Comparison</span><span class="ansi-yellow-fg ansi-yellow-bg">"</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">      8</span> <span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/dev/bwrob.github.io/.venv/lib/python3.13/site-packages/perfplot/_main.py:564</span>, in <span class="ansi-cyan-fg">show</span><span class="ansi-blue-fg">(time_unit, relative_to, logx, logy, *args, **kwargs)</span>
-<span class="ansi-green-fg">    556</span> <span style="font-weight:bold;color:rgb(0,135,0)">def</span><span style="color:rgb(188,188,188)"> </span><span class="ansi-blue-fg">show</span>(
-<span class="ansi-green-fg">    557</span>     *args,
-<span class="ansi-green-fg">    558</span>     time_unit: <span style="color:rgb(0,135,0)">str</span> = <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">s</span><span class="ansi-yellow-fg">"</span>,
-<span class="ansi-green-fg">   (...)</span><span class="ansi-green-fg">    562</span>     **kwargs,
-<span class="ansi-green-fg">    563</span> ):
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">564</span>     out = <span class="ansi-yellow-bg">bench</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">args</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">kwargs</span><span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    565</span>     out.show(
-<span class="ansi-green-fg">    566</span>         time_unit=time_unit,
-<span class="ansi-green-fg">    567</span>         relative_to=relative_to,
-<span class="ansi-green-fg">    568</span>         logx=logx,
-<span class="ansi-green-fg">    569</span>         logy=logy,
-<span class="ansi-green-fg">    570</span>     )
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/dev/bwrob.github.io/.venv/lib/python3.13/site-packages/perfplot/_main.py:521</span>, in <span class="ansi-cyan-fg">bench</span><span class="ansi-blue-fg">(kernels, n_range, setup, flops, labels, xlabel, title, target_time_per_measurement, max_time, equality_check, show_progress)</span>
-<span class="ansi-green-fg">    508</span> b = Bench(
-<span class="ansi-green-fg">    509</span>     setup,
-<span class="ansi-green-fg">    510</span>     kernels,
-<span class="ansi-green-fg">   (...)</span><span class="ansi-green-fg">    517</span>     callback=callback,
-<span class="ansi-green-fg">    518</span> )
-<span class="ansi-green-fg">    520</span> <span style="font-weight:bold;color:rgb(0,135,0)">for</span> i <span style="font-weight:bold;color:rgb(175,0,255)">in</span> <span style="color:rgb(0,135,0)">range</span>(<span style="color:rgb(0,135,0)">len</span>(n_range)):
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">521</span>     timings_s[i] = <span style="color:rgb(0,135,0)" class="ansi-yellow-bg">next</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">b</span><span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    522</span>     <span style="font-style:italic;color:rgb(95,135,135)"># override n_rane in case it got overridden in next()</span>
-<span class="ansi-green-fg">    523</span>     n_range = b.n_range
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/dev/bwrob.github.io/.venv/lib/python3.13/site-packages/perfplot/_main.py:282</span>, in <span class="ansi-cyan-fg">Bench.__next__</span><span class="ansi-blue-fg">(self)</span>
-<span class="ansi-green-fg">    280</span>         <span style="font-weight:bold;color:rgb(0,135,0)">else</span>:
-<span class="ansi-green-fg">    281</span>             <span style="font-weight:bold;color:rgb(0,135,0)">if</span> <span style="font-weight:bold;color:rgb(175,0,255)">not</span> is_equal:
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">282</span>                 <span style="font-weight:bold;color:rgb(0,135,0)">raise</span> PerfplotError(
-<span class="ansi-green-fg">    283</span>                     <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">Equality check failure.</span><span style="font-weight:bold;color:rgb(175,95,0)">\n</span><span class="ansi-yellow-fg">"</span>
-<span class="ansi-green-fg">    284</span>                     + <span class="ansi-yellow-fg">f</span><span class="ansi-yellow-fg">"</span><span style="font-weight:bold;color:rgb(175,95,135)">{</span><span style="color:rgb(0,135,0)">self</span>.labels[<span class="ansi-green-fg">0</span>]<span style="font-weight:bold;color:rgb(175,95,135)">}</span><span class="ansi-yellow-fg">:</span><span style="font-weight:bold;color:rgb(175,95,0)">\n</span><span class="ansi-yellow-fg">"</span>
-<span class="ansi-green-fg">    285</span>                     + <span class="ansi-yellow-fg">f</span><span class="ansi-yellow-fg">"</span><span style="font-weight:bold;color:rgb(175,95,135)">{</span>reference<span style="font-weight:bold;color:rgb(175,95,135)">}</span><span class="ansi-yellow-fg">:</span><span style="font-weight:bold;color:rgb(175,95,0)">\n</span><span style="font-weight:bold;color:rgb(175,95,0)">\n</span><span class="ansi-yellow-fg">"</span>
-<span class="ansi-green-fg">    286</span>                     + <span class="ansi-yellow-fg">f</span><span class="ansi-yellow-fg">"</span><span style="font-weight:bold;color:rgb(175,95,135)">{</span><span style="color:rgb(0,135,0)">self</span>.labels[k]<span style="font-weight:bold;color:rgb(175,95,135)">}</span><span class="ansi-yellow-fg">:</span><span style="font-weight:bold;color:rgb(175,95,0)">\n</span><span class="ansi-yellow-fg">"</span>
-<span class="ansi-green-fg">    287</span>                     + <span class="ansi-yellow-fg">f</span><span class="ansi-yellow-fg">"</span><span style="font-weight:bold;color:rgb(175,95,135)">{</span>val<span style="font-weight:bold;color:rgb(175,95,135)">}</span><span class="ansi-yellow-fg">:</span><span style="font-weight:bold;color:rgb(175,95,0)">\n</span><span class="ansi-yellow-fg">"</span>
-<span class="ansi-green-fg">    288</span>                 )
-<span class="ansi-green-fg">    290</span> <span style="font-style:italic;color:rgb(95,135,135)"># First try with one repetition only.</span>
-<span class="ansi-green-fg">    291</span> remaining_time_ns = <span style="color:rgb(0,135,0)">int</span>(<span style="color:rgb(0,135,0)">self</span>.target_time_per_measurement / si_time[<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">ns</span><span class="ansi-yellow-fg">"</span>])
-
-<span class="ansi-red-fg">PerfplotError</span>: Equality check failure.
-fib_linalg_numpy:
-18154666814248790725:
-
-fibonacci_iterative:
--292077259460760891:
-</pre>
+<p>And just like other objects, functions inherit from the <code>object</code> base class.</p>
+<div id="b109df68" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="bu">isinstance</span>(fibonacci_iterative, <span class="bu">object</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>True</code></pre>
 </div>
 </div>
+<p>As you can see, functions in Python are more than just Callable blocks of code. Next up, we’ll see how this flexibility allows us to build closures and decorators.</p>
+</section>
+<section id="benchmarking-fibonacci-implementations" class="level2">
+<h2 class="anchored" data-anchor-id="benchmarking-fibonacci-implementations">Benchmarking Fibonacci Implementations</h2>
+<p>To really drive home the point that functions are first-class citizens, let’s put a few of our Fibonacci functions into a list and pass them to a benchmarking function. This function will test each one and see how they perform.</p>
+<div id="b0761ba0" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">def</span> fibonacci_iterative(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb6-2"><a href="#cb6-2"></a>    <span class="co">"""Calculate the nth Fibonacci number using an iterative approach."""</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb6-4"><a href="#cb6-4"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
+<span id="cb6-5"><a href="#cb6-5"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb6-6"><a href="#cb6-6"></a>        <span class="cf">return</span> n</span>
+<span id="cb6-7"><a href="#cb6-7"></a></span>
+<span id="cb6-8"><a href="#cb6-8"></a>    a, b <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb6-10"><a href="#cb6-10"></a>        a, b <span class="op">=</span> b, a <span class="op">+</span> b</span>
+<span id="cb6-11"><a href="#cb6-11"></a>    <span class="cf">return</span> b</span>
+<span id="cb6-12"><a href="#cb6-12"></a></span>
+<span id="cb6-13"><a href="#cb6-13"></a></span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="kw">def</span> fibonacci_recursive(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb6-15"><a href="#cb6-15"></a>    <span class="co">"""Calculate the nth Fibonacci number using a recursive approach."""</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb6-17"><a href="#cb6-17"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
+<span id="cb6-18"><a href="#cb6-18"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb6-19"><a href="#cb6-19"></a>        <span class="cf">return</span> n</span>
+<span id="cb6-20"><a href="#cb6-20"></a>    <span class="cf">return</span> fibonacci_recursive(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">+</span> fibonacci_recursive(n <span class="op">-</span> <span class="dv">2</span>)</span>
+<span id="cb6-21"><a href="#cb6-21"></a></span>
+<span id="cb6-22"><a href="#cb6-22"></a></span>
+<span id="cb6-23"><a href="#cb6-23"></a>FIBONACCI_CACHE: <span class="bu">dict</span>[<span class="bu">int</span>, <span class="bu">int</span>] <span class="op">=</span> {}</span>
+<span id="cb6-24"><a href="#cb6-24"></a></span>
+<span id="cb6-25"><a href="#cb6-25"></a></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="kw">def</span> fibonacci_recursive_cached(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb6-27"><a href="#cb6-27"></a>    <span class="co">"""Calculate the nth Fibonacci number using recursion with memoization."""</span></span>
+<span id="cb6-28"><a href="#cb6-28"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb6-29"><a href="#cb6-29"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
+<span id="cb6-30"><a href="#cb6-30"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb6-31"><a href="#cb6-31"></a>        <span class="cf">return</span> n</span>
+<span id="cb6-32"><a href="#cb6-32"></a></span>
+<span id="cb6-33"><a href="#cb6-33"></a>    <span class="cf">if</span> n <span class="kw">in</span> FIBONACCI_CACHE:</span>
+<span id="cb6-34"><a href="#cb6-34"></a>        <span class="cf">return</span> FIBONACCI_CACHE[n]</span>
+<span id="cb6-35"><a href="#cb6-35"></a></span>
+<span id="cb6-36"><a href="#cb6-36"></a>    result <span class="op">=</span> fibonacci_recursive_cached(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">+</span> fibonacci_recursive_cached(n <span class="op">-</span> <span class="dv">2</span>)</span>
+<span id="cb6-37"><a href="#cb6-37"></a></span>
+<span id="cb6-38"><a href="#cb6-38"></a>    FIBONACCI_CACHE[n] <span class="op">=</span> result</span>
+<span id="cb6-39"><a href="#cb6-39"></a>    <span class="cf">return</span> result</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="6b3bc921" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="im">import</span> time</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="im">from</span> typing <span class="im">import</span> Callable</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="kw">def</span> benchmark(functions: <span class="bu">list</span>[Callable[[<span class="bu">int</span>], <span class="bu">int</span>]], n: <span class="bu">int</span>):</span>
+<span id="cb7-6"><a href="#cb7-6"></a>    <span class="co">"""Benchmarks a list of functions."""</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>    <span class="cf">for</span> func <span class="kw">in</span> functions:</span>
+<span id="cb7-8"><a href="#cb7-8"></a>        start <span class="op">=</span> time.perf_counter()</span>
+<span id="cb7-9"><a href="#cb7-9"></a>        func(n)</span>
+<span id="cb7-10"><a href="#cb7-10"></a>        end <span class="op">=</span> time.perf_counter()</span>
+<span id="cb7-11"><a href="#cb7-11"></a>        <span class="bu">print</span>(<span class="ss">f"Function </span><span class="sc">{</span>func<span class="sc">.</span><span class="va">__name__</span><span class="sc">}</span><span class="ss"> took </span><span class="sc">{</span>end <span class="op">-</span> start<span class="sc">:.6f}</span><span class="ss"> seconds."</span>)</span>
+<span id="cb7-12"><a href="#cb7-12"></a></span>
+<span id="cb7-13"><a href="#cb7-13"></a></span>
+<span id="cb7-14"><a href="#cb7-14"></a>fib_functions <span class="op">=</span> [fibonacci_recursive, fibonacci_recursive_cached, fibonacci_iterative]</span>
+<span id="cb7-15"><a href="#cb7-15"></a>benchmark(fib_functions, <span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Function fibonacci_recursive took 0.080672 seconds.
+Function fibonacci_recursive_cached took 0.000009 seconds.
+Function fibonacci_iterative took 0.000003 seconds.</code></pre>
+</div>
+</div>
+</section>
+<section id="closures" class="level2">
+<h2 class="anchored" data-anchor-id="closures">Closures</h2>
+<p>A closure is basically a function that remembers the environment in which it was created. Let’s use our <code>get_greeter</code> function to see what that means.</p>
+<div id="769e67d6" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">def</span> get_greeter(greeting: <span class="bu">str</span>) <span class="op">-&gt;</span> Callable:</span>
+<span id="cb9-2"><a href="#cb9-2"></a>    <span class="co">"""Returns a greeter function."""</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a></span>
+<span id="cb9-4"><a href="#cb9-4"></a>    <span class="kw">def</span> greeter(name: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb9-5"><a href="#cb9-5"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>greeting<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">!"</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a></span>
+<span id="cb9-7"><a href="#cb9-7"></a>    <span class="cf">return</span> greeter</span>
+<span id="cb9-8"><a href="#cb9-8"></a></span>
+<span id="cb9-9"><a href="#cb9-9"></a></span>
+<span id="cb9-10"><a href="#cb9-10"></a>good_morning_greeter <span class="op">=</span> get_greeter(<span class="st">"Good morning"</span>)</span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="bu">print</span>(good_morning_greeter(<span class="st">"World"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Good morning, World!</code></pre>
+</div>
+</div>
+<p>When we call <code>get_greeter("Good morning")</code>, we get a new <code>greeter</code> function back. This new function, which we’ve assigned to <code>good_morning_greeter</code>, “remembers” that the <code>greeting</code> variable was “Good morning”.</p>
+<p>This is what a closure does: it “closes over” the variables from the scope where it was created. So even though the <code>get_greeter</code> function has finished running, <code>good_morning_greeter</code> still has access to the <code>greeting</code> variable.</p>
+<p>We can even peek inside the closure with the <code>__closure__</code> attribute, which shows us the variables it has captured.</p>
+<div id="e147b959" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>good_morning_greeter.__closure__[<span class="dv">0</span>].cell_contents</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<pre><code>'Good morning'</code></pre>
+</div>
+</div>
+<p>This shows that the value <code>"Good morning"</code> is tucked away in our <code>good_morning_greeter</code> function’s closure.</p>
+<p>Closures are a key ingredient for decorators, which we’ll get to next. They also let us create “function factories” that can produce specialized functions.</p>
+<p>For a more mathematical example, let’s create a function factory that builds a polynomial function from a tuple of coefficients.</p>
+<p>A polynomial is defined as <span class="math inline">\(P(x) = \sum_{i=0}^{n} a_i x^i = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0\)</span>.</p>
+<div id="beabd423" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="im">from</span> typing <span class="im">import</span> Tuple</span>
+<span id="cb13-2"><a href="#cb13-2"></a></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="kw">def</span> polynomial_factory(coefficients: Tuple[<span class="bu">float</span>, ...]) <span class="op">-&gt;</span> Callable:</span>
+<span id="cb13-4"><a href="#cb13-4"></a>    <span class="co">"""</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a><span class="co">    A factory that creates a polynomial function from a tuple of coefficients.</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a><span class="co">    The coefficients are ordered from the highest power to the lowest.</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a><span class="co">    """</span></span>
+<span id="cb13-8"><a href="#cb13-8"></a>    <span class="kw">def</span> polynomial(x: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb13-9"><a href="#cb13-9"></a>        <span class="co">"""</span></span>
+<span id="cb13-10"><a href="#cb13-10"></a><span class="co">        Evaluates the polynomial for a given x.</span></span>
+<span id="cb13-11"><a href="#cb13-11"></a><span class="co">        """</span></span>
+<span id="cb13-12"><a href="#cb13-12"></a>        <span class="cf">return</span> <span class="bu">sum</span>(c <span class="op">*</span> (x <span class="op">**</span> i) <span class="cf">for</span> i, c <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">reversed</span>(coefficients)))</span>
+<span id="cb13-13"><a href="#cb13-13"></a></span>
+<span id="cb13-14"><a href="#cb13-14"></a>    <span class="cf">return</span> polynomial</span>
+<span id="cb13-15"><a href="#cb13-15"></a></span>
+<span id="cb13-16"><a href="#cb13-16"></a><span class="co"># P(x) = 2x^2 + 3x + 5</span></span>
+<span id="cb13-17"><a href="#cb13-17"></a>p1 <span class="op">=</span> polynomial_factory((<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>))</span>
+<span id="cb13-18"><a href="#cb13-18"></a></span>
+<span id="cb13-19"><a href="#cb13-19"></a><span class="co"># Q(x) = x^3 - 8</span></span>
+<span id="cb13-20"><a href="#cb13-20"></a>p2 <span class="op">=</span> polynomial_factory((<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">8</span>))</span>
+<span id="cb13-21"><a href="#cb13-21"></a></span>
+<span id="cb13-22"><a href="#cb13-22"></a><span class="bu">print</span>(p1(<span class="dv">5</span>))</span>
+<span id="cb13-23"><a href="#cb13-23"></a><span class="bu">print</span>(p2(<span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>70
+117</code></pre>
+</div>
+</div>
+<p>Here, <code>polynomial_factory</code> returns a new <code>polynomial</code> function. This new function’s closure captures the <code>coefficients</code> tuple. So, <code>p1</code> will always be the polynomial <span class="math inline">\(2x^2 + 3x + 5\)</span>, and <code>p2</code> will always be <span class="math inline">\(x^3 - 8\)</span>.</p>
+</section>
+<section id="decorators" class="level2">
+<h2 class="anchored" data-anchor-id="decorators">Decorators</h2>
+<p>Decorators are a neat way to add functionality to functions or classes without changing their code. Think of it as wrapping a function in another function to give it extra abilities.</p>
+<p>In the last post, we used the <code>@cache</code> decorator to speed up our recursive Fibonacci function. Let’s try to build a simple version of that decorator ourselves.</p>
+<div id="24d1b4b6" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">def</span> my_cache(func: Callable) <span class="op">-&gt;</span> Callable:</span>
+<span id="cb15-2"><a href="#cb15-2"></a>    <span class="co">"""A simple cache decorator."""</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a>    _cache <span class="op">=</span> {}</span>
+<span id="cb15-4"><a href="#cb15-4"></a>    <span class="kw">def</span> wrapper(<span class="op">*</span>args):</span>
+<span id="cb15-5"><a href="#cb15-5"></a>        <span class="cf">if</span> args <span class="kw">in</span> _cache:</span>
+<span id="cb15-6"><a href="#cb15-6"></a>            <span class="cf">return</span> _cache[args]</span>
+<span id="cb15-7"><a href="#cb15-7"></a>        result <span class="op">=</span> func(<span class="op">*</span>args)</span>
+<span id="cb15-8"><a href="#cb15-8"></a>        _cache[args] <span class="op">=</span> result</span>
+<span id="cb15-9"><a href="#cb15-9"></a>        <span class="cf">return</span> result</span>
+<span id="cb15-10"><a href="#cb15-10"></a>    <span class="cf">return</span> wrapper</span>
+<span id="cb15-11"><a href="#cb15-11"></a></span>
+<span id="cb15-12"><a href="#cb15-12"></a><span class="at">@my_cache</span></span>
+<span id="cb15-13"><a href="#cb15-13"></a><span class="kw">def</span> fibonacci_cached_by_me(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb15-14"><a href="#cb15-14"></a>    <span class="co">"""Calculate the nth Fibonacci number using recursion with our own cache decorator."""</span></span>
+<span id="cb15-15"><a href="#cb15-15"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb15-16"><a href="#cb15-16"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
+<span id="cb15-17"><a href="#cb15-17"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb15-18"><a href="#cb15-18"></a>        <span class="cf">return</span> n</span>
+<span id="cb15-19"><a href="#cb15-19"></a>    <span class="cf">return</span> fibonacci_cached_by_me(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">+</span> fibonacci_cached_by_me(n <span class="op">-</span> <span class="dv">2</span>)</span>
+<span id="cb15-20"><a href="#cb15-20"></a></span>
+<span id="cb15-21"><a href="#cb15-21"></a>fibonacci_cached_by_me(<span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+<pre><code>832040</code></pre>
+</div>
+</div>
+<p>The <code>@my_cache</code> line is just a cleaner way of writing <code>fibonacci_cached_by_me = my_cache(fibonacci_cached_by_me)</code>. A decorator is just a function that takes another function as input and returns a modified function.</p>
+<p>Decorators can also take arguments. To do this, we create a “decorator factory” - a function that returns a decorator. Here’s one that repeats a function call a few times.</p>
+<div id="bf2f605c" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">def</span> repeat(times: <span class="bu">int</span>) <span class="op">-&gt;</span> Callable:</span>
+<span id="cb17-2"><a href="#cb17-2"></a>    <span class="co">"""A decorator that repeats a function call a given number of times."""</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a></span>
+<span id="cb17-4"><a href="#cb17-4"></a>    <span class="kw">def</span> decorator(func: Callable) <span class="op">-&gt;</span> Callable:</span>
+<span id="cb17-5"><a href="#cb17-5"></a>        <span class="kw">def</span> wrapper(<span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb17-6"><a href="#cb17-6"></a>            <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(times):</span>
+<span id="cb17-7"><a href="#cb17-7"></a>                result <span class="op">=</span> func(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
+<span id="cb17-8"><a href="#cb17-8"></a>            <span class="cf">return</span> result</span>
+<span id="cb17-9"><a href="#cb17-9"></a></span>
+<span id="cb17-10"><a href="#cb17-10"></a>        <span class="cf">return</span> wrapper</span>
+<span id="cb17-11"><a href="#cb17-11"></a></span>
+<span id="cb17-12"><a href="#cb17-12"></a>    <span class="cf">return</span> decorator</span>
+<span id="cb17-13"><a href="#cb17-13"></a></span>
+<span id="cb17-14"><a href="#cb17-14"></a></span>
+<span id="cb17-15"><a href="#cb17-15"></a><span class="at">@repeat</span>(<span class="dv">3</span>)</span>
+<span id="cb17-16"><a href="#cb17-16"></a><span class="kw">def</span> say_hello(name: <span class="bu">str</span>):</span>
+<span id="cb17-17"><a href="#cb17-17"></a>    <span class="bu">print</span>(<span class="ss">f"Hello, </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">!"</span>)</span>
+<span id="cb17-18"><a href="#cb17-18"></a></span>
+<span id="cb17-19"><a href="#cb17-19"></a></span>
+<span id="cb17-20"><a href="#cb17-20"></a>say_hello(<span class="st">"World"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Hello, World!
+Hello, World!
+Hello, World!</code></pre>
+</div>
+</div>
+<p>In this case, <code>@repeat(3)</code> is the same as writing <code>say_hello = repeat(3)(say_hello)</code>.</p>
+<p>You’ll see decorators all over the place in Python frameworks like Flask (for routing) and <code>pytest</code> (for fixtures). They’re great for keeping your code clean and organized.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Download the whole code <a href="../../scripts/functions_closures_decorators.py">here</a>.</p>
+</div>
 </div>
 
 
+</section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
