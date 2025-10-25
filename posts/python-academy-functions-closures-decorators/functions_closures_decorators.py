@@ -1,6 +1,7 @@
 import time
 from typing import Callable, Tuple
 
+
 # Functions
 def fibonacci_iterative(n: int) -> int:
     """Calculate the nth Fibonacci number using an iterative approach."""
@@ -14,10 +15,12 @@ def fibonacci_iterative(n: int) -> int:
         a, b = b, a + b
     return b
 
+
 print(fibonacci_iterative.__doc__)
 print(fibonacci_iterative.__name__)
 
 isinstance(fibonacci_iterative, object)
+
 
 # Benchmarking Fibonacci Implementations
 def fibonacci_recursive(n: int) -> int:
@@ -60,6 +63,7 @@ def benchmark(functions: list[Callable[[int], int]], n: int):
 fib_functions = [fibonacci_recursive, fibonacci_recursive_cached, fibonacci_iterative]
 benchmark(fib_functions, 30)
 
+
 # Closures
 def get_greeter(greeting: str) -> Callable:
     """Returns a greeter function."""
@@ -75,18 +79,21 @@ print(good_morning_greeter("World"))
 
 good_morning_greeter.__closure__[0].cell_contents
 
+
 def polynomial_factory(coefficients: Tuple[float, ...]) -> callable:
     """
     A factory that creates a polynomial function from a tuple of coefficients.
     The coefficients are ordered from the highest power to the lowest.
     """
+
     def polynomial(x: float) -> float:
         """
         Evaluates the polynomial for a given x.
         """
-        return sum(c * (x ** i) for i, c in enumerate(reversed(coefficients)))
+        return sum(c * (x**i) for i, c in enumerate(reversed(coefficients)))
 
     return polynomial
+
 
 # P(x) = 2x^2 + 3x + 5
 p1 = polynomial_factory((2, 3, 5))
@@ -97,17 +104,21 @@ p2 = polynomial_factory((1, 0, 0, -8))
 print(p1(5))
 print(p2(5))
 
+
 # Decorators
 def my_cache(func: callable) -> callable:
     """A simple cache decorator."""
     _cache = {}
+
     def wrapper(*args):
         if args in _cache:
             return _cache[args]
         result = func(*args)
         _cache[args] = result
         return result
+
     return wrapper
+
 
 @my_cache
 def fibonacci_cached_by_me(n: int) -> int:
@@ -118,7 +129,9 @@ def fibonacci_cached_by_me(n: int) -> int:
         return n
     return fibonacci_cached_by_me(n - 1) + fibonacci_cached_by_me(n - 2)
 
+
 fibonacci_cached_by_me(30)
+
 
 def repeat(times: int) -> Callable:
     """A decorator that repeats a function call a given number of times."""
