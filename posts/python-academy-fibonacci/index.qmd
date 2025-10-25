@@ -6,12 +6,12 @@ description: "How to efficiently calculate Fibonacci numbers in Python."
 date: "2025-10-12"
 categories: [Python Academy]
 
-image: ../../pages/images/python_academy.png
+image: ../python_academy.png
 format-links: [html]
 toc-depth: 2
 ---
 
-In this post, we will explore different ways to calculate Fibonacci numbers in Python. We will start with a naive recursive approach, and then move to more efficient methods.
+In this post of [Python Academy](https://bwrob.github.io/#category=Python%20Academy), we will explore different ways to calculate Fibonacci numbers in Python. We will start with a naive recursive approach, and then move to more efficient methods.
 
 ## Naive Recursive Approach
 
@@ -164,6 +164,7 @@ To compare the performance of these implementations, we can use the `perfplot` l
 
 import numba
 import perfplot
+import numpy as np
 
 
 def fibonacci_internal_cached_decorator(n: int) -> int:
@@ -188,6 +189,28 @@ def fibonacci_internal_cached_decorator(n: int) -> int:
 
 fibonacci_iterative_jit = numba.njit(fibonacci_iterative)
 
+# Force compilation
+_ = fibonacci_iterative_jit(10)
+
+
+def fibonacci_linalg_numpy(n):
+    """Calculate the nth Fibonacci number using matrix exponentiation with NumPy."""
+
+    if n <= 0:
+        return 0
+    if n == 1:
+        return 1
+
+    Q = np.array([[1, 1], [1, 0]], dtype=np.uint64)
+    # This is the line that cannot be compiled by Numba in nopython mode
+    result_matrix = np.linalg.matrix_power(Q, n - 1)
+    return result_matrix[0, 0]
+```
+
+```{python}
+# | code-fold: true
+# | code-summary: "Show the code"
+
 perfplot.show(
     setup=lambda n: n,
     kernels=[
@@ -195,7 +218,7 @@ perfplot.show(
         fibonacci_internal_cached_decorator,
         fibonacci_iterative,
     ],
-    n_range=[i for i in range(2, 30)],  # 8
+    n_range=[i for i in range(1, 20)], 
     xlabel="n",
     labels=[
         "recursive",
@@ -209,20 +232,27 @@ perfplot.show(
     logy=True,
 )
 
+```
 
+There are more advanced techniques and algorithms to compute Fibonacci numbers, below is a sneak peek for the future at two more efficient methods: using Numba's JIT compilation and matrix exponentiation with NumPy.
+
+```{python}
+# | code-fold: true
+# | code-summary: "Show the code"
 perfplot.show(
     setup=lambda n: n,
     kernels=[
         fibonacci_iterative,
         fibonacci_iterative_jit,
+        fibonacci_linalg_numpy,
     ],
-    n_range=[2**i for i in range(16)],  # 16
+    n_range=[2**i if i < 10 else 2 ** (2 * i) for i in range(15)],
     xlabel="n",
     labels=[
-        "iterative",
+        "iterative (native)",
         "iterative (numba jit)",
+        "matrix (numpy linalg)",
     ],
-    title="Iterative approach - native vs numba jit",
     equality_check=False,
     show_progress=False,
     logx=False,
