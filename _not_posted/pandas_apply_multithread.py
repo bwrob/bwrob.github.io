@@ -37,9 +37,10 @@ def apply_multi(data_frame: pd.DataFrame, column_name: str) -> pd.DataFrame:
 
     results: pd.Series = pd.concat(pool_results, axis=0)
     data_frame_with_results = pd.concat([data_frame, results], axis=1)
-    data_frame_with_results.columns = list(data_frame_with_results.columns.values)[
-        :-1
-    ] + [column_name]
+    data_frame_with_results.columns = [
+        *list(data_frame_with_results.columns.values)[:-1],
+        column_name,
+    ]
     return data_frame_with_results
 
 
