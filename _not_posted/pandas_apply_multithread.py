@@ -21,27 +21,24 @@ def row_function(row: pd.Series) -> float:
     return example_function(row.A, row.B, row.C, row.D)
 
 
-def wrapp_apply(df: pd.DataFrame) -> pd.Series:
-    """Wrappes application of example function."""
+def wrap_apply(df: pd.DataFrame) -> pd.Series:
+    """Wrap application of example function."""
     return df.apply(row_function, axis=1)
 
 
 def apply_multi(data_frame: pd.DataFrame, column_name: str) -> pd.DataFrame:
     """Apply example function with multithreading."""
-    num_of_processes = mp.cpu_count()
-    data_split = np.array_split(data_frame, num_of_processes)
-    pool = mp.Pool(num_of_processes)
-    pool_results = pool.map(wrapp_apply, data_split)
-    pool.close()
-    pool.join()
+    num_of_processes = mp.cpu_count() or 1
+    data_split = [
+        pd.DataFrame(arr, columns=data_frame.columns)
+        for arr in np.array_split(data_frame, num_of_processes)
+    ]
+
+    with mp.Pool(num_of_processes) as pool:
+        pool_results = pool.map(wrap_apply, data_split)
 
     results: pd.Series = pd.concat(pool_results, axis=0)
-    data_frame_with_results = pd.concat([data_frame, results], axis=1)
-    data_frame_with_results.columns = [
-        *list(data_frame_with_results.columns.values)[:-1],
-        column_name,
-    ]
-    return data_frame_with_results
+    return pd.concat([data_frame, results.rename(column_name)], axis=1)
 
 
 def example_dataframe(size: int) -> pd.DataFrame:
