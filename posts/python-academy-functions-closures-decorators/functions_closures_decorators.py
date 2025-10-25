@@ -1,12 +1,13 @@
 import time
-from typing import Callable, Tuple
+from collections.abc import Callable
 
 
 # Functions
 def fibonacci_iterative(n: int) -> int:
     """Calculate the nth Fibonacci number using an iterative approach."""
     if n < 0:
-        raise ValueError("Fibonacci is not defined for negative numbers.")
+        msg = "Fibonacci is not defined for negative numbers."
+        raise ValueError(msg)
     if n < 2:
         return n
 
@@ -26,7 +27,8 @@ isinstance(fibonacci_iterative, object)
 def fibonacci_recursive(n: int) -> int:
     """Calculate the nth Fibonacci number using a recursive approach."""
     if n < 0:
-        raise ValueError("Fibonacci is not defined for negative numbers.")
+        msg = "Fibonacci is not defined for negative numbers."
+        raise ValueError(msg)
     if n < 2:
         return n
     return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
@@ -38,7 +40,8 @@ FIBONACCI_CACHE: dict[int, int] = {}
 def fibonacci_recursive_cached(n: int) -> int:
     """Calculate the nth Fibonacci number using recursion with memoization."""
     if n < 0:
-        raise ValueError("Fibonacci is not defined for negative numbers.")
+        msg = "Fibonacci is not defined for negative numbers."
+        raise ValueError(msg)
     if n < 2:
         return n
 
@@ -51,7 +54,7 @@ def fibonacci_recursive_cached(n: int) -> int:
     return result
 
 
-def benchmark(functions: list[Callable[[int], int]], n: int):
+def benchmark(functions: list[Callable[[int], int]], n: int) -> None:
     """Benchmarks a list of functions."""
     for func in functions:
         start = time.perf_counter()
@@ -80,16 +83,13 @@ print(good_morning_greeter("World"))
 good_morning_greeter.__closure__[0].cell_contents
 
 
-def polynomial_factory(coefficients: Tuple[float, ...]) -> callable:
-    """
-    A factory that creates a polynomial function from a tuple of coefficients.
+def polynomial_factory(coefficients: tuple[float, ...]) -> callable:
+    """A factory that creates a polynomial function from a tuple of coefficients.
     The coefficients are ordered from the highest power to the lowest.
     """
 
     def polynomial(x: float) -> float:
-        """
-        Evaluates the polynomial for a given x.
-        """
+        """Evaluates the polynomial for a given x."""
         return sum(c * (x**i) for i, c in enumerate(reversed(coefficients)))
 
     return polynomial
@@ -106,7 +106,7 @@ print(p2(5))
 
 
 # Decorators
-def my_cache(func: callable) -> callable:
+def my_cache(func: Callable) -> Callable:
     """A simple cache decorator."""
     _cache = {}
 
@@ -124,7 +124,8 @@ def my_cache(func: callable) -> callable:
 def fibonacci_cached_by_me(n: int) -> int:
     """Calculate the nth Fibonacci number using recursion with our own cache decorator."""
     if n < 0:
-        raise ValueError("Fibonacci is not defined for negative numbers.")
+        msg = "Fibonacci is not defined for negative numbers."
+        raise ValueError(msg)
     if n < 2:
         return n
     return fibonacci_cached_by_me(n - 1) + fibonacci_cached_by_me(n - 2)
@@ -148,7 +149,7 @@ def repeat(times: int) -> Callable:
 
 
 @repeat(3)
-def say_hello(name: str):
+def say_hello(name: str) -> None:
     print(f"Hello, {name}!")
 
 
