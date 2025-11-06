@@ -17,7 +17,1129 @@
 <width>144</width>
 </image>
 <generator>quarto-1.8.25</generator>
-<lastBuildDate>Wed, 22 Oct 2025 22:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 04 Nov 2025 23:00:00 GMT</lastBuildDate>
+<item>
+  <title>Python Academy: Iteration</title>
+  <dc:creator>Bartosz Wróblewski</dc:creator>
+  <link>https://bwrob.github.io/posts/python-academy-iteration/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>In the world of quantitative finance, we are constantly dealing with vast amounts of data. Processing this data efficiently is not just a matter of speed, but also of memory management. Python, with its elegant and intuitive syntax, provides powerful tools for handling data streams. This post, part of the Python Academy series, delves into the art of iteration, exploring the fundamental concepts of iterators and generators, and how they can help us write more memory-efficient code.</p>
+<p>For a mathematician, an iteration is a process of repeating a set of instructions. In programming, this concept is embodied in loops and iterables. While a <code>for</code> loop over a list might seem straightforward, there’s a lot more happening under the hood. Understanding these mechanics is key to mastering Python for data-intensive tasks.</p>
+</section>
+<section id="lists-vs.-tuples-the-eager-iterables" class="level2">
+<h2 class="anchored" data-anchor-id="lists-vs.-tuples-the-eager-iterables">Lists vs.&nbsp;Tuples: The Eager Iterables</h2>
+<p>Lists and tuples are the most common sequence types in Python. They are <em>eager</em> in the sense that all their elements are stored in memory at once. When you create a list of a million numbers, Python allocates memory for all of them.</p>
+<div id="043d64b0" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1">my_list <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [i <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1_000_000</span>)]</span>
+<span id="cb1-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># This creates a list with 1,000,000 integers in memory.</span></span></code></pre></div></div>
+</div>
+<p>This is fine for small to medium-sized datasets, but for very large datasets, this can lead to <code>MemoryError</code>.</p>
+<section id="key-differences" class="level3">
+<h3 class="anchored" data-anchor-id="key-differences">Key Differences</h3>
+<p>The primary difference between lists and tuples is <strong>mutability</strong>.</p>
+<ul>
+<li><p><strong>Lists</strong> are mutable, meaning you can change their content. You can add, remove, or change elements. This flexibility comes at a cost: lists typically require more memory to store the same number of elements compared to tuples. This is because Python allocates extra memory to accommodate future additions.</p></li>
+<li><p><strong>Tuples</strong> are immutable. Once a tuple is created, you cannot change its content. This immutability makes them slightly more memory-efficient and faster to access than lists.</p></li>
+</ul>
+<p>From a quant’s perspective, you can think of a tuple as a “frozen” or “read-only” list. Use tuples for data that should not change, like coordinates, configuration settings, or records from a database. If you need a collection that you will modify, a list is the way to go.</p>
+</section>
+</section>
+<section id="iterators-the-lazy-approach" class="level2">
+<h2 class="anchored" data-anchor-id="iterators-the-lazy-approach">Iterators: The Lazy Approach</h2>
+<p>An iterator is an object that represents a stream of data. It produces one item at a time, only when requested. This “lazy” evaluation is incredibly memory-efficient. The iterator protocol in Python consists of two methods:</p>
+<ul>
+<li><code>__iter__()</code>: Returns the iterator object itself.</li>
+<li><code>__next__()</code>: Returns the next item from the stream. When there are no more items, it raises a <code>StopIteration</code> exception.</li>
+</ul>
+<p>You can get an iterator from any iterable (like a list) using the <code>iter()</code> function.</p>
+<div id="921bcabd" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1">my_list <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>]</span>
+<span id="cb2-2">my_iterator <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">iter</span>(my_list)</span>
+<span id="cb2-3"></span>
+<span id="cb2-4"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">next</span>(my_iterator))  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Output: 1</span></span>
+<span id="cb2-5"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">next</span>(my_iterator))  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Output: 2</span></span>
+<span id="cb2-6"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">next</span>(my_iterator))  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Output: 3</span></span>
+<span id="cb2-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># The next call would raise StopIteration</span></span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1
+2
+3</code></pre>
+</div>
+</div>
+</section>
+<section id="generators-simplified-iterators" class="level2">
+<h2 class="anchored" data-anchor-id="generators-simplified-iterators">Generators: Simplified Iterators</h2>
+<p>Writing a class with <code>__iter__</code> and <code>__next__</code> can be cumbersome. Generators provide a much simpler way to create iterators. A generator is a function that uses the <code>yield</code> keyword to return an item. When a generator function is called, it returns a generator object, which is a type of iterator.</p>
+<p>Here’s a simple generator that produces a sequence of numbers:</p>
+<div id="a2f24a23" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> number_generator(n):</span>
+<span id="cb4-2">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(n):</span>
+<span id="cb4-3">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">yield</span> i</span>
+<span id="cb4-4"></span>
+<span id="cb4-5">gen <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> number_generator(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1_000_000</span>)</span>
+<span id="cb4-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># No large list is created in memory here.</span></span>
+<span id="cb4-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># The generator object 'gen' is created, ready to produce numbers.</span></span></code></pre></div></div>
+</div>
+<p>The state of the generator is saved between <code>yield</code> calls. This allows it to resume where it left off.</p>
+<section id="example-flattening-a-list-of-lists" class="level3">
+<h3 class="anchored" data-anchor-id="example-flattening-a-list-of-lists">Example: Flattening a List of Lists</h3>
+<p>A common task is to flatten a list of lists into a single list. A generator is a perfect tool for this, especially when dealing with large datasets, as it avoids creating a new, large list in memory.</p>
+<p>Imagine you have a list of trades, where each trade has a list of associated cashflows. You want to process all cashflows from all trades.</p>
+<div id="7af79884" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1">trades_cashflows <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [</span>
+<span id="cb5-2">    [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>],  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Cashflows for Trade 1</span></span>
+<span id="cb5-3">    [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>],  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Cashflows for Trade 2</span></span>
+<span id="cb5-4">    [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>],  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Cashflows for Trade 3</span></span>
+<span id="cb5-5">    <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">110</span>,  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Simple payment doesn't need to be in a list!</span></span>
+<span id="cb5-6">]</span>
+<span id="cb5-7"></span>
+<span id="cb5-8"></span>
+<span id="cb5-9"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> flatten(list_of_lists):</span>
+<span id="cb5-10">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> item <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> list_of_lists:</span>
+<span id="cb5-11">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">isinstance</span>(item, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>):</span>
+<span id="cb5-12">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> subitem <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> item:</span>
+<span id="cb5-13">                <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">yield</span> subitem</span>
+<span id="cb5-14">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span>:</span>
+<span id="cb5-15">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">yield</span> item</span>
+<span id="cb5-16"></span>
+<span id="cb5-17"></span>
+<span id="cb5-18"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># The generator does not hold all cashflows in memory</span></span>
+<span id="cb5-19">all_cashflows_generator <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> flatten(trades_cashflows)</span>
+<span id="cb5-20"></span>
+<span id="cb5-21"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> cf <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> all_cashflows_generator:</span>
+<span id="cb5-22">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(cf, end<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">" "</span>)</span>
+<span id="cb5-23"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Output: 10 20 30 15 25 100 -10 5 110 </span></span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>10 20 30 15 25 100 -10 5 110 </code></pre>
+</div>
+</div>
+<p>This <code>flatten</code> generator is memory-efficient. It only needs to store one cashflow at a time, regardless of the total number of cashflows.</p>
+</section>
+</section>
+<section id="memory-efficiency-in-action" class="level2">
+<h2 class="anchored" data-anchor-id="memory-efficiency-in-action">Memory Efficiency in Action</h2>
+<p>To make our memory analysis cleaner, we can define a decorator. This is a more Pythonic way to wrap functions with common boilerplate code, like starting and stopping <code>tracemalloc</code>.</p>
+<p>Let’s demonstrate the memory difference using a decorator with the standard library’s <code>tracemalloc</code> module. We’ll compare the memory usage of creating a list versus creating a generator.</p>
+<div id="eb183960" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> tracemalloc</span>
+<span id="cb7-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> functools <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> wraps</span>
+<span id="cb7-3"></span>
+<span id="cb7-4"></span>
+<span id="cb7-5"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> profile_memory(func):</span>
+<span id="cb7-6">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""A decorator to profile the memory usage of a function."""</span></span>
+<span id="cb7-7"></span>
+<span id="cb7-8">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@wraps</span>(func)</span>
+<span id="cb7-9">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> wrapper(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>args, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span>kwargs):</span>
+<span id="cb7-10">        tracemalloc.start()</span>
+<span id="cb7-11">        result <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> func(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>args, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span>kwargs)</span>
+<span id="cb7-12">        current, peak <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> tracemalloc.get_traced_memory()</span>
+<span id="cb7-13">        <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Function: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>func<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">__name__</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb7-14">        <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(</span>
+<span id="cb7-15">            <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Current memory usage is </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>current <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.6f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">MB; Peak was </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>peak <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.6f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">MB"</span></span>
+<span id="cb7-16">        )</span>
+<span id="cb7-17">        tracemalloc.stop()</span>
+<span id="cb7-18">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> result</span>
+<span id="cb7-19"></span>
+<span id="cb7-20">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> wrapper</span>
+<span id="cb7-21"></span>
+<span id="cb7-22"></span>
+<span id="cb7-23"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@profile_memory</span></span>
+<span id="cb7-24"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> create_list(n):</span>
+<span id="cb7-25">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""This function creates a list of n numbers."""</span></span>
+<span id="cb7-26">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> [i <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(n)]</span>
+<span id="cb7-27"></span>
+<span id="cb7-28"></span>
+<span id="cb7-29"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@profile_memory</span></span>
+<span id="cb7-30"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> create_generator(n):</span>
+<span id="cb7-31">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""This function creates a generator of n numbers."""</span></span>
+<span id="cb7-32">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> (i <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(n))</span>
+<span id="cb7-33"></span>
+<span id="cb7-34"></span>
+<span id="cb7-35">n <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1_000_000</span></span>
+<span id="cb7-36"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Profiling memory for list creation..."</span>)</span>
+<span id="cb7-37">my_list <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> create_list(n)</span>
+<span id="cb7-38"></span>
+<span id="cb7-39"></span>
+<span id="cb7-40"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Profiling memory for generator creation..."</span>)</span>
+<span id="cb7-41">my_generator <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> create_generator(n)</span>
+<span id="cb7-42"></span>
+<span id="cb7-43"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># The generator itself is small. Let's profile consuming it.</span></span>
+<span id="cb7-44"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@profile_memory</span></span>
+<span id="cb7-45"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> consume_generator(gen):</span>
+<span id="cb7-46">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>(gen)</span>
+<span id="cb7-47"></span>
+<span id="cb7-48"></span>
+<span id="cb7-49"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Profiling memory for generator consumption..."</span>)</span>
+<span id="cb7-50">consumed_list <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> consume_generator(my_generator)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Profiling memory for list creation...
+Function: create_list
+Current memory usage is 40.442349MB; Peak was 40.442389MB
+Profiling memory for generator creation...
+Function: create_generator
+Current memory usage is 0.000392MB; Peak was 0.000392MB
+Profiling memory for generator consumption...
+Function: consume_generator
+Current memory usage is 40.443183MB; Peak was 40.443183MB</code></pre>
+</div>
+</div>
+<p>When you run this script, the decorator will handle the memory profiling for each function call. You will see that creating the list consumes a significant amount of memory, while creating the generator uses a negligible amount. The final step shows that consuming the generator into a list uses a similar amount of memory as creating the list in the first place, proving that the memory is only used when the values are actually needed.</p>
+</section>
+<section id="essential-iteration-tools-zip-sorted-enumerate" class="level2">
+<h2 class="anchored" data-anchor-id="essential-iteration-tools-zip-sorted-enumerate">Essential Iteration Tools: <code>zip</code>, <code>sorted</code>, <code>enumerate</code></h2>
+<p>Python’s standard library offers several built-in functions that are indispensable for iteration tasks in finance.</p>
+<ul>
+<li><p><strong><code>enumerate(iterable, start=0)</code></strong>: When processing a series of cashflows, you might need to know the period number for each payment. <code>enumerate</code> is perfect for this.</p>
+<div id="3c48a7d7" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1">cashflows <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1100</span>] <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Coupon payments and principal</span></span>
+<span id="cb9-2"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> period, cf <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">enumerate</span>(cashflows, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>):</span>
+<span id="cb9-3">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Period </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>period<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">: Cashflow = </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>cf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Period 1: Cashflow = 100
+Period 2: Cashflow = 100
+Period 3: Cashflow = 100
+Period 4: Cashflow = 1100</code></pre>
+</div>
+</div></li>
+<li><p><strong><code>zip(*iterables)</code></strong>: This function is incredibly useful for combining different streams of data. For example, you can pair trade dates with their corresponding notionals.</p>
+<div id="2bb55b91" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1">trade_dates <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2025-11-05'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2025-11-06'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2025-11-07'</span>]</span>
+<span id="cb11-2">notionals <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1_000_000</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2_500_000</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">500_000</span>]</span>
+<span id="cb11-3"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> date, notional <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">zip</span>(trade_dates, notionals):</span>
+<span id="cb11-4">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"On </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>date<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">, we traded a notional of </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>notional<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:,}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>On 2025-11-05, we traded a notional of 1,000,000
+On 2025-11-06, we traded a notional of 2,500,000
+On 2025-11-07, we traded a notional of 500,000</code></pre>
+</div>
+</div></li>
+<li><p><strong><code>sorted(iterable, key=None, reverse=False)</code></strong>: Sorting is a common task. You might want to sort a list of trades by maturity date or notional.</p>
+<div id="73e98d1d" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> dataclasses <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> dataclass</span>
+<span id="cb13-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> datetime <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> date</span>
+<span id="cb13-3"></span>
+<span id="cb13-4"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@dataclass</span></span>
+<span id="cb13-5"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> Trade:</span>
+<span id="cb13-6">    trade_id: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span></span>
+<span id="cb13-7">    maturity: date</span>
+<span id="cb13-8">    notional: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span></span>
+<span id="cb13-9"></span>
+<span id="cb13-10">trades <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [</span>
+<span id="cb13-11">    Trade(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'T1'</span>, date(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2026</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">31</span>), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10_000_000</span>),</span>
+<span id="cb13-12">    Trade(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'T2'</span>, date(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2025</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">31</span>), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5_000_000</span>),</span>
+<span id="cb13-13">    Trade(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'T3'</span>, date(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2027</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">31</span>), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15_000_000</span>),</span>
+<span id="cb13-14">]</span>
+<span id="cb13-15"></span>
+<span id="cb13-16"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Sort trades by maturity date</span></span>
+<span id="cb13-17">sorted_by_maturity <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sorted</span>(trades, key<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">lambda</span> t: t.maturity)</span>
+<span id="cb13-18"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> trade <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> sorted_by_maturity:</span>
+<span id="cb13-19">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(trade)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Trade(trade_id='T2', maturity=datetime.date(2025, 12, 31), notional=5000000)
+Trade(trade_id='T1', maturity=datetime.date(2026, 12, 31), notional=10000000)
+Trade(trade_id='T3', maturity=datetime.date(2027, 12, 31), notional=15000000)</code></pre>
+</div>
+</div></li>
+</ul>
+</section>
+<section id="the-itertools-module-a-treasure-trove-for-financial-iteration" class="level2">
+<h2 class="anchored" data-anchor-id="the-itertools-module-a-treasure-trove-for-financial-iteration">The <code>itertools</code> Module: A Treasure Trove for Financial Iteration</h2>
+<p>The <code>itertools</code> module is a gem in the Python standard library, providing a collection of fast, memory-efficient tools for working with iterators. For financial applications, where we often deal with time series, cashflow streams, and simulations, these tools are particularly powerful.</p>
+<ul>
+<li><p><strong><code>itertools.chain(*iterables)</code> and <code>itertools.chain.from_iterable(iterable)</code></strong>: Often you need to process items from several sequences in a row. <code>chain</code> lets you treat them as a single, continuous stream without merging them in memory. A great example is pricing a fixed-to-float swap leg, where initial coupon payments are fixed, and later ones are floating.</p>
+<p><code>chain.from_iterable</code> is a useful variant that takes a single iterable of iterables.</p>
+<div id="aa94a6dc" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> itertools</span>
+<span id="cb15-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> random</span>
+<span id="cb15-3"></span>
+<span id="cb15-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># First 2 years have fixed coupons</span></span>
+<span id="cb15-5">fixed_leg <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>]</span>
+<span id="cb15-6"></span>
+<span id="cb15-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Next 3 years have floating coupons (calculated for demonstration)</span></span>
+<span id="cb15-8">floating_leg <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> random.uniform(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>) <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> _ <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>)]</span>
+<span id="cb15-9"></span>
+<span id="cb15-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># We have a list of cashflow legs</span></span>
+<span id="cb15-11">bond_legs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [fixed_leg, floating_leg]</span>
+<span id="cb15-12"></span>
+<span id="cb15-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># We can use chain.from_iterable to chain them together</span></span>
+<span id="cb15-14">full_swap_leg <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> itertools.chain.from_iterable(bond_legs)</span>
+<span id="cb15-15"></span>
+<span id="cb15-16"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Full cashflow stream for the leg:"</span>)</span>
+<span id="cb15-17"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> cf <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> full_swap_leg:</span>
+<span id="cb15-18">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>cf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>, end<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">' '</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Full cashflow stream for the leg:
+50.00 50.00 50.00 50.00 52.93 47.98 54.73 54.32 46.73 49.92 </code></pre>
+</div>
+</div></li>
+<li><p><strong><code>itertools.accumulate(iterable[, func])</code></strong>: This is perfect for calculating cumulative sums or running products. A common use case is to calculate the cumulative P&amp;L of a trading strategy.</p>
+<div id="5a2a8223" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> itertools</span>
+<span id="cb17-2">daily_pnl <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">150</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">200</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">300</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>]</span>
+<span id="cb17-3">cumulative_pnl <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> itertools.accumulate(daily_pnl)</span>
+<span id="cb17-4"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>(cumulative_pnl))</span>
+<span id="cb17-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Output: [150, -50, 0, 300, 200]</span></span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[150, -50, 0, 300, 200]</code></pre>
+</div>
+</div>
+<p>It can also model more complex recurrence relations, like the amortization of a loan. Let’s calculate the outstanding balance of a fixed-payment annuity until it’s paid off.</p>
+<div id="a6fdbcf3" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> itertools</span>
+<span id="cb19-2"></span>
+<span id="cb19-3"></span>
+<span id="cb19-4"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> outstanding_balance(balance, payment, rate):</span>
+<span id="cb19-5">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> balance <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> rate) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> payment</span>
+<span id="cb19-6"></span>
+<span id="cb19-7"></span>
+<span id="cb19-8">initial_notional <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1_000</span></span>
+<span id="cb19-9">interest_rate <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Monthly rate (around 12% annually)</span></span>
+<span id="cb19-10">monthly_payment <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span></span>
+<span id="cb19-11"></span>
+<span id="cb19-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create an infinite stream of payments</span></span>
+<span id="cb19-13">payments <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> itertools.repeat(monthly_payment)</span>
+<span id="cb19-14"></span>
+<span id="cb19-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># The first argument to the lambda is the accumulated value (the balance)</span></span>
+<span id="cb19-16"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># The second argument is the next item from the iterable (the payment)</span></span>
+<span id="cb19-17">balances <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> itertools.accumulate(</span>
+<span id="cb19-18">    payments,</span>
+<span id="cb19-19">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">lambda</span> balance, pmt: outstanding_balance(balance, pmt, interest_rate),</span>
+<span id="cb19-20">    initial<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>initial_notional,</span>
+<span id="cb19-21">)</span>
+<span id="cb19-22"></span>
+<span id="cb19-23"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># We can use takewhile to iterate until the loan is paid off (balance &gt; 0)</span></span>
+<span id="cb19-24"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># The +1 is to see the final payment that brings the balance to &lt;= 0</span></span>
+<span id="cb19-25">amortization_schedule <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> itertools.takewhile(<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">lambda</span> balance: balance <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, balances)</span>
+<span id="cb19-26"></span>
+<span id="cb19-27"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i, balance <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">enumerate</span>(amortization_schedule):</span>
+<span id="cb19-28">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Month          </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>i<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>balance<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:,.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb19-29"></span>
+<span id="cb19-30"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Note: A proper amortization schedule would have a final smaller payment.</span></span>
+<span id="cb19-31"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># This example is to demonstrate the power of itertools.</span></span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Month          1: 1,000.00
+Month          2: 960.00
+Month          3: 919.60
+Month          4: 878.80
+Month          5: 837.58
+Month          6: 795.96
+Month          7: 753.92
+Month          8: 711.46
+Month          9: 668.57
+Month          10: 625.26
+Month          11: 581.51
+Month          12: 537.33
+Month          13: 492.70
+Month          14: 447.63
+Month          15: 402.10
+Month          16: 356.12
+Month          17: 309.69
+Month          18: 262.78
+Month          19: 215.41
+Month          20: 167.56
+Month          21: 119.24
+Month          22: 70.43
+Month          23: 21.14</code></pre>
+</div>
+</div></li>
+<li><p><strong><code>itertools.pairwise(iterable)</code></strong>: As we’ve seen, this is ideal for working with consecutive items in a sequence. Calculating year fractions for a swap leg is a prime example.</p>
+<div id="1a873c79" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> itertools</span>
+<span id="cb21-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> datetime <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> date</span>
+<span id="cb21-3"></span>
+<span id="cb21-4">payment_dates <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [date(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2025</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>), date(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2025</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>), date(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2026</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>)]</span>
+<span id="cb21-5"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> year_fraction(start, end):</span>
+<span id="cb21-6">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> (end <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> start).days <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">365.25</span></span>
+<span id="cb21-7"></span>
+<span id="cb21-8"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> start, end <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> itertools.pairwise(payment_dates):</span>
+<span id="cb21-9">    yf <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> year_fraction(start, end)</span>
+<span id="cb21-10">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Period: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>start<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> to </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>end<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">, Year Fraction: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>yf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.4f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Period: 2025-01-15 to 2025-07-15, Year Fraction: 0.4956
+Period: 2025-07-15 to 2026-01-15, Year Fraction: 0.5038</code></pre>
+</div>
+</div></li>
+<li><p><strong><code>itertools.cycle(iterable)</code></strong>: Repeats a sequence indefinitely. This can be used to cycle through a set of risk scenarios or apply a repeating pattern of market data shocks.</p>
+<div id="e9688466" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> itertools</span>
+<span id="cb23-2">scenarios <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> itertools.cycle([<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Base'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Rate Up'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Rate Down'</span>])</span>
+<span id="cb23-3"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> _ <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>):</span>
+<span id="cb23-4">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Running scenario: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">next</span>(scenarios)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Running scenario: Base
+Running scenario: Rate Up
+Running scenario: Rate Down
+Running scenario: Base
+Running scenario: Rate Up</code></pre>
+</div>
+</div></li>
+</ul>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>Understanding the difference between eager and lazy evaluation is crucial for writing efficient Python code, especially in quantitative finance where large datasets are the norm. By mastering iterators, generators, and the powerful tools in <code>itertools</code>, you can write code that is not only more memory-efficient but also more expressive and elegant. The built-in functions like <code>enumerate</code>, <code>zip</code>, and <code>sorted</code> further enhance your ability to work with iterable data effectively.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The complete Python script with all the examples from this post is available for download and experimentation. You can get it here: <a href="iteration.py">iteration.py</a>.</p>
+</div>
+</div>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
+  <category>Python Academy</category>
+  <guid>https://bwrob.github.io/posts/python-academy-iteration/</guid>
+  <pubDate>Tue, 04 Nov 2025 23:00:00 GMT</pubDate>
+  <media:content url="https://bwrob.github.io/posts/python_academy.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
 <item>
   <title>Functions, Closures and Decorators</title>
   <dc:creator>bwrob </dc:creator>
