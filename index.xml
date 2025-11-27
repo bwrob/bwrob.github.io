@@ -17,7 +17,305 @@
 <width>144</width>
 </image>
 <generator>quarto-1.8.25</generator>
-<lastBuildDate>Tue, 04 Nov 2025 23:00:00 GMT</lastBuildDate>
+<lastBuildDate>Wed, 26 Nov 2025 23:00:00 GMT</lastBuildDate>
+<item>
+  <title>Python Environment Management: From venv to uv</title>
+  <dc:creator>bwrob </dc:creator>
+  <link>https://bwrob.github.io/posts/python-academy-environment-management/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+
+<p>In this installment of <a href="https://bwrob.github.io/#category=Python%20Academy">Python Academy</a>, we’re tackling something that trips up almost everyone starting with Python: <strong>Environment Management</strong>.</p>
+<p>We’ll kick things off with the bread-and-butter tools—<code>venv</code> and <code>pip</code>—and then look at <code>uv</code>, the new kid on the block that’s rewriting the rules (and doing it incredibly fast).</p>
+<section id="the-classics-venv-and-pip" class="level2">
+<h2 class="anchored" data-anchor-id="the-classics-venv-and-pip">The Classics: venv and pip</h2>
+<section id="why-bother-with-virtual-environments" class="level3">
+<h3 class="anchored" data-anchor-id="why-bother-with-virtual-environments">Why bother with virtual environments?</h3>
+<p>When you first install Python, you get one global playground. It sounds convenient until you realize that sharing your toys leads to broken toys.</p>
+<ol type="1">
+<li><strong>Version Nightmares:</strong> Project A needs <code>pandas</code> version 1.0, but Project B demands version 2.0. You can’t have both installed globally.</li>
+<li><strong>Breaking Your System:</strong> On Linux/macOS, your OS uses Python for its own internal tools. If you start messing with global packages, you might accidentally break your terminal or system utilities.</li>
+<li><strong>Permission Headaches:</strong> Installing globally often screams for <code>sudo</code>, which is usually a sign you’re doing something risky.</li>
+</ol>
+<p>Virtual environments are the answer. They let you create isolated sandboxes for every project. Each sandbox gets its own Python executable and its own set of libraries, so they never fight over versions.</p>
+</section>
+<section id="creating-and-activating" class="level3">
+<h3 class="anchored" data-anchor-id="creating-and-activating">Creating and Activating</h3>
+<p>The standard way to make a sandbox is with <code>venv</code>.</p>
+<p>To create one named <code>.venv</code> (the industry standard name):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">python</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-m</span> venv .venv</span></code></pre></div></div>
+<p>You’ll see a new <code>.venv</code> folder pop up. But it’s just sitting there until you <strong>activate</strong> it.</p>
+<p><strong>On macOS/Linux:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">source</span> .venv/bin/activate</span></code></pre></div></div>
+<p><strong>On Windows:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource powershell number-lines code-with-copy"><code class="sourceCode powershell"><span id="cb3-1"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">venv</span>\Scripts\Activate<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ps1</span></span></code></pre></div></div>
+<p>Once you see <code>(.venv)</code> in your prompt, you’re in the sandbox. Anything you install here stays here.</p>
+</section>
+<section id="managing-packages-with-pip" class="level3">
+<h3 class="anchored" data-anchor-id="managing-packages-with-pip">Managing Packages with pip</h3>
+<p><code>pip</code> is your tool for grabbing libraries from the internet (PyPI).</p>
+<p>To install something:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">pip</span> install requests</span></code></pre></div></div>
+<p>To see what you’ve got:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">pip</span> list</span></code></pre></div></div>
+</section>
+<section id="requirements.txt" class="level3">
+<h3 class="anchored" data-anchor-id="requirements.txt"><code>requirements.txt</code></h3>
+<p>So you’ve built a cool app. How do you tell your friend exactly which libraries they need to run it? You hand them a <code>requirements.txt</code>.</p>
+<p>You can generate this list from your current environment automatically:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">pip</span> freeze <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> requirements.txt</span></code></pre></div></div>
+<p>This dumps every installed package and its exact version into a text file.</p>
+<p>When your friend grabs your code, they just run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">pip</span> install <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-r</span> requirements.txt</span></code></pre></div></div>
+<p>And boom, their environment looks just like yours.</p>
+</section>
+</section>
+<section id="the-modern-era-uv" class="level2">
+<h2 class="anchored" data-anchor-id="the-modern-era-uv">The Modern Era: uv</h2>
+<p><code>venv</code> and <code>pip</code> are reliable, but let’s be honest—they can be a bit clunky and slow. Enter <code>uv</code>. It’s a Python package and project manager written in Rust, and it is <em>blazing</em> fast. It aims to replace <code>pip</code>, <code>pip-tools</code>, and <code>virtualenv</code> with one single binary.</p>
+<section id="setting-up-with-uv" class="level3">
+<h3 class="anchored" data-anchor-id="setting-up-with-uv">Setting up with uv</h3>
+<p>Instead of manually creating folders and files, <code>uv</code> creates the project skeleton for you:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> init my-project</span>
+<span id="cb8-2"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">cd</span> my-project</span></code></pre></div></div>
+<p>This sets up a standard structure, including a <code>pyproject.toml</code>. This file is the modern replacement for <code>requirements.txt</code> and <code>setup.py</code>.</p>
+</section>
+<section id="managing-dependencies" class="level3">
+<h3 class="anchored" data-anchor-id="managing-dependencies">Managing Dependencies</h3>
+<p>With <code>uv</code>, the days of <code>pip install</code> followed by remembering to run <code>pip freeze</code> are over. You just tell <code>uv</code> what you want:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> add requests</span></code></pre></div></div>
+<p>This one command does all the heavy lifting: 1. Finds the best version of <code>requests</code>. 2. Installs it (creating a virtual environment automatically if you don’t have one). 3. Updates your <code>pyproject.toml</code>. 4. Updates <code>uv.lock</code>, which locks down the exact versions of everything (like <code>package-lock.json</code> in the JS world) so your builds are 100% reproducible.</p>
+</section>
+<section id="development-dependencies" class="level3">
+<h3 class="anchored" data-anchor-id="development-dependencies">Development Dependencies</h3>
+<p>Sometimes you need tools just for development—like testing frameworks or linters—that shouldn’t be shipped with your actual app. <code>uv</code> handles this cleanly:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> add <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--dev</span> pytest ruff</span></code></pre></div></div>
+<p>Take <code>ruff</code> for example. It’s an incredibly fast linter and formatter. You want it while you’re coding to keep things tidy, but your users don’t need it to run your app. Adding it with <code>--dev</code> puts it in a special <code>[tool.uv.dev-dependencies]</code> section, keeping your production environment lean.</p>
+</section>
+<section id="managing-python-versions" class="level3">
+<h3 class="anchored" data-anchor-id="managing-python-versions">Managing Python Versions</h3>
+<p>This is where <code>uv</code> really shines. Need to test on Python 3.11 but you only have 3.12 installed? <code>uv</code> can fetch it for you:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> python install 3.11</span>
+<span id="cb11-2"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> venv <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--python</span> 3.11</span></code></pre></div></div>
+<p>Or you can just pin your project to a specific version, and <code>uv</code> will respect that:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> python pin 3.12</span></code></pre></div></div>
+</section>
+<section id="packaging-sharing-your-code" class="level3">
+<h3 class="anchored" data-anchor-id="packaging-sharing-your-code">Packaging: Sharing Your Code</h3>
+<p>So you’ve written a masterpiece and you want to share it with the world (or just your colleagues). How do you box it up? You build a <strong>Wheel</strong>.</p>
+<section id="whats-a-wheel" class="level4">
+<h4 class="anchored" data-anchor-id="whats-a-wheel">What’s a Wheel?</h4>
+<p>A “Wheel” (file extension <code>.whl</code>) is the standard way to distribute Python packages. Think of it as a zip file that’s ready to go.</p>
+<p>In the old days, we often shared “source distributions” (<code>.tar.gz</code>). This meant the user’s computer had to compile any C-extensions or complex code when they installed it. This was slow and error-prone.</p>
+<p>Wheels are <strong>built distributions</strong>. They are pre-compiled and ready to unpack. When you <code>pip install pandas</code>, you’re almost certainly downloading a wheel. It’s faster, safer, and easier.</p>
+</section>
+<section id="the-old-guard-setuptools" class="level4">
+<h4 class="anchored" data-anchor-id="the-old-guard-setuptools">The Old Guard: <code>setuptools</code></h4>
+<p>Traditionally, building a package meant wrestling with a file called <code>setup.py</code> using a library called <code>setuptools</code>. This little Python script was where you’d declare everything about your package: its name, version, author, a brief description, and most importantly, its dependencies. You’d define which modules to include, any data files, and even entry points for command-line tools.</p>
+<p>It was powerful, for sure, but also notoriously tricky to get right. Debugging <code>setup.py</code> could feel like trying to solve a puzzle with missing pieces. You’d write code to describe your package, manage included files, and handle dependencies. It worked, but it felt a bit like alchemy, and slight changes in Python’s packaging standards would often mean revisiting this complex script.</p>
+<p>Here’s a super basic <code>setup.py</code> example for a package named <code>my_package</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># setup.py</span></span>
+<span id="cb13-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> setuptools <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> setup, find_packages</span>
+<span id="cb13-3"></span>
+<span id="cb13-4">setup(</span>
+<span id="cb13-5">    name<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'my_package'</span>,</span>
+<span id="cb13-6">    version<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'0.1.0'</span>,</span>
+<span id="cb13-7">    packages<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>find_packages(),</span>
+<span id="cb13-8">    install_requires<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>[</span>
+<span id="cb13-9">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'requests'</span>,</span>
+<span id="cb13-10">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'numpy'</span>,</span>
+<span id="cb13-11">    ],</span>
+<span id="cb13-12">    author<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Your Name'</span>,</span>
+<span id="cb13-13">    author_email<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'your.email@example.com'</span>,</span>
+<span id="cb13-14">    description<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'A simple example package.'</span>,</span>
+<span id="cb13-15">    long_description<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">open</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'README.md'</span>).read(),</span>
+<span id="cb13-16">    long_description_content_type<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'text/markdown'</span>,</span>
+<span id="cb13-17">    url<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'https://github.com/yourusername/my_package'</span>,</span>
+<span id="cb13-18">    classifiers<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>[</span>
+<span id="cb13-19">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Programming Language :: Python :: 3'</span>,</span>
+<span id="cb13-20">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'License :: OSI Approved :: MIT License'</span>,</span>
+<span id="cb13-21">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Operating System :: OS Independent'</span>,</span>
+<span id="cb13-22">    ],</span>
+<span id="cb13-23">    python_requires<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'&gt;=3.8'</span>,</span>
+<span id="cb13-24">)</span></code></pre></div></div>
+<p>And to build your package (both source and wheel distributions) using this file, you’d run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">python</span> setup.py sdist bdist_wheel</span></code></pre></div></div>
+</section>
+<section id="the-new-way-uv-build" class="level4">
+<h4 class="anchored" data-anchor-id="the-new-way-uv-build">The New Way: uv build</h4>
+<p>Since <code>uv</code> already knows everything about your project from <code>pyproject.toml</code>, building a package is laughably simple. You don’t need a <code>setup.py</code> anymore.</p>
+<p>Just run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> build</span></code></pre></div></div>
+<p>That’s it. <code>uv</code> will look at your <code>pyproject.toml</code>, gather your code, and spit out a shiny <code>.whl</code> file (and a <code>.tar.gz</code> source distribution just in case) into a <code>dist/</code> folder. You can then upload these to PyPI or share them directly.</p>
+</section>
+</section>
+<section id="conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Classic (<code>venv</code> + <code>pip</code>)</th>
+<th style="text-align: left;">Modern (<code>uv</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Creation</strong></td>
+<td style="text-align: left;"><code>python -m venv .venv</code></td>
+<td style="text-align: left;"><code>uv init</code> / auto-created</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Install</strong></td>
+<td style="text-align: left;"><code>pip install pkg</code></td>
+<td style="text-align: left;"><code>uv add pkg</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Save Deps</strong></td>
+<td style="text-align: left;"><code>pip freeze &gt; requirements.txt</code></td>
+<td style="text-align: left;">Automatic in <code>pyproject.toml</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Dev Deps</strong></td>
+<td style="text-align: left;">Manual separation</td>
+<td style="text-align: left;"><code>uv add --dev pkg</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Standard</td>
+<td style="text-align: left;">Blazing Fast 🚀</td>
+</tr>
+</tbody>
+</table>
+<p>Mastering <code>venv</code> and <code>pip</code> is a rite of passage, and it’s good to know what’s happening under the hood. But once you switch to <code>uv</code>, you probably won’t look back. It just makes the whole process feel… solved.</p>
+
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
+  <category>Python Academy</category>
+  <guid>https://bwrob.github.io/posts/python-academy-environment-management/</guid>
+  <pubDate>Wed, 26 Nov 2025 23:00:00 GMT</pubDate>
+  <media:content url="https://bwrob.github.io/posts/python_academy.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
 <item>
   <title>Python Academy: Iteration</title>
   <dc:creator>Bartosz Wróblewski</dc:creator>
