@@ -83,6 +83,26 @@ pip install -r requirements.txt
 
 And boom, their environment looks just like yours.
 
+### Generating requirements from code with pipreqs
+
+`pip freeze` works well if you've been disciplined about your environment. But what if you inherit a folder of Python scripts with no documentation and no `requirements.txt`? Or what if you've just been installing packages globally for years?
+
+In these cases, `pip freeze` will give you a list of *everything* you've ever installed, which is often overkill and messy.
+
+This is where `pipreqs` shines. It analyzes your source code imports to determine exactly what packages are needed. It's the perfect tool to bootstrap "good practices" for a project that started without them.
+
+1.  **Install it:**
+    ```bash
+    pip install pipreqs
+    ```
+
+2.  **Run it:**
+    ```bash
+    pipreqs .
+    ```
+
+This scans your `.py` files and generates a clean, minimal `requirements.txt` based solely on the libraries you actually import. Now you have a solid foundation to create a fresh virtual environment!
+
 ## The Modern Era: uv
 
 `venv` and `pip` are reliable, but let's be honest—they can be a bit clunky and slow. Enter `uv`. It's a Python package and project manager written in Rust, and it is *blazing* fast. It aims to replace `pip`, `pip-tools`, and `virtualenv` with one single binary.
