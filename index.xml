@@ -99,6 +99,17 @@ background-color: null;
 font-style: inherit;">-r</span> requirements.txt</span></code></pre></div></div>
 <p>And boom, their environment looks just like yours.</p>
 </section>
+<section id="generating-requirements-from-code-with-pipreqs" class="level3">
+<h3 class="anchored" data-anchor-id="generating-requirements-from-code-with-pipreqs">Generating requirements from code with pipreqs</h3>
+<p><code>pip freeze</code> works well if you’ve been disciplined about your environment. But what if you inherit a folder of Python scripts with no documentation and no <code>requirements.txt</code>? Or what if you’ve just been installing packages globally for years?</p>
+<p>In these cases, <code>pip freeze</code> will give you a list of <em>everything</em> you’ve ever installed, which is often overkill and messy.</p>
+<p>This is where <code>pipreqs</code> shines. It analyzes your source code imports to determine exactly what packages are needed. It’s the perfect tool to bootstrap “good practices” for a project that started without them.</p>
+<ol type="1">
+<li><p><strong>Install it:</strong> <code>bash     pip install pipreqs</code></p></li>
+<li><p><strong>Run it:</strong> <code>bash     pipreqs .</code></p></li>
+</ol>
+<p>This scans your <code>.py</code> files and generates a clean, minimal <code>requirements.txt</code> based solely on the libraries you actually import. Now you have a solid foundation to create a fresh virtual environment!</p>
+</section>
 </section>
 <section id="the-modern-era-uv" class="level2">
 <h2 class="anchored" data-anchor-id="the-modern-era-uv">The Modern Era: uv</h2>
