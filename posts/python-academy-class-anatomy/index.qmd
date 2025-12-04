@@ -250,6 +250,26 @@ print(f"Slotted Option Size:  ~{get_size(slot_opt)} bytes")
 
 The `SlottedOption` instance is more rigid—you cannot add new attributes like `slot_opt.vega = ...`—but it is significantly more memory-efficient.
 
+## Modern Python: Data Classes
+
+Since Python 3.7, there is an even easier way to create classes that primarily store data. The `@dataclass` decorator automatically generates `__init__`, `__repr__`, `__eq__`, and other special methods for you, reducing boilerplate code significantly.
+
+```{python}
+from dataclasses import dataclass
+
+@dataclass
+class OptionData:
+    strike: float
+    expiry: str
+    option_type: str = "Call" # Default value
+
+# No need to write __init__ or __repr__ manually!
+opt_data = OptionData(100.0, "2025-12-20")
+print(opt_data)
+```
+
+Data classes are perfect for data transfer objects (DTOs) or when you simply need a structured container for information without complex initialization logic. They play very well with modern type checkers and IDEs.
+
 ## Conclusion
 
 We have moved from a chaotic, empty class to a structured, self-contained, and efficient unit.
@@ -260,6 +280,7 @@ We have moved from a chaotic, empty class to a structured, self-contained, and e
 *   **`@property`** adds logic and validation to attribute access.
 *   **Access Control** (`_`, `__`) hides internal details.
 *   **`__slots__`** optimizes memory for large-scale simulations.
+*   **Data Classes** (`@dataclass`) simplify the creation of data-holding classes.
 
 Understanding these building blocks is the first step in designing robust financial libraries. In the next post, we'll look at inheritance and polymorphism to model relationships between different financial instruments.
 
