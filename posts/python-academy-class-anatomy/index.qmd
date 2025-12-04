@@ -167,10 +167,10 @@ print(f"d1 value: {d1_val:.4f}")
 
 In finance, invalid data can be disastrous. A negative strike price or a negative volatility is non-sensical. In languages like Java or C++, you usually implement `getStrike()` and `setStrike()` methods to handle validation. In Python, we use the `@property` decorator to add this logic while keeping the syntax clean.
 
-It allows us to access a method as if it were an attribute.
+It allows us to access a method as if it were an attribute. Let's update our `EuropeanOption` class to ensure the strike is always positive.
 
 ```{python}
-class ValidatedOption:
+class EuropeanOption:
     def __init__(self, strike: float):
         # We assign to the property, triggering the setter validation
         self.strike = strike
@@ -185,7 +185,7 @@ class ValidatedOption:
             raise ValueError("Strike price cannot be negative.")
         self._strike = value
 
-opt = ValidatedOption(100)
+opt = EuropeanOption(100)
 print(f"Current Strike: {opt.strike}")
 
 try:
@@ -204,17 +204,17 @@ Python does not have strict `private` or `protected` keywords. Instead, it relie
 2.  **Private (`__variable`)**: A double underscore prefix triggers **name mangling**. The interpreter changes the variable name to `_ClassName__variable` to prevent accidental overwrites in subclasses. It is effectively private, but can still be accessed if you try hard enough.
 
 ```{python}
-class Model:
-    def __init__(self):
-        self._calibration_date = "2025-01-01" # Protected
-        self.__algorithm_secret = 42          # Private
+class EuropeanOption:
+    def __init__(self, strike: float):
+        self._strike = strike          # Protected: internal state for the property
+        self.__valuation_model = "BS"  # Private: internal implementation detail
 
-model = Model()
-print(model._calibration_date) # Works, but considered bad practice
-# print(model.__algorithm_secret) # Raises AttributeError
+opt = EuropeanOption(100)
+print(opt._strike) # Works, but considered bad practice
+# print(opt.__valuation_model) # Raises AttributeError
 
 # We can still access it via the mangled name (don't do this in production!)
-print(model._Model__algorithm_secret)
+print(opt._EuropeanOption__valuation_model)
 ```
 
 In quantitative libraries, use `_` for internal state that shouldn't be part of the public API, and `__` rarely, mostly to avoid naming collisions in complex inheritance chains.
@@ -223,25 +223,25 @@ In quantitative libraries, use `_` for internal state that shouldn't be part of 
 
 Standard Python objects store their attributes in a dictionary (`__dict__`). This is what allows the "fuzzy" dynamic attribute addition we saw earlier. However, dictionaries have a significant memory overhead.
 
-If you are running a Monte Carlo simulation with 10 million paths, or loading millions of market ticks, this overhead becomes a bottleneck. `__slots__` tells Python to reserve space for *only* a specific set of attributes, removing the dynamic dictionary.
+If you are running a Monte Carlo simulation with 10 million paths, this overhead becomes a bottleneck. `__slots__` tells Python to reserve space for *only* a specific set of attributes, removing the dynamic dictionary.
 
 ```{python}
 import sys
 
-class StandardTick:
-    def __init__(self, symbol, price):
-        self.symbol = symbol
-        self.price = price
+class StandardOption:
+    def __init__(self, strike, expiry):
+        self.strike = strike
+        self.expiry = expiry
 
-class SlottedTick:
-    __slots__ = ['symbol', 'price']
-    def __init__(self, symbol, price):
-        self.symbol = symbol
-        self.price = price
+class SlottedOption:
+    __slots__ = ['strike', 'expiry']
+    def __init__(self, strike, expiry):
+        self.strike = strike
+        self.expiry = expiry
 
 # Compare memory usage
-tick_std = StandardTick("AAPL", 150.0)
-tick_slot = SlottedTick("AAPL", 150.0)
+std_opt = StandardOption(100, "2025-12-20")
+slot_opt = SlottedOption(100, "2025-12-20")
 
 # Helper function to estimate size (rough approximation)
 def get_size(obj):
@@ -250,11 +250,11 @@ def get_size(obj):
         size += sys.getsizeof(obj.__dict__)
     return size
 
-print(f"Standard Tick Size: ~{get_size(tick_std)} bytes")
-print(f"Slotted Tick Size:  ~{get_size(tick_slot)} bytes")
+print(f"Standard Option Size: ~{get_size(std_opt)} bytes")
+print(f"Slotted Option Size:  ~{get_size(slot_opt)} bytes")
 ```
 
-The `SlottedTick` instance cannot have new attributes added to it (`tick_slot.timestamp = ...` would fail), but it is much leaner.
+The `SlottedOption` instance cannot have new attributes added to it (`slot_opt.vega = ...` would fail), but it is much leaner.
 
 ## Summary
 
