@@ -163,16 +163,109 @@ d1_val = EuropeanOption.d1(S=100, K=100, T=1, r=0.05, sigma=0.2)
 print(f"d1 value: {d1_val:.4f}")
 ```
 
+## The Property Decorator: `@property`
+
+In finance, invalid data can be disastrous. A negative strike price or a negative volatility is non-sensical. In languages like Java or C++, you usually implement `getStrike()` and `setStrike()` methods to handle validation. In Python, we use the `@property` decorator to add this logic while keeping the syntax clean.
+
+It allows us to access a method as if it were an attribute.
+
+```{python}
+class ValidatedOption:
+    def __init__(self, strike: float):
+        # We assign to the property, triggering the setter validation
+        self.strike = strike
+
+    @property
+    def strike(self):
+        return self._strike
+
+    @strike.setter
+    def strike(self, value):
+        if value < 0:
+            raise ValueError("Strike price cannot be negative.")
+        self._strike = value
+
+opt = ValidatedOption(100)
+print(f"Current Strike: {opt.strike}")
+
+try:
+    opt.strike = -50
+except ValueError as e:
+    print(f"Error caught: {e}")
+```
+
+Notice we use `self._strike` inside the property. This leads us to the next topic.
+
+## Access Control: Private vs. Protected
+
+Python does not have strict `private` or `protected` keywords. Instead, it relies on naming conventions:
+
+1.  **Protected (`_variable`)**: A single underscore prefix indicates that a variable or method is for internal use only. It is a hint to other developers: "Don't touch this unless you know what you are doing."
+2.  **Private (`__variable`)**: A double underscore prefix triggers **name mangling**. The interpreter changes the variable name to `_ClassName__variable` to prevent accidental overwrites in subclasses. It is effectively private, but can still be accessed if you try hard enough.
+
+```{python}
+class Model:
+    def __init__(self):
+        self._calibration_date = "2025-01-01" # Protected
+        self.__algorithm_secret = 42          # Private
+
+model = Model()
+print(model._calibration_date) # Works, but considered bad practice
+# print(model.__algorithm_secret) # Raises AttributeError
+
+# We can still access it via the mangled name (don't do this in production!)
+print(model._Model__algorithm_secret)
+```
+
+In quantitative libraries, use `_` for internal state that shouldn't be part of the public API, and `__` rarely, mostly to avoid naming collisions in complex inheritance chains.
+
+## Memory Optimization: `__slots__`
+
+Standard Python objects store their attributes in a dictionary (`__dict__`). This is what allows the "fuzzy" dynamic attribute addition we saw earlier. However, dictionaries have a significant memory overhead.
+
+If you are running a Monte Carlo simulation with 10 million paths, or loading millions of market ticks, this overhead becomes a bottleneck. `__slots__` tells Python to reserve space for *only* a specific set of attributes, removing the dynamic dictionary.
+
+```{python}
+import sys
+
+class StandardTick:
+    def __init__(self, symbol, price):
+        self.symbol = symbol
+        self.price = price
+
+class SlottedTick:
+    __slots__ = ['symbol', 'price']
+    def __init__(self, symbol, price):
+        self.symbol = symbol
+        self.price = price
+
+# Compare memory usage
+tick_std = StandardTick("AAPL", 150.0)
+tick_slot = SlottedTick("AAPL", 150.0)
+
+# Helper function to estimate size (rough approximation)
+def get_size(obj):
+    size = sys.getsizeof(obj)
+    if hasattr(obj, '__dict__'):
+        size += sys.getsizeof(obj.__dict__)
+    return size
+
+print(f"Standard Tick Size: ~{get_size(tick_std)} bytes")
+print(f"Slotted Tick Size:  ~{get_size(tick_slot)} bytes")
+```
+
+The `SlottedTick` instance cannot have new attributes added to it (`tick_slot.timestamp = ...` would fail), but it is much leaner.
+
 ## Summary
 
-We have moved from a chaotic, empty class to a structured, self-contained unit.
+We have moved from a chaotic, empty class to a structured, self-contained, and efficient unit.
 
 *   **`__init__`**: Ensures objects are initialized with valid state.
-*   **Instance Attributes**: Store data specific to an object.
-*   **Class Attributes**: Store data shared by all objects.
-*   **Instance Methods**: Define behavior dependent on the object's state.
-*   **Class Methods**: Define behavior dependent on the class (often factories).
-*   **Static Methods**: utility functions namespaced within the class.
+*   **Instance/Class Attributes**: separate object state from shared state.
+*   **Methods**: Instance, Class (Factories), and Static (Utilities).
+*   **`@property`**: Adds logic and validation to attribute access.
+*   **Access Control (`_`, `__`)**: Conventions for hiding internal state.
+*   **`__slots__`**: Optimizes memory for massive datasets.
 
 Understanding these distinct building blocks is the first step in designing robust financial libraries in Python. In the next post, we will look at inheritance and polymorphism to see how we can model relationships between different financial instruments.
 
