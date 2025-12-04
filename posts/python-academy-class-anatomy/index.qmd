@@ -68,6 +68,7 @@ Sometimes, however, we need to share data across *all* instances of a class. The
 class EuropeanOption:
     # Class attribute
     CONTRACT_SIZE = 100  # Standard lot size
+    _DEFAULT_OPTION_TYPE = "Call" # Default for new options
 
     def __init__(self, strike: float, expiry: str, option_type: str):
         self.strike = strike  # Instance attribute
@@ -114,6 +115,8 @@ A common use case for class methods is creating **factory methods**—alternativ
 
 ```{python}
 class EuropeanOption:
+    _DEFAULT_OPTION_TYPE = "Call"
+
     def __init__(self, strike: float, option_type: str):
         self.strike = strike
         self.option_type = option_type
@@ -127,12 +130,23 @@ class EuropeanOption:
         parts = description.split('-')
         option_type = parts[0]
         strike = float(parts[1])
-        # cls(...) is equivalent to EuropeanOption(...)
         return cls(strike, option_type)
+
+    @classmethod
+    def set_default_option_type(cls, new_type: str):
+        """Sets a new default option type for the class."""
+        if new_type not in ["Call", "Put"]:
+            raise ValueError("Option type must be 'Call' or 'Put'.")
+        cls._DEFAULT_OPTION_TYPE = new_type
 
 # Create an instance using the factory
 option_from_str = EuropeanOption.from_string("Put-120")
-print(option_from_str)
+print(f"Created from string: {option_from_str}")
+
+# Demonstrate non-builder class method
+print(f"Default option type before change: {EuropeanOption._DEFAULT_OPTION_TYPE}")
+EuropeanOption.set_default_option_type("Put")
+print(f"Default option type after change: {EuropeanOption._DEFAULT_OPTION_TYPE}")
 ```
 
 ## Static Methods
