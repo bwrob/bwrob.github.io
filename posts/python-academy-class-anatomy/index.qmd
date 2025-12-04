@@ -1,0 +1,181 @@
+---
+title: "Python Academy: Class Anatomy"
+author: "Bartosz Wróblewski"
+date: "2025-12-04"
+description: "Mastering the building blocks of Python classes for quantitative development."
+categories: [Python Academy]
+image: "../python_academy.png"
+---
+
+## Introduction
+
+In quantitative finance, we deal with entities that have both data and behavior. A financial instrument, for example, has properties like strike price and expiry, and behaviors like calculating its payoff or pricing itself. Object-Oriented Programming (OOP) allows us to bundle these together into coherent units called classes.
+
+In this post, we will dissect the anatomy of a Python class. We'll start from the absolute minimum and progressively add structure, type safety, and functionality, transforming a "fuzzy" container into a robust financial model.
+
+## The "Fuzzy" Object
+
+Python is a dynamic language. This dynamism allows for some flexibility that can be surprising to those coming from statically typed languages like C++ or Java. The most minimal class definition in Python is an empty one.
+
+```{python}
+class Option:
+    pass
+```
+
+You might think this `Option` class is useless, but Python allows us to attach attributes to instances dynamically—a practice sometimes called "monkey patching" in broader contexts.
+
+```{python}
+# Create an instance
+my_option = Option()
+
+# Attach attributes dynamically
+my_option.strike = 100
+my_option.expiry = "2025-12-20"
+my_option.type = "Call"
+
+print(f"Option strike: {my_option.strike}")
+```
+
+### Why is this bad?
+
+While flexible, this approach is dangerous for production systems, especially in finance where data integrity is paramount.
+
+1.  **No Guarantee of Structure:** One `Option` instance might have a `strike`, while another has a `strike_price`. There is no contract enforcing what data an object holds.
+2.  **Hard to Debug:** If a typo like `my_option.stike = 100` occurs, Python won't complain until you try to access `strike` later and get an `AttributeError`.
+3.  **Poor Tooling Support:** IDEs and static analysis tools cannot autocomplete or type-check these dynamically added attributes efficiently.
+
+## The Constructor: `__init__`
+
+To enforce structure, we use the `__init__` method. This is the initializer (often called the constructor), which runs immediately after an object is created. It ensures that every instance of our class starts with the required state.
+
+Let's define a `EuropeanOption` class.
+
+```{python}
+class EuropeanOption:
+    def __init__(self, strike: float, expiry: str, option_type: str):
+        self.strike = strike
+        self.expiry = expiry
+        self.option_type = option_type
+
+# Now, we must provide these arguments to create an instance
+# euro_option = EuropeanOption() # This would raise a TypeError
+euro_option = EuropeanOption(100.0, "2025-12-20", "Call")
+```
+
+By using type hints (`: float`, `: str`), we also document what kind of data we expect, which helps other developers (and our future selves).
+
+## Class Attributes vs. Instance Attributes
+
+The attributes `strike`, `expiry`, and `option_type` are **instance attributes**. They belong to a specific object; one option's strike does not affect another's.
+
+Sometimes, we want to share data across *all* instances of a class. These are called **class attributes**. They are defined directly in the class body.
+
+```{python}
+class EuropeanOption:
+    # Class attribute
+    CONTRACT_SIZE = 100  # Standard lot size
+
+    def __init__(self, strike: float, expiry: str, option_type: str):
+        self.strike = strike  # Instance attribute
+        self.expiry = expiry
+        self.option_type = option_type
+
+op1 = EuropeanOption(100, "2025-12-20", "Call")
+op2 = EuropeanOption(110, "2025-12-20", "Put")
+
+print(f"Option 1 contract size: {op1.CONTRACT_SIZE}")
+print(f"Option 2 contract size: {op2.CONTRACT_SIZE}")
+```
+
+If we change `EuropeanOption.CONTRACT_SIZE`, it updates for all instances that haven't overridden it.
+
+## Instance Methods
+
+Methods are functions defined inside a class that operate on its instances. The first parameter of an instance method is always `self`, which refers to the specific object calling the method.
+
+```{python}
+class EuropeanOption:
+    def __init__(self, strike: float, option_type: str):
+        self.strike = strike
+        self.option_type = option_type
+
+    def payoff(self, spot_price: float) -> float:
+        if self.option_type == "Call":
+            return max(spot_price - self.strike, 0.0)
+        elif self.option_type == "Put":
+            return max(self.strike - spot_price, 0.0)
+        else:
+            raise ValueError("Unknown option type")
+
+call = EuropeanOption(100, "Call")
+print(f"Spot 110, Call Payoff: {call.payoff(110)}")
+print(f"Spot 90, Call Payoff: {call.payoff(90)}")
+```
+
+## Class Methods
+
+A **class method** operates on the class itself rather than an instance. It receives the class (`cls`) as the first argument instead of `self`. These are decorated with `@classmethod`.
+
+Class methods are frequently used as **factory methods**—alternative ways to create instances of the class.
+
+```{python}
+class EuropeanOption:
+    def __init__(self, strike: float, option_type: str):
+        self.strike = strike
+        self.option_type = option_type
+
+    def __repr__(self):
+        return f"EuropeanOption(strike={self.strike}, type='{self.option_type}')"
+
+    @classmethod
+    def from_string(cls, description: str):
+        # Parses strings like "Call-100" or "Put-150"
+        parts = description.split('-')
+        option_type = parts[0]
+        strike = float(parts[1])
+        # cls(...) is equivalent to EuropeanOption(...)
+        return cls(strike, option_type)
+
+# Create an instance using the factory
+option_from_str = EuropeanOption.from_string("Put-120")
+print(option_from_str)
+```
+
+## Static Methods
+
+A **static method** behaves like a regular function but belongs to the class's namespace. It doesn't receive `self` or `cls` automatically. We use them for utility functions that are logically related to the class but don't need access to the class or instance state. They are decorated with `@staticmethod`.
+
+For an option class, a static method might implement a pricing formula component that is purely mathematical.
+
+```{python}
+import math
+
+class EuropeanOption:
+    # ... (previous methods) ...
+
+    @staticmethod
+    def d1(S, K, T, r, sigma):
+        """Calculates d1 term for Black-Scholes."""
+        return (math.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * math.sqrt(T))
+
+# We can call it without an instance
+d1_val = EuropeanOption.d1(S=100, K=100, T=1, r=0.05, sigma=0.2)
+print(f"d1 value: {d1_val:.4f}")
+```
+
+## Summary
+
+We have moved from a chaotic, empty class to a structured, self-contained unit.
+
+*   **`__init__`**: Ensures objects are initialized with valid state.
+*   **Instance Attributes**: Store data specific to an object.
+*   **Class Attributes**: Store data shared by all objects.
+*   **Instance Methods**: Define behavior dependent on the object's state.
+*   **Class Methods**: Define behavior dependent on the class (often factories).
+*   **Static Methods**: utility functions namespaced within the class.
+
+Understanding these distinct building blocks is the first step in designing robust financial libraries in Python. In the next post, we will look at inheritance and polymorphism to see how we can model relationships between different financial instruments.
+
+::: {.callout-note}
+The complete Python script with all the examples from this post is available for download and experimentation. You can get it here: [class_anatomy.py](class_anatomy.py).
+:::
