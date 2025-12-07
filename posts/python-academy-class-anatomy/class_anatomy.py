@@ -32,12 +32,11 @@ class EuropeanOption:
         """Instance Method"""
         if self.option_type == "Call":
             return max(spot_price - self.strike, 0.0)
-        elif self.option_type == "Put":
+        if self.option_type == "Put":
             return max(
                 self.strike - spot_price, 0.0
             )  # Should be self.strike - spot_price
-        else:
-            raise ValueError("Unknown option type")
+        raise ValueError("Unknown option type")
 
     def __repr__(self):
         return f"EuropeanOption(strike={self.strike}, type='{self.option_type}', expiry='{self.expiry}')"
@@ -147,7 +146,7 @@ class StandardOption(EuropeanOption):
 
 
 class SlottedOption(EuropeanOption):
-    __slots__ = ["strike", "expiry", "option_type"]  # Must match __init__ attributes
+    __slots__ = ["expiry", "option_type", "strike"]  # Must match __init__ attributes
 
     def __init__(self, strike: float, expiry: str, option_type: str):
         self.strike = strike

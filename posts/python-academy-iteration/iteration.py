@@ -1,9 +1,9 @@
-import tracemalloc
-from functools import wraps
-from dataclasses import dataclass
-from datetime import date
 import itertools
 import random
+import tracemalloc
+from dataclasses import dataclass
+from datetime import date
+from functools import wraps
 
 # --- Lists vs. Tuples ---
 print("--- Lists vs. Tuples ---")
@@ -124,7 +124,7 @@ print("\n")
 print("--- Essential Iteration Tools: zip ---")
 trade_dates = ["2025-11-05", "2025-11-06", "2025-11-07"]
 notionals = [1_000_000, 2_500_000, 500_000]
-for trade_date, notional in zip(trade_dates, notionals):
+for trade_date, notional in zip(trade_dates, notionals, strict=False):
     print(f"On {trade_date}, we traded a notional of {notional:,}")
 print("\n")
 
