@@ -17,7 +17,977 @@
 <width>144</width>
 </image>
 <generator>quarto-1.8.26</generator>
-<lastBuildDate>Wed, 03 Dec 2025 23:00:00 GMT</lastBuildDate>
+<lastBuildDate>Thu, 11 Dec 2025 23:00:00 GMT</lastBuildDate>
+<item>
+  <title>The Python Data Model</title>
+  <dc:creator>bwrob </dc:creator>
+  <link>https://bwrob.github.io/posts/python-academy-data-model/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>If you have ever felt that Python’s built-in types possess a certain intuitive behavior that your custom classes lack, you are not alone. You expect <code>len(obj)</code> to get the size, <code>obj['ticker']</code> to access an item, and <code>for asset in obj</code> to iterate through elements.</p>
+<p>This consistency is a core principle of the <strong>Python Data Model</strong>. By implementing specific “special methods” (often called <em>dunder</em> methods, for <strong>d</strong>ouble <strong>under</strong>score), your custom classes can behave just like the built-ins. This greatly enhances expressiveness, readability, and compatibility.</p>
+<p>In this post, we will build a <code>Portfolio</code> class that leverages the Python Data Model. We will focus on structuring a robust and well-behaved object.</p>
+</section>
+<section id="the-goal-a-pythonic-portfolio" class="level2">
+<h2 class="anchored" data-anchor-id="the-goal-a-pythonic-portfolio">The Goal: A Pythonic Portfolio</h2>
+<p>We want a <code>Portfolio</code> class that stores a list of financial positions. But we don’t want a clunky interface like <code>portfolio.get_position_by_ticker("AAPL")</code>. We want the market-standard syntax:</p>
+<ul>
+<li><code>len(portfolio)</code> to size up our exposure.</li>
+<li><code>portfolio["AAPL"]</code> to get a quote instantly.</li>
+<li><code>for position in portfolio</code> to audit our holdings.</li>
+</ul>
+<p>Let’s start by defining a simple <code>Position</code> container. To keep our balance sheet clean, we’ll track the total USD value rather than quantity and price.</p>
+<div id="5be2173f" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> __future__ <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> annotations</span>
+<span id="cb1-2"></span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> dataclasses <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> dataclass</span>
+<span id="cb1-4"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> collections.abc <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Iterator</span>
+<span id="cb1-5"></span>
+<span id="cb1-6"></span>
+<span id="cb1-7"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">@dataclass</span></span>
+<span id="cb1-8"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> Position:</span>
+<span id="cb1-9">    symbol: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span></span>
+<span id="cb1-10">    value_usd: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span></span></code></pre></div></div>
+</div>
+</section>
+<section id="the-initial-portfolio-class" class="level2">
+<h2 class="anchored" data-anchor-id="the-initial-portfolio-class">The Initial <code>Portfolio</code> Class</h2>
+<p>We start with a standard class definition. To index our strategy efficiently, we’ll store the positions in a dictionary keyed by their symbol. We name it <code>_contents</code> to signal it’s an internal implementation detail—a trade secret, if you will—encouraging users to access data through the public interface.</p>
+<div id="d59e69fd" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> Portfolio:</span>
+<span id="cb2-2">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__init__</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, name: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, managers: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">tuple</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, ...], contents: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>[Position] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>):</span>
+<span id="cb2-3">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.name <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> name</span>
+<span id="cb2-4">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.managers <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> managers</span>
+<span id="cb2-5">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Store positions in a dictionary keyed by symbol for fast lookup</span></span>
+<span id="cb2-6">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>._contents <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {pos.symbol: pos <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> pos <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> contents} <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> contents <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span> {}</span>
+<span id="cb2-7"></span>
+<span id="cb2-8">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__repr__</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>):</span>
+<span id="cb2-9">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Portfolio(name=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>name<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!r}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">, managers=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>managers<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!r}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">, contents=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>._contents.values())<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!r}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)"</span></span>
+<span id="cb2-10"></span>
+<span id="cb2-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create some data</span></span>
+<span id="cb2-12">pos1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Position(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"AAPL"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15000.0</span>)</span>
+<span id="cb2-13">pos2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Position(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"GOOG"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">140000.0</span>)</span>
+<span id="cb2-14">p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Portfolio(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Tech Fund"</span>, (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Alice"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Bob"</span>), [pos1, pos2])</span>
+<span id="cb2-15"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(p)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Portfolio(name='Tech Fund', managers=('Alice', 'Bob'), contents=[Position(symbol='AAPL', value_usd=15000.0), Position(symbol='GOOG', value_usd=140000.0)])</code></pre>
+</div>
+</div>
+<p>We included <code>__repr__</code> right away. This dunder method provides the “official” string representation, useful for debugging the object’s state.</p>
+</section>
+<section id="emulating-a-collection" class="level2">
+<h2 class="anchored" data-anchor-id="emulating-a-collection">Emulating a Collection</h2>
+<p>Right now, if we try to gauge the size of our portfolio, it raises a <code>TypeError</code>.</p>
+<div id="1f4357e9" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">try</span>:</span>
+<span id="cb4-2">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(p)</span>
+<span id="cb4-3"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">except</span> <span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">TypeError</span> <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> e:</span>
+<span id="cb4-4">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Error: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>e<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Error: object of type 'Portfolio' has no len()</code></pre>
+</div>
+</div>
+<p>To enable the <code>len()</code> function, we implement <code>__len__</code>.</p>
+<section id="len__" class="level3">
+<h3 class="anchored" data-anchor-id="len__"><code>__len__</code></h3>
+<div id="b654aab2" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> Portfolio(Portfolio): <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Inheriting to add methods incrementally for this post</span></span>
+<span id="cb6-2">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__len__</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>):</span>
+<span id="cb6-3">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>._contents)</span>
+<span id="cb6-4"></span>
+<span id="cb6-5">p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Portfolio(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Tech Fund"</span>, (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Alice"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Bob"</span>), [pos1, pos2])</span>
+<span id="cb6-6"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Portfolio size: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(p)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Portfolio size: 2</code></pre>
+</div>
+</div>
+<p>Now <code>len(p)</code> delegates to the underlying <code>self._contents</code> dictionary. It’s a classic delegation strategy.</p>
+</section>
+<section id="getitem__" class="level3">
+<h3 class="anchored" data-anchor-id="getitem__"><code>__getitem__</code></h3>
+<p>We don’t want to scan through a list to find a stock; that’s O(N) efficiency, and in performance-critical applications, speed is crucial. The <code>__getitem__</code> method allows us to use the square bracket notation <code>[]</code> to access items directly.</p>
+<div id="05b91a70" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> Portfolio(Portfolio):</span>
+<span id="cb8-2">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__getitem__</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, symbol: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Position <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb8-3">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>._contents.get(symbol)</span>
+<span id="cb8-4"></span>
+<span id="cb8-5">p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Portfolio(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Tech Fund"</span>, (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Alice"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Bob"</span>), [pos1, pos2])</span>
+<span id="cb8-6"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"AAPL position: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>p[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'AAPL'</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb8-7"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"MSFT position: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>p[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'MSFT'</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Returns None</span></span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>AAPL position: Position(symbol='AAPL', value_usd=15000.0)
+MSFT position: None</code></pre>
+</div>
+</div>
+<p>With this, our <code>Portfolio</code> behaves like a mapping—an efficient way to access our assets.</p>
+</section>
+<section id="enabling-iteration-__iter__" class="level3">
+<h3 class="anchored" data-anchor-id="enabling-iteration-__iter__">Enabling Iteration: <code>__iter__</code></h3>
+<p>Iterating through a collection is fundamental. Since we backed our portfolio with a dictionary, default iteration would just give us the keys (symbols). But when we loop through a portfolio, we usually want the assets themselves. We can dictate this behavior by implementing <code>__iter__</code>.</p>
+<div id="9c8dd979" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> Portfolio(Portfolio):</span>
+<span id="cb10-2">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__iter__</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Iterator[Position]:</span>
+<span id="cb10-3">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">iter</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>._contents.values())</span>
+<span id="cb10-4"></span>
+<span id="cb10-5"></span>
+<span id="cb10-6">p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Portfolio(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Tech Fund"</span>, (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Alice"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Bob"</span>), [pos1, pos2])</span>
+<span id="cb10-7"></span>
+<span id="cb10-8"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Iterating through portfolio:"</span>)</span>
+<span id="cb10-9"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> pos <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> p:</span>
+<span id="cb10-10">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f" - </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>pos<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>symbol<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">: $</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>pos<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>value_usd<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:,.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Iterating through portfolio:
+ - AAPL: $15,000.00
+ - GOOG: $140,000.00</code></pre>
+</div>
+</div>
+<p>Now, <code>for pos in p</code> yields the positions directly. We have full control over the traversal.</p>
+</section>
+</section>
+<section id="membership-and-truthiness-__contains__-and-__bool__" class="level2">
+<h2 class="anchored" data-anchor-id="membership-and-truthiness-__contains__-and-__bool__">Membership and Truthiness: <code>__contains__</code> and <code>__bool__</code></h2>
+<p>We can already check for membership because we implemented <code>__iter__</code>, but that’s like manually auditing every file to find one document—it’s O(N). Since we have a hash map (dictionary) underneath, we can do an O(1) check using <code>__contains__</code>.</p>
+<p>We also want to know if our portfolio is empty. By default, Python checks <code>len()</code>, but implementing <code>__bool__</code> allows us to be explicit about what constitutes a “truthy” portfolio.</p>
+<div id="a3e270ae" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> Portfolio(Portfolio):</span>
+<span id="cb12-2">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__contains__</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, item: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> Position) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">bool</span>:</span>
+<span id="cb12-3">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">isinstance</span>(item, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>):</span>
+<span id="cb12-4">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> item <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>._contents</span>
+<span id="cb12-5">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">isinstance</span>(item, Position):</span>
+<span id="cb12-6">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> item.symbol <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>._contents</span>
+<span id="cb12-7">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span></span>
+<span id="cb12-8"></span>
+<span id="cb12-9">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__bool__</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">bool</span>:</span>
+<span id="cb12-10">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">bool</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>._contents)</span>
+<span id="cb12-11"></span>
+<span id="cb12-12"></span>
+<span id="cb12-13">p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Portfolio(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Tech Fund"</span>, (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Alice"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Bob"</span>), [pos1, pos2])</span>
+<span id="cb12-14"></span>
+<span id="cb12-15"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Is 'AAPL' in p? </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'AAPL'</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> p<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb12-16"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Is 'MSFT' in p? </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'MSFT'</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> p<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb12-17"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Is p truthy? </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">bool</span>(p)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb12-18"></span>
+<span id="cb12-19">empty_p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Portfolio(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Empty"</span>, (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Nobody"</span>,))</span>
+<span id="cb12-20"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Is empty_p truthy? </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">bool</span>(empty_p)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Is 'AAPL' in p? True
+Is 'MSFT' in p? False
+Is p truthy? True
+Is empty_p truthy? False</code></pre>
+</div>
+</div>
+</section>
+<section id="operator-overloading-__add__-combining-portfolios" class="level2">
+<h2 class="anchored" data-anchor-id="operator-overloading-__add__-combining-portfolios">Operator Overloading: <code>__add__</code> (Combining Portfolios)</h2>
+<p>In Python, objects can be combined using operators. If we have two portfolios, it makes intuitive sense to “add” them together using <code>+</code>.</p>
+<p>We implement this via <code>__add__</code>. This isn’t just concatenation; it’s a consolidation. We need to combine managers and sum up the value of overlapping positions.</p>
+<div id="39c65bc1" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> Portfolio(Portfolio):</span>
+<span id="cb14-2">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__add__</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, other: Portfolio) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Portfolio:</span>
+<span id="cb14-3">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">isinstance</span>(other, Portfolio):</span>
+<span id="cb14-4">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">NotImplemented</span></span>
+<span id="cb14-5"></span>
+<span id="cb14-6">        new_name <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>name<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> + </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>other<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>name<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span></span>
+<span id="cb14-7">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Combine managers, removing duplicates</span></span>
+<span id="cb14-8">        new_managers <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">tuple</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sorted</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">set</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.managers <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> other.managers)))</span>
+<span id="cb14-9">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Merge contents</span></span>
+<span id="cb14-10">        all_positions <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {}</span>
+<span id="cb14-11"></span>
+<span id="cb14-12">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add positions from self</span></span>
+<span id="cb14-13">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> pos <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>:</span>
+<span id="cb14-14">            all_positions[pos.symbol] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Position(pos.symbol, pos.value_usd)</span>
+<span id="cb14-15"></span>
+<span id="cb14-16">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add positions from other</span></span>
+<span id="cb14-17">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> pos <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> other:</span>
+<span id="cb14-18">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> pos.symbol <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> all_positions:</span>
+<span id="cb14-19">                existing <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> all_positions[pos.symbol]</span>
+<span id="cb14-20">                existing.value_usd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> pos.value_usd</span>
+<span id="cb14-21">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span>:</span>
+<span id="cb14-22">                all_positions[pos.symbol] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Position(pos.symbol, pos.value_usd)</span>
+<span id="cb14-23">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> Portfolio(new_name, new_managers, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>(all_positions.values()))</span>
+<span id="cb14-24"></span>
+<span id="cb14-25"></span>
+<span id="cb14-26"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Example Usage</span></span>
+<span id="cb14-27">p1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Portfolio(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Tech"</span>, (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Alice"</span>,), [Position(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"AAPL"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15000.0</span>)])</span>
+<span id="cb14-28">p2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Portfolio(</span>
+<span id="cb14-29">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Growth"</span>, (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Bob"</span>,), [Position(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"AAPL"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8000.0</span>), Position(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"MSFT"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30000.0</span>)]</span>
+<span id="cb14-30">)</span>
+<span id="cb14-31"></span>
+<span id="cb14-32">p3 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> p1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> p2</span>
+<span id="cb14-33"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Merged Portfolio: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>p3<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb14-34"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Merged AAPL: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>p3[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'AAPL'</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Merged Portfolio: Portfolio(name='Tech + Growth', managers=('Alice', 'Bob'), contents=[Position(symbol='AAPL', value_usd=23000.0), Position(symbol='MSFT', value_usd=30000.0)])
+Merged AAPL: Position(symbol='AAPL', value_usd=23000.0)</code></pre>
+</div>
+</div>
+</section>
+<section id="string-representation-__repr__-vs-__str__" class="level2">
+<h2 class="anchored" data-anchor-id="string-representation-__repr__-vs-__str__">String Representation: <code>__repr__</code> vs <code>__str__</code></h2>
+<p>Finally, we need to decide how our portfolio presents itself to the world.</p>
+<ul>
+<li><strong><code>__repr__</code> (The Private Ledger):</strong> Unambiguous, developer-focused. It should ideally allow you to recreate the object.</li>
+<li><strong><code>__str__</code> (The Public Face):</strong> Readable, user-focused. “What does this object represent to a human?”</li>
+</ul>
+<p>If <code>__str__</code> is not defined, Python falls back to <code>__repr__</code>. But we want a nice summary.</p>
+<div id="d140d24f" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> Portfolio(Portfolio):</span>
+<span id="cb16-2">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__str__</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>):</span>
+<span id="cb16-3">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Portfolio '</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>name<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">' with </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> positions managed by </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">', '</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>join(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.managers)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span></span>
+<span id="cb16-4"></span>
+<span id="cb16-5"></span>
+<span id="cb16-6">p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Portfolio(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Tech Fund"</span>, (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Alice"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Bob"</span>), [pos1, pos2])</span>
+<span id="cb16-7"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Str: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>(p)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb16-8"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Repr: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">repr</span>(p)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Str: Portfolio 'Tech Fund' with 2 positions managed by Alice, Bob
+Repr: Portfolio(name='Tech Fund', managers=('Alice', 'Bob'), contents=[Position(symbol='AAPL', value_usd=15000.0), Position(symbol='GOOG', value_usd=140000.0)])</code></pre>
+</div>
+</div>
+</section>
+<section id="why-this-matters" class="level2">
+<h2 class="anchored" data-anchor-id="why-this-matters">Why This Matters</h2>
+<p>By implementing these methods, we’ve turned a basic container into a robust and functional class.</p>
+<ul>
+<li><strong>Lookup by Symbol:</strong> Instant access with <code>p['AAPL']</code>.</li>
+<li><strong>Intuitive Iteration:</strong> Seamless traversal with <code>for pos in p</code>.</li>
+<li><strong>Arithmetic:</strong> Combining objects made easy with <code>p1 + p2</code>.</li>
+<li><strong>Expressiveness:</strong> The code reads clearly and naturally.</li>
+</ul>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>The Python Data Model allows your custom objects to integrate seamlessly with built-in types and Python’s core features.</p>
+<ul>
+<li><code>__init__</code>: Initialization.</li>
+<li><code>__repr__</code>: Detailed developer-focused representation.</li>
+<li><code>__str__</code>: User-friendly summary.</li>
+<li><code>__len__</code>: Getting the size.</li>
+<li><code>__getitem__</code>: Direct item access.</li>
+<li><code>__iter__</code>: Enabling iteration.</li>
+<li><code>__contains__</code>: Fast membership checking.</li>
+<li><code>__bool__</code>: Truthiness check.</li>
+<li><code>__add__</code>: Combining objects.</li>
+</ul>
+<p>By embracing these patterns, you align with Python’s design philosophy and create clean, Pythonic code.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<pre><code>The complete code for this example is available here: [portfolio.py](portfolio.py).</code></pre>
+</div>
+</div>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
+  <category>Python Academy</category>
+  <category>Python</category>
+  <guid>https://bwrob.github.io/posts/python-academy-data-model/</guid>
+  <pubDate>Thu, 11 Dec 2025 23:00:00 GMT</pubDate>
+  <media:content url="https://bwrob.github.io/posts/python_academy.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
 <item>
   <title>Anatomy of a Python Class</title>
   <dc:creator>bwrob </dc:creator>
