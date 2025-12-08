@@ -1,0 +1,162 @@
+---
+title: "Snapshot Testing: Spies, Proxies, and Boundaries"
+description: "A deep dive into snapshot testing using Proxies, 'Boundary Spies', and Syrupy integration."
+date: "2025-12-08"
+categories: [python, testing, mixins]
+draft: true
+---
+
+This post explores advanced testing techniques, specifically focusing on "Snapshot Testing" (or "Golden Master" testing) and how to implement it effectively using Python's `unittest.mock` and the `syrupy` library.
+
+## The Concept: Snapshot Testing
+
+Instead of manually writing `assert mock.call_count == 1`, you record the complex interaction once to a file, and future tests compare the new execution against that file.
+
+### A Custom Interaction Recorder
+
+If you want full control, you can build a custom proxy that records every interaction.
+
+```python
+import json
+import os
+
+class InteractionRecorder:
+    def __init__(self, target):
+        self._target = target
+        # This list will hold the history of everything that happened
+        self._trace = []
+
+    def __getattr__(self, name):
+        # 1. Record the attribute access
+        self._trace.append(f"GET {name}")
+
+        attr = getattr(self._target, name)
+
+        # 2. If it's a method, wrap it to record arguments
+        if callable(attr):
+            def wrapper(*args, **kwargs):
+                # Simplified representation of args for storage
+                arg_str = ", ".join([repr(a) for a in args])
+                kw_str = ", ".join([f"{k}={v!r}" for k, v in kwargs.items()])
+
+                # Record the CALL
+                entry = f"CALL {name}({arg_str}{', ' if arg_str and kw_str else ''}{kw_str})"
+                self._trace.append(entry)
+
+                # Execute actual method
+                return attr(*args, **kwargs)
+            return wrapper
+
+        return attr
+
+    def get_trace(self):
+        return self._trace
+```
+
+## The Professional Way: Syrupy + Mock
+
+While custom recorders are great for learning, `syrupy` combined with `unittest.mock` is the industry standard.
+
+```python
+import pytest
+from unittest.mock import MagicMock
+
+def test_order_flow(snapshot):
+    # 1. Use standard Mock (which records calls automatically)
+    gateway = MagicMock()
+
+    # 2. Run code
+    process_order(gateway, order_id=101)
+
+    # 3. Assert against snapshot
+    # gateway.mock_calls is a list of call objects provided by Python
+    # We convert to string for stable snapshotting
+    assert str(gateway.mock_calls) == snapshot
+```
+
+## The "Boundary Spy" Pattern
+
+Testing implementation details (internal calls) is the #1 cause of flaky tests. A better approach is "Spying on the Boundary". You use real objects for your logic, but wrap external dependencies in a Spy so you can snapshot their interactions.
+
+```python
+import pytest
+from unittest.mock import MagicMock
+
+# --- 1. The Real System ---
+class Database:
+    def save(self, data):
+        print(f"db: Saving {data}")
+        return "db_id_123"
+
+class Mailer:
+    def send(self, email, subject):
+        print(f"email: Sending to {email}")
+
+class OrderService:
+    def __init__(self, db, mailer):
+        self.db = db
+        self.mailer = mailer
+
+    def process_order(self, order):
+        # INTERNAL LOGIC (We don't snapshot this part)
+        order_total = order['price'] * order['qty']
+
+        # SIDE EFFECT (Boundary crossed)
+        self.db.save({"id": order['id'], "total": order_total})
+        self.mailer.send(order['email'], "Order Confirmed")
+
+# --- 2. The Robust Test ---
+def test_order_side_effects(snapshot):
+    # A. Setup REAL dependencies
+    real_db = Database()
+    real_mailer = Mailer()
+
+    # B. Wrap them in Spies (MagicMock with wraps=...)
+    spy_db = MagicMock(wraps=real_db)
+    spy_mailer = MagicMock(wraps=real_mailer)
+
+    # C. Initialize System Under Test
+    service = OrderService(db=spy_db, mailer=spy_mailer)
+
+    # D. Execute Real Logic
+    service.process_order({"id": 55, "price": 10, "qty": 2, "email": "bob@test.com"})
+
+    # E. Snapshot ONLY the Boundary Interactions
+    boundary_trace = {
+        "database": [str(c) for c in spy_db.mock_calls],
+        "mailer":   [str(c) for c in spy_mailer.mock_calls]
+    }
+
+    assert boundary_trace == snapshot
+```
+
+## Seamless Pydantic Integration
+
+To make Syrupy work seamlessly with Pydantic (automatically dumping models to JSON), you can extend it in your `conftest.py`.
+
+```python
+# conftest.py
+import pytest
+from syrupy.extensions.amber import AmberSnapshotExtension
+from pydantic import BaseModel
+
+class PydanticSnapshotExtension(AmberSnapshotExtension):
+    def serialize(self, data, **kwargs):
+        if isinstance(data, BaseModel):
+            return data.model_dump(mode='json')
+        return super().serialize(data, **kwargs)
+
+@pytest.fixture
+def snapshot(snapshot):
+    return snapshot.use_extension(PydanticSnapshotExtension)
+```
+
+Now you can simply assert:
+
+```python
+def test_pydantic_seamless(snapshot):
+    u = User(id=1, name="Neo", joined=datetime(2023, 1, 1))
+    assert u == snapshot
+```
+
+This ensures your snapshots are stable, readable, and robust.

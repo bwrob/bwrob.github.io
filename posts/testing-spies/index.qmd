@@ -1,0 +1,133 @@
+---
+title: "Advanced Testing: Dynamic Mixin Injection and Recursive Spies"
+description: "Techniques for injecting spies into objects at runtime for deep inspection and testing."
+date: "2025-12-08"
+categories: [python, testing, mixins]
+draft: true
+---
+
+Sometimes standard mocking isn't enough. You might need to log internal calls, inspect nested objects, or "infect" an object hierarchy with spying behavior without modifying the production code. This post explores Dynamic Mixin Injection.
+
+## The "Audit Mixin"
+
+This mixin intercepts every attribute access and method call.
+
+```python
+import functools
+
+class AuditMixin:
+    def __getattribute__(self, name):
+        # 1. Bypass logging for internal python stuff
+        if name.startswith("__") or name.startswith("_"):
+            return super().__getattribute__(name)
+
+        print(f"🕵️ Usage Log: Accessed attribute '{name}'")
+        attr = super().__getattribute__(name)
+
+        if callable(attr):
+            @functools.wraps(attr)
+            def wrapper(*args, **kwargs):
+                print(f"   ▶️ Calling method '{name}' with {args} {kwargs}")
+                result = attr(*args, **kwargs)
+                print(f"   ◀️ Returned: {result}")
+                return result
+            return wrapper
+
+        return attr
+```
+
+## Dynamic Injection (Isa-Swizzling)
+
+We can inject this mixin into an existing object instance at runtime.
+
+```python
+def inject_spy(instance):
+    """
+    Dynamically mixes AuditMixin into an existing instance.
+    """
+    original_cls = instance.__class__
+    new_cls_name = f"Logged{original_cls.__name__}"
+
+    # AuditMixin goes FIRST in the parents list
+    new_cls = type(new_cls_name, (AuditMixin, original_cls), {})
+
+    instance.__class__ = new_cls
+    return instance
+```
+
+## The "Contagious Spy"
+
+To make the spy recursive (so it infects children objects returned by methods or accessed via attributes), we need a more advanced mixin.
+
+```python
+import functools
+from unittest.mock import MagicMock
+
+def is_infectable(obj):
+    return (hasattr(obj, '__dict__')
+            and not obj.__class__.__name__.startswith("MagicSpy"))
+
+def make_contagious_spy(instance, parent_mock=None, attribute_name=None):
+    if not is_infectable(instance):
+        return instance
+
+    instance._internal_mock = MagicMock()
+
+    if parent_mock and attribute_name:
+        parent_mock.attach_mock(instance._internal_mock, attribute_name)
+
+    original_cls = instance.__class__
+    new_cls_name = f"MagicSpy{original_cls.__name__}"
+    instance.__class__ = type(new_cls_name, (ContagiousSpyMixin, original_cls), {})
+
+    return instance
+
+class ContagiousSpyMixin:
+    def __getattribute__(self, name):
+        if name.startswith("__") or name.startswith("_") or name == "spy":
+            if name == "spy": return super().__getattribute__("_internal_mock")
+            return super().__getattribute__(name)
+
+        val = super().__getattribute__(name)
+
+        # Infect attributes
+        if is_infectable(val):
+            make_contagious_spy(val, parent_mock=self._internal_mock, attribute_name=name)
+
+        if callable(val):
+            @functools.wraps(val)
+            def wrapper(*args, **kwargs):
+                getattr(self, "_internal_mock").getattr(name)(*args, **kwargs)
+                result = val(*args, **kwargs)
+
+                # Infect return values
+                if is_infectable(result):
+                    make_contagious_spy(result)
+
+                return result
+            return wrapper
+
+        return val
+```
+
+### Usage
+
+This allows you to snapshot the entire unified trace of an object hierarchy.
+
+```python
+class Controller:
+    def __init__(self):
+        self.service = Service()
+
+    def handle_request(self, uid):
+        self.service.fetch_user(uid)
+
+app = Controller()
+make_contagious_spy(app)
+app.handle_request(99)
+
+# The snapshot captures internal and child calls!
+print(app.spy.mock_calls)
+```
+
+This technique is powerful for debugging legacy code or ensuring strict adherence to internal contracts when necessary.

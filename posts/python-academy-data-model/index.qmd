@@ -118,8 +118,6 @@ p = Portfolio("Tech Fund", ("Alice", "Bob"), [pos1, pos2])
 
 print("Iterating through portfolio:")
 for pos in p:
-    print(p)
-for pos in p:
     print(f" - {pos.symbol}: ${pos.value_usd:,.2f}")
 ```
 
@@ -156,19 +154,9 @@ print(f"Is empty_p truthy? {bool(empty_p)}")
 
 ## Operator Overloading: `__add__` (Combining Portfolios)
 
-
-
 In Python, objects can be combined using operators. If we have two portfolios, it makes intuitive sense to "add" them together using `+`.
 
-
-
-
-
-
-
 We implement this via `__add__`. This isn't just concatenation; it's a consolidation. We need to combine managers and sum up the value of overlapping positions.
-
-
 
 ```{python}
 class Portfolio(Portfolio):
@@ -209,24 +197,14 @@ print(f"Merged AAPL: {p3['AAPL']}")
 ```
 
 
-
 ## String Representation: `__repr__` vs `__str__`
-
-
 
 Finally, we need to decide how our portfolio presents itself to the world.
 
-
-
 *   **`__repr__` (The Private Ledger):** Unambiguous, developer-focused. It should ideally allow you to recreate the object.
-
 *   **`__str__` (The Public Face):** Readable, user-focused. "What does this object represent to a human?"
 
-
-
 If `__str__` is not defined, Python falls back to `__repr__`. But we want a nice summary.
-
-
 
 ```{python}
 class Portfolio(Portfolio):
@@ -265,6 +243,5 @@ The Python Data Model allows your custom objects to integrate seamlessly with bu
 By embracing these patterns, you align with Python's design philosophy and create clean, Pythonic code.
 
 ::: {.callout-note}
-The complete code for this example is available here: [portfolio.py](portfolio.py).
-
+    The complete code for this example is available here: [portfolio.py](portfolio.py).
 :::

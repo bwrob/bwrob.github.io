@@ -1,0 +1,53 @@
+---
+title: "Mixin Magic Part 4: Locking Objects"
+description: "Creating immutable or 'lockable' objects using Mixins and __setattr__."
+date: "2025-12-08"
+categories: [python, mixins, immutability]
+draft: true
+---
+
+Sometimes you want an object to be mutable during creation but immutable afterwards.
+
+## The "Manual Lock" Mixin
+
+We override `__setattr__` to check a lock flag.
+
+```python
+class LockableMixin:
+    __locked = False
+
+    def lock(self):
+        self.__locked = True
+
+    def __setattr__(self, name, value):
+        if getattr(self, "_LockableMixin__locked", False):
+            # Allow unlocking internal flag if needed, or just block all
+            if name == "_LockableMixin__locked":
+                super().__setattr__(name, value)
+                return
+            raise AttributeError(f"Cannot set '{name}'. Object is locked.")
+
+        super().__setattr__(name, value)
+```
+
+## The "Auto-Lock" (Class Parameter Hook)
+
+We can pass parameters to the class definition to control this behavior.
+
+```python
+class AutoLockMixin:
+    def __init_subclass__(cls, auto_lock=False, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if auto_lock:
+            # Wrap __init__ to lock automatically after creation
+            original_init = cls.__init__
+            def new_init(self, *args, **kw):
+                original_init(self, *args, **kw)
+                self.lock() # Assuming lock() exists or setting flag
+            cls.__init__ = new_init
+
+class ServerSettings(AutoLockMixin, LockableMixin, auto_lock=True):
+    pass
+```
+
+For strict immutability, `dataclasses` with `frozen=True` are often simpler, but these Mixins allow for dynamic locking (State A -> State B).

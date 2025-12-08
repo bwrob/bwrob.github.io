@@ -1,0 +1,60 @@
+---
+title: "Mixin Magic Part 3: Metaclasses and Event Systems"
+description: "Advanced Mixin patterns: The Observable Mixin and using __init_subclass__ for plugin systems."
+date: "2025-12-08"
+categories: [python, mixins, advanced]
+draft: true
+---
+
+## The "Observable" Mixin (Event System)
+
+This builds a mini Observer Pattern directly into your class inheritance.
+
+```python
+class ObservableMixin:
+    def __init__(self, *args, **kwargs):
+        self._observers = []
+        super().__init__(*args, **kwargs)
+
+    def attach(self, observer_func):
+        self._observers.append(observer_func)
+
+    def notify(self, message):
+        for observer in self._observers:
+            observer(self, message)
+
+class Worker(ObservableMixin):
+    def do_work(self):
+        print("Working...")
+        self.notify("Job Done")
+```
+
+## Metaclasses vs `__init_subclass__`
+
+How do you enforce that a subclass implements a specific method, or register classes automatically?
+
+### The Modern Way: `__init_subclass__`
+
+This hook runs when a child class is defined.
+
+```python
+class PluginRegistryMixin:
+    registry = {}
+
+    def __init_subclass__(cls, plugin_type=None, **kwargs):
+        super().__init_subclass__(**kwargs)
+
+        # Enforce Interface
+        if not hasattr(cls, 'process'):
+            raise TypeError(f"Plugin {cls.__name__} must implement 'process()'")
+
+        # Auto-Register
+        if plugin_type:
+            cls.registry[plugin_type] = cls
+
+class AudioPlugin(PluginRegistryMixin, plugin_type="audio"):
+    def process(self):
+        pass
+```
+
+This is cleaner than using custom Metaclasses and allows for powerful "Plugin" architectures where classes register themselves simply by inheriting from the Mixin.

@@ -1,0 +1,48 @@
+---
+title: "Mixin Magic Part 5: The Universal Patch"
+description: "The Black Hole Pattern: Creating objects that never crash."
+date: "2025-12-08"
+categories: [python, mixins, hacks]
+draft: true
+---
+
+## The "Omni" Class
+
+Sometimes you need an object that accepts any attribute access, function call, or index access without ever throwing an error. This is useful for Mocking or scraping messy data.
+
+```python
+class UniversalProxy:
+    def __init__(self, path=""):
+        self._path = path
+    def __getattr__(self, name): return UniversalProxy(f"{self._path}.{name}")
+    def __call__(self, *args, **kwargs): return UniversalProxy(f"{self._path}()")
+    def __getitem__(self, key): return UniversalProxy(f"{self._path}[{key}]")
+    def __repr__(self): return f"<Missing: {self._path}>"
+    def __bool__(self): return False
+```
+
+## The "Universal Patch" Mixin
+
+This Mixin acts as a safety net. It only triggers `__getattr__` when the standard attribute lookup fails.
+
+```python
+class UniversalPatchMixin:
+    def __getattr__(self, name):
+        print(f"⚠️ '{name}' missing. Patching with Proxy.")
+        return UniversalProxy(name)
+```
+
+### Usage Example
+
+```python
+class APIResponse(UniversalPatchMixin):
+    def __init__(self, status):
+        self.status = status
+
+response = APIResponse(200)
+# This chain doesn't exist, but it won't crash
+print(response.headers.content_type.charset)
+# Output: <Missing: headers.content_type.charset>
+```
+
+**Warning:** This disables Python's typo detection. Use it only for testing or specific data parsing scenarios where missing fields are expected.

@@ -1,0 +1,86 @@
+---
+title: "Mixin Magic Part 1: The Basics of Inheritance"
+description: "Understanding Python's super(), Method Resolution Order (MRO), and the foundation of Mixins."
+date: "2025-12-08"
+categories: [python, mixins, oop]
+draft: true
+---
+
+In Python, `super()` is more than just a way to call a parent method. It is the key to cooperative multiple inheritance, which powers the "Mixin" pattern.
+
+## The Basics: `super()`
+
+`super()` allows a child class to refer to its parent class without naming it explicitly.
+
+```python
+class Employee:
+    def __init__(self, name):
+        self.name = name
+
+class Developer(Employee):
+    def __init__(self, name, lang):
+        super().__init__(name)
+        self.lang = lang
+```
+
+## The Diamond Problem & MRO
+
+When inheriting from multiple parents, Python uses the **Method Resolution Order (MRO)** (calculated via the C3 Linearization algorithm) to determine which method to call.
+
+```python
+class A:
+    def action(self): print("A")
+
+class B(A):
+    def action(self):
+        print("B start")
+        super().action()
+        print("B end")
+
+class C(A):
+    def action(self):
+        print("C start")
+        super().action()
+        print("C end")
+
+class D(B, C):
+    def action(self):
+        print("D start")
+        super().action()
+        print("D end")
+
+d = D()
+d.action()
+```
+
+**Output:**
+```text
+D start
+B start
+C start  <-- Wait, B called C?
+A
+C end
+B end
+D end
+```
+Inside `B`, `super().action()` called `C`, not `A`. This is because `super()` follows the MRO chain, not just the direct parent. This feature is what makes Mixins possible.
+
+## What is a Mixin?
+
+A Mixin is a class designed to provide specific functionality to other classes but is not intended to stand alone.
+
+### The Correct Order
+
+Mixins should almost always come **first** in the inheritance list.
+
+```python
+# ✅ CORRECT
+class Child(Mixin, Base):
+    pass
+
+# ❌ INCORRECT (Usually)
+class Child(Base, Mixin):
+    pass
+```
+
+If `Base` is defined first, and it doesn't call `super()`, the chain stops there, and your Mixin is ignored. By putting the Mixin first, it can intercept the call, do its work, and then call `super()` to pass control to the `Base`.
