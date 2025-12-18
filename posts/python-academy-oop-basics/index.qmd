@@ -1,0 +1,289 @@
+---
+title: "Inheritance, Polymorphism & Protocols"
+author: "bwrob"
+date: "2025-12-18"
+description: "How to design flexible financial models using inheritance, ABCs, and protocols."
+categories: [Python Academy]
+image: "../python_academy.png"
+---
+
+## Introduction
+
+Last time, in [Anatomy of a Python Class](../python-academy-class-anatomy/), we took a class apart to see what makes it tick. We learned to bundle data and behavior into a tidy unit. But in the wild—especially in a quantitative library—objects don't live in a vacuum. They talk to each other, rely on each other, and often, they are just different flavors of the same concept.
+
+A **European Option** *is a* **Financial Instrument**. A **Nelson-Siegel Model** *is a* **Yield Curve**.
+
+These relationships are the bread and butter of **Object-Oriented Programming (OOP)**. By using **Inheritance** and **Polymorphism**, we stop repeating ourselves and start building systems that can handle new models without falling apart.
+
+Today, we're going to build a yield curve hierarchy to see how this works in practice.
+
+## The Scenario: A Bond Pricer
+
+Picture this: you're writing a function to price bonds. You know you need to discount cashflows, so you need a yield curve. But "Yield Curve" is just an abstract idea. In reality, you might be dealing with:
+
+*   A **Flat Curve** (constant interest rate).
+*   A **Zero Curve** (interpolated from market rates).
+*   A **Spline Curve** (some fancy cubic math).
+
+Your pricing engine shouldn't care which one it's using. It shouldn't have `if type(curve) == FlatCurve` logic cluttering it up. It just wants a discount factor.
+
+## Abstract Base Classes (ABCs)
+
+To keep things sane, we need rules. We need a contract that says: "If you want to be a Yield Curve, you *must* provide a discount factor."
+
+Python handles this with **Abstract Base Classes (ABCs)**.
+
+```{python}
+from abc import ABC, abstractmethod
+import math
+
+class YieldCurve(ABC):
+    """
+    Abstract base class for all yield curves.
+    """
+
+    @abstractmethod
+    def discount_factor(self, t: float) -> float:
+        """Calculate discount factor D(t) for time t."""
+        pass
+
+    def zero_rate(self, t: float) -> float:
+        """
+        Concrete method shared by all curves.
+        Z(t) = -ln(D(t)) / t
+        """
+        if t <= 1e-9:
+            return 0.0
+        df = self.discount_factor(t)
+        return -math.log(df) / t
+```
+
+Inheriting from `ABC` prevents anyone from creating a "plain" `YieldCurve`—it's just a template. The `@abstractmethod` decorator is the enforcer: if a subclass doesn't implement `discount_factor`, Python literally won't let you instantiate it.
+
+Notice we included `zero_rate`. Since the math linking zero rates and discount factors is universal ($Z(t) = -\frac{\ln D(t)}{t}$), we write it once here, and every single subclass gets it for free.
+
+## Concrete Implementations
+
+With the ground rules established, let's build something real. The simplest case is a **Flat Forward Curve**, where the rate is constant forever.
+
+```{python}
+class FlatForwardCurve(YieldCurve):
+    def __init__(self, rate: float):
+        self.rate = rate
+
+    def discount_factor(self, t: float) -> float:
+        return math.exp(-self.rate * t)
+```
+
+## Multiple Inheritance and Layering Behavior
+
+Before we get to complex curves, let's talk about one of Python's superpowers: **Multiple Inheritance**. In many languages, a class can only have one parent. In Python, it can have many.
+
+While this can get messy (the infamous "Diamond Problem"), it's perfect for **Mixins**. A Mixin is a small class designed to "mix in" specific functionality to other classes.
+
+Suppose we want to take our `FlatForwardCurve` (or *any* curve) and add a constant spread to it. Instead of rewriting the curve logic, we create a `SpreadMixin`.
+
+```{python}
+class SpreadMixin:
+    def __init__(self, spread: float, *args, **kwargs):
+        self.spread = spread
+        # Pass remaining arguments to the next class in the chain
+        super().__init__(*args, **kwargs)
+
+    def discount_factor(self, t: float) -> float:
+        # Get base discount factor from the parent curve
+        base_df = super().discount_factor(t)
+        # Apply spread: D_new(t) = D_old(t) * exp(-spread * t)
+        return base_df * math.exp(-self.spread * t)
+
+class ShiftedFlatCurve(SpreadMixin, FlatForwardCurve):
+    pass
+```
+
+When we create `ShiftedFlatCurve`, Python's **Method Resolution Order (MRO)** ensures that `SpreadMixin` runs first. Its `super().discount_factor` call then hops over to `FlatForwardCurve`.
+
+```{python}
+shifted = ShiftedFlatCurve(rate=0.05, spread=0.02)
+# Total rate effectively 0.07
+print(f"Shifted DF(1.0): {shifted.discount_factor(1.0):.4f}")
+```
+
+We just composed a new financial model on the fly without rewriting the flat curve logic.
+
+## Interpolation: A Fork in the Road
+
+Now, let's tackle curves built from market data. We have points (tenors and rates), but we need values *between* those points. We need interpolation.
+
+This presents a classic design choice. Do we bake the interpolation logic into the curve class, or do we keep it separate? Let's look at both **Composition** and **Inheritance**.
+
+### Approach A: Composition (The Strategy Pattern)
+
+Here, we treat interpolation as a tool the curve *uses*. We define an `Interpolator` protocol and pass a concrete implementation (like `LinearInterpolator`) to the curve.
+
+```{python}
+from typing import Protocol
+
+
+# 1. Define the Strategy Interface
+class Interpolator(Protocol):
+    def interpolate(self, t: float, x: list[float], y: list[float]) -> float: ...
+
+
+# 2. Implement Concrete Strategy
+class LinearInterpolator:
+    def interpolate(self, t: float, x: list[float], y: list[float]) -> float:
+        # Simple flat extrapolation for endpoints
+        if t <= x[0]:
+            return y[0]
+        if t >= x[-1]:
+            return y[-1]
+
+        # Linear search (simplified)
+        for i in range(len(x) - 1):
+            if x[i] <= t <= x[i + 1]:
+                t1, t2 = x[i], x[i + 1]
+                y1, y2 = y[i], y[i + 1]
+                w = (t - t1) / (t2 - t1)
+                return (1 - w) * y1 + w * y2
+        return y[-1]
+
+
+# 3. Use Composition in the Curve
+class InterpolatedZeroCurve(YieldCurve):
+    def __init__(
+        self, times: list[float], rates: list[float], interpolator: Interpolator
+    ):
+        self.times = sorted(times)
+        self.rates = [r for _, r in sorted(zip(times, rates))]
+        self.interpolator = interpolator  # Composition
+
+    def discount_factor(self, t: float) -> float:
+        # Delegate the math to the strategy
+        r = self.interpolator.interpolate(t, self.times, self.rates)
+        return math.exp(-r * t)
+```
+
+This is incredibly flexible. Want to switch to Cubic Splines? Just pass a different interpolator. The curve class itself doesn't need to change.
+
+### Approach B: Inheritance (Mixins)
+
+Alternatively, we can "mix in" the ability to interpolate, just like we mixed in the spread logic.
+
+```{python}
+class LinearInterpolationMixin:
+    """
+    Mixin that provides linear interpolation capability.
+    """
+    def interpolate_linear(self, t: float, x: list[float], y: list[float]) -> float:
+        if t <= x[0]: return y[0]
+        if t >= x[-1]: return y[-1]
+
+        for i in range(len(x) - 1):
+            if x[i] <= t <= x[i+1]:
+                t1, t2 = x[i], x[i+1]
+                y1, y2 = y[i], y[i+1]
+                w = (t - t1) / (t2 - t1)
+                return (1 - w) * y1 + w * y2
+        return y[-1]
+
+class MixinZeroCurve(LinearInterpolationMixin, YieldCurve):
+    def __init__(self, times: list[float], rates: list[float]):
+        self.times = sorted(times)
+        self.rates = [r for _, r in sorted(zip(times, rates))]
+
+    def discount_factor(self, t: float) -> float:
+        # Use the inherited method
+        r = self.interpolate_linear(t, self.times, self.rates)
+        return math.exp(-r * t)
+```
+
+This feels more integrated, but it's static. You can't change the interpolation method at runtime as easily as with composition.
+
+## The Payoff: Polymorphism
+
+Here is where the magic happens. Because we adhered to our `YieldCurve` contract, our pricing function can be completely ignorant of the complexity we just built.
+
+```{python}
+from dataclasses import dataclass
+
+@dataclass
+class CashFlow:
+    amount: float
+    time: float
+
+def price_bond(cashflows: list[CashFlow], curve: YieldCurve) -> float:
+    price = 0.0
+    for cf in cashflows:
+        # Polymorphic call: Python decides at runtime which
+        # discount_factor method to run!
+        price += cf.amount * curve.discount_factor(cf.time)
+    return price
+```
+
+Let's test it:
+
+```{python}
+# Define a bond: coupon of 5 at t=1, principal 105 at t=2
+bond_cfs = [CashFlow(5, 1.0), CashFlow(105, 2.0)]
+
+# 1. Price with Flat Curve
+flat = FlatForwardCurve(rate=0.05)
+print(f"Price (Flat): {price_bond(bond_cfs, flat):.2f}")
+
+# 2. Price with Composition (Strategy)
+linear_strategy = LinearInterpolator()
+curve_comp = InterpolatedZeroCurve([0.5, 2.0], [0.04, 0.06], linear_strategy)
+print(f"Price (Composition): {price_bond(bond_cfs, curve_comp):.2f}")
+
+# 3. Price with Mixin
+curve_mixin = MixinZeroCurve([0.5, 2.0], [0.04, 0.06])
+print(f"Price (Mixin): {price_bond(bond_cfs, curve_mixin):.2f}")
+```
+
+We swapped the entire mathematical engine underneath the hood—from flat rates to interpolated curves using different design patterns—and the pricing logic didn't flinch.
+
+## Protocols: When Inheritance Feels Heavy
+
+Inheritance is a commitment. Sometimes you want to use a class from a third-party library that *looks* like a yield curve but doesn't inherit from your specific `YieldCurve` ABC.
+
+Python has a solution for this: **Protocols** (often called "Structural Subtyping" or "Duck Typing"). A Protocol defines a shape. It says, "I don't care who your parents are, as long as you have a `discount_factor` method."
+
+```{python}
+from typing import runtime_checkable
+
+@runtime_checkable
+class Discountable(Protocol):
+    def discount_factor(self, t: float) -> float: ...
+
+class SimpleDiscounter:
+    """
+    This class does NOT inherit from YieldCurve.
+    It just happens to have the right method.
+    """
+    def discount_factor(self, t: float) -> float:
+        return 1 / (1 + 0.05 * t)  # Simple capitalization
+
+def price_asset_structural(amount: float, t: float, model: Discountable) -> float:
+    return amount * model.discount_factor(t)
+
+simple = SimpleDiscounter()
+print(f"Is compatible? {isinstance(simple, Discountable)}")
+print(f"Price: {price_asset_structural(100, 1.0, simple):.2f}")
+```
+
+This lets you build loosely coupled systems that play nice with code you don't own.
+
+## Wrapping Up
+
+OOP gives us the tools to model the complex taxonomy of financial instruments elegantly.
+
+*   **ABCs** give us consistency.
+*   **Mixins** let us stack behaviors like building blocks.
+*   **Polymorphism** lets our engines run on interchangeable parts.
+*   **Protocols** loosen the coupling when we need flexibility.
+
+In the next post, we'll keep building on this foundation and look at **Design Patterns**—specifically the **Factory Pattern**—to handle object creation elegantly.
+
+::: {.callout-note}
+You can find the complete code for this post here: [oop_basics.py](oop_basics.py).
+:::
