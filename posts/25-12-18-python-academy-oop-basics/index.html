@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="bwrob">
+<meta name="dcterms.date" content="2025-12-18">
+<meta name="description" content="How to design flexible financial models using inheritance, ABCs, and protocols.">
+
+<title>Inheritance, Polymorphism &amp; Protocols – bwrob blog</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../logo/python_mug.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-f1aadacce99040138bbb613f9330654f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-4fb5871a2fa2869b4ddfc9dbc86feb8e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-443f7be31c8200b488db8514bbe704f0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="bwrob blog">
+<meta property="og:description" content="bwrob personal and professional blog">
+<meta property="og:image" content="https://bwrob.github.io/assets/images/posts/python_academy.png">
+<meta property="og:site_name" content="bwrob blog">
+<meta property="og:image:height" content="1024">
+<meta property="og:image:width" content="1024">
+<meta name="twitter:title" content="bwrob blog">
+<meta name="twitter:description" content="bwrob personal and professional blog">
+<meta name="twitter:image" content="https://bwrob.github.io/assets/images/posts/python_academy.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image-height" content="1024">
+<meta name="twitter:image-width" content="1024">
+</head>
+
+<body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = true;
+    const darkModeDefault = authorPrefersDark;
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../logo/python_mug.png" alt="" class="navbar-logo light-content">
+    <img src="../../logo/python_mug.png" alt="" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">bwrob blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> <i class="bi bi-cpu" role="img">
+</i> 
+<span class="menu-text">Posts</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../pages/resume.html"> <i class="bi bi-file-earmark-text" role="img">
+</i> 
+<span class="menu-text">Resume</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../pages/teaching.html"> <i class="bi bi-tablet-landscape" role="img">
+</i> 
+<span class="menu-text">Teaching</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../pages/hobbies.html"> <i class="bi bi-controller" role="img">
+</i> 
+<span class="menu-text">Hobbies</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bwrob.github.io/debug-dojo/"> <i class="bi bi-bug-fill" role="img">
+</i> 
+<span class="menu-text">debug dojo</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/bartoszmwroblewski/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/bwrob/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Inheritance, Polymorphism &amp; Protocols</h1>
+                  <div>
+        <div class="description">
+          How to design flexible financial models using inheritance, ABCs, and protocols.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Python Academy</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>bwrob </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">December 18, 2025</p>
+      </div>
+    </div>
+    
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">February 20, 2026</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#the-scenario-a-bond-pricer" id="toc-the-scenario-a-bond-pricer" class="nav-link" data-scroll-target="#the-scenario-a-bond-pricer">The Scenario: A Bond Pricer</a></li>
+  <li><a href="#abstract-base-classes-abcs" id="toc-abstract-base-classes-abcs" class="nav-link" data-scroll-target="#abstract-base-classes-abcs">Abstract Base Classes (ABCs)</a></li>
+  <li><a href="#concrete-implementations" id="toc-concrete-implementations" class="nav-link" data-scroll-target="#concrete-implementations">Concrete Implementations</a></li>
+  <li><a href="#multiple-inheritance-and-layering-behavior" id="toc-multiple-inheritance-and-layering-behavior" class="nav-link" data-scroll-target="#multiple-inheritance-and-layering-behavior">Multiple Inheritance and Layering Behavior</a></li>
+  <li><a href="#interpolation-a-fork-in-the-road" id="toc-interpolation-a-fork-in-the-road" class="nav-link" data-scroll-target="#interpolation-a-fork-in-the-road">Interpolation: A Fork in the Road</a>
+  <ul class="collapse">
+  <li><a href="#approach-a-composition-the-strategy-pattern" id="toc-approach-a-composition-the-strategy-pattern" class="nav-link" data-scroll-target="#approach-a-composition-the-strategy-pattern">Approach A: Composition (The Strategy Pattern)</a></li>
+  <li><a href="#approach-b-inheritance-mixins" id="toc-approach-b-inheritance-mixins" class="nav-link" data-scroll-target="#approach-b-inheritance-mixins">Approach B: Inheritance (Mixins)</a></li>
+  </ul></li>
+  <li><a href="#the-payoff-polymorphism" id="toc-the-payoff-polymorphism" class="nav-link" data-scroll-target="#the-payoff-polymorphism">The Payoff: Polymorphism</a></li>
+  <li><a href="#protocols-when-inheritance-feels-heavy" id="toc-protocols-when-inheritance-feels-heavy" class="nav-link" data-scroll-target="#protocols-when-inheritance-feels-heavy">Protocols: When Inheritance Feels Heavy</a></li>
+  <li><a href="#wrapping-up" id="toc-wrapping-up" class="nav-link" data-scroll-target="#wrapping-up">Wrapping Up</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>We’ve already seen what goes into a single class, but in a real library, objects don’t exist in a vacuum. They need to talk to each other and share common ground. This is where things like <strong>Inheritance</strong> and <strong>Polymorphism</strong> come in.</p>
+<p>Think of it this way: a <strong>European Option</strong> <em>is a</em> <strong>Financial Instrument</strong>. A <strong>Nelson-Siegel Model</strong> <em>is a</em> <strong>Yield Curve</strong>. By setting up our code to reflect these relationships, we can write engines that handle any curve we throw at them without needing a massive “if-else” mess.</p>
+<p>Today, we’ll build a yield curve hierarchy to see how this works in practice.</p>
+</section>
+<section id="the-scenario-a-bond-pricer" class="level2">
+<h2 class="anchored" data-anchor-id="the-scenario-a-bond-pricer">The Scenario: A Bond Pricer</h2>
+<p>Picture this: you’re writing a function to price bonds. You know you need to discount cashflows, so you need a yield curve. But “Yield Curve” is just an abstract idea. In reality, you might be dealing with:</p>
+<ul>
+<li>A <strong>Flat Curve</strong> (constant interest rate).</li>
+<li>A <strong>Zero Curve</strong> (interpolated from market rates).</li>
+<li>A <strong>Spline Curve</strong> (some fancy cubic math).</li>
+</ul>
+<p>Your pricing engine shouldn’t care which one it’s using. It shouldn’t have <code>if type(curve) == FlatCurve</code> logic cluttering it up. It just wants a discount factor.</p>
+</section>
+<section id="abstract-base-classes-abcs" class="level2">
+<h2 class="anchored" data-anchor-id="abstract-base-classes-abcs">Abstract Base Classes (ABCs)</h2>
+<p>To keep things sane, we need rules. We need a contract that says: “If you want to be a Yield Curve, you <em>must</em> provide a discount factor.”</p>
+<p>Python handles this with <strong>Abstract Base Classes (ABCs)</strong>.</p>
+<div id="8bff78f8" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> math</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">class</span> YieldCurve(ABC):</span>
+<span id="cb1-5"><a href="#cb1-5"></a>    <span class="co">"""</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co">    Abstract base class for all yield curves.</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">    """</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb1-11"><a href="#cb1-11"></a>        <span class="co">"""Calculate discount factor D(t) for time t."""</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a>        <span class="cf">pass</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a></span>
+<span id="cb1-14"><a href="#cb1-14"></a>    <span class="kw">def</span> zero_rate(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb1-15"><a href="#cb1-15"></a>        <span class="co">"""</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="co">        Concrete method shared by all curves.</span></span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="co">        Z(t) = -ln(D(t)) / t</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="co">        """</span></span>
+<span id="cb1-19"><a href="#cb1-19"></a>        <span class="cf">if</span> t <span class="op">&lt;=</span> <span class="fl">1e-9</span>:</span>
+<span id="cb1-20"><a href="#cb1-20"></a>            <span class="cf">return</span> <span class="fl">0.0</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a>        df <span class="op">=</span> <span class="va">self</span>.discount_factor(t)</span>
+<span id="cb1-22"><a href="#cb1-22"></a>        <span class="cf">return</span> <span class="op">-</span>math.log(df) <span class="op">/</span> t</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Inheriting from <code>ABC</code> prevents anyone from creating a “plain” <code>YieldCurve</code>—it’s just a template. The <code>@abstractmethod</code> decorator is the enforcer: if a subclass doesn’t implement <code>discount_factor</code>, Python literally won’t let you instantiate it.</p>
+<p>Notice we included <code>zero_rate</code>. Since the math linking zero rates and discount factors is universal (<span class="math inline">\(Z(t) = -\frac{\ln D(t)}{t}\)</span>), we write it once here, and every single subclass gets it for free.</p>
+</section>
+<section id="concrete-implementations" class="level2">
+<h2 class="anchored" data-anchor-id="concrete-implementations">Concrete Implementations</h2>
+<p>With the ground rules established, let’s build something real. The simplest case is a <strong>Flat Forward Curve</strong>, where the rate is constant forever.</p>
+<div id="842c0f80" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">class</span> FlatForwardCurve(YieldCurve):</span>
+<span id="cb2-2"><a href="#cb2-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, rate: <span class="bu">float</span>):</span>
+<span id="cb2-3"><a href="#cb2-3"></a>        <span class="va">self</span>.rate <span class="op">=</span> rate</span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb2-6"><a href="#cb2-6"></a>        <span class="cf">return</span> math.exp(<span class="op">-</span><span class="va">self</span>.rate <span class="op">*</span> t)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="multiple-inheritance-and-layering-behavior" class="level2">
+<h2 class="anchored" data-anchor-id="multiple-inheritance-and-layering-behavior">Multiple Inheritance and Layering Behavior</h2>
+<p>Before we get to complex curves, let’s talk about one of Python’s superpowers: <strong>Multiple Inheritance</strong>. In many languages, a class can only have one parent. In Python, it can have many.</p>
+<p>While this can get messy (the infamous “Diamond Problem”), it’s perfect for <strong>Mixins</strong>. A Mixin is a small class designed to “mix in” specific functionality to other classes.</p>
+<p>Suppose we want to take our <code>FlatForwardCurve</code> (or <em>any</em> curve) and add a constant spread to it. Instead of rewriting the curve logic, we create a <code>SpreadMixin</code>.</p>
+<div id="ca67541e" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">class</span> SpreadMixin:</span>
+<span id="cb3-2"><a href="#cb3-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, spread: <span class="bu">float</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb3-3"><a href="#cb3-3"></a>        <span class="va">self</span>.spread <span class="op">=</span> spread</span>
+<span id="cb3-4"><a href="#cb3-4"></a>        <span class="co"># Pass remaining arguments to the next class in the chain</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb3-8"><a href="#cb3-8"></a>        <span class="co"># Get base discount factor from the parent curve</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>        base_df <span class="op">=</span> <span class="bu">super</span>().discount_factor(t)</span>
+<span id="cb3-10"><a href="#cb3-10"></a>        <span class="co"># Apply spread: D_new(t) = D_old(t) * exp(-spread * t)</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a>        <span class="cf">return</span> base_df <span class="op">*</span> math.exp(<span class="op">-</span><span class="va">self</span>.spread <span class="op">*</span> t)</span>
+<span id="cb3-12"><a href="#cb3-12"></a></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="kw">class</span> ShiftedFlatCurve(SpreadMixin, FlatForwardCurve):</span>
+<span id="cb3-14"><a href="#cb3-14"></a>    <span class="cf">pass</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>When we create <code>ShiftedFlatCurve</code>, Python’s <strong>Method Resolution Order (MRO)</strong> ensures that <code>SpreadMixin</code> runs first. Its <code>super().discount_factor</code> call then hops over to <code>FlatForwardCurve</code>.</p>
+<div id="0602fba2" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>shifted <span class="op">=</span> ShiftedFlatCurve(rate<span class="op">=</span><span class="fl">0.05</span>, spread<span class="op">=</span><span class="fl">0.02</span>)</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="co"># Total rate effectively 0.07</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="bu">print</span>(<span class="ss">f"Shifted DF(1.0): </span><span class="sc">{</span>shifted<span class="sc">.</span>discount_factor(<span class="fl">1.0</span>)<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Shifted DF(1.0): 0.9324</code></pre>
+</div>
+</div>
+<p>We just composed a new financial model on the fly without rewriting the flat curve logic.</p>
+</section>
+<section id="interpolation-a-fork-in-the-road" class="level2">
+<h2 class="anchored" data-anchor-id="interpolation-a-fork-in-the-road">Interpolation: A Fork in the Road</h2>
+<p>Now, let’s tackle curves built from market data. We have points (tenors and rates), but we need values <em>between</em> those points. We need interpolation.</p>
+<p>This presents a classic design choice. Do we bake the interpolation logic into the curve class, or do we keep it separate? Let’s look at both <strong>Composition</strong> and <strong>Inheritance</strong>.</p>
+<section id="approach-a-composition-the-strategy-pattern" class="level3">
+<h3 class="anchored" data-anchor-id="approach-a-composition-the-strategy-pattern">Approach A: Composition (The Strategy Pattern)</h3>
+<p>Here, we treat interpolation as a tool the curve <em>uses</em>. We define an <code>Interpolator</code> protocol and pass a concrete implementation (like <code>LinearInterpolator</code>) to the curve.</p>
+<div id="e020be96" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">from</span> typing <span class="im">import</span> Protocol</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co"># 1. Define the Strategy Interface</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="kw">class</span> Interpolator(Protocol):</span>
+<span id="cb6-6"><a href="#cb6-6"></a>    <span class="kw">def</span> interpolate(<span class="va">self</span>, t: <span class="bu">float</span>, x: <span class="bu">list</span>[<span class="bu">float</span>], y: <span class="bu">list</span>[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">float</span>: ...</span>
+<span id="cb6-7"><a href="#cb6-7"></a></span>
+<span id="cb6-8"><a href="#cb6-8"></a></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co"># 2. Implement Concrete Strategy</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="kw">class</span> LinearInterpolator:</span>
+<span id="cb6-11"><a href="#cb6-11"></a>    <span class="kw">def</span> interpolate(<span class="va">self</span>, t: <span class="bu">float</span>, x: <span class="bu">list</span>[<span class="bu">float</span>], y: <span class="bu">list</span>[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb6-12"><a href="#cb6-12"></a>        <span class="co"># Simple flat extrapolation for endpoints</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a>        <span class="cf">if</span> t <span class="op">&lt;=</span> x[<span class="dv">0</span>]:</span>
+<span id="cb6-14"><a href="#cb6-14"></a>            <span class="cf">return</span> y[<span class="dv">0</span>]</span>
+<span id="cb6-15"><a href="#cb6-15"></a>        <span class="cf">if</span> t <span class="op">&gt;=</span> x[<span class="op">-</span><span class="dv">1</span>]:</span>
+<span id="cb6-16"><a href="#cb6-16"></a>            <span class="cf">return</span> y[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb6-17"><a href="#cb6-17"></a></span>
+<span id="cb6-18"><a href="#cb6-18"></a>        <span class="co"># Linear search (simplified)</span></span>
+<span id="cb6-19"><a href="#cb6-19"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(x) <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb6-20"><a href="#cb6-20"></a>            <span class="cf">if</span> x[i] <span class="op">&lt;=</span> t <span class="op">&lt;=</span> x[i <span class="op">+</span> <span class="dv">1</span>]:</span>
+<span id="cb6-21"><a href="#cb6-21"></a>                t1, t2 <span class="op">=</span> x[i], x[i <span class="op">+</span> <span class="dv">1</span>]</span>
+<span id="cb6-22"><a href="#cb6-22"></a>                y1, y2 <span class="op">=</span> y[i], y[i <span class="op">+</span> <span class="dv">1</span>]</span>
+<span id="cb6-23"><a href="#cb6-23"></a>                w <span class="op">=</span> (t <span class="op">-</span> t1) <span class="op">/</span> (t2 <span class="op">-</span> t1)</span>
+<span id="cb6-24"><a href="#cb6-24"></a>                <span class="cf">return</span> (<span class="dv">1</span> <span class="op">-</span> w) <span class="op">*</span> y1 <span class="op">+</span> w <span class="op">*</span> y2</span>
+<span id="cb6-25"><a href="#cb6-25"></a>        <span class="cf">return</span> y[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb6-26"><a href="#cb6-26"></a></span>
+<span id="cb6-27"><a href="#cb6-27"></a></span>
+<span id="cb6-28"><a href="#cb6-28"></a><span class="co"># 3. Use Composition in the Curve</span></span>
+<span id="cb6-29"><a href="#cb6-29"></a><span class="kw">class</span> InterpolatedZeroCurve(YieldCurve):</span>
+<span id="cb6-30"><a href="#cb6-30"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb6-31"><a href="#cb6-31"></a>        <span class="va">self</span>, times: <span class="bu">list</span>[<span class="bu">float</span>], rates: <span class="bu">list</span>[<span class="bu">float</span>], interpolator: Interpolator</span>
+<span id="cb6-32"><a href="#cb6-32"></a>    ):</span>
+<span id="cb6-33"><a href="#cb6-33"></a>        <span class="va">self</span>.times <span class="op">=</span> <span class="bu">sorted</span>(times)</span>
+<span id="cb6-34"><a href="#cb6-34"></a>        <span class="va">self</span>.rates <span class="op">=</span> [r <span class="cf">for</span> _, r <span class="kw">in</span> <span class="bu">sorted</span>(<span class="bu">zip</span>(times, rates))]</span>
+<span id="cb6-35"><a href="#cb6-35"></a>        <span class="va">self</span>.interpolator <span class="op">=</span> interpolator  <span class="co"># Composition</span></span>
+<span id="cb6-36"><a href="#cb6-36"></a></span>
+<span id="cb6-37"><a href="#cb6-37"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb6-38"><a href="#cb6-38"></a>        <span class="co"># Delegate the math to the strategy</span></span>
+<span id="cb6-39"><a href="#cb6-39"></a>        r <span class="op">=</span> <span class="va">self</span>.interpolator.interpolate(t, <span class="va">self</span>.times, <span class="va">self</span>.rates)</span>
+<span id="cb6-40"><a href="#cb6-40"></a>        <span class="cf">return</span> math.exp(<span class="op">-</span>r <span class="op">*</span> t)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This is incredibly flexible. Want to switch to Cubic Splines? Just pass a different interpolator. The curve class itself doesn’t need to change.</p>
+</section>
+<section id="approach-b-inheritance-mixins" class="level3">
+<h3 class="anchored" data-anchor-id="approach-b-inheritance-mixins">Approach B: Inheritance (Mixins)</h3>
+<p>Alternatively, we can “mix in” the ability to interpolate, just like we mixed in the spread logic.</p>
+<div id="f464263c" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">class</span> LinearInterpolationMixin:</span>
+<span id="cb7-2"><a href="#cb7-2"></a>    <span class="co">"""</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="co">    Mixin that provides linear interpolation capability.</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co">    """</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>    <span class="kw">def</span> interpolate_linear(<span class="va">self</span>, t: <span class="bu">float</span>, x: <span class="bu">list</span>[<span class="bu">float</span>], y: <span class="bu">list</span>[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb7-6"><a href="#cb7-6"></a>        <span class="cf">if</span> t <span class="op">&lt;=</span> x[<span class="dv">0</span>]: <span class="cf">return</span> y[<span class="dv">0</span>]</span>
+<span id="cb7-7"><a href="#cb7-7"></a>        <span class="cf">if</span> t <span class="op">&gt;=</span> x[<span class="op">-</span><span class="dv">1</span>]: <span class="cf">return</span> y[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb7-8"><a href="#cb7-8"></a></span>
+<span id="cb7-9"><a href="#cb7-9"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(x) <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb7-10"><a href="#cb7-10"></a>            <span class="cf">if</span> x[i] <span class="op">&lt;=</span> t <span class="op">&lt;=</span> x[i<span class="op">+</span><span class="dv">1</span>]:</span>
+<span id="cb7-11"><a href="#cb7-11"></a>                t1, t2 <span class="op">=</span> x[i], x[i<span class="op">+</span><span class="dv">1</span>]</span>
+<span id="cb7-12"><a href="#cb7-12"></a>                y1, y2 <span class="op">=</span> y[i], y[i<span class="op">+</span><span class="dv">1</span>]</span>
+<span id="cb7-13"><a href="#cb7-13"></a>                w <span class="op">=</span> (t <span class="op">-</span> t1) <span class="op">/</span> (t2 <span class="op">-</span> t1)</span>
+<span id="cb7-14"><a href="#cb7-14"></a>                <span class="cf">return</span> (<span class="dv">1</span> <span class="op">-</span> w) <span class="op">*</span> y1 <span class="op">+</span> w <span class="op">*</span> y2</span>
+<span id="cb7-15"><a href="#cb7-15"></a>        <span class="cf">return</span> y[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb7-16"><a href="#cb7-16"></a></span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="kw">class</span> MixinZeroCurve(LinearInterpolationMixin, YieldCurve):</span>
+<span id="cb7-18"><a href="#cb7-18"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, times: <span class="bu">list</span>[<span class="bu">float</span>], rates: <span class="bu">list</span>[<span class="bu">float</span>]):</span>
+<span id="cb7-19"><a href="#cb7-19"></a>        <span class="va">self</span>.times <span class="op">=</span> <span class="bu">sorted</span>(times)</span>
+<span id="cb7-20"><a href="#cb7-20"></a>        <span class="va">self</span>.rates <span class="op">=</span> [r <span class="cf">for</span> _, r <span class="kw">in</span> <span class="bu">sorted</span>(<span class="bu">zip</span>(times, rates))]</span>
+<span id="cb7-21"><a href="#cb7-21"></a></span>
+<span id="cb7-22"><a href="#cb7-22"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb7-23"><a href="#cb7-23"></a>        <span class="co"># Use the inherited method</span></span>
+<span id="cb7-24"><a href="#cb7-24"></a>        r <span class="op">=</span> <span class="va">self</span>.interpolate_linear(t, <span class="va">self</span>.times, <span class="va">self</span>.rates)</span>
+<span id="cb7-25"><a href="#cb7-25"></a>        <span class="cf">return</span> math.exp(<span class="op">-</span>r <span class="op">*</span> t)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This feels more integrated, but it’s static. You can’t change the interpolation method at runtime as easily as with composition.</p>
+</section>
+</section>
+<section id="the-payoff-polymorphism" class="level2">
+<h2 class="anchored" data-anchor-id="the-payoff-polymorphism">The Payoff: Polymorphism</h2>
+<p>Here is where the magic happens. Because we adhered to our <code>YieldCurve</code> contract, our pricing function can be completely ignorant of the complexity we just built.</p>
+<div id="292e5607" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb8-2"><a href="#cb8-2"></a></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="at">@dataclass</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="kw">class</span> CashFlow:</span>
+<span id="cb8-5"><a href="#cb8-5"></a>    amount: <span class="bu">float</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>    time: <span class="bu">float</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="kw">def</span> price_bond(cashflows: <span class="bu">list</span>[CashFlow], curve: YieldCurve) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb8-9"><a href="#cb8-9"></a>    price <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a>    <span class="cf">for</span> cf <span class="kw">in</span> cashflows:</span>
+<span id="cb8-11"><a href="#cb8-11"></a>        <span class="co"># Polymorphic call: Python decides at runtime which</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a>        <span class="co"># discount_factor method to run!</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a>        price <span class="op">+=</span> cf.amount <span class="op">*</span> curve.discount_factor(cf.time)</span>
+<span id="cb8-14"><a href="#cb8-14"></a>    <span class="cf">return</span> price</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Let’s test it:</p>
+<div id="b1771859" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Define a bond: coupon of 5 at t=1, principal 105 at t=2</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>bond_cfs <span class="op">=</span> [CashFlow(<span class="dv">5</span>, <span class="fl">1.0</span>), CashFlow(<span class="dv">105</span>, <span class="fl">2.0</span>)]</span>
+<span id="cb9-3"><a href="#cb9-3"></a></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="co"># 1. Price with Flat Curve</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a>flat <span class="op">=</span> FlatForwardCurve(rate<span class="op">=</span><span class="fl">0.05</span>)</span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="bu">print</span>(<span class="ss">f"Price (Flat): </span><span class="sc">{</span>price_bond(bond_cfs, flat)<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7"></a></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="co"># 2. Price with Composition (Strategy)</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a>linear_strategy <span class="op">=</span> LinearInterpolator()</span>
+<span id="cb9-10"><a href="#cb9-10"></a>curve_comp <span class="op">=</span> InterpolatedZeroCurve([<span class="fl">0.5</span>, <span class="fl">2.0</span>], [<span class="fl">0.04</span>, <span class="fl">0.06</span>], linear_strategy)</span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="bu">print</span>(<span class="ss">f"Price (Composition): </span><span class="sc">{</span>price_bond(bond_cfs, curve_comp)<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb9-12"><a href="#cb9-12"></a></span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="co"># 3. Price with Mixin</span></span>
+<span id="cb9-14"><a href="#cb9-14"></a>curve_mixin <span class="op">=</span> MixinZeroCurve([<span class="fl">0.5</span>, <span class="fl">2.0</span>], [<span class="fl">0.04</span>, <span class="fl">0.06</span>])</span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="bu">print</span>(<span class="ss">f"Price (Mixin): </span><span class="sc">{</span>price_bond(bond_cfs, curve_mixin)<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Price (Flat): 99.76
+Price (Composition): 97.90
+Price (Mixin): 97.90</code></pre>
+</div>
+</div>
+<p>We swapped the entire mathematical engine underneath the hood—from flat rates to interpolated curves using different design patterns—and the pricing logic didn’t flinch.</p>
+</section>
+<section id="protocols-when-inheritance-feels-heavy" class="level2">
+<h2 class="anchored" data-anchor-id="protocols-when-inheritance-feels-heavy">Protocols: When Inheritance Feels Heavy</h2>
+<p>Inheritance is a commitment. Sometimes you want to use a class from a third-party library that <em>looks</em> like a yield curve but doesn’t inherit from your specific <code>YieldCurve</code> ABC.</p>
+<p>Python has a solution for this: <strong>Protocols</strong> (often called “Structural Subtyping” or “Duck Typing”). A Protocol defines a shape. It says, “I don’t care who your parents are, as long as you have a <code>discount_factor</code> method.”</p>
+<div id="18ee0dfb" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="im">from</span> typing <span class="im">import</span> runtime_checkable</span>
+<span id="cb11-2"><a href="#cb11-2"></a></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="at">@runtime_checkable</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="kw">class</span> Discountable(Protocol):</span>
+<span id="cb11-5"><a href="#cb11-5"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>: ...</span>
+<span id="cb11-6"><a href="#cb11-6"></a></span>
+<span id="cb11-7"><a href="#cb11-7"></a><span class="kw">class</span> SimpleDiscounter:</span>
+<span id="cb11-8"><a href="#cb11-8"></a>    <span class="co">"""</span></span>
+<span id="cb11-9"><a href="#cb11-9"></a><span class="co">    This class does NOT inherit from YieldCurve.</span></span>
+<span id="cb11-10"><a href="#cb11-10"></a><span class="co">    It just happens to have the right method.</span></span>
+<span id="cb11-11"><a href="#cb11-11"></a><span class="co">    """</span></span>
+<span id="cb11-12"><a href="#cb11-12"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb11-13"><a href="#cb11-13"></a>        <span class="cf">return</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.05</span> <span class="op">*</span> t)  <span class="co"># Simple capitalization</span></span>
+<span id="cb11-14"><a href="#cb11-14"></a></span>
+<span id="cb11-15"><a href="#cb11-15"></a><span class="kw">def</span> price_asset_structural(amount: <span class="bu">float</span>, t: <span class="bu">float</span>, model: Discountable) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb11-16"><a href="#cb11-16"></a>    <span class="cf">return</span> amount <span class="op">*</span> model.discount_factor(t)</span>
+<span id="cb11-17"><a href="#cb11-17"></a></span>
+<span id="cb11-18"><a href="#cb11-18"></a>simple <span class="op">=</span> SimpleDiscounter()</span>
+<span id="cb11-19"><a href="#cb11-19"></a><span class="bu">print</span>(<span class="ss">f"Is compatible? </span><span class="sc">{</span><span class="bu">isinstance</span>(simple, Discountable)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb11-20"><a href="#cb11-20"></a><span class="bu">print</span>(<span class="ss">f"Price: </span><span class="sc">{</span>price_asset_structural(<span class="dv">100</span>, <span class="fl">1.0</span>, simple)<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Is compatible? True
+Price: 95.24</code></pre>
+</div>
+</div>
+<p>This lets you build loosely coupled systems that play nice with code you don’t own.</p>
+</section>
+<section id="wrapping-up" class="level2">
+<h2 class="anchored" data-anchor-id="wrapping-up">Wrapping Up</h2>
+<p>OOP gives us some powerful ways to keep our code organized and flexible.</p>
+<ul>
+<li><strong>ABCs</strong> set the rules for what an object must do.</li>
+<li><strong>Mixins</strong> let us stack features on top of each other like Lego blocks.</li>
+<li><strong>Polymorphism</strong> lets our models swap in and out seamlessly.</li>
+<li><strong>Protocols</strong> let us stay flexible without forcing a rigid hierarchy.</li>
+</ul>
+<p>Understanding these patterns is what turns a few scripts into a proper, extensible library. Next up, we’ll keep building on this foundation and look at the <strong>Factory Pattern</strong> to handle object creation elegantly.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You can find the complete code for this post here: <a href="oop_basics.py">oop_basics.py</a>.</p>
+</div>
+</div>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/bwrob\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright 2025, bwrob. Rendered with Quarto 1.8.27</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

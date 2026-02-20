@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="bwrob">
+<meta name="dcterms.date" content="2024-08-11">
+<meta name="description" content="How to have a great dev setup and still play CS over a coffee break.">
 
-<title>Równania Różniczkowe 1 (UWr Lato 2018) – bwrob blog</title>
+<title>Linux in Windows via WSL – bwrob blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -35,6 +73,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-f1aadacce99040138bbb613f9330654f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
@@ -74,11 +113,11 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="bwrob blog">
 <meta property="og:description" content="bwrob personal and professional blog">
-<meta property="og:image" content="https://bwrob.github.io/pages/courses/logo/python_mug.png">
+<meta property="og:image" content="https://bwrob.github.io/assets/images/posts/24-08-11-linux-in-windows/image.jpg">
 <meta property="og:site_name" content="bwrob blog">
 <meta name="twitter:title" content="bwrob blog">
 <meta name="twitter:description" content="bwrob personal and professional blog">
-<meta name="twitter:image" content="https://bwrob.github.io/pages/courses/logo/python_mug.png">
+<meta name="twitter:image" content="https://bwrob.github.io/assets/images/posts/24-08-11-linux-in-windows/image.jpg">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -315,70 +354,247 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Równania Różniczkowe 1 (UWr Lato 2018)</h1>
-                      </div>
+      <h1 class="title">Linux in Windows via WSL</h1>
+                  <div>
+        <div class="description">
+          How to have a great dev setup and still play CS over a coffee break.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Dev Env</div>
+              </div>
+                  </div>
   </div>
+    
+  
   <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>bwrob </p>
+            </div>
     </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 11, 2024</p>
+      </div>
+    </div>
+    
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">August 30, 2024</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
+   
   <ul>
-  <li><a href="#materiały-do-nauki-równań-różniczkowych-zwyczajnych" id="toc-materiały-do-nauki-równań-różniczkowych-zwyczajnych" class="nav-link active" data-scroll-target="#materiały-do-nauki-równań-różniczkowych-zwyczajnych">Materiały do nauki równań różniczkowych zwyczajnych:</a></li>
-  <li><a href="#materiały-do-nauki-równań-różniczkowych-cząstkowych" id="toc-materiały-do-nauki-równań-różniczkowych-cząstkowych" class="nav-link" data-scroll-target="#materiały-do-nauki-równań-różniczkowych-cząstkowych">Materiały do nauki równań różniczkowych cząstkowych:</a>
+  <li><a href="#windows-linux-and-you-ménage-à-trois" id="toc-windows-linux-and-you-ménage-à-trois" class="nav-link active" data-scroll-target="#windows-linux-and-you-ménage-à-trois">Windows, Linux, and You: Ménage à trois</a>
   <ul class="collapse">
-  <li><a href="#listy-zadań" id="toc-listy-zadań" class="nav-link" data-scroll-target="#listy-zadań">Listy zadań:</a></li>
+  <li><a href="#pros-and-cons" id="toc-pros-and-cons" class="nav-link" data-scroll-target="#pros-and-cons">Pros and cons</a></li>
+  <li><a href="#bridging-the-gap" id="toc-bridging-the-gap" class="nav-link" data-scroll-target="#bridging-the-gap">Bridging the gap</a></li>
+  <li><a href="#wsl-vs.-virtual-machines-whats-the-difference" id="toc-wsl-vs.-virtual-machines-whats-the-difference" class="nav-link" data-scroll-target="#wsl-vs.-virtual-machines-whats-the-difference">WSL vs.&nbsp;Virtual Machines: What’s the Difference?</a></li>
   </ul></li>
+  <li><a href="#installing-and-setting-up-wsl" id="toc-installing-and-setting-up-wsl" class="nav-link" data-scroll-target="#installing-and-setting-up-wsl">Installing and setting up WSL</a></li>
+  <li><a href="#base-setup-new-shell-and-package-manager" id="toc-base-setup-new-shell-and-package-manager" class="nav-link" data-scroll-target="#base-setup-new-shell-and-package-manager">Base setup — new shell and package manager</a>
+  <ul class="collapse">
+  <li><a href="#brewing-starts" id="toc-brewing-starts" class="nav-link" data-scroll-target="#brewing-starts">Brewing starts</a></li>
+  </ul></li>
+  <li><a href="#z-shell-sea-shell" id="toc-z-shell-sea-shell" class="nav-link" data-scroll-target="#z-shell-sea-shell">Z-shell — sea-shell</a></li>
+  <li><a href="#github-command-line-tool" id="toc-github-command-line-tool" class="nav-link" data-scroll-target="#github-command-line-tool">GitHub command line tool</a></li>
+  <li><a href="#connect-to-visual-studio-code" id="toc-connect-to-visual-studio-code" class="nav-link" data-scroll-target="#connect-to-visual-studio-code">Connect to Visual Studio Code</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<div class="quarto-about-marquee">
-  <div class="about-image-container">
-  </div>
-  <div class="about-contents">
-     <main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
-<p>Prowadzę jedną z grup ćwiczeniowych do wykładu Andrzeja Raczyńskiego.</p>
-<p>Zasady zaliczania kursu dostępne są na serwisie Moodle oraz <a href="../../assets/pdf/RR18-zal.pdf">tutaj</a>.</p>
-<section id="materiały-do-nauki-równań-różniczkowych-zwyczajnych" class="level2">
-<h2 data-anchor-id="materiały-do-nauki-równań-różniczkowych-zwyczajnych">Materiały do nauki równań różniczkowych zwyczajnych:</h2>
-<ul>
-<li><strong>Skrypt do kursu:</strong> Napisany przez Andrzeja Raczyńskiego. <a href="../../assets/pdf/RR 1A - Raczyński.pdf">RR 1A - Raczyński</a></li>
-<li><strong>Skrypt do zajęć na UW:</strong> Napisany przez Andrzeja Palczewskiego. <a href="../../assets/pdf/RRZ skrypt - Palczewski.pdf">RRZ skrypt - Palczewski</a></li>
-<li><strong>Zbiór zadań:</strong> Dostosowany do skryptu AP. <a href="../../assets/pdf/RRZ zadania - Palczewski.pdf">RRZ zadania - Palczewski</a></li>
-</ul>
-</section>
-<section id="materiały-do-nauki-równań-różniczkowych-cząstkowych" class="level2">
-<h2 data-anchor-id="materiały-do-nauki-równań-różniczkowych-cząstkowych">Materiały do nauki równań różniczkowych cząstkowych:</h2>
-<ul>
-<li><strong>Metoda charakterystyk:</strong> <a href="../../assets/pdf/charakterystyki.pdf">charakterystyki</a></li>
-<li><strong>Metoda rozdzielania zmiennych:</strong> <a href="../../assets/pdf/rozdzielaniezmiennych.pdf">rozdzielaniezmiennych</a></li>
-<li><strong>Równanie fali:</strong> <a href="../../assets/pdf/fala.pdf">fala</a></li>
-</ul>
-<section id="listy-zadań" class="level3">
-<h3 data-anchor-id="listy-zadań">Listy zadań:</h3>
-<ul>
-<li><a href="../../assets/pdf/RR18-01.pdf">Lista 1</a></li>
-<li><a href="../../assets/pdf/RR18-02.pdf">Lista 2</a></li>
-<li><a href="../../assets/pdf/RR18-03.pdf">Lista 3</a></li>
-<li><a href="../../assets/pdf/RR18-04.pdf">Lista 4</a></li>
-<li><a href="../../assets/pdf/RR18-05.pdf">Lista 5</a></li>
-<li><a href="../../assets/pdf/RR18-06.pdf">Lista 6</a></li>
-</ul>
-<p>Listy zadań dostępne są również na serwisie Moodle.</p>
 
 
-</section>
-</section>
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> 
-  </div>
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../assets/images/posts/24-08-11-linux-in-windows/image.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%"></p>
+</figure>
 </div>
- <!-- /main -->
+<section id="windows-linux-and-you-ménage-à-trois" class="level2">
+<h2 class="anchored" data-anchor-id="windows-linux-and-you-ménage-à-trois">Windows, Linux, and You: Ménage à trois</h2>
+<p>Tired of the same old Windows vs.&nbsp;Linux beef among PC superusers? Well, get ready to become a mediator in this feud. I’ll show you how to get the best of both worlds.</p>
+<section id="pros-and-cons" class="level3">
+<h3 class="anchored" data-anchor-id="pros-and-cons">Pros and cons</h3>
+<p>Windows OS has long been the dominant platform for mainstream consumers and businesses. It offers good hardware compatibility, de facto <em>the</em> PC gaming experience and is friendly to the casual user. However, Windows has significant limitations in terms of system control and software development tools.</p>
+<p>Linux, on the other hand, is an operating system created by developers and for developers (and system administrators). It provides infinite flexibility and a deep pool of open-source tools. But the learning curve is steep, the open-source projects often get abandoned and with great power (<code>sudo</code>) comes great responsibility (and sometimes system reinstall).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Actually, to publish this post in the most convenient and elegant <a href="https://quarto.org/docs/publishing/github-pages.html#publish-command">way</a>, I needed to switch to Linux. The Windows <code>quarto</code> CLI fails with some certification errors, coming from <code>deno</code>, that I can’t be bothered to clean up. Discovered this while writing these words as <a href="https://quarto.org/docs/publishing/github-pages.html#render-to-docs">my previous approach</a> was much messier. Irony is the ambrosia of life (for me at least).</p>
+</div>
+</div>
+</section>
+<section id="bridging-the-gap" class="level3">
+<h3 class="anchored" data-anchor-id="bridging-the-gap">Bridging the gap</h3>
+<p>At this point even Microsoft — a strong contrarian to Linux in the past — embraced the usefulness of Linux shell at your fingertips. Imagine having the familiar interface of Windows for your everyday tasks. Combine it with a the raw power and controllability of Linux for when you need to dive deep into development or system administration. And limited stakes once you (inevitably) remove half of your file system with a bash script. Enter Windows Subsystem for Linux (WSL): a ticket to 10x-ing your software development on Windows.</p>
+</section>
+<section id="wsl-vs.-virtual-machines-whats-the-difference" class="level3">
+<h3 class="anchored" data-anchor-id="wsl-vs.-virtual-machines-whats-the-difference">WSL vs.&nbsp;Virtual Machines: What’s the Difference?</h3>
+<p>You might be wondering how WSL differs from a traditional virtual machine (VM). While both provide a way to run Linux on Windows, they operate in different ways. A VM emulates a virtual computer within your computer, complete with its own operating system and make-belive hardware resources. This makes VMs resource-intensive and can impact overall system performance. They are also hard to set up and maintain.</p>
+<p>WSL, on the other hand, is a more lightweight approach. It integrates Linux directly into the Windows kernel, allowing for faster boot times, better performance, and seamless file sharing between Windows and Linux environments.</p>
+</section>
+</section>
+<section id="installing-and-setting-up-wsl" class="level2">
+<h2 class="anchored" data-anchor-id="installing-and-setting-up-wsl">Installing and setting up WSL</h2>
+<p>First, we need to set up the WSL and install a chosen Linux distribution. Fortunately, this is “super easy, barely an inconvenience”. You can choose from a list of distros pre-packaged by Microsoft or download and build an image from scratch. You can even build Arch and be legally allowed to say <code>BTW, I use Arch (on Windows)</code>. For this guide, we’ll take a more conventional approach and opt for the long-term support (LTS) version of Ubuntu. Now, open the Powershell with administrative privileges and run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1"></a>wsl --update</span>
+<span id="cb1-2"><a href="#cb1-2"></a>wsl --version</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>These commands ensure that WSL is up-to-date and displays the installed WSL version.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../assets/images/posts/24-08-11-linux-in-windows/1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+<p>Our next command will be:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a href="#cb2-1"></a>wsl -l -o</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This yields a curated list of pre-packaged Linux distributions that Microsoft provides, making the process almost effortless.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../assets/images/posts/24-08-11-linux-in-windows/2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+<p>For the installation itself:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource {shell} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1"><a href="#cb3-1"></a>wsl --install -d 'Ubuntu-24.04'</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../assets/images/posts/24-08-11-linux-in-windows/3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+<p>Reboot the Windows system and you’ll see `Ubuntu’ among your applications.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../assets/images/posts/24-08-11-linux-in-windows/4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../assets/images/posts/24-08-11-linux-in-windows/5.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</section>
+<section id="base-setup-new-shell-and-package-manager" class="level2">
+<h2 class="anchored" data-anchor-id="base-setup-new-shell-and-package-manager">Base setup — new shell and package manager</h2>
+<p>There is an additional benefit we can reap with just a bit of more work — a fully system-agnostic setup. By having Linux kernel run on Windows, we unified 2 out of 3 giants. The only pillar that is missing is the Mac OS. But wait, it’s based on Unix as well! It just uses different default shell and lacks a package manager, as Apple doesn’t trust its clients. <code>zsh</code> offers a more interactive and customizable shell experience compared to the default bash. Homebrew, often referred to as the “missing package manager for macOS”, provides a convenient way to install additional software on Linux systems. Let’s change the terminal shell to <code>zsh</code> in our Ubuntu installation and compile a secondary (to <code>apt-get</code>) package manager – <code>brew</code>.</p>
+<section id="brewing-starts" class="level3">
+<h3 class="anchored" data-anchor-id="brewing-starts">Brewing starts</h3>
+<p>Before we dive into installing Homebrew, we need to equip our system with the essential tools. The build-essential package provides a collection of compilers and libraries necessary for building software from the source code. Git is a version control system used for managing code projects.</p>
+<p>Let’s install these prerequisites using the following command:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a href="#cb4-1"></a>sudo apt-get upgrade -y</span>
+<span id="cb4-2"><a href="#cb4-2"></a>sudo apt-get install build-essential git -y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Execute the installation script for Homebrew:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1"><a href="#cb5-1"></a>INSTALL_PATH="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"</span>
+<span id="cb5-2"><a href="#cb5-2"></a>/bin/bash -c "$(curl -fsSL $INSTALL_PATH)"</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../assets/images/posts/24-08-11-linux-in-windows/6.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+<p>To make Homebrew accessible from your shell, you need to load its environment variables. The following command achieves this and subsequently runs a diagnostic check:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a href="#cb6-1"></a>eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"</span>
+<span id="cb6-2"><a href="#cb6-2"></a>brew doctor</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../assets/images/posts/24-08-11-linux-in-windows/7.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+<p>Doctor’s orders to append brew to some set of paths! Let’s do this then:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"><a href="#cb7-1"></a>echo 'export XDG_DATA_DIRS="/home/linuxbrew/.linuxbrew/share:$XDG_DATA_DIRS"' &gt;&gt; ~/.profile</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="z-shell-sea-shell" class="level2">
+<h2 class="anchored" data-anchor-id="z-shell-sea-shell">Z-shell — sea-shell</h2>
+<p>Homebrew makes package management a breeze. Let’s install <code>zsh</code>, a powerful and customizable shell.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1"><a href="#cb8-1"></a>brew install zsh</span>
+<span id="cb8-2"><a href="#cb8-2"></a>zsh --version</span>
+<span id="cb8-3"><a href="#cb8-3"></a>zsh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This will take you to interactive <code>.zshrc</code> file setup. The file contains commands that are run each time a shell is spawned. You can either generate empty file with <code>0</code> or go through the interactive setup with <code>1</code>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../assets/images/posts/24-08-11-linux-in-windows/8.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+<p>Add the brew initialization to <code>.zshrc</code> file as well. This way <code>brew</code> will always be by your side!</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb9-1"><a href="#cb9-1"></a>(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') &gt;&gt; /home/bwrob/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Check the default shell and set it to <code>zsh</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb10-1"><a href="#cb10-1"></a>echo $SHELL</span>
+<span id="cb10-2"><a href="#cb10-2"></a>sudo chsh -s $(which zsh)</span>
+<span id="cb10-3"><a href="#cb10-3"></a>echo $SHELL</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="github-command-line-tool" class="level2">
+<h2 class="anchored" data-anchor-id="github-command-line-tool">GitHub command line tool</h2>
+<p>Remember <code>git != GitHub</code>, we need a way to authenticate and use Github from CLI. There’s a tool for that!</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1"><a href="#cb11-1"></a>brew install gh</span>
+<span id="cb11-2"><a href="#cb11-2"></a>gh auth login</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../assets/images/posts/24-08-11-linux-in-windows/9.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+<p>Now create a convenient directory and copy your favourite <code>GitHub</code> repo:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb12-1"><a href="#cb12-1"></a>mkdir repos &amp;&amp; cd repos</span>
+<span id="cb12-2"><a href="#cb12-2"></a>gh repo clone python_playground</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="connect-to-visual-studio-code" class="level2">
+<h2 class="anchored" data-anchor-id="connect-to-visual-studio-code">Connect to Visual Studio Code</h2>
+<p>While WSL grants us the power of Linux, let’s not forget the user-friendly interface of Windows. When it comes to software development, we can achieve the perfect blend by integrating Visual Studio Code (VSC) with our WSL environment.</p>
+<p>Here’s how:</p>
+<ul>
+<li><p><strong>Install the WSL Extension in VSC</strong>: Fire up VSC on your Windows machine and head over to the Extensions tab. Search for “WSL” and install the official extension by Microsoft: <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl">WSL extension</a>.</p></li>
+<li><p><strong>Launching VSC from WSL</strong>: Within your WSL terminal, you can directly invoke VSC as if it were running natively on Windows. Use the following command:</p></li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1"><a href="#cb13-1"></a>code ~\repos\python_playground</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../assets/images/posts/24-08-11-linux-in-windows/10.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+<p>In the <a href="">next post</a> I will show you how to set up Python environment in Linux. Stay tuned :) .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Download the Ubuntu shell script <a href="wsl_setup.sh">here</a>.</p>
+</div>
+</div>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
@@ -394,6 +610,13 @@ ul.task-list li input[type="checkbox"] {
       window.document.body.appendChild(a);
     }
     setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
         if (clz.startsWith('code-annotation-')) {                     
