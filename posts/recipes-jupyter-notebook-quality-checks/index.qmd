@@ -1,8 +1,9 @@
 ---
-title: "Ensuring Jupyter Notebook Quality"
-description: "A simple script to check if your Jupyter notebooks meet specific quality criteria, like starting with a markdown cell and having no outputs."
+title: "Keeping Your Jupyter Notebooks Clean"
+description: "A quick script to make sure your notebooks aren't a mess before you commit them."
 author: "bwrob"
 date: "2026-02-20"
+date-modified: "2026-02-20"
 categories: [Python Recipes, Jupyter]
 
 image: ../python_recipes.png
@@ -10,9 +11,9 @@ format-links: [html]
 toc-depth: 2
 ---
 
-When sharing Jupyter notebooks, or storing them in version control, it's often good practice to ensure they follow certain conventions. For example, you might want every notebook to start with a descriptive Markdown cell, or you might want to make sure you haven't accidentally committed large or sensitive outputs.
+We've all been there: you're about to commit a Jupyter notebook, but it's full of massive dataframes, messy plots, or maybe it doesn't even have a proper title. It's just good hygiene to keep things tidy, especially if you're sharing your work or putting it in version control.
 
-Jupyter notebooks are just JSON files, so we can write a zer-dependency Python script to check for these quality criteria.
+Since notebooks are just JSON under the hood, we can easily whip up a zero-dependency Python script to do the "chores" for us.
 
 ```{python}
 # | eval: false
@@ -94,7 +95,7 @@ There are two main checks implemented:
 
 The `check_directory` function uses `Path.glob("**/*.ipynb")` to find all Jupyter notebooks in the current directory and all subdirectories. It then runs the `check_notebook` function on each one. Using the `pathlib` library makes it easy to handle file paths in a cross-platform way.
 
-Automating simple quality checks for Jupyter notebooks can save time and prevent common mistakes. This script provides a solid foundation that you can easily extend with more specific rules tailored to your workflow.
+Automating these little chores saves a lot of headache in the long run. It's a simple base that you can easily tweak or add more rules to as you go.
 
 ::: callout-note
 Download the whole code [here](jupyter_checks.py).

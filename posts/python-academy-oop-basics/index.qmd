@@ -2,6 +2,7 @@
 title: "Inheritance, Polymorphism & Protocols"
 author: "bwrob"
 date: "2025-12-18"
+date-modified: "2026-02-20"
 description: "How to design flexible financial models using inheritance, ABCs, and protocols."
 categories: [Python Academy]
 image: "../python_academy.png"
@@ -9,13 +10,11 @@ image: "../python_academy.png"
 
 ## Introduction
 
-Last time, in [Anatomy of a Python Class](../python-academy-class-anatomy/), we took a class apart to see what makes it tick. We learned to bundle data and behavior into a tidy unit. But in the wild—especially in a quantitative library—objects don't live in a vacuum. They talk to each other, rely on each other, and often, they are just different flavors of the same concept.
+We've already seen what goes into a single class, but in a real library, objects don't exist in a vacuum. They need to talk to each other and share common ground. This is where things like **Inheritance** and **Polymorphism** come in.
 
-A **European Option** *is a* **Financial Instrument**. A **Nelson-Siegel Model** *is a* **Yield Curve**.
+Think of it this way: a **European Option** *is a* **Financial Instrument**. A **Nelson-Siegel Model** *is a* **Yield Curve**. By setting up our code to reflect these relationships, we can write engines that handle any curve we throw at them without needing a massive "if-else" mess.
 
-These relationships are the bread and butter of **Object-Oriented Programming (OOP)**. By using **Inheritance** and **Polymorphism**, we stop repeating ourselves and start building systems that can handle new models without falling apart.
-
-Today, we're going to build a yield curve hierarchy to see how this works in practice.
+Today, we'll build a yield curve hierarchy to see how this works in practice.
 
 ## The Scenario: A Bond Pricer
 
@@ -275,14 +274,14 @@ This lets you build loosely coupled systems that play nice with code you don't o
 
 ## Wrapping Up
 
-OOP gives us the tools to model the complex taxonomy of financial instruments elegantly.
+OOP gives us some powerful ways to keep our code organized and flexible.
 
-*   **ABCs** give us consistency.
-*   **Mixins** let us stack behaviors like building blocks.
-*   **Polymorphism** lets our engines run on interchangeable parts.
-*   **Protocols** loosen the coupling when we need flexibility.
+*   **ABCs** set the rules for what an object must do.
+*   **Mixins** let us stack features on top of each other like Lego blocks.
+*   **Polymorphism** lets our models swap in and out seamlessly.
+*   **Protocols** let us stay flexible without forcing a rigid hierarchy.
 
-In the next post, we'll keep building on this foundation and look at **Design Patterns**—specifically the **Factory Pattern**—to handle object creation elegantly.
+Understanding these patterns is what turns a few scripts into a proper, extensible library. Next up, we'll keep building on this foundation and look at the **Factory Pattern** to handle object creation elegantly.
 
 ::: {.callout-note}
 You can find the complete code for this post here: [oop_basics.py](oop_basics.py).
