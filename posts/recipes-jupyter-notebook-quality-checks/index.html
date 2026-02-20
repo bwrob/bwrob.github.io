@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="bwrob">
+<meta name="dcterms.date" content="2026-02-20">
+<meta name="description" content="A simple script to check if your Jupyter notebooks meet specific quality criteria, like starting with a markdown cell and having no outputs.">
 
-<title>Dydaktyka – bwrob blog</title>
+<title>Ensuring Jupyter Notebook Quality – bwrob blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,28 +23,64 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../logo/python_mug.png" rel="icon" type="image/png">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-f1aadacce99040138bbb613f9330654f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-4fb5871a2fa2869b4ddfc9dbc86feb8e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-443f7be31c8200b488db8514bbe704f0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../logo/python_mug.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-f1aadacce99040138bbb613f9330654f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-4fb5871a2fa2869b4ddfc9dbc86feb8e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-443f7be31c8200b488db8514bbe704f0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -71,15 +110,19 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="bwrob blog">
 <meta property="og:description" content="bwrob personal and professional blog">
-<meta property="og:image" content="https://bwrob.github.io/pages/logo/python_mug.png">
+<meta property="og:image" content="https://bwrob.github.io/posts/python_recipes.png">
 <meta property="og:site_name" content="bwrob blog">
+<meta property="og:image:height" content="1024">
+<meta property="og:image:width" content="1024">
 <meta name="twitter:title" content="bwrob blog">
 <meta name="twitter:description" content="bwrob personal and professional blog">
-<meta name="twitter:image" content="https://bwrob.github.io/pages/logo/python_mug.png">
+<meta name="twitter:image" content="https://bwrob.github.io/posts/python_recipes.png">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image-height" content="1024">
+<meta name="twitter:image-width" content="1024">
 </head>
 
 <body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -249,11 +292,11 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../logo/python_mug.png" alt="" class="navbar-logo light-content">
-    <img src="../logo/python_mug.png" alt="" class="navbar-logo dark-content">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../logo/python_mug.png" alt="" class="navbar-logo light-content">
+    <img src="../../logo/python_mug.png" alt="" class="navbar-logo dark-content">
     </a>
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">bwrob blog</span>
     </a>
   </div>
@@ -264,22 +307,22 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> <i class="bi bi-cpu" role="img">
+    <a class="nav-link" href="../../index.html"> <i class="bi bi-cpu" role="img">
 </i> 
 <span class="menu-text">Posts</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../pages/resume.html"> <i class="bi bi-file-earmark-text" role="img">
+    <a class="nav-link" href="../../pages/resume.html"> <i class="bi bi-file-earmark-text" role="img">
 </i> 
 <span class="menu-text">Resume</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../pages/teaching.html" aria-current="page"> <i class="bi bi-tablet-landscape" role="img">
+    <a class="nav-link" href="../../pages/teaching.html"> <i class="bi bi-tablet-landscape" role="img">
 </i> 
 <span class="menu-text">Teaching</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../pages/hobbies.html"> <i class="bi bi-controller" role="img">
+    <a class="nav-link" href="../../pages/hobbies.html"> <i class="bi bi-controller" role="img">
 </i> 
 <span class="menu-text">Hobbies</span></a>
   </li>  
@@ -299,7 +342,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../index.xml"> <i class="bi bi-rss" role="img">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -315,73 +358,150 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Dydaktyka</h1>
-                      </div>
+      <h1 class="title">Ensuring Jupyter Notebook Quality</h1>
+                  <div>
+        <div class="description">
+          A simple script to check if your Jupyter notebooks meet specific quality criteria, like starting with a markdown cell and having no outputs.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Python Recipes</div>
+                <div class="quarto-category">Jupyter</div>
+              </div>
+                  </div>
   </div>
+    
+  
   <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>bwrob </p>
+            </div>
     </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">February 20, 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
-    <h2 id="toc-title">On this page</h2>
-  <ul>
-  <li><a href="#semestr-letni-2435" id="toc-semestr-letni-2435" class="nav-link active" data-scroll-target="#semestr-letni-2435">Semestr letni 24/35</a></li>
-  <li><a href="#semestr-zimowy-2425" id="toc-semestr-zimowy-2425" class="nav-link" data-scroll-target="#semestr-zimowy-2425">Semestr zimowy 24/25</a></li>
-  <li><a href="#semestr-letni-1718" id="toc-semestr-letni-1718" class="nav-link" data-scroll-target="#semestr-letni-1718">Semestr letni 17/18</a></li>
-  <li><a href="#semestr-letni-1617" id="toc-semestr-letni-1617" class="nav-link" data-scroll-target="#semestr-letni-1617">Semestr letni 16/17</a></li>
-  <li><a href="#semestr-zimowy-1617" id="toc-semestr-zimowy-1617" class="nav-link" data-scroll-target="#semestr-zimowy-1617">Semestr zimowy 16/17</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
-<div class="quarto-about-marquee">
-  <div class="about-image-container">
-  </div>
-  <div class="about-contents">
-     <main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
-<section id="semestr-letni-2435" class="level2">
-<h2 data-anchor-id="semestr-letni-2435">Semestr letni 24/35</h2>
-<ul>
-<li><a href="../pages/courses/pwr-programming-2025/pwr-programming-2025.html">Programowanie</a></li>
-</ul>
-</section>
-<section id="semestr-zimowy-2425" class="level2">
-<h2 data-anchor-id="semestr-zimowy-2425">Semestr zimowy 24/25</h2>
-<ul>
-<li><a href="../pages/courses/pwr-intro-to-cs-2024/pwr-intro-to-cs-2024.html">Wstęp do programowania</a></li>
-</ul>
-</section>
-<section id="semestr-letni-1718" class="level2">
-<h2 data-anchor-id="semestr-letni-1718">Semestr letni 17/18</h2>
-<ul>
-<li><a href="../pages/courses/uwr-odes-1-2018.html">Równania różniczkowe 1</a></li>
-<li><a href="../pages/courses/uwr-odes-1r-2018.html">Równania różniczkowe 1R</a></li>
-</ul>
-</section>
-<section id="semestr-letni-1617" class="level2">
-<h2 data-anchor-id="semestr-letni-1617">Semestr letni 16/17</h2>
-<ul>
-<li><a href="../pages/courses/uwr-nonlinear-fa-2017.html">Nieliniowa analiza funkcjonalna</a></li>
-<li><a href="../pages/courses/uwr-odes-1a-2017.html">Równania różniczkowe 1A</a></li>
-<li><a href="../pages/courses/uw-analysis-2017.html">Zajęcia wyrównawcze z Analizy 1.2</a></li>
-</ul>
-</section>
-<section id="semestr-zimowy-1617" class="level2">
-<h2 data-anchor-id="semestr-zimowy-1617">Semestr zimowy 16/17</h2>
-<ul>
-<li><a href="../pages/courses/uw-analysis-2016.html">Zajęcia wyrównawcze z Analizy 1.1</a></li>
-</ul>
 
 
-</section>
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> 
-  </div>
+
+
+<p>When sharing Jupyter notebooks, or storing them in version control, it’s often good practice to ensure they follow certain conventions. For example, you might want every notebook to start with a descriptive Markdown cell, or you might want to make sure you haven’t accidentally committed large or sensitive outputs.</p>
+<p>Jupyter notebooks are just JSON files, so we can write a zer-dependency Python script to check for these quality criteria.</p>
+<div id="1dcfeb50" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">"""Check Jupyter notebooks for quality criteria."""</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> json</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="im">import</span> sys</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="im">from</span> typing <span class="im">import</span> TypedDict, cast</span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="kw">class</span> Cell(TypedDict):</span>
+<span id="cb1-10"><a href="#cb1-10"></a>    <span class="co">"""A cell in a Jupyter notebook."""</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a>    cell_type: <span class="bu">str</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>    outputs: <span class="bu">list</span>[<span class="bu">dict</span>]</span>
+<span id="cb1-14"><a href="#cb1-14"></a>    execution_count: <span class="bu">int</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a>    source: <span class="bu">list</span>[<span class="bu">str</span>]</span>
+<span id="cb1-16"><a href="#cb1-16"></a>    metadata: <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">str</span>]</span>
+<span id="cb1-17"><a href="#cb1-17"></a></span>
+<span id="cb1-18"><a href="#cb1-18"></a></span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="kw">def</span> first_cell_is_markdown(cells: <span class="bu">list</span>[Cell]) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb1-20"><a href="#cb1-20"></a>    <span class="co">"""Check if the first cell in the notebook is a markdown cell."""</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a>    first <span class="op">=</span> cells[<span class="dv">0</span>]</span>
+<span id="cb1-22"><a href="#cb1-22"></a>    cell_type: <span class="bu">str</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> first.get(<span class="st">"cell_type"</span>)</span>
+<span id="cb1-23"><a href="#cb1-23"></a>    <span class="cf">return</span> cell_type <span class="op">==</span> <span class="st">"markdown"</span></span>
+<span id="cb1-24"><a href="#cb1-24"></a></span>
+<span id="cb1-25"><a href="#cb1-25"></a></span>
+<span id="cb1-26"><a href="#cb1-26"></a><span class="kw">def</span> outputs_are_empty(cells: <span class="bu">list</span>[Cell]) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb1-27"><a href="#cb1-27"></a>    <span class="co">"""Check if all cells in the notebook have empty outputs."""</span></span>
+<span id="cb1-28"><a href="#cb1-28"></a>    <span class="cf">for</span> cell <span class="kw">in</span> cells:</span>
+<span id="cb1-29"><a href="#cb1-29"></a>        outputs <span class="op">=</span> cell.get(<span class="st">"outputs"</span>)</span>
+<span id="cb1-30"><a href="#cb1-30"></a>        <span class="cf">if</span> outputs:</span>
+<span id="cb1-31"><a href="#cb1-31"></a>            <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb1-32"><a href="#cb1-32"></a>    <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb1-33"><a href="#cb1-33"></a></span>
+<span id="cb1-34"><a href="#cb1-34"></a></span>
+<span id="cb1-35"><a href="#cb1-35"></a><span class="kw">def</span> check_notebook(path: Path) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb1-36"><a href="#cb1-36"></a>    <span class="co">"""Check if a notebook satisfies the quality criteria."""</span></span>
+<span id="cb1-37"><a href="#cb1-37"></a>    json_string <span class="op">=</span> path.read_text(encoding<span class="op">=</span><span class="st">"utf8"</span>)</span>
+<span id="cb1-38"><a href="#cb1-38"></a>    data <span class="op">=</span> json.loads(json_string)</span>
+<span id="cb1-39"><a href="#cb1-39"></a></span>
+<span id="cb1-40"><a href="#cb1-40"></a>    cells <span class="op">=</span> data.get(<span class="st">"cells"</span>)</span>
+<span id="cb1-41"><a href="#cb1-41"></a>    <span class="cf">if</span> <span class="kw">not</span> cells:</span>
+<span id="cb1-42"><a href="#cb1-42"></a>        <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb1-43"><a href="#cb1-43"></a>    cells <span class="op">=</span> cast(<span class="st">"list[Cell]"</span>, cells)</span>
+<span id="cb1-44"><a href="#cb1-44"></a></span>
+<span id="cb1-45"><a href="#cb1-45"></a>    <span class="cf">return</span> <span class="bu">all</span>(</span>
+<span id="cb1-46"><a href="#cb1-46"></a>        (</span>
+<span id="cb1-47"><a href="#cb1-47"></a>            first_cell_is_markdown(cells),</span>
+<span id="cb1-48"><a href="#cb1-48"></a>            outputs_are_empty(cells),</span>
+<span id="cb1-49"><a href="#cb1-49"></a>            <span class="co"># Potentially more checks could be added here in the future.</span></span>
+<span id="cb1-50"><a href="#cb1-50"></a>        )</span>
+<span id="cb1-51"><a href="#cb1-51"></a>    )</span>
+<span id="cb1-52"><a href="#cb1-52"></a></span>
+<span id="cb1-53"><a href="#cb1-53"></a></span>
+<span id="cb1-54"><a href="#cb1-54"></a><span class="kw">def</span> check_directory(path_str: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb1-55"><a href="#cb1-55"></a>    <span class="co">"""Check all notebooks in a directory and its subdirectories."""</span></span>
+<span id="cb1-56"><a href="#cb1-56"></a>    all_notebooks <span class="op">=</span> Path(path_str).glob(<span class="st">"**/*.ipynb"</span>)</span>
+<span id="cb1-57"><a href="#cb1-57"></a>    failed <span class="op">=</span> [path <span class="cf">for</span> path <span class="kw">in</span> all_notebooks <span class="cf">if</span> <span class="kw">not</span> check_notebook(path)]</span>
+<span id="cb1-58"><a href="#cb1-58"></a></span>
+<span id="cb1-59"><a href="#cb1-59"></a>    <span class="cf">if</span> <span class="kw">not</span> failed:</span>
+<span id="cb1-60"><a href="#cb1-60"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb1-61"><a href="#cb1-61"></a></span>
+<span id="cb1-62"><a href="#cb1-62"></a>    failed_str <span class="op">=</span> <span class="st">"</span><span class="ch">\n\t</span><span class="st">"</span>.join(<span class="bu">str</span>(path) <span class="cf">for</span> path <span class="kw">in</span> failed)</span>
+<span id="cb1-63"><a href="#cb1-63"></a>    <span class="bu">print</span>(<span class="ss">f"Failed check on notebooks:</span><span class="ch">\n\t</span><span class="sc">{</span>failed_str<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-64"><a href="#cb1-64"></a>    <span class="cf">return</span> <span class="dv">1</span></span>
+<span id="cb1-65"><a href="#cb1-65"></a></span>
+<span id="cb1-66"><a href="#cb1-66"></a></span>
+<span id="cb1-67"><a href="#cb1-67"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb1-68"><a href="#cb1-68"></a>    sys.exit(check_directory(<span class="st">"."</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
- <!-- /main -->
+<p>There are two main checks implemented:</p>
+<ol type="1">
+<li><strong><code>first_cell_is_markdown</code></strong>: Ensures the first cell of the notebook is a Markdown cell. This is useful for making sure every notebook starts with a title or introduction.</li>
+<li><strong><code>outputs_are_empty</code></strong>: Iterates through all cells and checks if any have outputs. This helps prevent committing large dataframes, plots, or potentially sensitive information that might be stored in the notebook’s execution results.</li>
+</ol>
+<p>The <code>check_directory</code> function uses <code>Path.glob("**/*.ipynb")</code> to find all Jupyter notebooks in the current directory and all subdirectories. It then runs the <code>check_notebook</code> function on each one. Using the <code>pathlib</code> library makes it easy to handle file paths in a cross-platform way.</p>
+<p>Automating simple quality checks for Jupyter notebooks can save time and prevent common mistakes. This script provides a solid foundation that you can easily extend with more specific rules tailored to your workflow.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Download the whole code <a href="jupyter_checks.py">here</a>.</p>
+</div>
+</div>
+
+
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
@@ -397,6 +517,13 @@ ul.task-list li input[type="checkbox"] {
       window.document.body.appendChild(a);
     }
     setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
         if (clz.startsWith('code-annotation-')) {                     
