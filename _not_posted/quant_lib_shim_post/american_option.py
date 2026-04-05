@@ -36,7 +36,7 @@ def bsm_process():
     )
 
 
-def main():
+def main() -> None:
     ql.Settings.instance().evaluationDate = __CALCULATION_DATE
     european_opt = european_option()
     process = bsm_process()

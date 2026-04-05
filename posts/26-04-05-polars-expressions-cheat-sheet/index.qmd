@@ -31,7 +31,7 @@ Expressions are the atomic units of logic. They are lazily evaluated and can be 
 ```{python}
 # Complex logic: normalization, clipping, and casting
 expr = (
-    (pl.col("sepal_length") - pl.col("sepal_length").mean()) 
+    (pl.col("sepal_length") - pl.col("sepal_length").mean())
     / pl.col("sepal_length").std()
 ).clip(-1, 1).cast(pl.Float32)
 
@@ -90,7 +90,7 @@ Expressions in `agg` are evaluated independently for each group.
 ```{python}
 df.group_by("species").agg(
     # Count rows
-    n = pl.len(),
+    pl.len().alias("count"),
     # Multiple aggregations on multiple columns via selectors
     cs.numeric().mean().name.prefix("avg_"),
     # Aggregation into a list (very powerful)
