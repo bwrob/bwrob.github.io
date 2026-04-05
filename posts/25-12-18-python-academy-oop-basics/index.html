@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,6 +12,9 @@
 
 <title>Inheritance, Polymorphism &amp; Protocols – bwrob blog</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -70,17 +73,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../assets/logo/python_mug.png" rel="icon" type="image/png">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-f1aadacce99040138bbb613f9330654f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-a06763021a52c43c40a351ac8b799b8f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-dbc92dda8186f57fa2e333fbb71d6a9d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-4fb5871a2fa2869b4ddfc9dbc86feb8e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-443f7be31c8200b488db8514bbe704f0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-815384a4f3db0d14fca6736d728ea120.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-c9b8a05cc7a2f994bfb27b8e8693428d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -110,7 +112,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -478,7 +480,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="abstract-base-classes-abcs">Abstract Base Classes (ABCs)</h2>
 <p>To keep things sane, we need rules. We need a contract that says: “If you want to be a Yield Curve, you <em>must</em> provide a discount factor.”</p>
 <p>Python handles this with <strong>Abstract Base Classes (ABCs)</strong>.</p>
-<div id="8bff78f8" class="cell" data-execution_count="1">
+<div id="4754fa31" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> math</span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
@@ -508,7 +510,7 @@ window.Quarto = {
 <section id="concrete-implementations" class="level2">
 <h2 class="anchored" data-anchor-id="concrete-implementations">Concrete Implementations</h2>
 <p>With the ground rules established, let’s build something real. The simplest case is a <strong>Flat Forward Curve</strong>, where the rate is constant forever.</p>
-<div id="842c0f80" class="cell" data-execution_count="2">
+<div id="6564eb67" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">class</span> FlatForwardCurve(YieldCurve):</span>
 <span id="cb2-2"><a href="#cb2-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, rate: <span class="bu">float</span>):</span>
 <span id="cb2-3"><a href="#cb2-3"></a>        <span class="va">self</span>.rate <span class="op">=</span> rate</span>
@@ -522,7 +524,7 @@ window.Quarto = {
 <p>Before we get to complex curves, let’s talk about one of Python’s superpowers: <strong>Multiple Inheritance</strong>. In many languages, a class can only have one parent. In Python, it can have many.</p>
 <p>While this can get messy (the infamous “Diamond Problem”), it’s perfect for <strong>Mixins</strong>. A Mixin is a small class designed to “mix in” specific functionality to other classes.</p>
 <p>Suppose we want to take our <code>FlatForwardCurve</code> (or <em>any</em> curve) and add a constant spread to it. Instead of rewriting the curve logic, we create a <code>SpreadMixin</code>.</p>
-<div id="ca67541e" class="cell" data-execution_count="3">
+<div id="15283bf4" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">class</span> SpreadMixin:</span>
 <span id="cb3-2"><a href="#cb3-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, spread: <span class="bu">float</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
 <span id="cb3-3"><a href="#cb3-3"></a>        <span class="va">self</span>.spread <span class="op">=</span> spread</span>
@@ -539,7 +541,7 @@ window.Quarto = {
 <span id="cb3-14"><a href="#cb3-14"></a>    <span class="cf">pass</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>When we create <code>ShiftedFlatCurve</code>, Python’s <strong>Method Resolution Order (MRO)</strong> ensures that <code>SpreadMixin</code> runs first. Its <code>super().discount_factor</code> call then hops over to <code>FlatForwardCurve</code>.</p>
-<div id="0602fba2" class="cell" data-execution_count="4">
+<div id="9a807989" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>shifted <span class="op">=</span> ShiftedFlatCurve(rate<span class="op">=</span><span class="fl">0.05</span>, spread<span class="op">=</span><span class="fl">0.02</span>)</span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="co"># Total rate effectively 0.07</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="bu">print</span>(<span class="ss">f"Shifted DF(1.0): </span><span class="sc">{</span>shifted<span class="sc">.</span>discount_factor(<span class="fl">1.0</span>)<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -556,7 +558,7 @@ window.Quarto = {
 <section id="approach-a-composition-the-strategy-pattern" class="level3">
 <h3 class="anchored" data-anchor-id="approach-a-composition-the-strategy-pattern">Approach A: Composition (The Strategy Pattern)</h3>
 <p>Here, we treat interpolation as a tool the curve <em>uses</em>. We define an <code>Interpolator</code> protocol and pass a concrete implementation (like <code>LinearInterpolator</code>) to the curve.</p>
-<div id="e020be96" class="cell" data-execution_count="5">
+<div id="a63b9dd2" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">from</span> typing <span class="im">import</span> Protocol</span>
 <span id="cb6-2"><a href="#cb6-2"></a></span>
 <span id="cb6-3"><a href="#cb6-3"></a></span>
@@ -603,7 +605,7 @@ window.Quarto = {
 <section id="approach-b-inheritance-mixins" class="level3">
 <h3 class="anchored" data-anchor-id="approach-b-inheritance-mixins">Approach B: Inheritance (Mixins)</h3>
 <p>Alternatively, we can “mix in” the ability to interpolate, just like we mixed in the spread logic.</p>
-<div id="f464263c" class="cell" data-execution_count="6">
+<div id="91c649f6" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">class</span> LinearInterpolationMixin:</span>
 <span id="cb7-2"><a href="#cb7-2"></a>    <span class="co">"""</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a><span class="co">    Mixin that provides linear interpolation capability.</span></span>
@@ -636,7 +638,7 @@ window.Quarto = {
 <section id="the-payoff-polymorphism" class="level2">
 <h2 class="anchored" data-anchor-id="the-payoff-polymorphism">The Payoff: Polymorphism</h2>
 <p>Here is where the magic happens. Because we adhered to our <code>YieldCurve</code> contract, our pricing function can be completely ignorant of the complexity we just built.</p>
-<div id="292e5607" class="cell" data-execution_count="7">
+<div id="9fcb150c" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
 <span id="cb8-2"><a href="#cb8-2"></a></span>
 <span id="cb8-3"><a href="#cb8-3"></a><span class="at">@dataclass</span></span>
@@ -653,7 +655,7 @@ window.Quarto = {
 <span id="cb8-14"><a href="#cb8-14"></a>    <span class="cf">return</span> price</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Let’s test it:</p>
-<div id="b1771859" class="cell" data-execution_count="8">
+<div id="bcd6ee51" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Define a bond: coupon of 5 at t=1, principal 105 at t=2</span></span>
 <span id="cb9-2"><a href="#cb9-2"></a>bond_cfs <span class="op">=</span> [CashFlow(<span class="dv">5</span>, <span class="fl">1.0</span>), CashFlow(<span class="dv">105</span>, <span class="fl">2.0</span>)]</span>
 <span id="cb9-3"><a href="#cb9-3"></a></span>
@@ -681,7 +683,7 @@ Price (Mixin): 97.90</code></pre>
 <h2 class="anchored" data-anchor-id="protocols-when-inheritance-feels-heavy">Protocols: When Inheritance Feels Heavy</h2>
 <p>Inheritance is a commitment. Sometimes you want to use a class from a third-party library that <em>looks</em> like a yield curve but doesn’t inherit from your specific <code>YieldCurve</code> ABC.</p>
 <p>Python has a solution for this: <strong>Protocols</strong> (often called “Structural Subtyping” or “Duck Typing”). A Protocol defines a shape. It says, “I don’t care who your parents are, as long as you have a <code>discount_factor</code> method.”</p>
-<div id="18ee0dfb" class="cell" data-execution_count="9">
+<div id="d133f41c" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="im">from</span> typing <span class="im">import</span> runtime_checkable</span>
 <span id="cb11-2"><a href="#cb11-2"></a></span>
 <span id="cb11-3"><a href="#cb11-3"></a><span class="at">@runtime_checkable</span></span>
@@ -1157,7 +1159,7 @@ Note
       &nbsp;
     </div>   
     <div class="nav-footer-center">
-<p>Copyright 2025, bwrob. Rendered with Quarto 1.8.27</p>
+<p>Copyright 2026, bwrob. Rendered with Quarto 1.9.36</p>
 </div>
     <div class="nav-footer-right">
       &nbsp;
