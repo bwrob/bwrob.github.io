@@ -153,7 +153,7 @@ ts_df = df.with_columns(
 
 # Rolling window: 3-day mean of petal length
 ts_df.with_columns(
-    rolling_mean = pl.col("petal_length").rolling_mean(window_size="3d", by="time")
+    rolling_mean = pl.col("petal_length").rolling_mean_by(window_size="3d", by="time")
 ).head(5)
 
 # Join Asof: join on closest match (backwards/forward/nearest)
