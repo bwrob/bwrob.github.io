@@ -22,43 +22,45 @@ class EuropeanOption:
     CONTRACT_SIZE = 100
     _DEFAULT_OPTION_TYPE = "Call"  # Default for new options
 
-    def __init__(self, strike: float, expiry: str, option_type: str):
+    def __init__(self, strike: float, expiry: str, option_type: str) -> None:
         # Instance Attributes
         self.strike = strike
         self.expiry = expiry
         self.option_type = option_type
 
     def payoff(self, spot_price: float) -> float:
-        """Instance Method"""
+        """Instance Method."""
         if self.option_type == "Call":
             return max(spot_price - self.strike, 0.0)
         if self.option_type == "Put":
             return max(
                 self.strike - spot_price, 0.0
             )  # Should be self.strike - spot_price
-        raise ValueError("Unknown option type")
+        msg = "Unknown option type"
+        raise ValueError(msg)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"EuropeanOption(strike={self.strike}, type='{self.option_type}', expiry='{self.expiry}')"
 
     @classmethod
     def from_string(cls, description: str, expiry: str = "2025-12-20"):
-        """Class Method (Factory)"""
+        """Class Method (Factory)."""
         parts = description.split("-")
         option_type = parts[0]
         strike = float(parts[1])
         return cls(strike, expiry, option_type)
 
     @classmethod
-    def set_default_option_type(cls, new_type: str):
+    def set_default_option_type(cls, new_type: str) -> None:
         """Sets a new default option type for the class."""
         if new_type not in ["Call", "Put"]:
-            raise ValueError("Option type must be 'Call' or 'Put'.")
+            msg = "Option type must be 'Call' or 'Put'."
+            raise ValueError(msg)
         cls._DEFAULT_OPTION_TYPE = new_type
 
     @staticmethod
     def d1(S, K, T, r, sigma):
-        """Static Method"""
+        """Static Method."""
         return (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
 
 
@@ -92,7 +94,7 @@ print(f"d1 value: {d1_val:.4f}")
 
 # 3. Properties and Validation - using EuropeanOption as base
 class EuropeanOptionWithProperty(EuropeanOption):
-    def __init__(self, strike: float, expiry: str, option_type: str):
+    def __init__(self, strike: float, expiry: str, option_type: str) -> None:
         # Assign to property to trigger validation
         self.strike = strike
         self.expiry = expiry  # Will need to adjust parent __init__ for this
@@ -103,9 +105,10 @@ class EuropeanOptionWithProperty(EuropeanOption):
         return self._strike
 
     @strike.setter
-    def strike(self, value):
+    def strike(self, value) -> None:
         if value < 0:
-            raise ValueError("Strike price cannot be negative.")
+            msg = "Strike price cannot be negative."
+            raise ValueError(msg)
         self._strike = value
 
 
@@ -121,7 +124,7 @@ except ValueError as e:
 
 # 4. Access Control - using EuropeanOption
 class EuropeanOptionWithAccessControl(EuropeanOption):
-    def __init__(self, strike: float, expiry: str, option_type: str):
+    def __init__(self, strike: float, expiry: str, option_type: str) -> None:
         super().__init__(strike, expiry, option_type)
         self._internal_cache = {}  # Protected
         self.__secret_config = "confidential"  # Private
@@ -148,13 +151,13 @@ class StandardOption(EuropeanOption):
 class SlottedOption(EuropeanOption):
     __slots__ = ["expiry", "option_type", "strike"]  # Must match __init__ attributes
 
-    def __init__(self, strike: float, expiry: str, option_type: str):
+    def __init__(self, strike: float, expiry: str, option_type: str) -> None:
         self.strike = strike
         self.expiry = expiry
         self.option_type = option_type
 
     # __repr__ is not inherited if slots are present, needs to be redefined or use parent
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"SlottedOption(strike={self.strike}, type='{self.option_type}', expiry='{self.expiry}')"
 
 

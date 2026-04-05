@@ -7,7 +7,7 @@ from functools import wraps
 
 # --- Lists vs. Tuples ---
 print("--- Lists vs. Tuples ---")
-my_list = [i for i in range(1_000_000)]
+my_list = list(range(1_000_000))
 # This creates a list with 1,000,000 integers in memory.
 print(f"my_list created with {len(my_list)} elements.")
 
@@ -27,8 +27,7 @@ print("\n--- Generators ---")
 
 
 def number_generator(n):
-    for i in range(n):
-        yield i
+    yield from range(n)
 
 
 gen = number_generator(1_000_000)
@@ -47,8 +46,7 @@ trades_cashflows = [
 def flatten(list_of_lists):
     for item in list_of_lists:
         if isinstance(item, list):
-            for subitem in item:
-                yield subitem
+            yield from item
         else:
             yield item
 
@@ -85,7 +83,7 @@ def profile_memory(func):
 @profile_memory
 def create_list(n):
     """This function creates a list of n numbers."""
-    return [i for i in range(n)]
+    return list(range(n))
 
 
 @profile_memory
