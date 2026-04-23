@@ -8,29 +8,28 @@ app = marimo.App(width="medium", layout_file="layouts/dashboard.grid.json")
 def _():
     import marimo as mo
 
-    mo.md(
-        """This is a markdown cell. It can contain **formatted** text,
-
-        [links](https://marimo.dev), and more."""
+    text = mo.md(
+        """This is a markdown cell. It can contain **formatted** text, [links](https://marimo.dev), and more."""
     )
-    return (mo,)
+    return mo, text
 
 
 @app.cell
 def _(mo):
-    mo.image(src="https://bwrob.github.io/assets/logo/python_mug.png", width=200)
+    img = mo.image(src="https://bwrob.github.io/assets/logo/python_mug.png", width=100)
+    return (img,)
 
 
 @app.cell
 def _(mo):
     slider = mo.ui.slider(start=1, stop=42, full_width=True)
-    slider
     return (slider,)
 
 
 @app.cell
 def _(slider):
-    slider.value
+    v = slider.value
+    return (v,)
 
 
 @app.cell
@@ -49,7 +48,14 @@ def _(slider):
             "groups": ["A", "A", "B", "A", "B"],
         }
     )
-    df
+
+    return (df,)
+
+
+@app.cell
+def _(df, img, mo, slider, text, v):
+    mo.vstack([mo.hstack([img, mo.vstack([text, slider, v])]), df], gap=1)
+    return
 
 
 if __name__ == "__main__":
