@@ -419,15 +419,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>Marimo is a fantastic tool for collecting and analyzing data, but sometimes you want to share that data in a more interactive way. A dashboard can be a great solution, but paying for hosting and maintaining a server for a hobby project can be a hassle. That’s where webasembly and pyodide come in.</p>
+<p>Marimo is a fantastic tool for collecting and analyzing data, in many ways more powerful than Jupyter. Thanks to it’s app view (layouts) it can be used to create interactive dashboards. Setting up a dashboard to convey an important analysis (like convincing your partner to buy new gaming PC) can be a 10x solution. But paying for hosting and maintaining a server for a this can eat up valuable cash resources for those RAM sticks. That’s where <code>webasembly</code> and <code>pyodide</code> come in. Here is how you can create a serverless Marimo dashboard:</p>
 <ol type="1">
-<li><p>Create a simple dashboard using pyodide and webassembly. Not all python libraries are supported, but you can still do a lot with the ones that are. Check out the <a href="https://pyodide.org/en/stable/">pyodide documentation</a> for more details on what’s available.</p></li>
-<li><p>Use marimo to export your dashbooard to webassembly. Marimo has built-in support for exporting to webassembly, so you can easily create a standalone dashboard that can be hosted anywhere.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">uv</span> run marimo export html-wasm button.py <span class="at">--output</span> assets/dashboard</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
-<li><p>Host your dashboard on a static site hosting service like GitHub Pages, Netlify, or Vercel. Since the dashboard is just a static file, you don’t need to worry about server maintenance or costs.</p></li>
-<li><p>When you open the dashboard in your browser, it will load the webassembly module and run your Python code to display the data. You can interact with the dashboard just like you would with any other web application.</p></li>
+<li><p>Create a simple dashboard using <code>marimo</code>. Set the layout to create an interactive experience. Beware, not all python libraries are supported, but you can still do a lot with the ones that are. Check out the <a href="https://pyodide.org/en/stable/">pyodide documentation</a> for more details on what’s available.</p></li>
+<li><p>Use <code>marimo</code> to export your dashbooard to webassembly. Marimo has built-in support for exporting to webassembly, so you can easily create a standalone dashboard that can be hosted anywhere.</p></li>
 </ol>
-<p>You can try the dashboard out <a href="../../assets/marimo-dashboard/button.html">here</a>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">uv</span> run marimo export html-wasm posts/26-04-24-serverless-marimo-dashboard/dashboard.py  <span class="at">--output</span> assets/marimo-dashboard <span class="at">--mode</span> run</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ol start="3" type="1">
+<li>To check if your dashboard works, you can use a simple HTTP server to serve the files locally. For example, you can use Python’s built-in HTTP server:</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">python</span> <span class="at">-m</span> http.server <span class="at">--directory</span> assets/marimo-dashboard</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ol start="4" type="1">
+<li><p>Host your dashboard on a static site hosting service like GitHub Pages, Netlify, or Vercel. Since the dashboard is just a static file, you don’t need to worry about server maintenance or costs.</p></li>
+<li><p>When you open the dashboard in your browser, it will load the webassembly module and run your Python code to display the data. You can interact with the dashboard just like you would with any other web application. The compute is done locally in the browser using pyodide, the uer is paying for it with their CPU cycles, so it’s truly serverless.</p></li>
+</ol>
+<p>You can try the dashboard out <a href="../../assets/marimo-dashboard/index.html">here</a>.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
