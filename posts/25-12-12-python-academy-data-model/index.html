@@ -452,7 +452,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>for position in portfolio</code> to audit our holdings.</li>
 </ul>
 <p>Let’s start by defining a simple <code>Position</code> container. To keep our balance sheet clean, we’ll track the total USD value rather than quantity and price.</p>
-<div id="20d86486" class="cell" data-execution_count="1">
+<div id="2975fdba" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> __future__ <span class="im">import</span> annotations</span>
 <span id="cb1-2"><a href="#cb1-2"></a></span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
@@ -468,7 +468,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="the-initial-portfolio-class" class="level2">
 <h2 class="anchored" data-anchor-id="the-initial-portfolio-class">The Initial <code>Portfolio</code> Class</h2>
 <p>We start with a standard class definition. To index our strategy efficiently, we’ll store the positions in a dictionary keyed by their symbol. We name it <code>_contents</code> to signal it’s an internal implementation detail—a trade secret, if you will—encouraging users to access data through the public interface.</p>
-<div id="0b783072" class="cell" data-execution_count="2">
+<div id="289d7bf7" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">class</span> Portfolio:</span>
 <span id="cb2-2"><a href="#cb2-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, name: <span class="bu">str</span>, managers: <span class="bu">tuple</span>[<span class="bu">str</span>, ...], contents: <span class="bu">list</span>[Position] <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>):</span>
 <span id="cb2-3"><a href="#cb2-3"></a>        <span class="va">self</span>.name <span class="op">=</span> name</span>
@@ -493,7 +493,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="emulating-a-collection" class="level2">
 <h2 class="anchored" data-anchor-id="emulating-a-collection">Emulating a Collection</h2>
 <p>Right now, if we try to gauge the size of our portfolio, it raises a <code>TypeError</code>.</p>
-<div id="2f3d2290" class="cell" data-execution_count="3">
+<div id="9196e045" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="cf">try</span>:</span>
 <span id="cb4-2"><a href="#cb4-2"></a>    <span class="bu">len</span>(p)</span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="cf">except</span> <span class="pp">TypeError</span> <span class="im">as</span> e:</span>
@@ -505,7 +505,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>To enable the <code>len()</code> function, we implement <code>__len__</code>.</p>
 <section id="len__" class="level3">
 <h3 class="anchored" data-anchor-id="len__"><code>__len__</code></h3>
-<div id="cb8d0823" class="cell" data-execution_count="4">
+<div id="b847430d" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">class</span> Portfolio(Portfolio): <span class="co"># Inheriting to add methods incrementally for this post</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a>    <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
 <span id="cb6-3"><a href="#cb6-3"></a>        <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>._contents)</span>
@@ -521,7 +521,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="getitem__" class="level3">
 <h3 class="anchored" data-anchor-id="getitem__"><code>__getitem__</code></h3>
 <p>We don’t want to scan through a list to find a stock; that’s O(N) efficiency, and in performance-critical applications, speed is crucial. The <code>__getitem__</code> method allows us to use the square bracket notation <code>[]</code> to access items directly.</p>
-<div id="1977b15f" class="cell" data-execution_count="5">
+<div id="5391973f" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
 <span id="cb8-2"><a href="#cb8-2"></a>    <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, symbol: <span class="bu">str</span>) <span class="op">-&gt;</span> Position <span class="op">|</span> <span class="va">None</span>:</span>
 <span id="cb8-3"><a href="#cb8-3"></a>        <span class="cf">return</span> <span class="va">self</span>._contents.get(symbol)</span>
@@ -539,7 +539,7 @@ MSFT position: None</code></pre>
 <section id="enabling-iteration-__iter__" class="level3">
 <h3 class="anchored" data-anchor-id="enabling-iteration-__iter__">Enabling Iteration: <code>__iter__</code></h3>
 <p>Iterating through a collection is fundamental. Since we backed our portfolio with a dictionary, default iteration would just give us the keys (symbols). But when we loop through a portfolio, we usually want the assets themselves. We can dictate this behavior by implementing <code>__iter__</code>.</p>
-<div id="3c64621a" class="cell" data-execution_count="6">
+<div id="2838c9d4" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
 <span id="cb10-2"><a href="#cb10-2"></a>    <span class="kw">def</span> <span class="fu">__iter__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> Iterator[Position]:</span>
 <span id="cb10-3"><a href="#cb10-3"></a>        <span class="cf">return</span> <span class="bu">iter</span>(<span class="va">self</span>._contents.values())</span>
@@ -563,7 +563,7 @@ MSFT position: None</code></pre>
 <h2 class="anchored" data-anchor-id="membership-and-truthiness-__contains__-and-__bool__">Membership and Truthiness: <code>__contains__</code> and <code>__bool__</code></h2>
 <p>We can already check for membership because we implemented <code>__iter__</code>, but that’s like manually auditing every file to find one document—it’s O(N). Since we have a hash map (dictionary) underneath, we can do an O(1) check using <code>__contains__</code>.</p>
 <p>We also want to know if our portfolio is empty. By default, Python checks <code>len()</code>, but implementing <code>__bool__</code> allows us to be explicit about what constitutes a “truthy” portfolio.</p>
-<div id="f77e48f8" class="cell" data-execution_count="7">
+<div id="83e2b40f" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
 <span id="cb12-2"><a href="#cb12-2"></a>    <span class="kw">def</span> <span class="fu">__contains__</span>(<span class="va">self</span>, item: <span class="bu">str</span> <span class="op">|</span> Position) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
 <span id="cb12-3"><a href="#cb12-3"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(item, <span class="bu">str</span>):</span>
@@ -596,7 +596,7 @@ Is empty_p truthy? False</code></pre>
 <h2 class="anchored" data-anchor-id="operator-overloading-__add__-combining-portfolios">Operator Overloading: <code>__add__</code> (Combining Portfolios)</h2>
 <p>In Python, objects can be combined using operators. If we have two portfolios, it makes intuitive sense to “add” them together using <code>+</code>.</p>
 <p>We implement this via <code>__add__</code>. This isn’t just concatenation; it’s a consolidation. We need to combine managers and sum up the value of overlapping positions.</p>
-<div id="a3c828ce" class="cell" data-execution_count="8">
+<div id="c6c7245f" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
 <span id="cb14-2"><a href="#cb14-2"></a>    <span class="kw">def</span> <span class="fu">__add__</span>(<span class="va">self</span>, other: Portfolio) <span class="op">-&gt;</span> Portfolio:</span>
 <span id="cb14-3"><a href="#cb14-3"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(other, Portfolio):</span>
@@ -645,7 +645,7 @@ Merged AAPL: Position(symbol='AAPL', value_usd=23000.0)</code></pre>
 <li><strong><code>__str__</code> (The Public Face):</strong> Readable, user-focused. “What does this object represent to a human?”</li>
 </ul>
 <p>If <code>__str__</code> is not defined, Python falls back to <code>__repr__</code>. But we want a nice summary.</p>
-<div id="1b7955d6" class="cell" data-execution_count="9">
+<div id="845349f2" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
 <span id="cb16-2"><a href="#cb16-2"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>):</span>
 <span id="cb16-3"><a href="#cb16-3"></a>        <span class="cf">return</span> <span class="ss">f"Portfolio '</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>name<span class="sc">}</span><span class="ss">' with </span><span class="sc">{</span><span class="bu">len</span>(<span class="va">self</span>)<span class="sc">}</span><span class="ss"> positions managed by </span><span class="sc">{</span><span class="st">', '</span><span class="sc">.</span>join(<span class="va">self</span>.managers)<span class="sc">}</span><span class="ss">"</span></span>
