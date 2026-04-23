@@ -1,7 +1,7 @@
 import marimo
 
 __generated_with = "0.23.2"
-app = marimo.App(width="medium", layout_file="layouts/button.grid.json")
+app = marimo.App(width="medium", layout_file="layouts/dashboard.grid.json")
 
 
 @app.cell
@@ -18,6 +18,11 @@ def _():
 
 @app.cell
 def _(mo):
+    mo.image(src="https://bwrob.github.io/assets/logo/python_mug.png", width=200)
+
+
+@app.cell
+def _(mo):
     slider = mo.ui.slider(start=1, stop=42, full_width=True)
     slider
     return (slider,)
@@ -26,7 +31,6 @@ def _(mo):
 @app.cell
 def _(slider):
     slider.value
-    return
 
 
 @app.cell
@@ -46,7 +50,6 @@ def _(slider):
         }
     )
     df
-    return
 
 
 if __name__ == "__main__":

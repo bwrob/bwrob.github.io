@@ -12,18 +12,32 @@ toc-depth: 2
 ---
 
 
-Marimo is a fantastic tool for collecting and analyzing data, but sometimes you want to share that data in a more interactive way. A dashboard can be a great solution, but paying for hosting and maintaining a server for a hobby project can be a hassle. That's where webasembly and pyodide come in.
+Marimo is a fantastic tool for collecting and analyzing data, in many ways more powerful than Jupyter.
+Thanks to it's app view (layouts) it can be used to create interactive dashboards.
+Setting up a dashboard to convey an important analysis (like convincing your partner to buy new gaming PC) can be a 10x solution.
+But paying for hosting and maintaining a server for a this can eat up valuable cash resources for those RAM sticks.
+That's where `webasembly` and `pyodide` come in. Here is how you can create a serverless Marimo dashboard:
 
-1. Create a simple dashboard using pyodide and webassembly. Not all python libraries are supported, but you can still do a lot with the ones that are. Check out the [pyodide documentation](https://pyodide.org/en/stable/) for more details on what's available.
-2. Use marimo to export your dashbooard to webassembly. Marimo has built-in support for exporting to webassembly, so you can easily create a standalone dashboard that can be hosted anywhere.
-   ```bash
-   uv run marimo export html-wasm button.py --output assets/dashboard
-   ```
-3. Host your dashboard on a static site hosting service like GitHub Pages, Netlify, or Vercel. Since the dashboard is just a static file, you don't need to worry about server maintenance or costs.
-4. When you open the dashboard in your browser, it will load the webassembly module and run your Python code to display the data. You can interact with the dashboard just like you would with any other web application.
+1. Create a simple dashboard using `marimo`. Set the layout to create an interactive experience. Beware, not all python libraries are supported, but you can still do a lot with the ones that are. Check out the [pyodide documentation](https://pyodide.org/en/stable/) for more details on what's available.
+
+2. Use `marimo` to export your dashbooard to webassembly. Marimo has built-in support for exporting to webassembly, so you can easily create a standalone dashboard that can be hosted anywhere.
+
+```bash
+uv run marimo export html-wasm posts/26-04-24-serverless-marimo-dashboard/dashboard.py  --output assets/marimo-dashboard --mode run
+```
+
+3. To check if your dashboard works, you can use a simple HTTP server to serve the files locally. For example, you can use Python's built-in HTTP server:
+
+```bash
+python -m http.server --directory assets/marimo-dashboard
+
+```
+4. Host your dashboard on a static site hosting service like GitHub Pages, Netlify, or Vercel. Since the dashboard is just a static file, you don't need to worry about server maintenance or costs.
+
+5. When you open the dashboard in your browser, it will load the webassembly module and run your Python code to display the data. You can interact with the dashboard just like you would with any other web application. The compute is done locally in the browser using pyodide, the uer is paying for it with their CPU cycles, so it's truly serverless.
 
 
-You can try the dashboard out [here](../../assets/marimo-dashboard/button.html).
+You can try the dashboard out [here](../../assets/marimo-dashboard/index.html).
 
 ::: callout-note
 Download the whole code [here](button.py).
