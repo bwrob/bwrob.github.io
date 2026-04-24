@@ -1,7 +1,7 @@
 import marimo
 
 __generated_with = "0.23.2"
-app = marimo.App(width="medium", layout_file="layouts/dashboard.grid.json")
+app = marimo.App()
 
 
 @app.cell
@@ -42,20 +42,28 @@ def _(slider):
 
     df = pl.DataFrame(
         {
-            "nrs": [1, 2, 3, None, 5],
+            "nrs": [1, 2, 3, 4, 5],
             "names": ["foo", "ham", "spam", "egg", "spam"],
             "random": np.random.rand(5),
-            "groups": ["A", "A", "B", "A", "B"],
+            "groups": ["A", "A", "B", None, "B"],
         }
     )
-
     return (df,)
 
 
 @app.cell
 def _(df, img, mo, slider, text, v):
-    mo.vstack([mo.hstack([img, mo.vstack([text, slider, v])]), df], gap=1)
-    return
+    mo.vstack(
+        [
+            mo.hstack(
+                [img, mo.vstack([text, slider, v])],
+                widths=[1, 4],
+                justify="space-around",
+            ),
+            df,
+        ],
+        gap=1,
+    )
 
 
 if __name__ == "__main__":
