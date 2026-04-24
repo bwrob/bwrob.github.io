@@ -440,7 +440,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Polars separates <strong>Expressions</strong> (the <em>what</em>) from <strong>Contexts</strong> (the <em>where</em>). This architecture allows the engine to optimize queries globally before execution.</p>
 <section id="loading-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="loading-the-data">1. Loading the Data</h2>
-<div id="d8c16d43" class="cell" data-execution_count="1">
+<div id="605029f9" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> polars.selectors <span class="im">as</span> cs</span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -506,7 +506,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="expressions-the-building-blocks" class="level2">
 <h2 class="anchored" data-anchor-id="expressions-the-building-blocks">2. Expressions: The Building Blocks</h2>
 <p>Expressions are the atomic units of logic. They are lazily evaluated and can be chained indefinitely.</p>
-<div id="57751457" class="cell" data-execution_count="2">
+<div id="f6fccfa9" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Complex logic: normalization, clipping, and casting</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a>expr <span class="op">=</span> (</span>
 <span id="cb2-3"><a href="#cb2-3"></a>    (pl.col(<span class="st">"sepal_length"</span>) <span class="op">-</span> pl.col(<span class="st">"sepal_length"</span>).mean())</span>
@@ -520,7 +520,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="power-selectors-polars.selectors" class="level2">
 <h2 class="anchored" data-anchor-id="power-selectors-polars.selectors">3. Power Selectors (<code>polars.selectors</code>)</h2>
 <p>Selectors target columns based on their properties, types, or names.</p>
-<div id="db73add5" class="cell" data-execution_count="3">
+<div id="8b11478e" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Target numeric columns that contain 'width'</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>df.select(cs.numeric() <span class="op">&amp;</span> cs.contains(<span class="st">"width"</span>))</span>
 <span id="cb3-3"><a href="#cb3-3"></a></span>
@@ -575,7 +575,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-selection-select" class="level2">
 <h2 class="anchored" data-anchor-id="context-selection-select">4. Context: Selection (<code>select</code>)</h2>
 <p>In the <code>select</code> context, expressions must return a result of the same length or a scalar (which is broadcasted).</p>
-<div id="2e2b85b0" class="cell" data-execution_count="4">
+<div id="7fe8e949" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>df.select(</span>
 <span id="cb4-2"><a href="#cb4-2"></a>    <span class="co"># Simple selection</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a>    <span class="st">"species"</span>,</span>
@@ -631,7 +631,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-modification-with_columns" class="level2">
 <h2 class="anchored" data-anchor-id="context-modification-with_columns">5. Context: Modification (<code>with_columns</code>)</h2>
 <p>Used to append new columns or overwrite existing ones while keeping the rest of the DataFrame.</p>
-<div id="271b40c3" class="cell" data-execution_count="5">
+<div id="04651a99" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>df.with_columns(</span>
 <span id="cb5-2"><a href="#cb5-2"></a>    <span class="co"># Complex boolean logic</span></span>
 <span id="cb5-3"><a href="#cb5-3"></a>    is_large <span class="op">=</span> (pl.col(<span class="st">"sepal_length"</span>) <span class="op">&gt;</span> <span class="dv">5</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"petal_length"</span>) <span class="op">&gt;</span> <span class="fl">1.5</span>),</span>
@@ -712,7 +712,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-aggregation-group_by" class="level2">
 <h2 class="anchored" data-anchor-id="context-aggregation-group_by">6. Context: Aggregation (<code>group_by</code>)</h2>
 <p>Expressions in <code>agg</code> are evaluated independently for each group.</p>
-<div id="0d50b695" class="cell" data-execution_count="6">
+<div id="37380a3b" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>df.group_by(<span class="st">"species"</span>).agg(</span>
 <span id="cb6-2"><a href="#cb6-2"></a>    <span class="co"># Count rows</span></span>
 <span id="cb6-3"><a href="#cb6-3"></a>    pl.<span class="bu">len</span>().alias(<span class="st">"count"</span>),</span>
@@ -767,16 +767,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>5.733333</td>
 </tr>
 <tr class="even">
-<td>"virginica"</td>
-<td>50</td>
-<td>6.588</td>
-<td>2.974</td>
-<td>5.552</td>
-<td>2.026</td>
-<td>[6.0, 5.1, … 5.1]</td>
-<td>7.766667</td>
-</tr>
-<tr class="odd">
 <td>"versicolor"</td>
 <td>50</td>
 <td>5.936</td>
@@ -785,6 +775,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>1.326</td>
 <td>[4.7, 4.5, … 4.1]</td>
 <td>6.9</td>
+</tr>
+<tr class="odd">
+<td>"virginica"</td>
+<td>50</td>
+<td>6.588</td>
+<td>2.974</td>
+<td>5.552</td>
+<td>2.026</td>
+<td>[6.0, 5.1, … 5.1]</td>
+<td>7.766667</td>
 </tr>
 </tbody>
 </table>
@@ -795,7 +795,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="window-functions-over" class="level2">
 <h2 class="anchored" data-anchor-id="window-functions-over">7. Window Functions (<code>over</code>)</h2>
 <p>Window functions allow you to perform group-level calculations without collapsing the rows.</p>
-<div id="cb642c96" class="cell" data-execution_count="7">
+<div id="fd663ccc" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>df.with_columns(</span>
 <span id="cb7-2"><a href="#cb7-2"></a>    <span class="co"># Rank within species based on petal length</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a>    rank_in_species <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).rank(<span class="st">"dense"</span>, descending<span class="op">=</span><span class="va">True</span>).over(<span class="st">"species"</span>),</span>
@@ -876,7 +876,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="complex-types-lists-structs" class="level2">
 <h2 class="anchored" data-anchor-id="complex-types-lists-structs">8. Complex Types: Lists &amp; Structs</h2>
 <p>Polars has first-class support for nested data.</p>
-<div id="e90d87d6" class="cell" data-execution_count="8">
+<div id="59c48d92" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Create a struct (row-wise grouping of columns)</span></span>
 <span id="cb8-2"><a href="#cb8-2"></a>df_struct <span class="op">=</span> df.with_columns(</span>
 <span id="cb8-3"><a href="#cb8-3"></a>    dims <span class="op">=</span> pl.struct(<span class="st">"sepal_length"</span>, <span class="st">"sepal_width"</span>)</span>
@@ -920,19 +920,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>"setosa"</td>
-<td>[1.4, 1.4, … 1.4]</td>
-<td>[1.9]</td>
-</tr>
-<tr class="even">
 <td>"versicolor"</td>
 <td>[4.7, 4.5, … 4.1]</td>
 <td>[5.05]</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>"virginica"</td>
 <td>[6.0, 5.1, … 5.1]</td>
 <td>[6.8]</td>
+</tr>
+<tr class="odd">
+<td>"setosa"</td>
+<td>[1.4, 1.4, … 1.4]</td>
+<td>[1.9]</td>
 </tr>
 </tbody>
 </table>
@@ -943,7 +943,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="time-series-mastery-asof-rolling" class="level2">
 <h2 class="anchored" data-anchor-id="time-series-mastery-asof-rolling">9. Time Series Mastery: <code>asof</code> &amp; Rolling</h2>
 <p>Polars is blazingly fast for time-series.</p>
-<div id="0c1d6669" class="cell" data-execution_count="9">
+<div id="8124577a" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Setup time data</span></span>
 <span id="cb9-2"><a href="#cb9-2"></a>ts_df <span class="op">=</span> df.with_columns(</span>
 <span id="cb9-3"><a href="#cb9-3"></a>    time <span class="op">=</span> pl.datetime_range(datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>), datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="op">+</span> timedelta(days<span class="op">=</span><span class="dv">149</span>), <span class="st">"1d"</span>, eager<span class="op">=</span><span class="va">True</span>)</span>
@@ -996,7 +996,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reshaping-pivot-and-unpivot" class="level2">
 <h2 class="anchored" data-anchor-id="reshaping-pivot-and-unpivot">10. Reshaping: <code>pivot</code> and <code>unpivot</code></h2>
 <p>Convert data between wide and long formats.</p>
-<div id="61e3bc32" class="cell" data-execution_count="10">
+<div id="c02acbd6" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Wide to Long (unpivot/melt)</span></span>
 <span id="cb10-2"><a href="#cb10-2"></a>long_df <span class="op">=</span> df.unpivot(index<span class="op">=</span>[<span class="st">"species"</span>], on<span class="op">=</span>cs.numeric())</span>
 <span id="cb10-3"><a href="#cb10-3"></a></span>
@@ -1059,7 +1059,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="set-operations-semi-and-anti-joins" class="level2">
 <h2 class="anchored" data-anchor-id="set-operations-semi-and-anti-joins">11. Set Operations: <code>semi</code> and <code>anti</code> joins</h2>
 <p>Filter one DataFrame by another without duplicating rows or merging columns.</p>
-<div id="83bbf986" class="cell" data-execution_count="11">
+<div id="157f19ac" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># Only Setosa (Semi join acts as a filter)</span></span>
 <span id="cb11-2"><a href="#cb11-2"></a>species_filter <span class="op">=</span> pl.DataFrame({<span class="st">"species"</span>: [<span class="st">"setosa"</span>]})</span>
 <span id="cb11-3"><a href="#cb11-3"></a>df.join(species_filter, on<span class="op">=</span><span class="st">"species"</span>, how<span class="op">=</span><span class="st">"semi"</span>).head(<span class="dv">3</span>)</span>
@@ -1123,7 +1123,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="optimization-categorical-vs-enum" class="level2">
 <h2 class="anchored" data-anchor-id="optimization-categorical-vs-enum">12. Optimization: Categorical vs Enum</h2>
 <p>Strings should almost always be encoded. <code>Enum</code> is fixed and faster; <code>Categorical</code> is dynamic.</p>
-<div id="8c29304c" class="cell" data-execution_count="12">
+<div id="315fab7a" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># Use Enum for fixed sets (Species is perfect)</span></span>
 <span id="cb12-2"><a href="#cb12-2"></a>species_enum <span class="op">=</span> pl.Enum([<span class="st">"setosa"</span>, <span class="st">"versicolor"</span>, <span class="st">"virginica"</span>])</span>
 <span id="cb12-3"><a href="#cb12-3"></a>df.with_columns(pl.col(<span class="st">"species"</span>).cast(species_enum)).head(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1183,7 +1183,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="missing-data-interpolate-coalesce" class="level2">
 <h2 class="anchored" data-anchor-id="missing-data-interpolate-coalesce">13. Missing Data: Interpolate &amp; Coalesce</h2>
-<div id="354d1083" class="cell" data-execution_count="13">
+<div id="658240b2" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># Coalesce: first non-null value from multiple columns</span></span>
 <span id="cb13-2"><a href="#cb13-2"></a>messy <span class="op">=</span> pl.DataFrame({<span class="st">"a"</span>: [<span class="dv">1</span>, <span class="va">None</span>, <span class="va">None</span>], <span class="st">"b"</span>: [<span class="va">None</span>, <span class="dv">2</span>, <span class="va">None</span>], <span class="st">"c"</span>: [<span class="va">None</span>, <span class="va">None</span>, <span class="dv">3</span>]})</span>
 <span id="cb13-3"><a href="#cb13-3"></a>messy.select(filled <span class="op">=</span> pl.coalesce(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>))</span>
@@ -1228,7 +1228,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="concatenation-pl.concat" class="level2">
 <h2 class="anchored" data-anchor-id="concatenation-pl.concat">14. Concatenation: <code>pl.concat</code></h2>
 <p>Combine DataFrames vertically, horizontally, or diagonally.</p>
-<div id="61e9561b" class="cell" data-execution_count="14">
+<div id="b53796ef" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>df1 <span class="op">=</span> df.head(<span class="dv">2</span>)</span>
 <span id="cb14-2"><a href="#cb14-2"></a>df2 <span class="op">=</span> df.tail(<span class="dv">2</span>)</span>
 <span id="cb14-3"><a href="#cb14-3"></a></span>
@@ -1286,7 +1286,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="out-of-core-partitioning" class="level2">
 <h2 class="anchored" data-anchor-id="out-of-core-partitioning">15. Out-of-Core &amp; Partitioning</h2>
-<div id="2b13cfbd" class="cell" data-execution_count="15">
+<div id="dc756b69" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># Streaming flow for massive data</span></span>
 <span id="cb15-2"><a href="#cb15-2"></a>(</span>
 <span id="cb15-3"><a href="#cb15-3"></a>    pl.scan_csv(<span class="st">"huge.csv"</span>)</span>
