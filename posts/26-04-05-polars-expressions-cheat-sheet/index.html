@@ -430,7 +430,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Polars separates <strong>Expressions</strong> (the <em>what</em>) from <strong>Contexts</strong> (the <em>where</em>). This architecture allows the engine to optimize queries globally before execution.</p>
 <section id="loading-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="loading-the-data">1. Loading the Data</h2>
-<div id="4b0c611f" class="cell" data-execution_count="1">
+<div id="24455769" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
@@ -499,7 +499,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="expressions-the-building-blocks" class="level2">
 <h2 class="anchored" data-anchor-id="expressions-the-building-blocks">2. Expressions: The Building Blocks</h2>
 <p>Expressions are the atomic units of logic. They are lazily evaluated and can be chained indefinitely.</p>
-<div id="08ac421a" class="cell" data-execution_count="2">
+<div id="1558c23e" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Complex logic: normalization, clipping, and casting</span></span>
@@ -516,7 +516,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="power-selectors-polars.selectors" class="level2">
 <h2 class="anchored" data-anchor-id="power-selectors-polars.selectors">3. Power Selectors (<code>polars.selectors</code>)</h2>
 <p>Selectors target columns based on their properties, types, or names.</p>
-<div id="2ebf6034" class="cell" data-execution_count="3">
+<div id="4cdee150" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Target numeric columns that contain 'width'</span></span>
@@ -574,7 +574,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-selection-select" class="level2">
 <h2 class="anchored" data-anchor-id="context-selection-select">4. Context: Selection (<code>select</code>)</h2>
 <p>In the <code>select</code> context, expressions must return a result of the same length or a scalar (which is broadcasted).</p>
-<div id="9bcfab14" class="cell" data-execution_count="4">
+<div id="a83aaf11" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>df.select(</span>
@@ -633,7 +633,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-modification-with_columns" class="level2">
 <h2 class="anchored" data-anchor-id="context-modification-with_columns">5. Context: Modification (<code>with_columns</code>)</h2>
 <p>Used to append new columns or overwrite existing ones while keeping the rest of the DataFrame.</p>
-<div id="7086205b" class="cell" data-execution_count="5">
+<div id="97ff2d93" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>df.with_columns(</span>
@@ -717,7 +717,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-aggregation-group_by" class="level2">
 <h2 class="anchored" data-anchor-id="context-aggregation-group_by">6. Context: Aggregation (<code>group_by</code>)</h2>
 <p>Expressions in <code>agg</code> are evaluated independently for each group.</p>
-<div id="86a2d93b" class="cell" data-execution_count="6">
+<div id="56b5cc27" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>df.group_by(<span class="st">"species"</span>).agg(</span>
@@ -765,16 +765,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>"setosa"</td>
-<td>50</td>
-<td>5.006</td>
-<td>3.428</td>
-<td>1.462</td>
-<td>0.246</td>
-<td>[1.4, 1.4, … 1.4]</td>
-<td>5.733333</td>
-</tr>
-<tr class="even">
 <td>"virginica"</td>
 <td>50</td>
 <td>6.588</td>
@@ -784,7 +774,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>[6.0, 5.1, … 5.1]</td>
 <td>7.766667</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>"versicolor"</td>
 <td>50</td>
 <td>5.936</td>
@@ -793,6 +783,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>1.326</td>
 <td>[4.7, 4.5, … 4.1]</td>
 <td>6.9</td>
+</tr>
+<tr class="odd">
+<td>"setosa"</td>
+<td>50</td>
+<td>5.006</td>
+<td>3.428</td>
+<td>1.462</td>
+<td>0.246</td>
+<td>[1.4, 1.4, … 1.4]</td>
+<td>5.733333</td>
 </tr>
 </tbody>
 </table>
@@ -803,7 +803,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="window-functions-over" class="level2">
 <h2 class="anchored" data-anchor-id="window-functions-over">7. Window Functions (<code>over</code>)</h2>
 <p>Window functions allow you to perform group-level calculations without collapsing the rows.</p>
-<div id="d9f51598" class="cell" data-execution_count="7">
+<div id="ea3d56f1" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>df.with_columns(</span>
@@ -887,7 +887,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="complex-types-lists-structs" class="level2">
 <h2 class="anchored" data-anchor-id="complex-types-lists-structs">8. Complex Types: Lists &amp; Structs</h2>
 <p>Polars has first-class support for nested data.</p>
-<div id="647c3f58" class="cell" data-execution_count="8">
+<div id="c1682c11" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Create a struct (row-wise grouping of columns)</span></span>
@@ -934,9 +934,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>"virginica"</td>
-<td>[6.0, 5.1, … 5.1]</td>
-<td>[6.8]</td>
+<td>"setosa"</td>
+<td>[1.4, 1.4, … 1.4]</td>
+<td>[1.9]</td>
 </tr>
 <tr class="even">
 <td>"versicolor"</td>
@@ -944,9 +944,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>[5.05]</td>
 </tr>
 <tr class="odd">
-<td>"setosa"</td>
-<td>[1.4, 1.4, … 1.4]</td>
-<td>[1.9]</td>
+<td>"virginica"</td>
+<td>[6.0, 5.1, … 5.1]</td>
+<td>[6.8]</td>
 </tr>
 </tbody>
 </table>
@@ -957,7 +957,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="time-series-mastery-asof-rolling" class="level2">
 <h2 class="anchored" data-anchor-id="time-series-mastery-asof-rolling">9. Time Series Mastery: <code>asof</code> &amp; Rolling</h2>
 <p>Polars is blazingly fast for time-series.</p>
-<div id="2d923e56" class="cell" data-execution_count="9">
+<div id="ce35cf5e" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Setup time data</span></span>
@@ -1013,7 +1013,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reshaping-pivot-and-unpivot" class="level2">
 <h2 class="anchored" data-anchor-id="reshaping-pivot-and-unpivot">10. Reshaping: <code>pivot</code> and <code>unpivot</code></h2>
 <p>Convert data between wide and long formats.</p>
-<div id="ec801182" class="cell" data-execution_count="10">
+<div id="c6a41d1b" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Wide to Long (unpivot/melt)</span></span>
@@ -1079,7 +1079,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="set-operations-semi-and-anti-joins" class="level2">
 <h2 class="anchored" data-anchor-id="set-operations-semi-and-anti-joins">11. Set Operations: <code>semi</code> and <code>anti</code> joins</h2>
 <p>Filter one DataFrame by another without duplicating rows or merging columns.</p>
-<div id="7f043d4f" class="cell" data-execution_count="11">
+<div id="d1378a77" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># Only Setosa (Semi join acts as a filter)</span></span>
@@ -1146,7 +1146,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="optimization-categorical-vs-enum" class="level2">
 <h2 class="anchored" data-anchor-id="optimization-categorical-vs-enum">12. Optimization: Categorical vs Enum</h2>
 <p>Strings should almost always be encoded. <code>Enum</code> is fixed and faster; <code>Categorical</code> is dynamic.</p>
-<div id="d479e489" class="cell" data-execution_count="12">
+<div id="fb43eba8" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># Use Enum for fixed sets (Species is perfect)</span></span>
@@ -1209,7 +1209,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="missing-data-interpolate-coalesce" class="level2">
 <h2 class="anchored" data-anchor-id="missing-data-interpolate-coalesce">13. Missing Data: Interpolate &amp; Coalesce</h2>
-<div id="e5099e79" class="cell" data-execution_count="13">
+<div id="93ef30f6" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># Coalesce: first non-null value from multiple columns</span></span>
@@ -1257,7 +1257,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="concatenation-pl.concat" class="level2">
 <h2 class="anchored" data-anchor-id="concatenation-pl.concat">14. Concatenation: <code>pl.concat</code></h2>
 <p>Combine DataFrames vertically, horizontally, or diagonally.</p>
-<div id="5c92d876" class="cell" data-execution_count="14">
+<div id="150b6c7d" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>df1 <span class="op">=</span> df.head(<span class="dv">2</span>)</span>
@@ -1318,7 +1318,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="out-of-core-partitioning" class="level2">
 <h2 class="anchored" data-anchor-id="out-of-core-partitioning">15. Out-of-Core &amp; Partitioning</h2>
-<div id="1d919d23" class="cell" data-execution_count="15">
+<div id="f64ff1b9" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># Streaming flow for massive data</span></span>
