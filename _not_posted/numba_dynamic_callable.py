@@ -28,7 +28,7 @@ def multiply_dynamic(a, b):
     return a * b
 
 
-def main():
+def main() -> None:
     x, y = 5, 3
 
     # --- Executing Method A ---

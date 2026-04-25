@@ -1,4 +1,4 @@
-import os
+import pathlib
 
 import polars as pl
 import polars.selectors as cs
@@ -68,10 +68,10 @@ def main() -> None:
         .sink_csv("iris_final.csv")
     )
     print("Streaming complete. Cleaning up...")
-    if os.path.exists("iris_temp.csv"):
-        os.remove("iris_temp.csv")
-    if os.path.exists("iris_final.csv"):
-        os.remove("iris_final.csv")
+    if pathlib.Path("iris_temp.csv").exists():
+        pathlib.Path("iris_temp.csv").unlink()
+    if pathlib.Path("iris_final.csv").exists():
+        pathlib.Path("iris_final.csv").unlink()
 
 
 if __name__ == "__main__":

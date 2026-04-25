@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import itertools
+import operator
 from collections.abc import Callable, Generator, Iterable, Iterator, Mapping
 from itertools import islice
 from sys import maxsize
@@ -145,7 +146,7 @@ if __name__ == "__main__":
     # With key function
     data = ["apple", "banana", "ant", "bear", "apricot"]
     print(f"group_by_non_consecutive({data}, key=lambda x: x[0])")
-    for key, group in group_by_non_consecutive(data, key=lambda x: x[0]):
+    for key, group in group_by_non_consecutive(data, key=operator.itemgetter(0)):
         print(f"  {key}: {list(group)}")
     print()
 

@@ -14,20 +14,14 @@ class ColumnarMeta(type):
         code_lines = []
 
         code_lines.append("def __init__(self):")
-        for f in fields:
-            code_lines.append(f"    self.{f} = []")
+        code_lines.extend(f"    self.{f} = []" for f in fields)
         code_lines.append("")
 
         args = ", ".join(fields)
         code_lines.append(f"def append(self, *, {args}):")
-        for f in fields:
-            code_lines.append(f"    self.{f}.append({f})")
-        code_lines.append("")
-
-        code_lines.append("def to_dict(self):")
-        code_lines.append("    return {")
-        for f in fields:
-            code_lines.append(f"        '{f}': self.{f},")
+        code_lines.extend(f"    self.{f}.append({f})" for f in fields)
+        code_lines.extend(("", "def to_dict(self):", "    return {"))
+        code_lines.extend(f"        '{f}': self.{f}," for f in fields)
         code_lines.append("    }")
 
         compiled_code = "\n".join(code_lines)

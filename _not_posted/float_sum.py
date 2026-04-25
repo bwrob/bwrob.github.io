@@ -53,7 +53,7 @@ N = 10_000_000
 
 
 def generate_nasty_shuffle(n: int) -> np.ndarray:
-    """The Nasty Shuffle
+    """The Nasty Shuffle.
 
     Mathematical Target: Left-to-right accumulator vulnerability.
     Description: Randomly distributes massive boundary numbers (+1e16 and -1e16)
@@ -70,7 +70,7 @@ def generate_nasty_shuffle(n: int) -> np.ndarray:
 
 
 def generate_sequential_avalanche(n: int) -> np.ndarray:
-    """The Sequential Avalanche
+    """The Sequential Avalanche.
 
     Mathematical Target: Pairwise summation (NumPy) vulnerability.
     Description: Places +1e16 at the very beginning, followed sequentially by
@@ -84,7 +84,7 @@ def generate_sequential_avalanche(n: int) -> np.ndarray:
 
 
 def generate_micro_aggression(n: int) -> np.ndarray:
-    """The Micro-Aggression
+    """The Micro-Aggression.
 
     Mathematical Target: Precision degradation at the lowest bits.
     Description: Alternates between +1.0 and -1.0, interspersed with tiny
@@ -102,7 +102,7 @@ def generate_micro_aggression(n: int) -> np.ndarray:
 
 
 def generate_exponent_staircase() -> np.ndarray:
-    """The Exponent Staircase
+    """The Exponent Staircase.
 
     Mathematical Target: Extreme magnitude span and accumulator overflow.
     Description: Creates pairs of massive and tiny numbers spanning from
@@ -115,14 +115,14 @@ def generate_exponent_staircase() -> np.ndarray:
     staircase = [10.0**i for i in range(-100, 100)] + [
         -(10.0**i) for i in range(-100, 100)
     ]
-    staircase += [3.14159] * 1000
+    staircase += [math.pi] * 1000
     arr = np.array(staircase, dtype=np.float64)
     np.random.shuffle(arr)
     return arr
 
 
 def generate_subnormal_survivor() -> np.ndarray:
-    """The Subnormal Survivor
+    """The Subnormal Survivor.
 
     Mathematical Target: Denormalized float handling (IEEE-754 subnormals).
     Description: Places a massive blockade (1e16), followed by the absolute
@@ -137,7 +137,7 @@ def generate_subnormal_survivor() -> np.ndarray:
 
 
 def generate_fractional_drift(n: int) -> np.ndarray:
-    """The Fractional Drift
+    """The Fractional Drift.
 
     Mathematical Target: Accumulation of representation error.
     Description: Sums millions of 0.1s. Since 0.1 is an infinite repeating
@@ -150,7 +150,7 @@ def generate_fractional_drift(n: int) -> np.ndarray:
 
 
 def generate_kahan_killer(n: int) -> np.ndarray:
-    """The Kahan Killer
+    """The Kahan Killer.
 
     Mathematical Target: Standard Kahan error-compensation failure.
     Description: Alternates between adding a tiny number (1e-10), a massive
@@ -168,7 +168,7 @@ def generate_kahan_killer(n: int) -> np.ndarray:
 
 
 def generate_precision_annihilator(n: int) -> np.ndarray:
-    """The Precision Annihilator
+    """The Precision Annihilator.
 
     Mathematical Target: Catastrophic cancellation of the upper 52 bits.
     Description: Uses pairs of massive numbers that differ by exactly their
@@ -188,7 +188,7 @@ def generate_precision_annihilator(n: int) -> np.ndarray:
 
 
 def generate_sparse_mirage(n: int) -> np.ndarray:
-    """The Sparse Mirage
+    """The Sparse Mirage.
 
     Mathematical Target: Branch prediction and zero-skipping logic.
     Description: An array of 9.9 million exact zeros, with a few payloads
@@ -199,7 +199,7 @@ def generate_sparse_mirage(n: int) -> np.ndarray:
     of the `if val == 0.0: continue` branch logic.
     """
     arr = np.zeros(n, dtype=np.float64)
-    arr[::100000] = 3.14159
+    arr[::100000] = math.pi
     return arr
 
 
@@ -224,14 +224,14 @@ DATASETS = generate_all_datasets()
 
 # --- 3. Pytest Fixtures & Setup ---
 @pytest.fixture(scope="session", autouse=True)
-def warmup_numba():
+def warmup_numba() -> None:
     """Force Numba to compile before tests start to avoid skewing test times."""
     _ = numba_bucket_sum(np.array([1.0, 2.0, -3.0], dtype=np.float64))
 
 
 # --- 4. Accuracy Test Matrix ---
 @pytest.mark.parametrize(
-    "algo_name, algo_func",
+    ("algo_name", "algo_func"),
     [
         pytest.param(
             "builtin_sum",
@@ -251,7 +251,7 @@ def warmup_numba():
     ],
 )
 @pytest.mark.parametrize("scenario", list(DATASETS.keys()))
-def test_summation_accuracy(scenario, algo_name, algo_func):
+def test_summation_accuracy(scenario, algo_name, algo_func) -> None:
     arr = DATASETS[scenario]
 
     # The Oracle: math.fsum guarantees mathematically perfect precision
@@ -266,7 +266,7 @@ def test_summation_accuracy(scenario, algo_name, algo_func):
 
 # --- 5. Performance Test Matrix ---
 @pytest.mark.parametrize("scenario", list(DATASETS.keys()))
-def test_performance_vs_fsum(scenario):
+def test_performance_vs_fsum(scenario) -> None:
     """Ensures that our Numba implementation is strictly faster than math.fsum
     across every single dataset configuration.
     Takes the best of 3 runs to avoid random OS CPU scheduling noise.

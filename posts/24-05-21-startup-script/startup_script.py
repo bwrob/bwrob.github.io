@@ -69,7 +69,7 @@ def start_process(
     if path.is_dir():
         logger.info("Opening folder %s", name)
 
-    if path.suffix in (".exe", ".lnk"):
+    if path.suffix in {".exe", ".lnk"}:
         logger.info("Running app %s", name)
     else:
         logger.info("Opening file %s", name)

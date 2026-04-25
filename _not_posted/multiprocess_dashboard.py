@@ -1,3 +1,4 @@
+import operator
 import os
 import random
 import time
@@ -214,7 +215,7 @@ def plot_plotly_gantt(history: list[dict[str, Any]]) -> None:
             }
         )
 
-    df_data.sort(key=lambda x: x["Worker"])
+    df_data.sort(key=operator.itemgetter("Worker"))
 
     color_map = {
         "Rescued by P-Core": "#ef4444",
@@ -237,11 +238,11 @@ def plot_plotly_gantt(history: list[dict[str, Any]]) -> None:
     fig.update_yaxes(autorange="reversed")
     fig.update_layout(
         showlegend=True,
-        xaxis=dict(
-            title="Elapsed Time (Minutes:Seconds)",
-            tickformat="%M:%S",
-        ),
-        font=dict(family="sans-serif", size=14),
+        xaxis={
+            "title": "Elapsed Time (Minutes:Seconds)",
+            "tickformat": "%M:%S",
+        },
+        font={"family": "sans-serif", "size": 14},
         hovermode="closest",
     )
 
@@ -264,7 +265,9 @@ def print_task_summary(history: list[dict[str, Any]], console: Console) -> None:
     table.add_column("Final Core Type", justify="center")
 
     # Sort tasks so the heaviest ones are at the top
-    sorted_history = sorted(history, key=lambda x: x["Duration_Sec"], reverse=True)
+    sorted_history = sorted(
+        history, key=operator.itemgetter("Duration_Sec"), reverse=True
+    )
 
     for h in sorted_history:
         if not E_CORES:

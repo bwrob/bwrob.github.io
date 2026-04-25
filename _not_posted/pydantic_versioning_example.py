@@ -45,7 +45,7 @@ class UserV2(VersionedBaseModel, schema_version=2):
             The transformed data dictionary for version 2.
 
         """
-        logger.debug(f"  Applying UserV2 migration (v1 -> v2). Data: {data}")
+        logger.debug("  Applying UserV2 migration (v1 -> v2). Data: %s", data)
         return {
             "id": data["id"],
             "full_name": data["name"],
@@ -96,7 +96,7 @@ class UserV3(VersionedBaseModel, schema_version=3):
             The transformed data dictionary for version 3.
 
         """
-        logger.debug(f"  Applying UserV3 migration (v2 -> v3). Data: {data}")
+        logger.debug("  Applying UserV3 migration (v2 -> v3). Data: %s", data)
         return {
             "id": data["id"],
             "full_name": data["full_name"],
@@ -126,7 +126,7 @@ class AddressV2(VersionedBaseModel, schema_version=2):
             The transformed data dictionary for version 2.
 
         """
-        logger.debug(f"    Applying AddressV2 migration (v1 -> v2). Data: {data}")
+        logger.debug("    Applying AddressV2 migration (v1 -> v2). Data: %s", data)
         transformed_data = data.copy()
         transformed_data["country"] = "USA"
         return transformed_data
@@ -154,7 +154,7 @@ class UserV4(VersionedBaseModel, schema_version=4):
             The transformed data dictionary for version 4.
 
         """
-        logger.debug(f"  Applying UserV4 migration (v3 -> v4). Data: {data}")
+        logger.debug("  Applying UserV4 migration (v3 -> v4). Data: %s", data)
         transformed_data = data.copy()
 
         if "address" in transformed_data and transformed_data["address"] is not None:

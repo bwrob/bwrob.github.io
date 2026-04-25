@@ -18,7 +18,7 @@ except ImportError:
 
 def _swig_repr(self) -> str:
     try:
-        strthis = "proxy of " + self.this.__repr__()
+        strthis = "proxy of " + repr(self.this)
     except __builtin__.Exception:
         strthis = ""
     return f"<{self.__class__.__module__}.{self.__class__.__name__}; {strthis} >"

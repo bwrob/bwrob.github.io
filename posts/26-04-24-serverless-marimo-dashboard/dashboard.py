@@ -52,7 +52,7 @@ def _(slider):
 
 
 @app.cell
-def _(df, img, mo, slider, text, v):
+def _(df, img, mo, slider, text, v) -> None:
     mo.vstack(
         [
             mo.hstack(

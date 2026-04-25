@@ -4,19 +4,8 @@ This is my personal blog. I use it for posts to both share with people and have 
 
 ## Author
 
-- **Name:** Bartosz Wróblewski
 - **Background:** Mathematician turned quantitative analyst and software engineer.
-
-## Professional Experience
-
-- **Current Role:** Senior Software Developer at DXC Luxoft (Risk Engine Engineer).
-- **Previous Roles:** Financial Software Engineer at Syberry, Senior Specialist in Model Development at BNY Mellon, Quantitative Analyst at Credit Suisse.
 - **Expertise:** Quantitative finance, market risk, counterparty credit risk, model development, and quantitative development.
-
-## Academic Background
-
-- **Education:** PhD candidate in Mathematics at the University of Wrocław.
-- **Research:** Focused on non-local unbounded operators and their applications in physics and finance.
 - **Teaching:** Experience as a teaching assistant for mathematics and computer science courses.
 
 ## Blog Content

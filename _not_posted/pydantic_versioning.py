@@ -52,8 +52,9 @@ class VersionedModelMeta(ModelMetaclass):
                 migration_methods[from_version] = update_method
             else:
                 logger.warning(
-                    f"'update' method in {name} is for schema_version {schema_version}, "
-                    "but no preceding version exists (from_version < 0). Skipping."
+                    "'update' method in %s is for schema_version %s, but no preceding version exists (from_version < 0). Skipping.",
+                    name,
+                    schema_version,
                 )
         return migration_methods
 
@@ -184,7 +185,7 @@ class VersionedBaseModel(BaseModel, metaclass=VersionedModelMeta):
         model_versions_for_family = sorted(
             [
                 v
-                for (name, v), model_cls in VersionedModelMeta._model_registry.items()
+                for (name, v) in VersionedModelMeta._model_registry
                 if name == model_family_name
             ]
         )
@@ -196,7 +197,7 @@ class VersionedBaseModel(BaseModel, metaclass=VersionedModelMeta):
         detected_version = None
         for version in model_versions_for_family:
             model_to_try = VersionedModelMeta._model_registry[
-                (model_family_name, version)
+                model_family_name, version
             ]
             try:
                 TypeAdapter(model_to_try).validate_python(data)
@@ -251,8 +252,8 @@ class VersionedBaseModel(BaseModel, metaclass=VersionedModelMeta):
 
         if incoming_version == target_version:
             logger.debug(
-                f"Data is already at target version {target_version}. No migration "
-                "needed."
+                "Data is already at target version %s. No migration needed.",
+                target_version,
             )
             try:
                 return cls.model_validate(current_data_payload)
@@ -264,14 +265,15 @@ class VersionedBaseModel(BaseModel, metaclass=VersionedModelMeta):
                 raise MigrationError(msg) from e
 
         logger.debug(
-            f"Starting iterative migration from v{incoming_version} to "
-            f"v{target_version}..."
+            "Starting iterative migration from v%s to v%s...",
+            incoming_version,
+            target_version,
         )
 
         for current_migration_version in range(incoming_version, target_version):
             next_version = current_migration_version + 1
             logger.debug(
-                f"Migrating from v{current_migration_version} to v{next_version}..."
+                "Migrating from v%s to v%s...", current_migration_version, next_version
             )
 
             next_model_cls = cls._get_model_by_version(next_version)
@@ -307,7 +309,9 @@ class VersionedBaseModel(BaseModel, metaclass=VersionedModelMeta):
 
             try:
                 TypeAdapter(next_model_cls).validate_python(current_data_payload)
-                logger.debug(f"Successfully migrated and validated to v{next_version}.")
+                logger.debug(
+                    "Successfully migrated and validated to v%s.", next_version
+                )
             except ValidationError as e:
                 msg = (
                     f"Validation failed after migrating to v{next_version} "
@@ -318,8 +322,8 @@ class VersionedBaseModel(BaseModel, metaclass=VersionedModelMeta):
         try:
             final_model = cls.model_validate(current_data_payload)
             logger.debug(
-                f"Successfully loaded and migrated data to final version "
-                f"{target_version}."
+                "Successfully loaded and migrated data to final version %s.",
+                target_version,
             )
             return final_model
         except ValidationError as e:
