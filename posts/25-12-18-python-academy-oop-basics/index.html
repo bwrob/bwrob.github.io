@@ -6,7 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="bwrob">
 <meta name="dcterms.date" content="2025-12-18">
 <meta name="description" content="How to design flexible financial models using inheritance, ABCs, and protocols.">
 
@@ -81,8 +80,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-23bbe8b5e4efc1e257f6d59dce478b08.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-3cfb027044eb62cd4630f1a7111e2023.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-dbdcfdb49b6030e91c9710670aca2296.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-7ed80769e3f1017a6e26edc6e7b3fc4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-94455f9bada31d769f1efa85f1772f1a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -95,7 +94,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "/",
     "s"
   ],
-  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -409,12 +407,6 @@ window.Quarto = {
   
   <div class="quarto-title-meta">
 
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>bwrob </p>
-            </div>
-    </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
@@ -485,7 +477,9 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="abstract-base-classes-abcs">Abstract Base Classes (ABCs)</h2>
 <p>To keep things sane, we need rules. We need a contract that says: “If you want to be a Yield Curve, you <em>must</em> provide a discount factor.”</p>
 <p>Python handles this with <strong>Abstract Base Classes (ABCs)</strong>.</p>
-<div id="590492b8" class="cell" data-execution_count="1">
+<div id="b67106aa" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> math</span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
@@ -508,6 +502,7 @@ window.Quarto = {
 <span id="cb1-20"><a href="#cb1-20"></a>            <span class="cf">return</span> <span class="fl">0.0</span></span>
 <span id="cb1-21"><a href="#cb1-21"></a>        df <span class="op">=</span> <span class="va">self</span>.discount_factor(t)</span>
 <span id="cb1-22"><a href="#cb1-22"></a>        <span class="cf">return</span> <span class="op">-</span>math.log(df) <span class="op">/</span> t</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <p>Inheriting from <code>ABC</code> prevents anyone from creating a “plain” <code>YieldCurve</code>—it’s just a template. The <code>@abstractmethod</code> decorator is the enforcer: if a subclass doesn’t implement <code>discount_factor</code>, Python literally won’t let you instantiate it.</p>
 <p>Notice we included <code>zero_rate</code>. Since the math linking zero rates and discount factors is universal (<span class="math inline">\(Z(t) = -\frac{\ln D(t)}{t}\)</span>), we write it once here, and every single subclass gets it for free.</p>
@@ -515,13 +510,16 @@ window.Quarto = {
 <section id="concrete-implementations" class="level2">
 <h2 class="anchored" data-anchor-id="concrete-implementations">Concrete Implementations</h2>
 <p>With the ground rules established, let’s build something real. The simplest case is a <strong>Flat Forward Curve</strong>, where the rate is constant forever.</p>
-<div id="ad841471" class="cell" data-execution_count="2">
+<div id="91d37fd5" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">class</span> FlatForwardCurve(YieldCurve):</span>
 <span id="cb2-2"><a href="#cb2-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, rate: <span class="bu">float</span>):</span>
 <span id="cb2-3"><a href="#cb2-3"></a>        <span class="va">self</span>.rate <span class="op">=</span> rate</span>
 <span id="cb2-4"><a href="#cb2-4"></a></span>
 <span id="cb2-5"><a href="#cb2-5"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
 <span id="cb2-6"><a href="#cb2-6"></a>        <span class="cf">return</span> math.exp(<span class="op">-</span><span class="va">self</span>.rate <span class="op">*</span> t)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
 <section id="multiple-inheritance-and-layering-behavior" class="level2">
@@ -529,7 +527,9 @@ window.Quarto = {
 <p>Before we get to complex curves, let’s talk about one of Python’s superpowers: <strong>Multiple Inheritance</strong>. In many languages, a class can only have one parent. In Python, it can have many.</p>
 <p>While this can get messy (the infamous “Diamond Problem”), it’s perfect for <strong>Mixins</strong>. A Mixin is a small class designed to “mix in” specific functionality to other classes.</p>
 <p>Suppose we want to take our <code>FlatForwardCurve</code> (or <em>any</em> curve) and add a constant spread to it. Instead of rewriting the curve logic, we create a <code>SpreadMixin</code>.</p>
-<div id="ef807e2d" class="cell" data-execution_count="3">
+<div id="e464c010" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">class</span> SpreadMixin:</span>
 <span id="cb3-2"><a href="#cb3-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, spread: <span class="bu">float</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
 <span id="cb3-3"><a href="#cb3-3"></a>        <span class="va">self</span>.spread <span class="op">=</span> spread</span>
@@ -544,12 +544,16 @@ window.Quarto = {
 <span id="cb3-12"><a href="#cb3-12"></a></span>
 <span id="cb3-13"><a href="#cb3-13"></a><span class="kw">class</span> ShiftedFlatCurve(SpreadMixin, FlatForwardCurve):</span>
 <span id="cb3-14"><a href="#cb3-14"></a>    <span class="cf">pass</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <p>When we create <code>ShiftedFlatCurve</code>, Python’s <strong>Method Resolution Order (MRO)</strong> ensures that <code>SpreadMixin</code> runs first. Its <code>super().discount_factor</code> call then hops over to <code>FlatForwardCurve</code>.</p>
-<div id="b175b11e" class="cell" data-execution_count="4">
+<div id="99844add" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>shifted <span class="op">=</span> ShiftedFlatCurve(rate<span class="op">=</span><span class="fl">0.05</span>, spread<span class="op">=</span><span class="fl">0.02</span>)</span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="co"># Total rate effectively 0.07</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="bu">print</span>(<span class="ss">f"Shifted DF(1.0): </span><span class="sc">{</span>shifted<span class="sc">.</span>discount_factor(<span class="fl">1.0</span>)<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Shifted DF(1.0): 0.9324</code></pre>
 </div>
@@ -563,7 +567,9 @@ window.Quarto = {
 <section id="approach-a-composition-the-strategy-pattern" class="level3">
 <h3 class="anchored" data-anchor-id="approach-a-composition-the-strategy-pattern">Approach A: Composition (The Strategy Pattern)</h3>
 <p>Here, we treat interpolation as a tool the curve <em>uses</em>. We define an <code>Interpolator</code> protocol and pass a concrete implementation (like <code>LinearInterpolator</code>) to the curve.</p>
-<div id="eaeba73b" class="cell" data-execution_count="5">
+<div id="e2bedc19" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">from</span> typing <span class="im">import</span> Protocol</span>
 <span id="cb6-2"><a href="#cb6-2"></a></span>
 <span id="cb6-3"><a href="#cb6-3"></a></span>
@@ -604,13 +610,16 @@ window.Quarto = {
 <span id="cb6-38"><a href="#cb6-38"></a>        <span class="co"># Delegate the math to the strategy</span></span>
 <span id="cb6-39"><a href="#cb6-39"></a>        r <span class="op">=</span> <span class="va">self</span>.interpolator.interpolate(t, <span class="va">self</span>.times, <span class="va">self</span>.rates)</span>
 <span id="cb6-40"><a href="#cb6-40"></a>        <span class="cf">return</span> math.exp(<span class="op">-</span>r <span class="op">*</span> t)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <p>This is incredibly flexible. Want to switch to Cubic Splines? Just pass a different interpolator. The curve class itself doesn’t need to change.</p>
 </section>
 <section id="approach-b-inheritance-mixins" class="level3">
 <h3 class="anchored" data-anchor-id="approach-b-inheritance-mixins">Approach B: Inheritance (Mixins)</h3>
 <p>Alternatively, we can “mix in” the ability to interpolate, just like we mixed in the spread logic.</p>
-<div id="c334f315" class="cell" data-execution_count="6">
+<div id="2d6b9ad6" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">class</span> LinearInterpolationMixin:</span>
 <span id="cb7-2"><a href="#cb7-2"></a>    <span class="co">"""</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a><span class="co">    Mixin that provides linear interpolation capability.</span></span>
@@ -636,6 +645,7 @@ window.Quarto = {
 <span id="cb7-23"><a href="#cb7-23"></a>        <span class="co"># Use the inherited method</span></span>
 <span id="cb7-24"><a href="#cb7-24"></a>        r <span class="op">=</span> <span class="va">self</span>.interpolate_linear(t, <span class="va">self</span>.times, <span class="va">self</span>.rates)</span>
 <span id="cb7-25"><a href="#cb7-25"></a>        <span class="cf">return</span> math.exp(<span class="op">-</span>r <span class="op">*</span> t)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <p>This feels more integrated, but it’s static. You can’t change the interpolation method at runtime as easily as with composition.</p>
 </section>
@@ -643,7 +653,9 @@ window.Quarto = {
 <section id="the-payoff-polymorphism" class="level2">
 <h2 class="anchored" data-anchor-id="the-payoff-polymorphism">The Payoff: Polymorphism</h2>
 <p>Here is where the magic happens. Because we adhered to our <code>YieldCurve</code> contract, our pricing function can be completely ignorant of the complexity we just built.</p>
-<div id="1d0502a0" class="cell" data-execution_count="7">
+<div id="6011b1b5" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
 <span id="cb8-2"><a href="#cb8-2"></a></span>
 <span id="cb8-3"><a href="#cb8-3"></a><span class="at">@dataclass</span></span>
@@ -658,9 +670,12 @@ window.Quarto = {
 <span id="cb8-12"><a href="#cb8-12"></a>        <span class="co"># discount_factor method to run!</span></span>
 <span id="cb8-13"><a href="#cb8-13"></a>        price <span class="op">+=</span> cf.amount <span class="op">*</span> curve.discount_factor(cf.time)</span>
 <span id="cb8-14"><a href="#cb8-14"></a>    <span class="cf">return</span> price</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <p>Let’s test it:</p>
-<div id="f1f30d0c" class="cell" data-execution_count="8">
+<div id="5b8ec98b" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Define a bond: coupon of 5 at t=1, principal 105 at t=2</span></span>
 <span id="cb9-2"><a href="#cb9-2"></a>bond_cfs <span class="op">=</span> [CashFlow(<span class="dv">5</span>, <span class="fl">1.0</span>), CashFlow(<span class="dv">105</span>, <span class="fl">2.0</span>)]</span>
 <span id="cb9-3"><a href="#cb9-3"></a></span>
@@ -676,6 +691,7 @@ window.Quarto = {
 <span id="cb9-13"><a href="#cb9-13"></a><span class="co"># 3. Price with Mixin</span></span>
 <span id="cb9-14"><a href="#cb9-14"></a>curve_mixin <span class="op">=</span> MixinZeroCurve([<span class="fl">0.5</span>, <span class="fl">2.0</span>], [<span class="fl">0.04</span>, <span class="fl">0.06</span>])</span>
 <span id="cb9-15"><a href="#cb9-15"></a><span class="bu">print</span>(<span class="ss">f"Price (Mixin): </span><span class="sc">{</span>price_bond(bond_cfs, curve_mixin)<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Price (Flat): 99.76
 Price (Composition): 97.90
@@ -688,7 +704,9 @@ Price (Mixin): 97.90</code></pre>
 <h2 class="anchored" data-anchor-id="protocols-when-inheritance-feels-heavy">Protocols: When Inheritance Feels Heavy</h2>
 <p>Inheritance is a commitment. Sometimes you want to use a class from a third-party library that <em>looks</em> like a yield curve but doesn’t inherit from your specific <code>YieldCurve</code> ABC.</p>
 <p>Python has a solution for this: <strong>Protocols</strong> (often called “Structural Subtyping” or “Duck Typing”). A Protocol defines a shape. It says, “I don’t care who your parents are, as long as you have a <code>discount_factor</code> method.”</p>
-<div id="8ccec8f8" class="cell" data-execution_count="9">
+<div id="e873ccbd" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="im">from</span> typing <span class="im">import</span> runtime_checkable</span>
 <span id="cb11-2"><a href="#cb11-2"></a></span>
 <span id="cb11-3"><a href="#cb11-3"></a><span class="at">@runtime_checkable</span></span>
@@ -709,6 +727,7 @@ Price (Mixin): 97.90</code></pre>
 <span id="cb11-18"><a href="#cb11-18"></a>simple <span class="op">=</span> SimpleDiscounter()</span>
 <span id="cb11-19"><a href="#cb11-19"></a><span class="bu">print</span>(<span class="ss">f"Is compatible? </span><span class="sc">{</span><span class="bu">isinstance</span>(simple, Discountable)<span class="sc">}</span><span class="ss">"</span>)</span>
 <span id="cb11-20"><a href="#cb11-20"></a><span class="bu">print</span>(<span class="ss">f"Price: </span><span class="sc">{</span>price_asset_structural(<span class="dv">100</span>, <span class="fl">1.0</span>, simple)<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Is compatible? True
 Price: 95.24</code></pre>

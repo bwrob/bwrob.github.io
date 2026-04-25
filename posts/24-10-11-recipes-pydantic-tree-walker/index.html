@@ -6,7 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="bwrob">
 <meta name="dcterms.date" content="2024-10-11">
 <meta name="description" content="How to display Pydantic models as a tree structure in the console.">
 
@@ -81,8 +80,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-23bbe8b5e4efc1e257f6d59dce478b08.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-3cfb027044eb62cd4630f1a7111e2023.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-dbdcfdb49b6030e91c9710670aca2296.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-7ed80769e3f1017a6e26edc6e7b3fc4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-94455f9bada31d769f1efa85f1772f1a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -95,7 +94,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "/",
     "s"
   ],
-  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -383,12 +381,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
   <div class="quarto-title-meta">
 
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>bwrob </p>
-            </div>
-    </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
@@ -428,7 +420,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="the-script" class="level2">
 <h2 class="anchored" data-anchor-id="the-script">The Script</h2>
 <p>The script uses the <code>rich</code> library to make the output colorful and easy to read.</p>
-<div id="63dd5a4e" class="cell" data-execution_count="1">
+<div id="ba28caff" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># ruff: noqa: ANN401</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="co"># pyright: reportAny=false, reportExplicitAny=false</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
@@ -547,12 +541,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-116"><a href="#cb1-116"></a>    tree <span class="op">=</span> Tree(create_label(model.<span class="va">__name__</span>, COLORS[<span class="dv">0</span>]))</span>
 <span id="cb1-117"><a href="#cb1-117"></a>    build_tree(model, tree)</span>
 <span id="cb1-118"><a href="#cb1-118"></a>    console.<span class="bu">print</span>(tree)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
 <section id="example-usage" class="level2">
 <h2 class="anchored" data-anchor-id="example-usage">Example Usage</h2>
 <p>When you run the script, it will display the structure of the <code>Root</code> model as a tree:</p>
-<div id="3864fc47" class="cell" data-execution_count="2">
+<div id="973556cf" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">class</span> InnerNode(BaseModel):</span>
 <span id="cb2-2"><a href="#cb2-2"></a>    <span class="co">"""Inner node model for testing."""</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a></span>
@@ -585,6 +582,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-30"><a href="#cb2-30"></a></span>
 <span id="cb2-31"><a href="#cb2-31"></a></span>
 <span id="cb2-32"><a href="#cb2-32"></a>display_tree(Root)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-display">
 <pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="color: #008080; text-decoration-color: #008080">Root</span>
 ├── <span style="color: #008080; text-decoration-color: #008080">name</span>: <span style="color: #808080; text-decoration-color: #808080">str</span>

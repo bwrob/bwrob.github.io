@@ -6,7 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="bwrob">
 <meta name="dcterms.date" content="2025-05-02">
 <meta name="description" content="How to use and implement useful iterator utilities in Python.">
 
@@ -81,8 +80,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-23bbe8b5e4efc1e257f6d59dce478b08.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-3cfb027044eb62cd4630f1a7111e2023.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-dbdcfdb49b6030e91c9710670aca2296.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-7ed80769e3f1017a6e26edc6e7b3fc4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-94455f9bada31d769f1efa85f1772f1a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -95,7 +94,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "/",
     "s"
   ],
-  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -380,12 +378,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
   <div class="quarto-title-meta">
 
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>bwrob </p>
-            </div>
-    </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
@@ -435,7 +427,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="batched">batched</h2>
 <p>This one’s a classic: you have a long list and you want to slice it up into chunks. Maybe you’re feeding data into a neural network or just trying not to hit a rate limit on an API.</p>
 <p>Python 3.12 actually added this to <code>itertools</code>, but if you’re stuck on an older version or just want a standalone version, here’s how you can do it:</p>
-<div id="c161dec4" class="cell" data-execution_count="1">
+<div id="9a9104da" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> __future__ <span class="im">import</span> annotations</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="im">from</span> collections.abc <span class="im">import</span> Iterable</span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="im">from</span> itertools <span class="im">import</span> islice</span>
@@ -458,10 +452,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-20"><a href="#cb1-20"></a>            msg <span class="op">=</span> <span class="st">"Incomplete batch for strict batching."</span></span>
 <span id="cb1-21"><a href="#cb1-21"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(msg)</span>
 <span id="cb1-22"><a href="#cb1-22"></a>        <span class="cf">yield</span> batch</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <section id="example" class="level3">
 <h3 class="anchored" data-anchor-id="example">Example</h3>
-<div id="0586cb59" class="cell" data-execution_count="2">
+<div id="ca0562db" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="bu">print</span>(<span class="ss">f"batched(range(10), 3): </span><span class="sc">{</span><span class="bu">list</span>(batched(<span class="bu">range</span>(<span class="dv">10</span>), <span class="dv">3</span>))<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -476,7 +471,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="unbox">unbox</h2>
 <p>Ever have a list that <em>should</em> only have one thing in it? Maybe it’s a filtered database result or a unique ID. Instead of doing <code>results[0]</code> and hoping for the best, <code>unbox</code> makes sure your assumption is actually right.</p>
 <p>It grabs that one item and throws a <code>ValueError</code> if it finds more than one (or zero). It’s a great way to catch bugs early.</p>
-<div id="be0e5156" class="cell" data-execution_count="3">
+<div id="b4b8d183" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">def</span> unbox[T](iterable: Iterable[T]) <span class="op">-&gt;</span> T:</span>
 <span id="cb4-2"><a href="#cb4-2"></a>    <span class="co">"""Unbox an iterable if it contains a single element."""</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a>    iterator <span class="op">=</span> <span class="bu">iter</span>(iterable)</span>
@@ -487,10 +484,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-8"><a href="#cb4-8"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(msg)</span>
 <span id="cb4-9"><a href="#cb4-9"></a>    <span class="cf">except</span> <span class="pp">StopIteration</span>:</span>
 <span id="cb4-10"><a href="#cb4-10"></a>        <span class="cf">return</span> first_value</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <section id="example-1" class="level3">
 <h3 class="anchored" data-anchor-id="example-1">Example</h3>
-<div id="fe9cf0b0" class="cell" data-execution_count="4">
+<div id="7ac66ec0" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="bu">print</span>(<span class="ss">f"unbox([42]): </span><span class="sc">{</span>unbox([<span class="dv">42</span>])<span class="sc">}</span><span class="ss">"</span>)</span>
@@ -510,15 +508,18 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 <section id="unzip" class="level2">
 <h2 class="anchored" data-anchor-id="unzip">unzip</h2>
 <p>If you’ve ever used Python’s <code>zip</code> function, you know it’s a lifesaver for pairing up data. But what about the other way around? If you have a list of pairs and you want two separate lists, <code>unzip</code> is the tool for the job.</p>
-<div id="bf02a762" class="cell" data-execution_count="5">
+<div id="4105cc95" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">def</span> unzip[T](iterable: Iterable[<span class="bu">tuple</span>[T, ...]]) <span class="op">-&gt;</span> <span class="bu">tuple</span>[Iterable[T], ...]:</span>
 <span id="cb7-2"><a href="#cb7-2"></a>    <span class="co">"""Unzip an iterable of tuples."""</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a>    zipped <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>iterable, strict<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb7-4"><a href="#cb7-4"></a>    <span class="cf">return</span> <span class="bu">tuple</span>(zipped)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <section id="example-2" class="level3">
 <h3 class="anchored" data-anchor-id="example-2">Example</h3>
-<div id="f6f21ef4" class="cell" data-execution_count="6">
+<div id="b25494ef" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>zipped_data <span class="op">=</span> [(<span class="dv">1</span>, <span class="st">"a"</span>), (<span class="dv">2</span>, <span class="st">"b"</span>), (<span class="dv">3</span>, <span class="st">"c"</span>)]</span>
@@ -534,7 +535,9 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 <section id="flatten_iterable" class="level2">
 <h2 class="anchored" data-anchor-id="flatten_iterable">flatten_iterable</h2>
 <p>Nested lists are a headache. <code>flatten_iterable</code> lets you turn a messy, deeply nested structure into a single, clean list. It’s smart enough to leave strings and bytes alone, so you don’t end up with a list of individual characters when you didn’t mean to.</p>
-<div id="fbe4958e" class="cell" data-execution_count="7">
+<div id="6e2249a6" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="im">from</span> collections.abc <span class="im">import</span> Generator</span>
 <span id="cb10-2"><a href="#cb10-2"></a><span class="im">from</span> typing <span class="im">import</span> cast</span>
 <span id="cb10-3"><a href="#cb10-3"></a></span>
@@ -551,10 +554,11 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 <span id="cb10-14"><a href="#cb10-14"></a>                <span class="cf">yield</span> cast(T, item)</span>
 <span id="cb10-15"><a href="#cb10-15"></a></span>
 <span id="cb10-16"><a href="#cb10-16"></a>    <span class="cf">return</span> <span class="bu">list</span>(_helper(iterable))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <section id="example-3" class="level3">
 <h3 class="anchored" data-anchor-id="example-3">Example</h3>
-<div id="4bd89fcd" class="cell" data-execution_count="8">
+<div id="b1749b25" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>nested_list <span class="op">=</span> [<span class="dv">1</span>, [<span class="dv">2</span>, <span class="st">"a"</span>, [<span class="dv">3</span>]], <span class="st">"b"</span>]</span>
@@ -569,7 +573,9 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 <section id="flatten_string_key_dict" class="level2">
 <h2 class="anchored" data-anchor-id="flatten_string_key_dict">flatten_string_key_dict</h2>
 <p>Nested dictionaries are great for structure, but they can be a pain to access. This function flattens them into a single level, using dots to join the keys (like <code>parent.child.grandchild</code>). It’s perfect for turning complex config files into something much easier to work with.</p>
-<div id="779204c2" class="cell" data-execution_count="9">
+<div id="f038d8b6" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="im">from</span> collections.abc <span class="im">import</span> Mapping</span>
 <span id="cb13-2"><a href="#cb13-2"></a></span>
 <span id="cb13-3"><a href="#cb13-3"></a><span class="bu">type</span> NestedDict[T] <span class="op">=</span> Mapping[<span class="bu">str</span>, NestedDict[T] <span class="op">|</span> T]</span>
@@ -587,10 +593,11 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 <span id="cb13-15"><a href="#cb13-15"></a>            <span class="cf">yield</span> prefix[:<span class="op">-</span><span class="dv">1</span>], cast(T, d)</span>
 <span id="cb13-16"><a href="#cb13-16"></a></span>
 <span id="cb13-17"><a href="#cb13-17"></a>    <span class="cf">return</span> <span class="bu">dict</span>(_generate_items(dictionary))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <section id="example-4" class="level3">
 <h3 class="anchored" data-anchor-id="example-4">Example</h3>
-<div id="cd554a38" class="cell" data-execution_count="10">
+<div id="d454126f" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>nested_dict <span class="op">=</span> {<span class="st">"a"</span>: <span class="dv">1</span>, <span class="st">"b"</span>: {<span class="st">"c"</span>: <span class="dv">2</span>, <span class="st">"d"</span>: {<span class="st">"e"</span>: <span class="dv">3</span>}}, <span class="st">"f"</span>: <span class="dv">4</span>}</span>
@@ -608,7 +615,9 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 <section id="group_by_non_consecutive" class="level2">
 <h2 class="anchored" data-anchor-id="group_by_non_consecutive">group_by_non_consecutive</h2>
 <p>If you’ve ever used <code>itertools.groupby</code>, you know the catch: your data <em>must</em> be sorted first, or it won’t work as expected. This helper function takes care of that for you by sorting the data before grouping it. It’s a bit more memory-heavy because it has to hold the whole list in memory to sort it, but for most everyday tasks, it’s a huge convenience.</p>
-<div id="1a8bcb76" class="cell" data-execution_count="11">
+<div id="0d025afc" class="cell" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="im">import</span> itertools</span>
 <span id="cb16-2"><a href="#cb16-2"></a><span class="im">from</span> collections.abc <span class="im">import</span> Callable, Iterator</span>
 <span id="cb16-3"><a href="#cb16-3"></a><span class="im">from</span> typing <span class="im">import</span> Any, Protocol, Self</span>
@@ -636,10 +645,11 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 <span id="cb16-25"><a href="#cb16-25"></a>        key <span class="op">=</span> default_key</span>
 <span id="cb16-26"><a href="#cb16-26"></a>    sorted_iterable <span class="op">=</span> <span class="bu">sorted</span>(iterable, key<span class="op">=</span>key, reverse<span class="op">=</span>reverse)  <span class="co"># type: ignore[arg-type]</span></span>
 <span id="cb16-27"><a href="#cb16-27"></a>    <span class="cf">return</span> itertools.groupby(sorted_iterable, key<span class="op">=</span>key)  <span class="co"># type: ignore[arg-type]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <section id="example-5" class="level3">
 <h3 class="anchored" data-anchor-id="example-5">Example</h3>
-<div id="1177ea6b" class="cell" data-execution_count="12">
+<div id="87fdd03d" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># With key function</span></span>

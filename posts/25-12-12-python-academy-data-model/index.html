@@ -6,7 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="bwrob">
 <meta name="dcterms.date" content="2025-12-12">
 <meta name="description" content="How to unlock the power of Python’s special methods to build intuitive and consistent classes.">
 
@@ -81,8 +80,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-23bbe8b5e4efc1e257f6d59dce478b08.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-3cfb027044eb62cd4630f1a7111e2023.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-dbdcfdb49b6030e91c9710670aca2296.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-7ed80769e3f1017a6e26edc6e7b3fc4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-94455f9bada31d769f1efa85f1772f1a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -95,7 +94,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "/",
     "s"
   ],
-  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -380,12 +378,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
   <div class="quarto-title-meta">
 
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>bwrob </p>
-            </div>
-    </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
@@ -452,7 +444,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>for position in portfolio</code> to audit our holdings.</li>
 </ul>
 <p>Let’s start by defining a simple <code>Position</code> container. To keep our balance sheet clean, we’ll track the total USD value rather than quantity and price.</p>
-<div id="43918aaa" class="cell" data-execution_count="1">
+<div id="31612428" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> __future__ <span class="im">import</span> annotations</span>
 <span id="cb1-2"><a href="#cb1-2"></a></span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
@@ -463,12 +457,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-8"><a href="#cb1-8"></a><span class="kw">class</span> Position:</span>
 <span id="cb1-9"><a href="#cb1-9"></a>    symbol: <span class="bu">str</span></span>
 <span id="cb1-10"><a href="#cb1-10"></a>    value_usd: <span class="bu">float</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
 <section id="the-initial-portfolio-class" class="level2">
 <h2 class="anchored" data-anchor-id="the-initial-portfolio-class">The Initial <code>Portfolio</code> Class</h2>
 <p>We start with a standard class definition. To index our strategy efficiently, we’ll store the positions in a dictionary keyed by their symbol. We name it <code>_contents</code> to signal it’s an internal implementation detail—a trade secret, if you will—encouraging users to access data through the public interface.</p>
-<div id="4b5d4485" class="cell" data-execution_count="2">
+<div id="be4e0220" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">class</span> Portfolio:</span>
 <span id="cb2-2"><a href="#cb2-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, name: <span class="bu">str</span>, managers: <span class="bu">tuple</span>[<span class="bu">str</span>, ...], contents: <span class="bu">list</span>[Position] <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>):</span>
 <span id="cb2-3"><a href="#cb2-3"></a>        <span class="va">self</span>.name <span class="op">=</span> name</span>
@@ -484,6 +481,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-13"><a href="#cb2-13"></a>pos2 <span class="op">=</span> Position(<span class="st">"GOOG"</span>, <span class="fl">140000.0</span>)</span>
 <span id="cb2-14"><a href="#cb2-14"></a>p <span class="op">=</span> Portfolio(<span class="st">"Tech Fund"</span>, (<span class="st">"Alice"</span>, <span class="st">"Bob"</span>), [pos1, pos2])</span>
 <span id="cb2-15"><a href="#cb2-15"></a><span class="bu">print</span>(p)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Portfolio(name='Tech Fund', managers=('Alice', 'Bob'), contents=[Position(symbol='AAPL', value_usd=15000.0), Position(symbol='GOOG', value_usd=140000.0)])</code></pre>
 </div>
@@ -493,11 +491,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="emulating-a-collection" class="level2">
 <h2 class="anchored" data-anchor-id="emulating-a-collection">Emulating a Collection</h2>
 <p>Right now, if we try to gauge the size of our portfolio, it raises a <code>TypeError</code>.</p>
-<div id="2e4b29e6" class="cell" data-execution_count="3">
+<div id="647a6ff5" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="cf">try</span>:</span>
 <span id="cb4-2"><a href="#cb4-2"></a>    <span class="bu">len</span>(p)</span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="cf">except</span> <span class="pp">TypeError</span> <span class="im">as</span> e:</span>
 <span id="cb4-4"><a href="#cb4-4"></a>    <span class="bu">print</span>(<span class="ss">f"Error: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Error: object of type 'Portfolio' has no len()</code></pre>
 </div>
@@ -505,13 +506,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>To enable the <code>len()</code> function, we implement <code>__len__</code>.</p>
 <section id="len__" class="level3">
 <h3 class="anchored" data-anchor-id="len__"><code>__len__</code></h3>
-<div id="d15d4648" class="cell" data-execution_count="4">
+<div id="f5f0a9c7" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">class</span> Portfolio(Portfolio): <span class="co"># Inheriting to add methods incrementally for this post</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a>    <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
 <span id="cb6-3"><a href="#cb6-3"></a>        <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>._contents)</span>
 <span id="cb6-4"><a href="#cb6-4"></a></span>
 <span id="cb6-5"><a href="#cb6-5"></a>p <span class="op">=</span> Portfolio(<span class="st">"Tech Fund"</span>, (<span class="st">"Alice"</span>, <span class="st">"Bob"</span>), [pos1, pos2])</span>
 <span id="cb6-6"><a href="#cb6-6"></a><span class="bu">print</span>(<span class="ss">f"Portfolio size: </span><span class="sc">{</span><span class="bu">len</span>(p)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Portfolio size: 2</code></pre>
 </div>
@@ -521,7 +525,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="getitem__" class="level3">
 <h3 class="anchored" data-anchor-id="getitem__"><code>__getitem__</code></h3>
 <p>We don’t want to scan through a list to find a stock; that’s O(N) efficiency, and in performance-critical applications, speed is crucial. The <code>__getitem__</code> method allows us to use the square bracket notation <code>[]</code> to access items directly.</p>
-<div id="e71880d9" class="cell" data-execution_count="5">
+<div id="bd9c66bd" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
 <span id="cb8-2"><a href="#cb8-2"></a>    <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, symbol: <span class="bu">str</span>) <span class="op">-&gt;</span> Position <span class="op">|</span> <span class="va">None</span>:</span>
 <span id="cb8-3"><a href="#cb8-3"></a>        <span class="cf">return</span> <span class="va">self</span>._contents.get(symbol)</span>
@@ -529,6 +535,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-5"><a href="#cb8-5"></a>p <span class="op">=</span> Portfolio(<span class="st">"Tech Fund"</span>, (<span class="st">"Alice"</span>, <span class="st">"Bob"</span>), [pos1, pos2])</span>
 <span id="cb8-6"><a href="#cb8-6"></a><span class="bu">print</span>(<span class="ss">f"AAPL position: </span><span class="sc">{</span>p[<span class="st">'AAPL'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
 <span id="cb8-7"><a href="#cb8-7"></a><span class="bu">print</span>(<span class="ss">f"MSFT position: </span><span class="sc">{</span>p[<span class="st">'MSFT'</span>]<span class="sc">}</span><span class="ss">"</span>) <span class="co"># Returns None</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>AAPL position: Position(symbol='AAPL', value_usd=15000.0)
 MSFT position: None</code></pre>
@@ -539,7 +546,9 @@ MSFT position: None</code></pre>
 <section id="enabling-iteration-__iter__" class="level3">
 <h3 class="anchored" data-anchor-id="enabling-iteration-__iter__">Enabling Iteration: <code>__iter__</code></h3>
 <p>Iterating through a collection is fundamental. Since we backed our portfolio with a dictionary, default iteration would just give us the keys (symbols). But when we loop through a portfolio, we usually want the assets themselves. We can dictate this behavior by implementing <code>__iter__</code>.</p>
-<div id="25f75996" class="cell" data-execution_count="6">
+<div id="5c71635b" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
 <span id="cb10-2"><a href="#cb10-2"></a>    <span class="kw">def</span> <span class="fu">__iter__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> Iterator[Position]:</span>
 <span id="cb10-3"><a href="#cb10-3"></a>        <span class="cf">return</span> <span class="bu">iter</span>(<span class="va">self</span>._contents.values())</span>
@@ -550,6 +559,7 @@ MSFT position: None</code></pre>
 <span id="cb10-8"><a href="#cb10-8"></a><span class="bu">print</span>(<span class="st">"Iterating through portfolio:"</span>)</span>
 <span id="cb10-9"><a href="#cb10-9"></a><span class="cf">for</span> pos <span class="kw">in</span> p:</span>
 <span id="cb10-10"><a href="#cb10-10"></a>    <span class="bu">print</span>(<span class="ss">f" - </span><span class="sc">{</span>pos<span class="sc">.</span>symbol<span class="sc">}</span><span class="ss">: $</span><span class="sc">{</span>pos<span class="sc">.</span>value_usd<span class="sc">:,.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Iterating through portfolio:
  - AAPL: $15,000.00
@@ -563,7 +573,9 @@ MSFT position: None</code></pre>
 <h2 class="anchored" data-anchor-id="membership-and-truthiness-__contains__-and-__bool__">Membership and Truthiness: <code>__contains__</code> and <code>__bool__</code></h2>
 <p>We can already check for membership because we implemented <code>__iter__</code>, but that’s like manually auditing every file to find one document—it’s O(N). Since we have a hash map (dictionary) underneath, we can do an O(1) check using <code>__contains__</code>.</p>
 <p>We also want to know if our portfolio is empty. By default, Python checks <code>len()</code>, but implementing <code>__bool__</code> allows us to be explicit about what constitutes a “truthy” portfolio.</p>
-<div id="173d94a6" class="cell" data-execution_count="7">
+<div id="c7c14b8a" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
 <span id="cb12-2"><a href="#cb12-2"></a>    <span class="kw">def</span> <span class="fu">__contains__</span>(<span class="va">self</span>, item: <span class="bu">str</span> <span class="op">|</span> Position) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
 <span id="cb12-3"><a href="#cb12-3"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(item, <span class="bu">str</span>):</span>
@@ -584,6 +596,7 @@ MSFT position: None</code></pre>
 <span id="cb12-18"><a href="#cb12-18"></a></span>
 <span id="cb12-19"><a href="#cb12-19"></a>empty_p <span class="op">=</span> Portfolio(<span class="st">"Empty"</span>, (<span class="st">"Nobody"</span>,))</span>
 <span id="cb12-20"><a href="#cb12-20"></a><span class="bu">print</span>(<span class="ss">f"Is empty_p truthy? </span><span class="sc">{</span><span class="bu">bool</span>(empty_p)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Is 'AAPL' in p? True
 Is 'MSFT' in p? False
@@ -596,7 +609,9 @@ Is empty_p truthy? False</code></pre>
 <h2 class="anchored" data-anchor-id="operator-overloading-__add__-combining-portfolios">Operator Overloading: <code>__add__</code> (Combining Portfolios)</h2>
 <p>In Python, objects can be combined using operators. If we have two portfolios, it makes intuitive sense to “add” them together using <code>+</code>.</p>
 <p>We implement this via <code>__add__</code>. This isn’t just concatenation; it’s a consolidation. We need to combine managers and sum up the value of overlapping positions.</p>
-<div id="65eeda6f" class="cell" data-execution_count="8">
+<div id="2abc6109" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
 <span id="cb14-2"><a href="#cb14-2"></a>    <span class="kw">def</span> <span class="fu">__add__</span>(<span class="va">self</span>, other: Portfolio) <span class="op">-&gt;</span> Portfolio:</span>
 <span id="cb14-3"><a href="#cb14-3"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(other, Portfolio):</span>
@@ -631,6 +646,7 @@ Is empty_p truthy? False</code></pre>
 <span id="cb14-32"><a href="#cb14-32"></a>p3 <span class="op">=</span> p1 <span class="op">+</span> p2</span>
 <span id="cb14-33"><a href="#cb14-33"></a><span class="bu">print</span>(<span class="ss">f"Merged Portfolio: </span><span class="sc">{</span>p3<span class="sc">}</span><span class="ss">"</span>)</span>
 <span id="cb14-34"><a href="#cb14-34"></a><span class="bu">print</span>(<span class="ss">f"Merged AAPL: </span><span class="sc">{</span>p3[<span class="st">'AAPL'</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Merged Portfolio: Portfolio(name='Tech + Growth', managers=('Alice', 'Bob'), contents=[Position(symbol='AAPL', value_usd=23000.0), Position(symbol='MSFT', value_usd=30000.0)])
 Merged AAPL: Position(symbol='AAPL', value_usd=23000.0)</code></pre>
@@ -645,7 +661,9 @@ Merged AAPL: Position(symbol='AAPL', value_usd=23000.0)</code></pre>
 <li><strong><code>__str__</code> (The Public Face):</strong> Readable, user-focused. “What does this object represent to a human?”</li>
 </ul>
 <p>If <code>__str__</code> is not defined, Python falls back to <code>__repr__</code>. But we want a nice summary.</p>
-<div id="ac6a5c70" class="cell" data-execution_count="9">
+<div id="08300677" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
 <span id="cb16-2"><a href="#cb16-2"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>):</span>
 <span id="cb16-3"><a href="#cb16-3"></a>        <span class="cf">return</span> <span class="ss">f"Portfolio '</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>name<span class="sc">}</span><span class="ss">' with </span><span class="sc">{</span><span class="bu">len</span>(<span class="va">self</span>)<span class="sc">}</span><span class="ss"> positions managed by </span><span class="sc">{</span><span class="st">', '</span><span class="sc">.</span>join(<span class="va">self</span>.managers)<span class="sc">}</span><span class="ss">"</span></span>
@@ -654,6 +672,7 @@ Merged AAPL: Position(symbol='AAPL', value_usd=23000.0)</code></pre>
 <span id="cb16-6"><a href="#cb16-6"></a>p <span class="op">=</span> Portfolio(<span class="st">"Tech Fund"</span>, (<span class="st">"Alice"</span>, <span class="st">"Bob"</span>), [pos1, pos2])</span>
 <span id="cb16-7"><a href="#cb16-7"></a><span class="bu">print</span>(<span class="ss">f"Str: </span><span class="sc">{</span><span class="bu">str</span>(p)<span class="sc">}</span><span class="ss">"</span>)</span>
 <span id="cb16-8"><a href="#cb16-8"></a><span class="bu">print</span>(<span class="ss">f"Repr: </span><span class="sc">{</span><span class="bu">repr</span>(p)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Str: Portfolio 'Tech Fund' with 2 positions managed by Alice, Bob
 Repr: Portfolio(name='Tech Fund', managers=('Alice', 'Bob'), contents=[Position(symbol='AAPL', value_usd=15000.0), Position(symbol='GOOG', value_usd=140000.0)])</code></pre>

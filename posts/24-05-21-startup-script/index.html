@@ -6,7 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="bwrob">
 <meta name="dcterms.date" content="2024-05-21">
 <meta name="description" content="How to start your day with a cup of coffee, not opening the same apps all over again.">
 
@@ -81,8 +80,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-23bbe8b5e4efc1e257f6d59dce478b08.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-3cfb027044eb62cd4630f1a7111e2023.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-dbdcfdb49b6030e91c9710670aca2296.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-7ed80769e3f1017a6e26edc6e7b3fc4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-94455f9bada31d769f1efa85f1772f1a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -95,7 +94,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "/",
     "s"
   ],
-  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -380,12 +378,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
   <div class="quarto-title-meta">
 
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>bwrob </p>
-            </div>
-    </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
@@ -458,7 +450,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>the public interface that integrates with the rest of the codebase or is called at the top level, <strong>the manager</strong>.</li>
 </ul>
 <p>We can start by creating the public interface, see what we want to achieve and later deal with filling in a working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:</p>
-<div id="d88bbe45" class="cell" data-execution_count="1">
+<div id="0c52b753" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">def</span> run_startup_script() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb1-2"><a href="#cb1-2"></a>    <span class="co">"""Run the startup script."""</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a>    logger.info(<span class="ss">f" Welcome </span><span class="sc">{</span>os<span class="sc">.</span>getlogin()<span class="sc">}</span><span class="ss">! "</span>.center(<span class="dv">40</span>, <span class="st">"*"</span>))</span>
@@ -471,6 +465,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-10"><a href="#cb1-10"></a>    )</span>
 <span id="cb1-11"><a href="#cb1-11"></a>    start_work_files([Path.home() <span class="op">/</span> <span class="st">".temp"</span>])</span>
 <span id="cb1-12"><a href="#cb1-12"></a>    run_commands([<span class="st">'Write-Output "test"'</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <p>We specify programs to be launched, open all files in a chosen temp folder and run a list of shell commands. After each step there should be some delay to avoid spamming system with process calls. Certain steps might be more time consuming, like cloud services authorization. Those need longer delay. On the other hand, specifying delay for each task would be cumbersome, most cases would be fine with some default value. We end up with a design that our soon-to-be workers <code>start_programs</code>, <code>start_work_files</code>, and <code>run_commands</code> expect lists of either <code>task</code> or <code>(task, delay_seconds)</code>. We can now start the implementation by figuring out how the delay time should be defaulted if not specified.</p>
 </section>
@@ -478,7 +473,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="decorator-defaulting-the-time-delays">Decorator defaulting the time delays</h3>
 <p>Now we can start the implementation. We want the workers to be called with a list of tasks, but a task can be either a command or a tuple including the delay. Let’s not include some complicated conditionals in each of the workers — that would be annoying and potentially get out of sync at some point.</p>
 <p>Other way to do this is to add a default delay to all non-tuple items. We can implement that as a separate defaulting function, which we would call in each worker. But — being more clever! — we could also use a decorator that changes the workers’s signature.</p>
-<div id="3b8b36a4" class="cell" data-execution_count="2">
+<div id="a93829a5" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> functools <span class="im">import</span> wraps</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="im">from</span> collections.abc <span class="im">import</span> Callable</span>
 <span id="cb2-3"><a href="#cb2-3"></a><span class="im">from</span> typing <span class="im">import</span> TypeVar</span>
@@ -518,6 +515,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-37"><a href="#cb2-37"></a>        <span class="cf">return</span> task_worker(tasks_with_defaulted_delays)</span>
 <span id="cb2-38"><a href="#cb2-38"></a></span>
 <span id="cb2-39"><a href="#cb2-39"></a>    <span class="cf">return</span> task_defaulted_worker</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <p>First, for convenience, let’s define a template type annotation:</p>
 <ul>
@@ -531,7 +529,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="main-workers" class="level3">
 <h3 class="anchored" data-anchor-id="main-workers">Main workers</h3>
 <p>With the preparation done, we can start with the workers. For the programs we will be launching, we need to look up the exact paths of the executables. Let’s define a <code>Program</code> enum that would wrap those up in readable nice names. For working with system paths we will use <code>pathlib.Path</code> that provides high-level interface.</p>
-<div id="390cfd88" class="cell" data-execution_count="3">
+<div id="add193f8" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">from</span> enum <span class="im">import</span> Enum</span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb3-3"><a href="#cb3-3"></a></span>
@@ -542,9 +542,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-8"><a href="#cb3-8"></a>    POWERSHELL <span class="op">=</span> Path(<span class="vs">r"C:</span><span class="dv">\w</span><span class="vs">indows</span><span class="dv">\s</span><span class="vs">ystem32</span><span class="dv">\w</span><span class="vs">indowspowershell</span><span class="ch">\v</span><span class="vs">1</span><span class="dv">.</span><span class="vs">0</span><span class="er">\</span><span class="vs">powershell</span><span class="dv">.</span><span class="vs">exe"</span>)</span>
 <span id="cb3-9"><a href="#cb3-9"></a>    NOTEPAD <span class="op">=</span> Path(<span class="vs">r"C:</span><span class="er">\</span><span class="vs">Program Files</span><span class="er">\</span><span class="vs">Notepad</span><span class="op">++</span><span class="ch">\n</span><span class="vs">otepad</span><span class="op">++</span><span class="dv">.</span><span class="vs">exe"</span>)</span>
 <span id="cb3-10"><a href="#cb3-10"></a>    FIREFOX <span class="op">=</span> Path(<span class="vs">r"C:</span><span class="er">\</span><span class="vs">ProgramData</span><span class="dv">\M</span><span class="vs">icrosoft</span><span class="dv">\W</span><span class="vs">indows</span><span class="dv">\S</span><span class="vs">tart Menu</span><span class="er">\</span><span class="vs">Programs</span><span class="er">\</span><span class="vs">Firefox</span><span class="dv">.</span><span class="vs">lnk"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <p>Other than that, the main workers <code>start_programs</code>, <code>start_work_files</code>, and <code>run_commands</code> are simple. They just iterate over the provided <code>TaskList</code> and do the respective action for a given <code>Task</code>.</p>
-<div id="f48a7c57" class="cell" data-execution_count="4">
+<div id="49a41bbd" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="at">@with_optional_delay</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="kw">def</span> start_programs(</span>
 <span id="cb4-3"><a href="#cb4-3"></a>    programs: TaskList[Program],</span>
@@ -598,6 +601,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-51"><a href="#cb4-51"></a><span class="co">    """</span></span>
 <span id="cb4-52"><a href="#cb4-52"></a>    <span class="cf">for</span> command, delay <span class="kw">in</span> commands:</span>
 <span id="cb4-53"><a href="#cb4-53"></a>        run_command(command, delay)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
 <section id="list-all-files-in-list-of-directories" class="level3">
@@ -609,7 +613,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>filter the iteration (ex. <em>for path in directory if filter(path)</em>).</li>
 </ul>
 <p>Here we’ll have all three of them combined!</p>
-<div id="a30d071c" class="cell" data-execution_count="5">
+<div id="2b8b275b" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>NAME_EXCLUDES <span class="op">=</span> (<span class="st">"$"</span>, <span class="st">"tmp"</span>)</span>
 <span id="cb5-2"><a href="#cb5-2"></a>EXT_EXCLUDES <span class="op">=</span> (<span class="st">"exe"</span>,)</span>
 <span id="cb5-3"><a href="#cb5-3"></a></span>
@@ -648,13 +654,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-36"><a href="#cb5-36"></a></span>
 <span id="cb5-37"><a href="#cb5-37"></a>        <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> filtered:</span>
 <span id="cb5-38"><a href="#cb5-38"></a>            <span class="cf">yield</span> <span class="bu">file</span>, delay</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 <p>The <code>filter_excluded</code> function filters out files based on exclusions in name and extension lists. <code>Path.stem</code> and <code>Path.suffix</code> are used to check if the file name or extension is in the lists respectively.</p>
 </section>
 <section id="interacting-with-the-os" class="level3">
 <h3 class="anchored" data-anchor-id="interacting-with-the-os">Interacting with the OS</h3>
 <p>With all of the framework prepared, the next step is to interact with the OS. To open a file, folder or run an app, we can use the <code>os.startfile</code> function. All the rest of the <code>start_process</code> function is just utility logging. For running a shell command we can use the <code>subprocess</code> module, calling powershell with the <code>powershell.exe</code> and adding the command to run.</p>
-<div id="5cb8999b" class="cell" data-execution_count="6">
+<div id="a7422c96" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">import</span> os</span>
 <span id="cb6-2"><a href="#cb6-2"></a><span class="im">import</span> subprocess</span>
 <span id="cb6-3"><a href="#cb6-3"></a><span class="im">import</span> time</span>
@@ -711,6 +720,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-54"><a href="#cb6-54"></a>        shell<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb6-55"><a href="#cb6-55"></a>    )</span>
 <span id="cb6-56"><a href="#cb6-56"></a>    time.sleep(delay)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
 </section>
