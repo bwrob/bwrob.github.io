@@ -108,13 +108,13 @@ print(p2(5))
 # Decorators
 def my_cache(func: Callable) -> Callable:
     """A simple cache decorator."""
-    _cache = {}
+    cache = {}
 
     def wrapper(*args):
-        if args in _cache:
-            return _cache[args]
+        if args in cache:
+            return cache[args]
         result = func(*args)
-        _cache[args] = result
+        cache[args] = result
         return result
 
     return wrapper

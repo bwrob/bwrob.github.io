@@ -53,7 +53,7 @@ class EuropeanOption:
     @classmethod
     def set_default_option_type(cls, new_type: str) -> None:
         """Sets a new default option type for the class."""
-        if new_type not in ["Call", "Put"]:
+        if new_type not in {"Call", "Put"}:
             msg = "Option type must be 'Call' or 'Put'."
             raise ValueError(msg)
         cls._DEFAULT_OPTION_TYPE = new_type
