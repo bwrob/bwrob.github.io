@@ -1,1 +1,130 @@
-/* css styles */
+/* --- Layout Reset --- */
+:root {
+  --quarto-body-margin-top: 0;
+}
+
+#quarto-content {
+  padding-top: 0 !important;
+}
+
+main.content {
+  padding-top: 0 !important;
+}
+
+/* --- Hero Banner (Full-width background without blocking grid) --- */
+.hero-banner {
+  padding: 2rem 1rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  /* Standard margin reset */
+  margin-top: 0;
+}
+
+/* Pseudo-element for full-width background */
+.hero-banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -50vw;
+  right: -50vw;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  z-index: -1;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.quarto-dark .hero-banner::before {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.hero-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-logo {
+  width: 70px;
+  height: auto;
+  margin-bottom: 1.25rem;
+  transition: transform 0.3s ease;
+}
+
+.hero-banner h1 {
+  font-weight: 700;
+  font-size: 2.5rem;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+  font-weight: 600;
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 1.25rem;
+}
+
+.hero-banner p {
+  font-size: 1.05rem;
+  max-width: 650px;
+  margin: 0 auto;
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+/* --- Categories / Sidebar (Always visible and left-aligned) --- */
+#quarto-margin-sidebar {
+  text-align: left !important;
+}
+
+.quarto-listing-categories {
+  display: block !important;
+  padding-top: 1rem;
+}
+
+.quarto-listing-category {
+  justify-content: flex-start !important;
+}
+
+/* Position categories below the hero height visually */
+@media (min-width: 992px) {
+  #quarto-margin-sidebar {
+    margin-top: 24rem !important; /* Reduced to match compact hero */
+  }
+
+  /* Reset the gap for the main container */
+  .quarto-container:has(.hero-banner) {
+    margin-top: -25px;
+  }
+}
+
+/* --- Post Cards --- */
+.quarto-listing-grid .quarto-grid-item {
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 10px;
+  transition: all 0.25s ease;
+  background: white;
+}
+
+.quarto-dark .quarto-listing-grid .quarto-grid-item {
+  background: #222;
+  border-color: rgba(255,255,255,0.08);
+}
+
+.quarto-listing-grid .quarto-grid-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  border-color: #375a7f;
+}
+
+/* --- Typography --- */
+body {
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.listing-reading-time {
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
