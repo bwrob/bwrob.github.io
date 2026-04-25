@@ -1,135 +1,175 @@
-/* --- Layout Reset --- */
+/* --- Layout Reset & Variables --- */
 :root {
-  --quarto-body-margin-top: 0;
+  --brand-blue: #2c3e50;
 }
 
-#quarto-content {
+/* Homepage Only - Gap removal for Hero */
+body.homepage.nav-fixed {
   padding-top: 0 !important;
-}
-
-main.content {
-  padding-top: 0 !important;
-}
-
-/* --- Hero Banner (Full-width background without blocking grid) --- */
-.hero-banner {
-  padding: 2rem 1rem !important;
-  text-align: center !important;
-  margin-bottom: 2rem !important;
-  position: relative !important;
   margin-top: 0 !important;
-  width: 100% !important;
-  display: block !important;
 }
 
-/* Pseudo-element for full-width background */
-.hero-banner::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -50vw;
-  right: -50vw;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  z-index: -1;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+body.homepage #quarto-header {
+  background-color: var(--brand-blue) !important;
 }
 
-.quarto-dark .hero-banner::before {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+body.homepage #quarto-content {
+  padding-top: 0 !important;
 }
 
-.hero-container {
-  max-width: 800px;
-  margin: 0 auto !important;
+body.homepage .quarto-secondary-nav {
+  display: none !important;
 }
 
-/* Extremely specific logo selector to fix "massive logo" issue */
-img.hero-logo,
-.hero-logo img,
-.hero-banner img.hero-logo {
-  width: 70px !important;
-  max-width: 70px !important;
-  height: auto !important;
-  margin-bottom: 1.25rem !important;
-  display: inline-block !important;
-  transition: transform 0.3s ease;
-}
-
-.hero-banner h1 {
-  font-weight: 700 !important;
-  font-size: 2.5rem !important;
-  margin: 0 0 0.5rem 0 !important;
-  letter-spacing: -0.02em !important;
-}
-
-.hero-subtitle {
-  font-weight: 600 !important;
-  font-size: 1.1rem !important;
-  opacity: 0.9 !important;
-  margin-bottom: 1.25rem !important;
-}
-
-.hero-banner p {
-  font-size: 1.05rem !important;
-  max-width: 650px !important;
-  margin: 0 auto !important;
-  opacity: 0.8 !important;
-  line-height: 1.5 !important;
-}
-
-/* --- Categories / Sidebar --- */
-#quarto-margin-sidebar {
-  text-align: left !important;
-}
-
-.quarto-listing-categories {
-  display: block !important;
-  padding-top: 1rem !important;
-}
-
-.quarto-listing-category {
-  justify-content: flex-start !important;
-}
-
-/* Position categories below the hero height visually */
-@media (min-width: 992px) {
-  #quarto-margin-sidebar {
-    margin-top: 24rem !important;
-  }
-
-  .quarto-container:has(.hero-banner) {
-    margin-top: -25px !important;
-  }
-}
-
-/* --- Post Cards --- */
-.quarto-listing-grid .quarto-grid-item {
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 10px;
-  transition: all 0.25s ease;
-  background: white;
-}
-
-.quarto-dark .quarto-listing-grid .quarto-grid-item {
-  background: #222;
-  border-color: rgba(255,255,255,0.08);
-}
-
-.quarto-listing-grid .quarto-grid-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-  border-color: #375a7f;
-}
-
-/* --- Typography --- */
+/* --- Global Modernizations --- */
 body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
-.listing-reading-time {
-  font-size: 0.8rem;
-  opacity: 0.6;
+/* --- Navigation --- */
+#quarto-header {
+  background-color: var(--brand-blue);
+  width: 100%;
+}
+
+.navbar {
+  background-color: var(--brand-blue) !important;
+  border: none;
+  box-shadow: none;
+}
+
+.navbar-container {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* --- Hero Banner (Seamless with Navbar) --- */
+.hero-banner {
+  /* Balanced padding */
+  padding: 2em 1rem 2em 1rem !important;
+  text-align: center !important;
+  margin-bottom: 2.5rem !important;
+  position: relative !important;
+  display: block !important;
+
+  /* FULL WIDTH BLEED TRICK */
+  background-color: var(--brand-blue) !important;
+  box-shadow: 0 0 0 100vmax var(--brand-blue) !important;
+  clip-path: inset(0 -100vmax);
+
+  color: white !important;
+  margin-top: 0 !important;
+}
+
+.hero-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+img.hero-logo {
+  width: 60px;
+  height: auto;
+  margin-bottom: 1rem;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.hero-banner h1 {
+  font-weight: 800;
+  font-size: 2.25rem;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.04em;
+  color: white;
+}
+
+.hero-subtitle {
+  font-weight: 600;
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-bottom: 1rem;
+}
+
+.hero-banner p {
+  font-size: 1.05rem;
+  max-width: 650px;
+  margin: 0 auto;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+/* --- Post Title Block (Fix for Hidden Titles) --- */
+body:not(.homepage) header.quarto-title-block.entry {
+  background-color: var(--brand-blue);
+  /* Use padding to clear fixed navbar in posts */
+  padding-top: 5rem !important;
+  padding-bottom: 2rem !important;
+  color: white;
+}
+
+.quarto-title-block .quarto-title-banner {
+  background-color: var(--brand-blue) !important;
+  color: white !important;
+  border-bottom: none !important;
+}
+
+.quarto-title-meta-heading,
+.quarto-title-meta-contents,
+.quarto-title-meta a {
+  color: rgba(255,255,255,0.9) !important;
+}
+
+/* --- Listing Cards --- */
+.quarto-listing-grid .quarto-grid-item {
+  border: 1px solid rgba(44, 62, 80, 0.1) !important;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.quarto-dark .quarto-listing-grid .quarto-grid-item {
+  background: #2a2a2a !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+
+.quarto-listing-grid .quarto-grid-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(44, 62, 80, 0.12) !important;
+  border-color: var(--brand-blue) !important;
+}
+
+.thumbnail img {
+  border-radius: 8px 8px 0 0;
+}
+
+/* --- Sidebar Scoping (Homepage) --- */
+.homepage #quarto-margin-sidebar {
+  text-align: left !important;
+  padding-top: 1rem;
+}
+
+.homepage .quarto-listing-categories {
+  display: block;
+}
+
+@media (min-width: 992px) {
+  .homepage #quarto-margin-sidebar {
+    margin-top: 24rem !important;
+  }
+}
+
+/* --- Footer --- */
+footer {
+  margin-top: 6rem;
+  padding: 3rem 0;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  opacity: 0.7;
+}
+
+/* MASTER FIX: Clear potential right-side gaps */
+html, body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
