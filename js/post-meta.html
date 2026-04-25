@@ -1,0 +1,28 @@
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Target only pages that are clearly posts (not the homepage)
+  if (document.body.classList.contains('homepage')) {
+    return;
+  }
+
+  // Find the metadata block (usually contains published/modified dates)
+  const meta = document.querySelector('.quarto-title-meta');
+  const mainContent = document.querySelector('#quarto-document-content');
+
+  if (meta && mainContent) {
+    // Check if it's already been moved or if it's empty
+    if (mainContent.querySelector('.bottom-meta-block')) return;
+
+    // Create container for bottom metadata
+    const bottomMeta = document.createElement('div');
+    bottomMeta.classList.add('quarto-title-meta', 'bottom-meta-block');
+    bottomMeta.innerHTML = meta.innerHTML;
+
+    // Append to the end of the main content
+    mainContent.appendChild(bottomMeta);
+
+    // Hide the original one in the header banner
+    meta.style.display = 'none';
+  }
+});
+</script>
