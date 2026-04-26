@@ -44,15 +44,14 @@
     _type_check  = "basedpyright ."
     clean_tree   = "git worktree list | grep -v quarto-main | awk '{print $1}' | xargs git worktree remove"
 
-    preview = ["_hap_preview", "_report_host"]
-    publish = ["_pre_commit", "_hap_publish"]
     code-quality = ["_format", "_fix_lint", "_check", "_type_check"]
+    preview      = ["_hap_preview", "_report_host"]
+    publish      = ["_pre_commit", "_hap_publish"]
 
 [tool.ruff]
+    exclude        = ["_not_posted/quant_lib_shim_post/QuantLib/"]
     line-length    = 88
     target-version = "py313"
-    include        = ["assets/python/**"]
-
 
     [tool.ruff.lint]
         ignore = ["COM", "D203", "D211", "D213", "FA", "ISC", "T", "TC"]
