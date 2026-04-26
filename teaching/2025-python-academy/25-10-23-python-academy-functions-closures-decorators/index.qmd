@@ -174,15 +174,16 @@ def polynomial_factory(coefficients: Tuple[float, ...]) -> Callable:
 
     return polynomial
 
-# P(x) = 2x^2 + 3x + 5
-p1 = polynomial_factory((2, 3, 5))
+p1 = polynomial_factory((2, 3, 5)) # <1>
 
-# Q(x) = x^3 - 8
-p2 = polynomial_factory((1, 0, 0, -8))
+p2 = polynomial_factory((1, 0, 0, -8)) # <2>
 
 print(p1(5))
 print(p2(5))
 ```
+
+1. $P(x) = 2x^2 + 3x + 5$
+2. $Q(x) = x^3 - 8$
 
 Here, `polynomial_factory` returns a new `polynomial` function. This new function's closure captures the `coefficients` tuple. So, `p1` will always be the polynomial $2x^2 + 3x + 5$, and `p2` will always be $x^3 - 8$.
 
@@ -193,7 +194,8 @@ Decorators are a neat way to add functionality to functions or classes without c
 In the last post, we used the `@cache` decorator to speed up our recursive Fibonacci function. Let's try to build a simple version of that decorator ourselves.
 
 ```{python}
-def my_cache(func: Callable) -> Callable:
+
+def my_cache(func: Callable) -> Callable: # <1>
     """A simple cache decorator."""
     _cache = {}
     def wrapper(*args):
@@ -216,7 +218,7 @@ def fibonacci_cached_by_me(n: int) -> int:
 fibonacci_cached_by_me(30)
 ```
 
-The `@my_cache` line is just a cleaner way of writing `fibonacci_cached_by_me = my_cache(fibonacci_cached_by_me)`. A decorator is just a function that takes another function as input and returns a modified function.
+1. This is a cleaner way of writing `fibonacci_cached_by_me = my_cache(fibonacci_cached_by_me)`. A decorator is just a function that takes another function as input and returns a modified function.
 
 Decorators can also take arguments. To do this, we create a "decorator factory" - a function that returns a decorator. Here's one that repeats a function call a few times.
 
@@ -235,7 +237,7 @@ def repeat(times: int) -> Callable:
     return decorator
 
 
-@repeat(3)
+@repeat(3) # <1>
 def say_hello(name: str):
     print(f"Hello, {name}!")
 
@@ -243,10 +245,12 @@ def say_hello(name: str):
 say_hello("World")
 ```
 
-In this case, `@repeat(3)` is the same as writing `say_hello = repeat(3)(say_hello)`.
+1. the same as writing `say_hello = repeat(3)(say_hello)`.
 
 You'll see decorators all over the place in Python frameworks like Flask (for routing) and `pytest` (for fixtures). They're great for keeping your code clean and organized.
 
 ::: callout-note
+
 Download the whole code [here](../../../assets/python/python_functions_closures_and_decorators_explained.py).
+
 :::

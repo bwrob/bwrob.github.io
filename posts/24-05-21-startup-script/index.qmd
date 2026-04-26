@@ -65,20 +65,22 @@ Now we can start the implementation. We want the workers to be called with a lis
 
 Other way to do this is to add a default delay to all non-tuple items. We can implement that as a separate defaulting function, which we would call in each worker. But --- being more clever! --- we could also use a decorator that changes the workers's signature.
 
+First, for convenience, let's define a template type annotation.
+
 ```{python}
 from functools import wraps
 from collections.abc import Callable
 from typing import TypeVar
 
-T = TypeVar("T")
-Task = tuple[T, int]
-TaskList = list[Task[T]]
-TaskListOptionalDelay = list[Task[T] | T]
+T = TypeVar("T") # <1>
+Task = tuple[T, int] # <2>
+TaskList = list[Task[T]] # <3>
+TaskListOptionalDelay = list[Task[T] | T] # <4>
 
 
 DEFAULT_DELAY_SECONDS = 4
 
-def with_optional_delay(
+def with_optional_delay( # <5>
     task_worker: Callable[[TaskList[T]], None],
 ) -> Callable[[TaskListOptionalDelay[T]], None]:
     """Add default delay to all non-tuple items.
@@ -106,15 +108,11 @@ def with_optional_delay(
 
     return task_defaulted_worker
 ```
-
-First, for convenience, let's define a template type annotation:
-
--   The generic variable type is conventionally denoted by `T`.
--   A `Task` is a tuple of a generic task `T` and an `int` delay.
--   A `TaskList` is a list of `Task`s. Simple.
--   A `TaskListOptionalDelay` is a list of `Task`s or `T`s. Those are the guys we are going to turn into `TaskLists`.
-
-The decorator `with_optional_delay` adds a default delay of 4 seconds to all non-tuple items. Its input is a worker function that already expects a `TaskList`. It fills in the missing delay with the default value and passes it to the decorated function.
+1. The generic variable type is conventionally denoted by `T`.
+2. A `Task` is a tuple of a generic task `T` and an `int` delay.
+3. A `TaskList` is a list of `Task`s. Simple.
+4. A `TaskListOptionalDelay` is a list of `Task`s or `T`s. Those are the guys we are going to turn into `TaskLists`.
+5. The decorator `with_optional_delay` adds a default delay of 4 seconds to all non-tuple items. Its input is a worker function that already expects a `TaskList`. It fills in the missing delay with the default value and passes it to the decorated function.
 
 ### Main workers
 
@@ -344,5 +342,7 @@ There are a couple more things I wish this guy could do for me still:
 -   **Display placement of opened processes** --- I have 2 displays (which you could count as 4, due to the size format) and I am very particular about where each app should go. I would love the apps to open where they should. This is however OS specific, for Win it require to mingle with win32api. Yet another project for the future.
 
 ::: callout-note
+
 Download the startup [script](../../assets/python/windows_python_development_environment_startup_script.py) and example Windows [shortcut](../../assets/images/posts/24-05-21-startup-script/Startup!.lnk).
+
 :::

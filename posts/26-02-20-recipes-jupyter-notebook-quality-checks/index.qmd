@@ -13,7 +13,7 @@ toc-depth: 2
 
 We've all been there: you're about to commit a Jupyter notebook, but it's full of massive dataframes, messy plots, or maybe it doesn't even have a proper title. It's just good hygiene to keep things tidy, especially if you're sharing your work or putting it in version control.
 
-Since notebooks are just JSON under the hood, we can easily whip up a zero-dependency Python script to do the "chores" for us.
+Since notebooks are just JSON under the hood, we can easily whip up a zero-dependency Python script to do the "chores" for us. Let's define a helper class to represent the structure of a notebook cell, and then write some functions to check for common quality issues.
 
 ```{python}
 # | eval: false
@@ -35,24 +35,37 @@ class Cell(TypedDict):
     source: list[str]
     metadata: dict[str, str]
 
+```
 
-def first_cell_is_markdown(cells: list[Cell]) -> bool:
+This script will perform a couple of simple checks on each notebook:
+
+```{python}
+# | eval: false
+def first_cell_is_markdown(cells: list[Cell]) -> bool:  # <1>
     """Check if the first cell in the notebook is a markdown cell."""
     first = cells[0]
     cell_type: str | None = first.get("cell_type")
     return cell_type == "markdown"
 
 
-def outputs_are_empty(cells: list[Cell]) -> bool:
+def outputs_are_empty(cells: list[Cell]) -> bool:  # <2>
     """Check if all cells in the notebook have empty outputs."""
     for cell in cells:
         outputs = cell.get("outputs")
         if outputs:
             return False
     return True
+```
 
+1.  Ensures the first cell of the notebook is a Markdown cell. This is useful for making sure every notebook starts with a title or introduction.
+2.  Iterates through all cells and checks if any have outputs. This helps prevent committing large dataframes, plots, or potentially sensitive information that might be stored in the notebook's execution results.
 
-def check_notebook(path: Path) -> bool:
+Then we need some logic to run these checks on all notebooks in a directory:
+
+```{python}
+# | eval: false
+
+def check_notebook(path: Path) -> bool:  # <2>
     """Check if a notebook satisfies the quality criteria."""
     json_string = path.read_text(encoding="utf8")
     data = json.loads(json_string)
@@ -71,7 +84,7 @@ def check_notebook(path: Path) -> bool:
     )
 
 
-def check_directory(path_str: str) -> int:
+def check_directory(path_str: str) -> int:  # <1>
     """Check all notebooks in a directory and its subdirectories."""
     all_notebooks = Path(path_str).glob("**/*.ipynb")
     failed = [path for path in all_notebooks if not check_notebook(path)]
@@ -88,12 +101,8 @@ if __name__ == "__main__":
     sys.exit(check_directory("."))
 ```
 
-There are two main checks implemented:
-
-1.  **`first_cell_is_markdown`**: Ensures the first cell of the notebook is a Markdown cell. This is useful for making sure every notebook starts with a title or introduction.
-2.  **`outputs_are_empty`**: Iterates through all cells and checks if any have outputs. This helps prevent committing large dataframes, plots, or potentially sensitive information that might be stored in the notebook's execution results.
-
-The `check_directory` function uses `Path.glob("**/*.ipynb")` to find all Jupyter notebooks in the current directory and all subdirectories. It then runs the `check_notebook` function on each one. Using the `pathlib` library makes it easy to handle file paths in a cross-platform way.
+1. Uses `Path.glob("**/*.ipynb")` to find all Jupyter notebooks in the current directory and all subdirectories. It then runs the `check_notebook` function on each one. Using the `pathlib` library makes it easy to handle file paths in a cross-platform way.
+2. Iterates through all found notebooks and collects those that fail the checks. If any notebooks fail, it prints their paths and exits with a non-zero status code to indicate failure.
 
 Automating these little chores saves a lot of headache in the long run. It's a simple base that you can easily tweak or add more rules to as you go.
 

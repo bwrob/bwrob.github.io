@@ -19,32 +19,31 @@ from rich.logging import RichHandler
 logger = logging.getLogger("simple_example")
 logger.setLevel(logging.DEBUG)
 
-# logger jest tworzony tylko raz, więc nie dodajemy handlerów więcej niż raz
-if not logger.hasHandlers():
-    # zapisujemy logi DEBUG i wyżej do pliku
-    fh = logging.FileHandler("simple_example.log")
+if not logger.hasHandlers(): # <1>
+    fh = logging.FileHandler("simple_example.log") # <2>
     fh.setLevel(logging.DEBUG)
-    # ustalamy format logów
-    formatter = logging.Formatter(
+    formatter = logging.Formatter( # <3>
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
-    # dodajemy formatter do handlera
-    fh.setFormatter(formatter)
-    # dodajemy handler do loggera
-    logger.addHandler(fh)
+    fh.setFormatter(formatter) # <4>
+    logger.addHandler(fh) # <5>
 
-    # wypisujemy logi INFO i wyżej do terminala
-    # używamy RichHandler do kolorowych  czytelnych logów
-    ch = RichHandler()
+    ch = RichHandler() # <6>
     ch.setLevel(logging.INFO)
     logger.addHandler(ch)
 
-# przykładowe logi
-logger.debug("debug message")
+logger.debug("debug message") # <7>
 logger.info("info message")
 logger.warning("warn message")
 logger.error("error message")
 ```
+1. logger jest tworzony tylko raz, więc nie dodajemy handlerów więcej niż raz
+2. zapisujemy logi DEBUG i wyżej do pliku
+3. ustalamy format logów
+4. dodajemy formatter do handlera
+5. dodajemy handler do loggera
+6. wypisujemy logi INFO i wyżej do terminala, używamy RichHandler do kolorowych  czytelnych logów
+7. przykładowe logi
 
 W pliku dostajemy logi w formacie:
 

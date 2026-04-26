@@ -19,39 +19,39 @@ import polars.selectors as cs
 import seaborn as sns
 from datetime import datetime, timedelta
 
-# Load from seaborn and convert
-df = pl.from_pandas(sns.load_dataset('iris'))
+df = pl.from_pandas(sns.load_dataset('iris')) # <1>
 df.head(3)
 ```
+1. Load from seaborn and convert.
 
 ## 2. Expressions: The Building Blocks
 
 Expressions are the atomic units of logic. They are lazily evaluated and can be chained indefinitely.
 
 ```{python}
-# Complex logic: normalization, clipping, and casting
 expr = (
     (pl.col("sepal_length") - pl.col("sepal_length").mean())
     / pl.col("sepal_length").std()
-).clip(-1, 1).cast(pl.Float32)
+).clip(-1, 1).cast(pl.Float32) # <1>
 
-# Column-level string/date operations
-species_upper = pl.col("species").str.to_uppercase()
+species_upper = pl.col("species").str.to_uppercase() # <2>
 ```
+1. Complex logic: normalization, clipping, and casting.
+2. Column-level string/date operations.
 
 ## 3. Power Selectors (`polars.selectors`)
 
 Selectors target columns based on their properties, types, or names.
 
 ```{python}
-# Target numeric columns that contain 'width'
-df.select(cs.numeric() & cs.contains("width"))
+df.select(cs.numeric() & cs.contains("width")) # <1>
 
-# Apply a transformation to all numeric columns except 'sepal_length'
 df.select(
-    (cs.numeric() - cs.by_name("sepal_length")) * 100
+    (cs.numeric() - cs.by_name("sepal_length")) * 100 # <2>
 ).head(3)
 ```
+1. Target numeric columns that contain 'width'.
+2. Apply a transformation to all numeric columns except 'sepal_length'.
 
 ## 4. Context: Selection (`select`)
 
@@ -59,14 +59,14 @@ In the `select` context, expressions must return a result of the same length or 
 
 ```{python}
 df.select(
-    # Simple selection
-    "species",
-    # Multiple aggregations as scalars (broadcasted)
-    mean_petal = pl.col("petal_length").mean(),
-    # Sorting one column based on another within select
-    sorted_sepal = pl.col("sepal_length").sort_by("petal_width")
+    "species", # <1>
+    mean_petal = pl.col("petal_length").mean(), # <2>
+    sorted_sepal = pl.col("sepal_length").sort_by("petal_width") # <3>
 ).head(3)
 ```
+1. Simple selection.
+2. Multiple aggregations as scalars (broadcasted).
+3. Sorting one column based on another within select.
 
 ## 5. Context: Modification (`with_columns`)
 
@@ -74,14 +74,14 @@ Used to append new columns or overwrite existing ones while keeping the rest of 
 
 ```{python}
 df.with_columns(
-    # Complex boolean logic
-    is_large = (pl.col("sepal_length") > 5) & (pl.col("petal_length") > 1.5),
-    # Row-wise maximum across numeric columns
-    max_dim = pl.max_horizontal(cs.numeric()),
-    # Renaming on the fly
-    sepal_sum = pl.col("sepal_length") + pl.col("sepal_width")
+    is_large = (pl.col("sepal_length") > 5) & (pl.col("petal_length") > 1.5), # <1>
+    max_dim = pl.max_horizontal(cs.numeric()), # <2>
+    sepal_sum = pl.col("sepal_length") + pl.col("sepal_width") # <3>
 ).head(3)
 ```
+1. Complex boolean logic.
+2. Row-wise maximum across numeric columns.
+3. Renaming on the fly.
 
 ## 6. Context: Aggregation (`group_by`)
 
@@ -89,16 +89,16 @@ Expressions in `agg` are evaluated independently for each group.
 
 ```{python}
 df.group_by("species").agg(
-    # Count rows
     pl.len().alias("count"),
-    # Multiple aggregations on multiple columns via selectors
     cs.numeric().mean().name.prefix("avg_"),
-    # Aggregation into a list (very powerful)
     petal_lengths = pl.col("petal_length").implode(),
-    # Complex: Mean of top 3 values per group
     top_3_mean = pl.col("sepal_length").sort(descending=True).head(3).mean()
 )
 ```
+1. Count rows.
+2. Multiple aggregations on multiple columns via selectors.
+3. Aggregation into a list (very powerful).
+4. Complex: Mean of top 3 values per group.
 
 ## 7. Window Functions (`over`)
 
@@ -106,112 +106,111 @@ Window functions allow you to perform group-level calculations without collapsin
 
 ```{python}
 df.with_columns(
-    # Rank within species based on petal length
-    rank_in_species = pl.col("petal_length").rank("dense", descending=True).over("species"),
-    # Diff from group mean
-    diff_from_group = pl.col("sepal_length") - pl.col("sepal_length").mean().over("species"),
-    # Cumulative sum within species
-    cum_sum = pl.col("sepal_length").cum_sum().over("species")
+    rank_in_species = pl.col("petal_length").rank("dense", descending=True).over("species"), # <1>
+    diff_from_group = pl.col("sepal_length") - pl.col("sepal_length").mean().over("species"), # <2>
+    cum_sum = pl.col("sepal_length").cum_sum().over("species") # <3>
 ).head(3)
 ```
+1. Rank within species based on petal length.
+2. Diff from group mean.
+3. Cumulative sum within species.
 
 ## 8. Complex Types: Lists & Structs
 
 Polars has first-class support for nested data.
 
 ```{python}
-# Create a struct (row-wise grouping of columns)
 df_struct = df.with_columns(
-    dims = pl.struct("sepal_length", "sepal_width")
+    dims = pl.struct("sepal_length", "sepal_width") # <1>
 )
 
-# Extracting from a struct
 df_struct.select(
-    pl.col("dims").struct.field("sepal_length")
+    pl.col("dims").struct.field("sepal_length") # <2>
 ).head(3)
 
-# List mastery: eval() allows running full expressions inside a list column
 df.group_by("species").agg(
     pl.col("petal_length").implode()
 ).with_columns(
-    # For every list: sort, take top 2, and mean
-    top_2_avg = pl.col("petal_length").list.eval(
+    top_2_avg = pl.col("petal_length").list.eval( # <3>
         pl.element().sort(descending=True).head(2).mean()
     )
 )
 ```
+1. Create a struct (row-wise grouping of columns).
+2. Extracting from a struct.
+3. List mastery: eval() allows running full expressions inside a list column.
 
 ## 9. Time Series Mastery: `asof` & Rolling
 
 Polars is blazingly fast for time-series.
 
 ```{python}
-# Setup time data
 ts_df = df.with_columns(
-    time = pl.datetime_range(datetime(2023, 1, 1), datetime(2023, 1, 1) + timedelta(days=149), "1d", eager=True)
+    time = pl.datetime_range(datetime(2023, 1, 1), datetime(2023, 1, 1) + timedelta(days=149), "1d", eager=True) # <1>
 )
 
-# Rolling window: 3-day mean of petal length
 ts_df.with_columns(
-    rolling_mean = pl.col("petal_length").rolling_mean_by(window_size="3d", by="time")
+    rolling_mean = pl.col("petal_length").rolling_mean_by(window_size="3d", by="time") # <2>
 ).head(5)
 
-# Join Asof: join on closest match (backwards/forward/nearest)
 quotes = pl.DataFrame({
     "time": [datetime(2023, 1, 1, 10, 0), datetime(2023, 1, 1, 10, 5)],
     "price": [100.0, 101.0]
 })
 trades = pl.DataFrame({"time": [datetime(2023, 1, 1, 10, 2)]})
 
-trades.join_asof(quotes, on="time", strategy="backward")
+trades.join_asof(quotes, on="time", strategy="backward") # <3>
 ```
+1. Setup time data.
+2. Rolling window: 3-day mean of petal length.
+3. Join Asof: join on closest match (backwards/forward/nearest).
 
 ## 10. Reshaping: `pivot` and `unpivot`
 
 Convert data between wide and long formats.
 
 ```{python}
-# Wide to Long (unpivot/melt)
-long_df = df.unpivot(index=["species"], on=cs.numeric())
+long_df = df.unpivot(index=["species"], on=cs.numeric()) # <1>
 
-# Long to Wide (pivot)
-long_df.pivot(on="variable", values="value", index="species", aggregate_function="mean")
+long_df.pivot(on="variable", values="value", index="species", aggregate_function="mean") # <2>
 ```
+1. Wide to Long (unpivot/melt).
+2. Long to Wide (pivot).
 
 ## 11. Set Operations: `semi` and `anti` joins
 
 Filter one DataFrame by another without duplicating rows or merging columns.
 
 ```{python}
-# Only Setosa (Semi join acts as a filter)
 species_filter = pl.DataFrame({"species": ["setosa"]})
-df.join(species_filter, on="species", how="semi").head(3)
+df.join(species_filter, on="species", how="semi").head(3) # <1>
 
-# Everything BUT Setosa (Anti join)
-df.join(species_filter, on="species", how="anti").head(3)
+df.join(species_filter, on="species", how="anti").head(3) # <2>
 ```
+1. Only Setosa (Semi join acts as a filter).
+2. Everything BUT Setosa (Anti join).
 
 ## 12. Optimization: Categorical vs Enum
 
 Strings should almost always be encoded. `Enum` is fixed and faster; `Categorical` is dynamic.
 
 ```{python}
-# Use Enum for fixed sets (Species is perfect)
-species_enum = pl.Enum(["setosa", "versicolor", "virginica"])
+species_enum = pl.Enum(["setosa", "versicolor", "virginica"]) # <1>
 df.with_columns(pl.col("species").cast(species_enum)).head(3)
 ```
+1. Use Enum for fixed sets (Species is perfect).
 
 ## 13. Missing Data: Interpolate & Coalesce
 
 ```{python}
-# Coalesce: first non-null value from multiple columns
 messy = pl.DataFrame({"a": [1, None, None], "b": [None, 2, None], "c": [None, None, 3]})
-messy.select(filled = pl.coalesce("a", "b", "c"))
+messy.select(filled = pl.coalesce("a", "b", "c")) # <1>
 
-# Interpolate: linear fill for missing numeric data
 df_missing = pl.DataFrame({"val": [1.0, None, 3.0]})
-df_missing.select(pl.col("val").interpolate())
+df_missing.select(pl.col("val").interpolate()) # <2>
 ```
+1. Coalesce: first non-null value from multiple columns.
+2. Interpolate: linear fill for missing numeric data.
 
 ## 14. Concatenation: `pl.concat`
 
@@ -221,29 +220,28 @@ Combine DataFrames vertically, horizontally, or diagonally.
 df1 = df.head(2)
 df2 = df.tail(2)
 
-# Vertical (stacking)
-pl.concat([df1, df2], how="vertical")
+pl.concat([df1, df2], how="vertical") # <1>
 
-# Horizontal (side-by-side)
-pl.concat([df1.select("species"), df2.select(cs.numeric())], how="horizontal")
+pl.concat([df1.select("species"), df2.select(cs.numeric())], how="horizontal") # <2>
 ```
+1. Vertical (stacking).
+2. Horizontal (side-by-side).
 
 ## 15. Out-of-Core & Partitioning
 
 ```{python}
 #| eval: false
 
-# Streaming flow for massive data
 (
-    pl.scan_csv("huge.csv")
+    pl.scan_csv("huge.csv") # <1>
     .filter(pl.col("val") > 0)
     .sink_csv("output.csv")
 )
 
-# Partitioned writing (Data Lake pattern)
-# Writes files into folders like: output/species=setosa/data.parquet
-df.write_parquet("output_lake", use_pyarrow=True, pyarrow_options={"partition_cols": ["species"]})
+df.write_parquet("output_lake", use_pyarrow=True, pyarrow_options={"partition_cols": ["species"]}) # <2>
 ```
+1. Streaming flow for massive data.
+2. Partitioned writing (Data Lake pattern: writes files into folders like output/species=setosa/data.parquet).
 
 ::: callout-note
 Download the companion script [here](../../assets/python/polars_expressions_and_data_transformations_cheat_sheet.py).

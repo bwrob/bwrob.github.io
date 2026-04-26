@@ -43,26 +43,23 @@ Each scheme that we'd come up with, even the most complex ones, would have the s
 from abc import ABC, abstractmethod
 from typing import Callable
 
-class IntegrationScheme(ABC):
+class IntegrationScheme(ABC): # <1>
     """Abstract base class for integration schemas."""
 
-    @abstractmethod
+    @abstractmethod # <2>
     def integrate(
         self,
-        integrand: Callable[[float], float],
+        integrand: Callable[[float], float], # <3>
         *,
-        start: float,
+        start: float, # <4>
         end: float,
     ) -> float:
         """Abstract method for integrating a function."""
 ```
-
-Unpacking this, we already used some nifty Pythonic tricks in those few lines:
-
--   `ABC` is a way of defining abstract classes. If you try to create an object of a class inheriting from `ABC` you'd get an error. It is used as a base class for concrete subclasses and serves as a template. Think of an example of *animal* and *cat* from the real world. You've never seen an abstract animal being in your life (that would be a truly transcendental experience). But you've hopefully seen many cats.
--   Decorator `@abstractmethod` signifies that the method is just a mock-up. It needs to be present and overridden in all concrete classes that inherit from `IntegrationScheme`
--   Type annotations like `start: float` don't affect the script behavior in any way. Those are only for us to not get lost in Python's dynamic typing magic. They can also be leveraged by static type checkers like [mypy](https://mypy.readthedocs.io/en/stable/#) to flag problems with your code before you run it --- just like in compiled languages.
--   `Callable` annotation signifies a function-like object something you can *call* through `()`, like `some_func(one, second=two)`' --- here `some_func` is a callable. Calls to an object can be implemented by writing the `__call__` method for the class.
+1. `ABC` defines abstract classes, serving as a template. Concrete subclasses inherit from it; abstract classes cannot be instantiated.
+2. The `@abstractmethod` decorator signifies this method must be overridden by all concrete subclasses.
+3. `Callable` annotations define function-like objects that can be executed.
+4. Type annotations improve readability and can be used by static type checkers like `mypy` to detect errors early.
 
 ## Concrete schema implementations
 
@@ -77,10 +74,10 @@ Implementing this idea is trivial when using [numpy](https://numpy.org/), but le
 ```{python}
 import numpy as np
 
-class RectangleScheme(IntegrationScheme):
+class RectangleScheme(IntegrationScheme): # <1>
     """Schema for rectangle integration."""
 
-    def __init__(
+    def __init__( # <2>
         self,
         steps: int,
     ) -> None:
@@ -89,11 +86,11 @@ class RectangleScheme(IntegrationScheme):
             raise ValueError("Steps must be greater than 0.")
         self._steps = steps
 
-    def __str__(self) -> str:
+    def __str__(self) -> str: # <3>
         """Returns the string representation of the schema."""
         return f"Rectangle schema with {self._steps} steps"
 
-    def integrate(
+    def integrate( # <4>
         self,
         integrand: Callable[[float], float],
         *,
@@ -106,15 +103,10 @@ class RectangleScheme(IntegrationScheme):
         dx = (end - start) / np.float64(self._steps)
         return np.sum(values) * dx
 ```
-
--   `RectangleScheme` subclasses `IntegrationScheme` so we need to implement the `integrate` method.
--   `__init__` method is run each time object of this class is requested. It sets the stage --- in this case all we need is the number of rectangles we are to use. To be cautious, we check if the `steps` number is positive.
--   `__str__` is called when we try to represent the object as string --- ex. in f-strings or directly calling `str()`. We just taught our class objects to introduce themselves nicely.
--   `integrate` is as simple as the idea behind it:
-    -   get the equaly spaced x values,
-    -   calculate `integrand` values at the points,
-    -   sum it up,
-    -   multiply the sum by the distance between two consecutive points.
+1. `RectangleScheme` inherits from `IntegrationScheme`, requiring implementation of `integrate`.
+2. `__init__` sets up the rectangle count, including validation for positive values.
+3. `__str__` customizes the string representation of the class instance.
+4. `integrate` performs the calculation: linear spacing, function evaluation, and summing area elements.
 
 ### Simple Monte Carlo
 
@@ -126,7 +118,7 @@ from typing import Optional
 class MonteCarloScheme(IntegrationScheme):
     """Schema for Monte Carlo integration."""
 
-    def __init__(
+    def __init__( # <1>
         self,
         random_points: int,
         random_seed: Optional[int] = None,
@@ -158,7 +150,7 @@ class MonteCarloScheme(IntegrationScheme):
         return np.sum(values) * average_dx
 ```
 
--   `Optional[int]` annotation means that the value of `random_seed` can be a `float` or `None`. With a set seed we get a reproducable results --- good for testing but not for actual usage. Hence the default value here is `None`.
+1. `Optional[int]` allows `random_seed` to be an integer or `None`, defaulting to `None` for non-reproducible results. Note: `int | None` is preferred in Python 3.11+.
 
 ::: callout-note
 The `Optional` stands for *could be `None` as well*, it doesn't affect if the input is mandatory or not. In our case it's not, but thats stated by the `= None` part. In Python 3.11 onwards it's recommended to use `int | None` instead.
@@ -176,7 +168,7 @@ class Integrator:
     """An integrator class that allows to perform integration using different
     schemas as strategies."""
 
-    def __init__(
+    def __init__( # <1>
         self,
         integrand: Callable[[float], float],
         interval_start: float,
@@ -189,7 +181,7 @@ class Integrator:
         self.__interval_start = interval_start
         self.__interval_end = interval_end
 
-    def __call__(
+    def __call__( # <2>
         self,
         schema: IntegrationScheme,
     ) -> float:
@@ -207,8 +199,8 @@ class Integrator:
         )
 ```
 
--   The `__init__` takes in the obvious parameters --- function to integrate, start and end of the interval. It also checks if it's a proper integral.
--   We get to implement our own `__call__` method now. It's clear what `Integrator` class does. No need to have a method with a descriptive name like `Integrator.integrate`. To use it you pass through the integration scheme into the integrator --- notice annotation of the abstract `IntegrationScheme`. It prints the info on strategy used (using the `__str__` methods) and calls `integrate` method of the scheme. No care in the world on how the value is actually calculated.
+1. The `__init__` takes in the obvious parameters --- function to integrate, start and end of the interval. It also checks if it's a proper integral.
+2. We get to implement our own `__call__` method now. It's clear what `Integrator` class does. No need to have a method with a descriptive name like `Integrator.integrate`. To use it you pass through the integration scheme into the integrator --- notice annotation of the abstract `IntegrationScheme`. It prints the info on strategy used (using the `__str__` methods) and calls `integrate` method of the scheme. No care in the world on how the value is actually calculated.
 
 ## Let's integrate!
 
@@ -256,5 +248,7 @@ But I was wrong! You *should* be excited! We just learned new approach for setti
 If you are now wondering how much we could improve by using more advanced techniques (like [stratified Monte Carlo](http://proceedings.mlr.press/v28/carpentier13.pdf) or [adaptive quadrature](https://www.wikiwand.com/en/Adaptive_quadrature)) you just need to implement new subclass of \`IntegrationSchema' and you're done. No changes to the existing code are needed, just simple extension. And that's the idea behind strategy pattern.
 
 ::: callout-note
+
 Download the whole code [here](../../assets/python/numerical_integration_strategy_pattern_implementation.py).
+
 :::

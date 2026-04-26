@@ -230,22 +230,25 @@ Notice we use `self._strike` inside the property to store the actual value.
 
 Python does not enforce strict `private` or `protected` keywords. Instead, it relies on naming conventions:
 
-1.  **Protected (`_variable`)**: A single underscore prefix indicates that a variable or method is for internal use only. It's a signal to other developers: "Don't touch this unless you know what you are doing."
-2.  **Private (`__variable`)**: A double underscore prefix triggers **name mangling**. The interpreter changes the variable name to `_ClassName__variable` to prevent accidental overwrites in subclasses. It is effectively private, but can still be accessed if you really try.
-
 ```{python}
 class EuropeanOption:
     def __init__(self, strike: float):
-        self._strike = strike          # Protected: internal state for the property
-        self.__valuation_model = "BS"  # Private: internal implementation detail
+        self._strike = strike  # <1>
+        self.__valuation_model = "BS"  # <2>
+
 
 opt = EuropeanOption(100)
-print(opt._strike) # Works, but considered bad practice
-# print(opt.__valuation_model) # Raises AttributeError
 
-# We can still access it via the mangled name (don't do this in production!)
-print(opt._EuropeanOption__valuation_model)
+print(opt._strike)  # <3>
+# print(opt.__valuation_model) # <4>
+print(opt._EuropeanOption__valuation_model)  # <5>
 ```
+
+1. **Protected (`_variable`)**: A single underscore prefix indicates that a variable or method is for internal use only. It's a signal to other developers: "Don't touch this unless you know what you are doing.
+2. **Private (`__variable`)**: A double underscore prefix triggers **name mangling**. The interpreter changes the variable name to `_ClassName__variable` to prevent accidental overwrites in subclasses. It is effectively private, but can still be accessed if you really try.
+3. Works, but considered bad practice
+4. Raises an error because of name mangling
+5. Still accessible via the mangled name, but this is a hack and should be avoided.
 
 In quantitative libraries, generally use `_` for internal state that shouldn't be part of the public API. Reserve `__` for cases where you specifically need to avoid naming collisions in complex inheritance hierarchies.
 
@@ -258,27 +261,33 @@ If you are running a Monte Carlo simulation with millions of paths, this overhea
 ```{python}
 import sys
 
+
 class StandardOption:
     def __init__(self, strike, expiry):
         self.strike = strike
         self.expiry = expiry
 
+
 class SlottedOption:
-    __slots__ = ['strike', 'expiry']
+    __slots__ = ["strike", "expiry"]
+
     def __init__(self, strike, expiry):
         self.strike = strike
         self.expiry = expiry
+
 
 # Compare memory usage
 std_opt = StandardOption(100, "2025-12-20")
 slot_opt = SlottedOption(100, "2025-12-20")
 
+
 # Helper function to estimate size (rough approximation)
 def get_size(obj):
     size = sys.getsizeof(obj)
-    if hasattr(obj, '__dict__'):
+    if hasattr(obj, "__dict__"):
         size += sys.getsizeof(obj.__dict__)
     return size
+
 
 print(f"Standard Option Size: ~{get_size(std_opt)} bytes")
 print(f"Slotted Option Size:  ~{get_size(slot_opt)} bytes")

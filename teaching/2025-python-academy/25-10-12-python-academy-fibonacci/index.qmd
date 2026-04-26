@@ -190,8 +190,7 @@ def fibonacci_internal_cached_decorator(n: int) -> int:
 
 fibonacci_iterative_jit = numba.njit(fibonacci_iterative)
 
-# Force compilation
-_ = fibonacci_iterative_jit(10)
+_ = fibonacci_iterative_jit(10) # <1>
 
 
 def fibonacci_linalg_numpy(n):
@@ -203,10 +202,11 @@ def fibonacci_linalg_numpy(n):
         return 1
 
     Q = np.array([[1, 1], [1, 0]], dtype=np.uint64)
-    # This is the line that cannot be compiled by Numba in nopython mode
-    result_matrix = np.linalg.matrix_power(Q, n - 1)
+    result_matrix = np.linalg.matrix_power(Q, n - 1) # <2>
     return result_matrix[0, 0]
 ```
+1. Force compilation
+2. This is the line that cannot be compiled by Numba in nopython mode
 
 ```{python}
 # | code-fold: true
@@ -232,7 +232,6 @@ perfplot.show(
     logx=False,
     logy=True,
 )
-
 ```
 
 There are more advanced techniques and algorithms to compute Fibonacci numbers, below is a sneak peek for the future at two more efficient methods: using Numba's JIT compilation and matrix exponentiation with NumPy.
