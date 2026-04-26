@@ -1,0 +1,249 @@
+---
+title: "The Python Data Model"
+
+date: "2025-12-12"
+date-modified: "2026-02-20"
+description: "How to unlock the power of Python's special methods to build intuitive and consistent classes."
+categories: [Python Academy]
+image: "../../../assets/images/posts/python_academy.png"
+draft: false
+---
+
+## Introduction
+
+Ever wonder why Python's built-in types just... work? You use `len()` to get the size of a list, square brackets `[]` to grab an item from a dictionary, and a `for` loop to go through a set. It's consistent, intuitive, and frankly, a joy to use.
+
+This isn't magic; it's the **Python Data Model**. By implementing a few "special methods" (you might know them as *dunder* methods, short for **d**ouble **under**score), you can make your own custom classes behave exactly like the built-ins.
+
+In this post, we're going to build a `Portfolio` class that feels like a native part of the language. Instead of clunky custom methods, we'll use the patterns Python already knows and loves.
+
+## The Goal: A Pythonic Portfolio
+
+We want a `Portfolio` class that stores a list of financial positions. But we don't want a clunky interface like `portfolio.get_position_by_ticker("AAPL")`. We want the market-standard syntax:
+
+*   `len(portfolio)` to size up our exposure.
+*   `portfolio["AAPL"]` to get a quote instantly.
+*   `for position in portfolio` to audit our holdings.
+
+Let's start by defining a simple `Position` container. To keep our balance sheet clean, we'll track the total USD value rather than quantity and price.
+
+```{python}
+from __future__ import annotations
+
+from dataclasses import dataclass
+from collections.abc import Iterator
+
+
+@dataclass
+class Position:
+    symbol: str
+    value_usd: float
+```
+
+## The Initial `Portfolio` Class
+
+We start with a standard class definition. To index our strategy efficiently, we'll store the positions in a dictionary keyed by their symbol. We name it `_contents` to signal it's an internal implementation detail—a trade secret, if you will—encouraging users to access data through the public interface.
+
+```{python}
+class Portfolio:
+    def __init__(self, name: str, managers: tuple[str, ...], contents: list[Position] | None = None):
+        self.name = name
+        self.managers = managers
+        # Store positions in a dictionary keyed by symbol for fast lookup
+        self._contents = {pos.symbol: pos for pos in contents} if contents else {}
+
+    def __repr__(self):
+        return f"Portfolio(name={self.name!r}, managers={self.managers!r}, contents={list(self._contents.values())!r})"
+
+# Create some data
+pos1 = Position("AAPL", 15000.0)
+pos2 = Position("GOOG", 140000.0)
+p = Portfolio("Tech Fund", ("Alice", "Bob"), [pos1, pos2])
+print(p)
+```
+
+We included `__repr__` right away. This dunder method provides the "official" string representation, useful for debugging the object's state.
+
+## Emulating a Collection
+
+Right now, if we try to gauge the size of our portfolio, it raises a `TypeError`.
+
+```{python}
+try:
+    len(p)
+except TypeError as e:
+    print(f"Error: {e}")
+```
+
+To enable the `len()` function, we implement `__len__`.
+
+### `__len__`
+
+```{python}
+class Portfolio(Portfolio): # Inheriting to add methods incrementally for this post
+    def __len__(self):
+        return len(self._contents)
+
+p = Portfolio("Tech Fund", ("Alice", "Bob"), [pos1, pos2])
+print(f"Portfolio size: {len(p)}")
+```
+
+Now `len(p)` delegates to the underlying `self._contents` dictionary. It's a classic delegation strategy.
+
+### `__getitem__`
+
+We don't want to scan through a list to find a stock; that's O(N) efficiency, and in performance-critical applications, speed is crucial. The `__getitem__` method allows us to use the square bracket notation `[]` to access items directly.
+
+```{python}
+class Portfolio(Portfolio):
+    def __getitem__(self, symbol: str) -> Position | None:
+        return self._contents.get(symbol)
+
+p = Portfolio("Tech Fund", ("Alice", "Bob"), [pos1, pos2])
+print(f"AAPL position: {p['AAPL']}")
+print(f"MSFT position: {p['MSFT']}") # Returns None
+```
+
+With this, our `Portfolio` behaves like a mapping—an efficient way to access our assets.
+
+### Enabling Iteration: `__iter__`
+
+Iterating through a collection is fundamental. Since we backed our portfolio with a dictionary, default iteration would just give us the keys (symbols). But when we loop through a portfolio, we usually want the assets themselves. We can dictate this behavior by implementing `__iter__`.
+
+```{python}
+class Portfolio(Portfolio):
+    def __iter__(self) -> Iterator[Position]:
+        return iter(self._contents.values())
+
+
+p = Portfolio("Tech Fund", ("Alice", "Bob"), [pos1, pos2])
+
+print("Iterating through portfolio:")
+for pos in p:
+    print(f" - {pos.symbol}: ${pos.value_usd:,.2f}")
+```
+
+Now, `for pos in p` yields the positions directly. We have full control over the traversal.
+
+## Membership and Truthiness: `__contains__` and `__bool__`
+
+We can already check for membership because we implemented `__iter__`, but that's like manually auditing every file to find one document—it's O(N). Since we have a hash map (dictionary) underneath, we can do an O(1) check using `__contains__`.
+
+We also want to know if our portfolio is empty. By default, Python checks `len()`, but implementing `__bool__` allows us to be explicit about what constitutes a "truthy" portfolio.
+
+```{python}
+class Portfolio(Portfolio):
+    def __contains__(self, item: str | Position) -> bool:
+        if isinstance(item, str):
+            return item in self._contents
+        if isinstance(item, Position):
+            return item.symbol in self._contents
+        return False
+
+    def __bool__(self) -> bool:
+        return bool(self._contents)
+
+
+p = Portfolio("Tech Fund", ("Alice", "Bob"), [pos1, pos2])
+
+print(f"Is 'AAPL' in p? {'AAPL' in p}")
+print(f"Is 'MSFT' in p? {'MSFT' in p}")
+print(f"Is p truthy? {bool(p)}")
+
+empty_p = Portfolio("Empty", ("Nobody",))
+print(f"Is empty_p truthy? {bool(empty_p)}")
+```
+
+## Operator Overloading: `__add__` (Combining Portfolios)
+
+In Python, objects can be combined using operators. If we have two portfolios, it makes intuitive sense to "add" them together using `+`.
+
+We implement this via `__add__`. This isn't just concatenation; it's a consolidation. We need to combine managers and sum up the value of overlapping positions.
+
+```{python}
+class Portfolio(Portfolio):
+    def __add__(self, other: Portfolio) -> Portfolio:
+        if not isinstance(other, Portfolio):
+            return NotImplemented
+
+        new_name = f"{self.name} + {other.name}"
+        # Combine managers, removing duplicates
+        new_managers = tuple(sorted(set(self.managers + other.managers)))
+        # Merge contents
+        all_positions = {}
+
+        # Add positions from self
+        for pos in self:
+            all_positions[pos.symbol] = Position(pos.symbol, pos.value_usd)
+
+        # Add positions from other
+        for pos in other:
+            if pos.symbol in all_positions:
+                existing = all_positions[pos.symbol]
+                existing.value_usd += pos.value_usd
+            else:
+                all_positions[pos.symbol] = Position(pos.symbol, pos.value_usd)
+        return Portfolio(new_name, new_managers, list(all_positions.values()))
+
+
+# Example Usage
+p1 = Portfolio("Tech", ("Alice",), [Position("AAPL", 15000.0)])
+p2 = Portfolio(
+    "Growth", ("Bob",), [Position("AAPL", 8000.0), Position("MSFT", 30000.0)]
+)
+
+p3 = p1 + p2
+print(f"Merged Portfolio: {p3}")
+print(f"Merged AAPL: {p3['AAPL']}")
+
+```
+
+
+## String Representation: `__repr__` vs `__str__`
+
+Finally, we need to decide how our portfolio presents itself to the world.
+
+*   **`__repr__` (The Private Ledger):** Unambiguous, developer-focused. It should ideally allow you to recreate the object.
+*   **`__str__` (The Public Face):** Readable, user-focused. "What does this object represent to a human?"
+
+If `__str__` is not defined, Python falls back to `__repr__`. But we want a nice summary.
+
+```{python}
+class Portfolio(Portfolio):
+    def __str__(self):
+        return f"Portfolio '{self.name}' with {len(self)} positions managed by {', '.join(self.managers)}"
+
+
+p = Portfolio("Tech Fund", ("Alice", "Bob"), [pos1, pos2])
+print(f"Str: {str(p)}")
+print(f"Repr: {repr(p)}")
+```
+
+## Why This Matters
+
+By implementing these methods, we've turned a basic container into a robust and functional class.
+
+*   **Lookup by Symbol:** Instant access with `p['AAPL']`.
+*   **Intuitive Iteration:** Seamless traversal with `for pos in p`.
+*   **Arithmetic:** Combining objects made easy with `p1 + p2`.
+*   **Expressiveness:** The code reads clearly and naturally.
+
+## Summary
+
+The Python Data Model is what makes Python feel like Python. It lets your custom objects play nice with all the built-in features you're already using. Here's the "greatest hits" of dunder methods we covered:
+
+*   `__init__`: For setting things up.
+*   `__repr__`: The "developer view" (detailed and exact).
+*   `__str__`: The "human view" (clean and readable).
+*   `__len__`: So `len(your_obj)` actually works.
+*   `__getitem__`: For that sweet square-bracket `[]` access.
+*   `__iter__`: To make your object loopable.
+*   `__contains__`: For fast `x in your_obj` checks.
+*   `__bool__`: To define what "empty" means for your object.
+*   `__add__`: So you can literally `+` your objects together.
+
+When you use these patterns, you're not just writing code; you're writing *Pythonic* code. It's cleaner, easier to read, and much more fun to work with.
+
+::: {.callout-note}
+    The complete code for this example is available here: [portfolio.py](portfolio.py).
+:::

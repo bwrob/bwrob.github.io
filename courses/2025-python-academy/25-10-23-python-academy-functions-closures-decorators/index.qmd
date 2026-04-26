@@ -1,0 +1,252 @@
+---
+title: "Functions, Closures and Decorators"
+
+description: "How to treat your functions well."
+date: "2025-10-23"
+date-modified: "2026-02-20"
+categories: [Python Academy]
+image: ../../../assets/images/posts/python_academy.png
+format-links: [html]
+toc-depth: 2
+---
+
+In Python, functions are a lot more flexible than you might think. We're going to dive into what makes them "first-class citizens" and how that lets us do some really cool things with closures and decorators. If you've ever wondered how that `@something` syntax works, you're in the right place.
+
+## Functions
+
+In Python, functions are "first-class citizens". This just means you can treat them like any other variable. You can:
+
+- assign them to variables,
+- pass them as arguments to other functions,
+- return them from functions.
+
+This is a core concept in Python that allows for some powerful patterns. Let's use a function from our previous post on Fibonacci numbers to see this in action.
+
+```{python}
+def fibonacci_iterative(n: int) -> int:
+    """Calculate the nth Fibonacci number using an iterative approach."""
+    if n < 0:
+        raise ValueError("Fibonacci is not defined for negative numbers.")
+    if n < 2:
+        return n
+
+    a, b = 0, 1
+    for _ in range(n - 1):
+        a, b = b, a + b
+    return b
+```
+
+Because functions are objects, they come with some handy attributes. For instance, you can get the docstring with `__doc__` and the function's name with `__name__`.
+
+```{python}
+print(fibonacci_iterative.__doc__)
+print(fibonacci_iterative.__name__)
+```
+
+And just like other objects, functions inherit from the `object` base class.
+
+```{python}
+isinstance(fibonacci_iterative, object)
+```
+
+As you can see, functions in Python are more than just Callable blocks of code. Next up, we'll see how this flexibility allows us to build closures and decorators.
+
+## Benchmarking Fibonacci Implementations
+
+To really drive home the point that functions are first-class citizens, let's put a few of our Fibonacci functions into a list and pass them to a benchmarking function. This function will test each one and see how they perform.
+
+```{python}
+# | code-fold: true
+# | code-summary: "Show the code"
+
+
+
+def fibonacci_iterative(n: int) -> int:
+    """Calculate the nth Fibonacci number using an iterative approach."""
+    if n < 0:
+        raise ValueError("Fibonacci is not defined for negative numbers.")
+    if n < 2:
+        return n
+
+    a, b = 0, 1
+    for _ in range(n - 1):
+        a, b = b, a + b
+    return b
+
+
+def fibonacci_recursive(n: int) -> int:
+    """Calculate the nth Fibonacci number using a recursive approach."""
+    if n < 0:
+        raise ValueError("Fibonacci is not defined for negative numbers.")
+    if n < 2:
+        return n
+    return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
+
+
+FIBONACCI_CACHE: dict[int, int] = {}
+
+
+def fibonacci_recursive_cached(n: int) -> int:
+    """Calculate the nth Fibonacci number using recursion with memoization."""
+    if n < 0:
+        raise ValueError("Fibonacci is not defined for negative numbers.")
+    if n < 2:
+        return n
+
+    if n in FIBONACCI_CACHE:
+        return FIBONACCI_CACHE[n]
+
+    result = fibonacci_recursive_cached(n - 1) + fibonacci_recursive_cached(n - 2)
+
+    FIBONACCI_CACHE[n] = result
+    return result
+
+
+```
+
+```{python}
+import time
+from typing import Callable
+
+
+def benchmark(functions: list[Callable[[int], int]], n: int):
+    """Benchmarks a list of functions."""
+    for func in functions:
+        start = time.perf_counter()
+        func(n)
+        end = time.perf_counter()
+        print(f"Function {func.__name__} took {end - start:.6f} seconds.")
+
+
+fib_functions = [fibonacci_recursive, fibonacci_recursive_cached, fibonacci_iterative]
+benchmark(fib_functions, 30)
+```
+
+## Closures
+
+A closure is basically a function that remembers the environment in which it was created. Let's use our `get_greeter` function to see what that means.
+
+```{python}
+def get_greeter(greeting: str) -> Callable:
+    """Returns a greeter function."""
+
+    def greeter(name: str) -> str:
+        return f"{greeting}, {name}!"
+
+    return greeter
+
+
+good_morning_greeter = get_greeter("Good morning")
+print(good_morning_greeter("World"))
+```
+
+When we call `get_greeter("Good morning")`, we get a new `greeter` function back. This new function, which we've assigned to `good_morning_greeter`, "remembers" that the `greeting` variable was "Good morning".
+
+This is what a closure does: it "closes over" the variables from the scope where it was created. So even though the `get_greeter` function has finished running, `good_morning_greeter` still has access to the `greeting` variable.
+
+We can even peek inside the closure with the `__closure__` attribute, which shows us the variables it has captured.
+
+```{python}
+good_morning_greeter.__closure__[0].cell_contents
+```
+
+This shows that the value `"Good morning"` is tucked away in our `good_morning_greeter` function's closure.
+
+Closures are a key ingredient for decorators, which we'll get to next. They also let us create "function factories" that can produce specialized functions.
+
+For a more mathematical example, let's create a function factory that builds a polynomial function from a tuple of coefficients.
+
+A polynomial is defined as $P(x) = \sum_{i=0}^{n} a_i x^i = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0$.
+
+```{python}
+from typing import Tuple
+
+def polynomial_factory(coefficients: Tuple[float, ...]) -> Callable:
+    """
+    A factory that creates a polynomial function from a tuple of coefficients.
+    The coefficients are ordered from the highest power to the lowest.
+    """
+    def polynomial(x: float) -> float:
+        """
+        Evaluates the polynomial for a given x.
+        """
+        return sum(c * (x ** i) for i, c in enumerate(reversed(coefficients)))
+
+    return polynomial
+
+# P(x) = 2x^2 + 3x + 5
+p1 = polynomial_factory((2, 3, 5))
+
+# Q(x) = x^3 - 8
+p2 = polynomial_factory((1, 0, 0, -8))
+
+print(p1(5))
+print(p2(5))
+```
+
+Here, `polynomial_factory` returns a new `polynomial` function. This new function's closure captures the `coefficients` tuple. So, `p1` will always be the polynomial $2x^2 + 3x + 5$, and `p2` will always be $x^3 - 8$.
+
+## Decorators
+
+Decorators are a neat way to add functionality to functions or classes without changing their code. Think of it as wrapping a function in another function to give it extra abilities.
+
+In the last post, we used the `@cache` decorator to speed up our recursive Fibonacci function. Let's try to build a simple version of that decorator ourselves.
+
+```{python}
+def my_cache(func: Callable) -> Callable:
+    """A simple cache decorator."""
+    _cache = {}
+    def wrapper(*args):
+        if args in _cache:
+            return _cache[args]
+        result = func(*args)
+        _cache[args] = result
+        return result
+    return wrapper
+
+@my_cache
+def fibonacci_cached_by_me(n: int) -> int:
+    """Calculate the nth Fibonacci number using recursion with our own cache decorator."""
+    if n < 0:
+        raise ValueError("Fibonacci is not defined for negative numbers.")
+    if n < 2:
+        return n
+    return fibonacci_cached_by_me(n - 1) + fibonacci_cached_by_me(n - 2)
+
+fibonacci_cached_by_me(30)
+```
+
+The `@my_cache` line is just a cleaner way of writing `fibonacci_cached_by_me = my_cache(fibonacci_cached_by_me)`. A decorator is just a function that takes another function as input and returns a modified function.
+
+Decorators can also take arguments. To do this, we create a "decorator factory" - a function that returns a decorator. Here's one that repeats a function call a few times.
+
+```{python}
+def repeat(times: int) -> Callable:
+    """A decorator that repeats a function call a given number of times."""
+
+    def decorator(func: Callable) -> Callable:
+        def wrapper(*args, **kwargs):
+            for _ in range(times):
+                result = func(*args, **kwargs)
+            return result
+
+        return wrapper
+
+    return decorator
+
+
+@repeat(3)
+def say_hello(name: str):
+    print(f"Hello, {name}!")
+
+
+say_hello("World")
+```
+
+In this case, `@repeat(3)` is the same as writing `say_hello = repeat(3)(say_hello)`.
+
+You'll see decorators all over the place in Python frameworks like Flask (for routing) and `pytest` (for fixtures). They're great for keeping your code clean and organized.
+
+::: callout-note
+Download the whole code [here](./functions_closures_decorators.py).
+:::

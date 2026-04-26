@@ -1,6 +1,9 @@
 /* --- Global Modernizations --- */
 :root {
   --brand-blue: #2c3e50;
+  --hero-sidebar-offset: 22rem;
+  --hero-sidebar-offset-resume: 26rem;
+  --hero-sidebar-offset-course: 18rem;
 }
 
 body {
@@ -17,6 +20,11 @@ body.hobbies-page.nav-fixed,
 body.teaching-page.nav-fixed {
   padding-top: 0 !important;
   margin-top: 0 !important;
+}
+
+/* Ensure enough space in standard Quarto title banners */
+.quarto-title-block .quarto-title-banner {
+  padding-bottom: 2.5rem !important;
 }
 
 body.homepage #quarto-header,
@@ -54,6 +62,11 @@ body.teaching-page .quarto-secondary-nav {
   margin-top: 0 !important;
 }
 
+.hero-banner.minimal {
+  padding: 1rem 1rem 1rem 1rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
 .hero-container {
   max-width: 800px;
   margin: 0 auto;
@@ -67,11 +80,20 @@ body.teaching-page .quarto-secondary-nav {
   color: white;
 }
 
+.hero-banner.minimal h1 {
+  font-size: 1.8rem;
+}
+
 .hero-subtitle {
   font-weight: 600;
   font-size: 1.1rem;
   opacity: 0.9;
   margin-bottom: 1.5rem;
+}
+
+.hero-banner.minimal .hero-subtitle {
+  font-size: 0.9rem;
+  margin-bottom: 0;
 }
 
 /* Hero Images */
@@ -163,10 +185,16 @@ img.hero-img-profile {
   .homepage #quarto-margin-sidebar,
   .hobbies-page #quarto-margin-sidebar,
   .teaching-page #quarto-margin-sidebar {
-    padding-top: 22rem !important;
+    padding-top: var(--hero-sidebar-offset) !important;
   }
   .resume-page #quarto-margin-sidebar {
-    padding-top: 26rem !important; /* Extra space for the hero links */
+    padding-top: var(--hero-sidebar-offset-resume) !important; /* Extra space for the hero links */
+  }
+  .course-page #quarto-margin-sidebar {
+    padding-top: var(--hero-sidebar-offset-course) !important;
+  }
+  .course-page.minimal-hero #quarto-margin-sidebar {
+    padding-top: 10rem !important;
   }
 }
 
@@ -201,6 +229,15 @@ img.hero-img-profile {
   color: #f0f0f0 !important;
   padding: 0.1rem 0.3rem !important;
   border-radius: 4px !important;
+}
+
+/* General inline code modernization for dark mode */
+.quarto-dark code:not(pre > code) {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #e9ecef !important;
+  padding: 0.2rem 0.4rem !important;
+  border-radius: 4px !important;
+  font-size: 0.9em !important;
 }
 
 /* Explicitly clean up TOC code styling to keep it clean and readable */
@@ -278,6 +315,15 @@ img.hero-img-profile {
   margin-bottom: 2rem;
 }
 
+.semester-title {
+  font-weight: 700;
+  color: var(--brand-blue);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .course-link {
   display: block;
   padding: 0.75rem 1rem;
@@ -286,10 +332,72 @@ img.hero-img-profile {
   margin-bottom: 0.5rem;
   text-decoration: none !important;
   color: inherit !important;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.course-link:hover {
+  background: white;
+  border-color: rgba(44, 62, 80, 0.1);
+  transform: translateX(5px);
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
 }
 
 .quarto-dark .course-link {
   background: rgba(255,255,255,0.03);
+}
+
+.quarto-dark .course-link:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.1);
+}
+
+/* Course Page Enhancements */
+.course-info-card {
+  background: rgba(44, 62, 80, 0.03);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(44, 62, 80, 0.05);
+}
+
+.quarto-dark .course-info-card {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.course-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.course-info-item .label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.course-info-item .value {
+  font-weight: 700;
+  color: var(--brand-blue);
+}
+
+.quarto-dark .course-info-item .value {
+  color: #3498db;
+}
+
+/* Course Page Badge */
+.course-logo {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  display: block;
+  margin: 0 0 1rem 0;
 }
 
 /* --- Footer & Whitespace Fixes --- */
