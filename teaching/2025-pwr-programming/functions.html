@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Gra w Życie – bwrob blog</title>
+<title>Hierarchia Funkcji – bwrob blog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -106,6 +106,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../css/styles.css">
 <meta property="og:title" content="bwrob blog">
@@ -356,7 +385,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Gra w Życie</h1>
+      <h1 class="title">Hierarchia Funkcji</h1>
                       </div>
   </div>
   <div class="quarto-title-meta">
@@ -368,14 +397,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
   <ul>
-  <li><a href="#gra-w-życie" id="toc-gra-w-życie" class="nav-link active" data-scroll-target="#gra-w-życie">Gra w Życie</a></li>
-  <li><a href="#zadanie" id="toc-zadanie" class="nav-link" data-scroll-target="#zadanie">Zadanie</a>
-  <ul class="collapse">
-  <li><a href="#przykładowe-sterowanie" id="toc-przykładowe-sterowanie" class="nav-link" data-scroll-target="#przykładowe-sterowanie">Przykładowe sterowanie</a></li>
-  <li><a href="#przydatne-zasoby" id="toc-przydatne-zasoby" class="nav-link" data-scroll-target="#przydatne-zasoby">Przydatne zasoby:</a></li>
-  <li><a href="#przygotowanie-środowiska" id="toc-przygotowanie-środowiska" class="nav-link" data-scroll-target="#przygotowanie-środowiska">Przygotowanie środowiska</a></li>
-  <li><a href="#szkielet-kodu" id="toc-szkielet-kodu" class="nav-link" data-scroll-target="#szkielet-kodu">Szkielet kodu</a></li>
-  </ul></li>
+  <li><a href="#zadanie" id="toc-zadanie" class="nav-link active" data-scroll-target="#zadanie">Zadanie</a></li>
+  <li><a href="#rozwiązanie" id="toc-rozwiązanie" class="nav-link" data-scroll-target="#rozwiązanie">Rozwiązanie</a></li>
   </ul>
 </nav>
     </div>
@@ -387,160 +410,268 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
      <main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
-<section id="gra-w-życie" class="level2">
-<h2 data-anchor-id="gra-w-życie">Gra w Życie</h2>
-<p><a href="https://www.wikiwand.com/en/articles/Conway's_Game_of_Life">Conway’s Game of Life</a> to symulacja automatu komórkowego, w której stan każdej komórki w siatce ewoluuje w czasie na podstawie prostych reguł dotyczących jej sąsiadów.</p>
-<p><strong>Zasady Gry</strong></p>
-<p>Gra toczy się na dwuwymiarowej siatce komórek, z których każda może być w jednym z dwóch stanów:</p>
-<ul>
-<li>Żywa (oznaczona kolorem zielonym w implementacji)</li>
-<li>Martwa (oznaczona kolorem czarnym w implementacji)</li>
-</ul>
-<p>Stan komórki w następnej generacji zależy od stanu jej ośmiu sąsiadów w obecnej generacji, zgodnie z następującymi regułami:</p>
-<ul>
-<li>Martwa komórka z dokładnie trzema żywymi sąsiadami staje się żywa (<strong>narodziny</strong>).</li>
-<li>Żywa komórka z mniej niż dwoma żywymi sąsiadami umiera z powodu <strong>niedoludnienia</strong>.</li>
-<li>Żywa komórka z dwoma lub trzema żywymi sąsiadami <strong>pozostaje żywa</strong>.</li>
-<li>Żywa komórka z więcej niż trzema żywymi sąsiadami umiera z powodu <strong>przeludnienia</strong>.</li>
-</ul>
-</section>
 <section id="zadanie" class="level2">
 <h2 data-anchor-id="zadanie">Zadanie</h2>
-<p>Twoim zadaniem jest uzupełnienie kodu symulacji Game of Life. Poniżej znajduje się szkielet kodu, który musisz wypełnić.</p>
+<p>Celem tego ćwiczenia jest praktyczne zastosowanie dziedziczenia w Pythonie do stworzenia hierarchii klas reprezentujących różne typy funkcji matematycznych. Zaimplementujesz klasy dla funkcji rzeczywistych, funkcji różniczkowalnych oraz konkretnych przypadków - funkcji wielomianowych, sinusoidalnych i eksponencjalnych.</p>
+<ol type="1">
+<li><p><strong>Klasa bazowa <code>RealFunction</code>:</strong></p>
 <ul>
-<li>Uzupełnij funkcję <code>draw_grid</code>, rysując na ekranie siatkę komórek z odpowiednimi kolorami (zielony dla komórek żywych, czarny dla martwych).</li>
-<li>Uzupełnij brakującą część pętli <code>while</code> w <code>game_event_loop</code> tak aby gra wyświetlała kolejne generacje oraz reagowała na zdarzenia użytkownika.</li>
-<li><strong>Dodatkowe wyzwanie:</strong> Zaimplementuj różne początkowe wzory (np. Glider, Gosper glider gun).</li>
-<li><strong>Dodatkowe wyzwanie:</strong> Dodaj kontrolę prędkości symulacji. Zaimplementuj możliwość przewijania generacji.</li>
-</ul>
-<section id="przykładowe-sterowanie" class="level3">
-<h3 data-anchor-id="przykładowe-sterowanie">Przykładowe sterowanie</h3>
+<li><p>Zdefiniuj klasę <code>RealFunction</code>.</p></li>
+<li><p>Jej konstruktor (<code>__init__</code>) powinien przyjmować dwa argumenty:</p>
 <ul>
-<li><code>Spacja</code>: Wznawia/wstrzymuje symulację.</li>
-<li><code>R</code>: Resetuje siatkę do losowego układu.</li>
-<li><code>C</code>: Czyści siatkę (wszystkie komórki martwe).</li>
-<li><code>Lewy Przycisk Myszy</code>: Kliknięcie komórki przełącza jej stan (żywa/martwa), ale tylko gdy symulacja jest wstrzymana.</li>
-</ul>
-</section>
-<section id="przydatne-zasoby" class="level3">
-<h3 data-anchor-id="przydatne-zasoby">Przydatne zasoby:</h3>
+<li><p><code>func</code>: Obiekt wywoływalny (np. funkcja lambda lub zwykła funkcja Pythona), który reprezentuje daną funkcję matematyczną.</p></li>
+<li><p><code>name</code> (opcjonalny): Ciąg znaków opisujący nazwę funkcji.</p></li>
+</ul></li>
+<li><p>Zaimplementuj metodę <code>__call__(self, x)</code>, która przyjmuje argument <code>x</code> (liczbę rzeczywistą) i zwraca wynik wywołania przechowywanej funkcji <code>func</code> z tym argumentem.</p></li>
+<li><p>Zaimplementuj metodę <code>__str__(self)</code>, która zwraca opis funkcji (np. jej nazwę).</p></li>
+</ul></li>
+<li><p><strong>Klasa pochodna <code>DifferentiableFunction</code>:</strong></p>
 <ul>
-<li><a href="https://www.pygame.org/docs/ref/pygame.html#pygame.init"><code>pygame.init()</code></a></li>
-<li><a href="https://www.pygame.org/docs/ref/pygame.html#pygame.display.set_mode"><code>pygame.display.set_mode()</code></a></li>
-<li><a href="https://www.pygame.org/docs/ref/pygame.html#pygame.display.set_caption"><code>pygame.display.set_caption()</code></a></li>
-<li><a href="https://www.pygame.org/docs/ref/pygame.html#pygame.event.get"><code>pygame.event.get()</code></a></li>
-<li><a href="https://www.pygame.org/docs/ref/event.html#pygame.MOUSEBUTTONDOWN"><code>pygame.event.EventType</code> (np. <code>pygame.MOUSEBUTTONDOWN</code>)</a></li>
-<li><a href="https://www.pygame.org/docs/ref/key.html#pygame.key.get_pressed"><code>pygame.key.get_pressed()</code></a></li>
-<li><a href="https://www.pygame.org/docs/ref/draw.html#pygame.draw.rect"><code>pygame.draw.rect()</code></a></li>
-<li><a href="https://www.pygame.org/docs/ref/pygame.html#pygame.display.flip"><code>pygame.display.flip()</code></a></li>
-<li><a href="https://www.pygame.org/docs/ref/time.html#pygame.time.Clock"><code>pygame.time.Clock()</code></a></li>
-<li><a href="https://www.pygame.org/docs/ref/time.html#pygame.time.Clock.tick"><code>pygame.time.Clock.tick()</code></a></li>
-<li><a href="https://www.pygame.org/docs/ref/mouse.html#pygame.mouse.get_pos"><code>pygame.mouse.get_pos()</code></a></li>
-<li><a href="https://www.pygame.org/docs/ref/pygame.html#pygame.quit"><code>pygame.quit()</code></a></li>
-</ul>
+<li><p>Zdefiniuj klasę <code>DifferentiableFunction</code>, która dziedziczy po <code>RealFunction</code>.</p></li>
+<li><p>Jej konstruktor (<code>__init__</code>) powinien zachowywać się tak samo jak konstruktor klasy bazowej, przekazując argumenty do <code>super().__init__(func, name)</code>.</p></li>
+<li><p>Zaimplementuj metodę <code>derivative(self, h=1e-7)</code>, która przybliża wartość pochodnej funkcji w punkcie <code>x</code> przy użyciu <strong>symetrycznego ilorazu różnicowego</strong>:</p>
+<p><span class="math display">\[\frac{f(x + h) - f(x - h)}{2h}\]</span></p>
+<p>gdzie <span class="math inline">\(f\)</span> to funkcja reprezentowana przez instancję klasy, a <span class="math inline">\(h\)</span> jest małą wartością kroku (domyślnie <span class="math inline">\(10^{-7}\)</span>). Metoda ta powinna zwracać obiekt <code>RealFunction</code> odpowiadający przybliżonej wartości pochodnej w punkcie <code>x</code>.</p></li>
+</ul></li>
+<li><p><strong>Klasa pochodna <code>PolynomialFunction</code>:</strong></p>
+<ul>
+<li><p>Zdefiniuj klasę <code>PolynomialFunction</code>, która dziedziczy po <code>DifferentiableFunction</code>.</p></li>
+<li><p>Jej konstruktor (<code>__init__</code>) powinien przyjmować dwa argumenty:</p>
+<ul>
+<li><p><code>coefficients</code>: Lista liczb reprezentujących współczynniki wielomianu. Pierwszy element listy odpowiada współczynnikowi przy najwyższej potędze, a ostatni - wyrazowi wolnemu. Na przykład, dla wielomianu <span class="math inline">\(3x^2 - 2x + 1\)</span>, lista współczynników to <code>[3, -2, 1]</code>.</p></li>
+<li><p><code>name</code> (opcjonalny): Nazwa wielomianu.</p></li>
+</ul></li>
+<li><p>Zaimplementuj metodę <code>__call__(self, x)</code>, która oblicza wartość wielomianu dla danego <code>x</code> przy użyciu <a href="https://www.geeksforgeeks.org/horners-method-polynomial-evaluation/"><strong>schematu Hornera</strong></a>. Zaimplementuj w tym celu pomocniczą (np. prywatną) metodę <code>__evaluate_polynomial(self, x, coeffs)</code>.</p></li>
+<li><p>Zaimplementuj metodę <code>__str__(self)</code>, która zwraca opis wielomianu na podstawie jego współczynników. Powinna ona tworzyć łańcuch znaków reprezentujący wielomian w standardowej formie (np. <code>3x^2 - 2x + 1</code>).</p></li>
+<li><p>Zaimplementuj metodę <code>derivative(self)</code>, która oblicza wartość pochodnej wielomianu w punkcie <code>x</code> i zwraca <strong>nowy obiekt klasy <code>PolynomialFunction</code></strong> reprezentujący tę pochodną.</p></li>
+</ul></li>
+<li><p><strong>Klasa pochodna <code>SineFunction</code>:</strong></p>
+<ul>
+<li><p>Zdefiniuj klasę <code>SineFunction</code>, która dziedziczy po <code>DifferentiableFunction</code>.</p></li>
+<li><p>Jej konstruktor (<code>__init__</code>) powinien przyjmować następujące argumenty:</p>
+<ul>
+<li><p><code>amplitude</code> (opcjonalny): Amplituda funkcji sinus (domyślnie 1.0).</p></li>
+<li><p><code>frequency</code> (opcjonalny): Częstotliwość funkcji sinus (domyślnie 1.0).</p></li>
+<li><p><code>phase</code> (opcjonalny): Faza funkcji sinus (domyślnie 0.0).</p></li>
+<li><p><code>name</code> (opcjonalny): Nazwa funkcji sinus.</p></li>
+</ul></li>
+<li><p>Zaimplementuj metodę <code>__call__(self, x)</code>, która oblicza wartość funkcji sinus dla danego <code>x</code> przy użyciu funkcji z modułu <code>math</code>.</p></li>
+<li><p>Zaimplementuj metodę <code>__str__(self)</code>, która zwraca opis funkcji sinus na podstawie jej parametrów (amplituda, częstotliwość, faza).</p></li>
+<li><p>Zaimplementuj metodę <code>derivative(self)</code>, która oblicza wartość pochodnej funkcji sinus w punkcie <code>x</code> i zwraca <strong>nowy obiekt klasy <code>SineFunction</code></strong> reprezentujący tę pochodną.</p></li>
+</ul></li>
+<li><p><strong>Klasa pochodna <code>ExponentialFunction</code>:</strong></p>
+<ul>
+<li><p>Zdefiniuj klasę <code>ExponentialFunction</code>, która dziedziczy po <code>DifferentiableFunction</code>.</p></li>
+<li><p>Jej konstruktor (<code>__init__</code>) powinien przyjmować następujące argumenty:</p>
+<ul>
+<li><p><code>base</code> (opcjonalny): Podstawa funkcji eksponencjalnej (domyślnie <code>math.e</code>).</p></li>
+<li><p><code>name</code> (opcjonalny): Nazwa funkcji eksponencjalnej.</p></li>
+</ul></li>
+<li><p>Zaimplementuj metodę <code>__call__(self, x)</code>, która oblicza wartość funkcji eksponencjalnej dla danego <code>x</code> przy użyciu funkcji z modułu <code>math</code>.</p></li>
+<li><p>Zaimplementuj metodę <code>__str__(self)</code>, która zwraca opis funkcji eksponencjalnej na podstawie jej podstawy.</p></li>
+<li><p>Zaimplementuj metodę <code>derivative(self)</code>, która oblicza wartość pochodnej funkcji eksponencjalnej w punkcie <code>x</code> i zwraca <strong>nowy obiekt klasy <code>ExponentialFunction</code></strong> reprezentujący tę pochodną.</p></li>
+</ul></li>
+</ol>
+<p><strong>Przykładowe użycie klas:</strong></p>
+<p>Poniżej znajdują się przykłady użycia zdefiniowanych klas. Możesz je umieścić w jednej komórce kodu w Jupyter Notebook.</p>
+<div id="c3ba1d76" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> functions <span class="im">import</span> (</span>
+<span id="cb1-2"><a href="#cb1-2"></a>    RealFunction,</span>
+<span id="cb1-3"><a href="#cb1-3"></a>    DifferentiableFunction,</span>
+<span id="cb1-4"><a href="#cb1-4"></a>    PolynomialFunction,</span>
+<span id="cb1-5"><a href="#cb1-5"></a>    SineFunction,</span>
+<span id="cb1-6"><a href="#cb1-6"></a>    ExponentialFunction,</span>
+<span id="cb1-7"><a href="#cb1-7"></a>)</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="im">import</span> math</span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co"># Przykłady użycia</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co"># Funkcja wielomianowa: 3x^2 - 2x + 1</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>p <span class="op">=</span> PolynomialFunction([<span class="dv">3</span>, <span class="op">-</span><span class="dv">2</span>, <span class="dv">1</span>], name<span class="op">=</span><span class="st">"Wielomian Kwadratowy"</span>)</span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="bu">print</span>(p)</span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="bu">print</span>(p(<span class="dv">2</span>))</span>
+<span id="cb1-16"><a href="#cb1-16"></a>pochodna_p <span class="op">=</span> p.derivative()</span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="bu">print</span>(pochodna_p)</span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="bu">print</span>(pochodna_p(<span class="dv">2</span>))</span>
+<span id="cb1-19"><a href="#cb1-19"></a></span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="co"># Funkcja sinus: 2*sin(0.5*x + 0.3)</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a>s <span class="op">=</span> SineFunction(amplitude<span class="op">=</span><span class="dv">2</span>, frequency<span class="op">=</span><span class="fl">0.5</span>, phase<span class="op">=</span><span class="fl">0.3</span>, name<span class="op">=</span><span class="st">"Funkcja Sinus"</span>)</span>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="bu">print</span>(s)</span>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="bu">print</span>(s(math.pi))</span>
+<span id="cb1-24"><a href="#cb1-24"></a>pochodna_s <span class="op">=</span> s.derivative()</span>
+<span id="cb1-25"><a href="#cb1-25"></a><span class="bu">print</span>(pochodna_s)</span>
+<span id="cb1-26"><a href="#cb1-26"></a><span class="bu">print</span>(pochodna_s(math.pi))</span>
+<span id="cb1-27"><a href="#cb1-27"></a></span>
+<span id="cb1-28"><a href="#cb1-28"></a><span class="co"># Funkcja eksponencjalna: 2^x</span></span>
+<span id="cb1-29"><a href="#cb1-29"></a>e <span class="op">=</span> ExponentialFunction(base<span class="op">=</span><span class="dv">2</span>, name<span class="op">=</span><span class="st">"Funkcja Eksponencjalna"</span>)</span>
+<span id="cb1-30"><a href="#cb1-30"></a><span class="bu">print</span>(e)</span>
+<span id="cb1-31"><a href="#cb1-31"></a><span class="bu">print</span>(e(<span class="dv">3</span>))</span>
+<span id="cb1-32"><a href="#cb1-32"></a>pochodna_e <span class="op">=</span> e.derivative()</span>
+<span id="cb1-33"><a href="#cb1-33"></a><span class="bu">print</span>(pochodna_e(<span class="dv">3</span>))</span>
+<span id="cb1-34"><a href="#cb1-34"></a></span>
+<span id="cb1-35"><a href="#cb1-35"></a></span>
+<span id="cb1-36"><a href="#cb1-36"></a><span class="co"># Przykład użycia DifferentiableFunction z funkcją</span></span>
+<span id="cb1-37"><a href="#cb1-37"></a><span class="kw">def</span> f(x):</span>
+<span id="cb1-38"><a href="#cb1-38"></a>    <span class="cf">return</span> x<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> x <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb1-39"><a href="#cb1-39"></a></span>
+<span id="cb1-40"><a href="#cb1-40"></a>df <span class="op">=</span> DifferentiableFunction(f, name<span class="op">=</span><span class="st">"Funkcja kwadratowa"</span>)</span>
+<span id="cb1-41"><a href="#cb1-41"></a><span class="bu">print</span>(df(<span class="dv">3</span>))  <span class="co"># Wypisze 16</span></span>
+<span id="cb1-42"><a href="#cb1-42"></a>pochodna_df <span class="op">=</span> df.derivative()</span>
+<span id="cb1-43"><a href="#cb1-43"></a><span class="bu">print</span>(pochodna_df(<span class="dv">3</span>))  <span class="co"># Wypisze przybliżoną wartość pochodnej f(x) w x=3, czyli 8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 </section>
-<section id="przygotowanie-środowiska" class="level3">
-<h3 data-anchor-id="przygotowanie-środowiska">Przygotowanie środowiska</h3>
-<p>Dla tego zadania będziesz potrzebować zainstalować Pygame i NumPy. Możesz to zrobić za pomocą poleceń:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource {powershell} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1"></a>conda create -n pygame-env python=3.12</span>
-<span id="cb1-2"><a href="#cb1-2"></a>conda activate ppygame-env</span>
-<span id="cb1-3"><a href="#cb1-3"></a>conda config --append channels conda-forge</span>
-<span id="cb1-4"><a href="#cb1-4"></a>conda install numpy pygame</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="szkielet-kodu" class="level3">
-<h3 data-anchor-id="szkielet-kodu">Szkielet kodu</h3>
-<div id="d93b3fff" class="cell" data-execution_count="1">
+<section id="rozwiązanie" class="level2">
+<h2 data-anchor-id="rozwiązanie">Rozwiązanie</h2>
+<div id="6d5c2482" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">#!/usr/bin/env python3</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="co">"""Conway's Game of Life.</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="co">"""Implementacja funkcji rzeczywistych w Pythonie."""</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co">Implementacja Gry w Życie Conwaya w Pythonie z użyciem Pygame i NumPy.</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="co">"""</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="im">import</span> math</span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="im">from</span> collections.abc <span class="im">import</span> Callable</span>
 <span id="cb2-6"><a href="#cb2-6"></a></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="im">import</span> pygame</span>
-<span id="cb2-9"><a href="#cb2-9"></a></span>
-<span id="cb2-10"><a href="#cb2-10"></a><span class="co"># Stałe</span></span>
-<span id="cb2-11"><a href="#cb2-11"></a>WIDTH <span class="op">=</span> <span class="dv">800</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a>HEIGHT <span class="op">=</span> <span class="dv">600</span></span>
-<span id="cb2-13"><a href="#cb2-13"></a>BLACK <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb2-14"><a href="#cb2-14"></a>WHITE <span class="op">=</span> (<span class="dv">255</span>, <span class="dv">255</span>, <span class="dv">255</span>)</span>
-<span id="cb2-15"><a href="#cb2-15"></a>GREEN <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">200</span>, <span class="dv">0</span>)</span>
-<span id="cb2-16"><a href="#cb2-16"></a>CELL_SIZE <span class="op">=</span> <span class="dv">10</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a>GRID_WIDTH <span class="op">=</span> WIDTH <span class="op">//</span> CELL_SIZE</span>
-<span id="cb2-18"><a href="#cb2-18"></a>GRID_HEIGHT <span class="op">=</span> HEIGHT <span class="op">//</span> CELL_SIZE</span>
-<span id="cb2-19"><a href="#cb2-19"></a>DEFAULT_FPS <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="kw">class</span> RealFunction:</span>
+<span id="cb2-9"><a href="#cb2-9"></a>    <span class="co">"""Klasa bazowa reprezentująca funkcję rzeczywistą."""</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a></span>
+<span id="cb2-11"><a href="#cb2-11"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, func: Callable[[<span class="bu">float</span>], <span class="bu">float</span>], name: <span class="bu">str</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>):</span>
+<span id="cb2-12"><a href="#cb2-12"></a>        <span class="va">self</span>.func <span class="op">=</span> func</span>
+<span id="cb2-13"><a href="#cb2-13"></a>        <span class="va">self</span>.name <span class="op">=</span> name</span>
+<span id="cb2-14"><a href="#cb2-14"></a></span>
+<span id="cb2-15"><a href="#cb2-15"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, x: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb2-16"><a href="#cb2-16"></a>        <span class="cf">return</span> <span class="va">self</span>.func(x)</span>
+<span id="cb2-17"><a href="#cb2-17"></a></span>
+<span id="cb2-18"><a href="#cb2-18"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb2-19"><a href="#cb2-19"></a>        <span class="cf">return</span> <span class="va">self</span>.name <span class="cf">if</span> <span class="va">self</span>.name <span class="cf">else</span> <span class="st">"Anonimowa funkcja"</span></span>
 <span id="cb2-20"><a href="#cb2-20"></a></span>
 <span id="cb2-21"><a href="#cb2-21"></a></span>
-<span id="cb2-22"><a href="#cb2-22"></a><span class="kw">def</span> create_random_grid() <span class="op">-&gt;</span> np.ndarray:</span>
-<span id="cb2-23"><a href="#cb2-23"></a>    <span class="co">"""Tworzy losową siatkę złożoną z 0 i 1."""</span></span>
-<span id="cb2-24"><a href="#cb2-24"></a>    rng <span class="op">=</span> np.random.default_rng()</span>
-<span id="cb2-25"><a href="#cb2-25"></a>    <span class="cf">return</span> rng.integers(<span class="dv">0</span>, <span class="dv">2</span>, size<span class="op">=</span>(GRID_HEIGHT, GRID_WIDTH), dtype<span class="op">=</span>np.int8)</span>
-<span id="cb2-26"><a href="#cb2-26"></a></span>
+<span id="cb2-22"><a href="#cb2-22"></a><span class="kw">class</span> DifferentiableFunction(RealFunction):</span>
+<span id="cb2-23"><a href="#cb2-23"></a>    <span class="co">"""Klasa reprezentująca funkcję różniczkowalną."""</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a></span>
+<span id="cb2-25"><a href="#cb2-25"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, func: Callable[[<span class="bu">float</span>], <span class="bu">float</span>], name: <span class="bu">str</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>):</span>
+<span id="cb2-26"><a href="#cb2-26"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(func, name)</span>
 <span id="cb2-27"><a href="#cb2-27"></a></span>
-<span id="cb2-28"><a href="#cb2-28"></a><span class="kw">def</span> create_empty_grid() <span class="op">-&gt;</span> np.ndarray:</span>
-<span id="cb2-29"><a href="#cb2-29"></a>    <span class="co">"""Tworzy pustą siatkę złożoną z 0."""</span></span>
-<span id="cb2-30"><a href="#cb2-30"></a>    <span class="cf">return</span> np.zeros(</span>
-<span id="cb2-31"><a href="#cb2-31"></a>        (GRID_HEIGHT, GRID_WIDTH),</span>
-<span id="cb2-32"><a href="#cb2-32"></a>        dtype<span class="op">=</span>np.int8,</span>
-<span id="cb2-33"><a href="#cb2-33"></a>    )</span>
+<span id="cb2-28"><a href="#cb2-28"></a>    <span class="kw">def</span> derivative(<span class="va">self</span>, h: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1e-7</span>) <span class="op">-&gt;</span> <span class="st">"RealFunction"</span>:</span>
+<span id="cb2-29"><a href="#cb2-29"></a>        <span class="co">"""Oblicza pochodną funkcji w punkcie x przy użyciu różnic centralnych."""</span></span>
+<span id="cb2-30"><a href="#cb2-30"></a>        <span class="cf">return</span> RealFunction(</span>
+<span id="cb2-31"><a href="#cb2-31"></a>            <span class="kw">lambda</span> x: (<span class="va">self</span>.func(x <span class="op">+</span> h) <span class="op">-</span> <span class="va">self</span>.func(x <span class="op">-</span> h)) <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> h),</span>
+<span id="cb2-32"><a href="#cb2-32"></a>            name<span class="op">=</span><span class="ss">f"Pochodna </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>name<span class="sc">}</span><span class="ss">"</span> <span class="cf">if</span> <span class="va">self</span>.name <span class="cf">else</span> <span class="va">None</span>,</span>
+<span id="cb2-33"><a href="#cb2-33"></a>        )</span>
 <span id="cb2-34"><a href="#cb2-34"></a></span>
 <span id="cb2-35"><a href="#cb2-35"></a></span>
-<span id="cb2-36"><a href="#cb2-36"></a><span class="kw">def</span> get_next_generation(grid: np.ndarray) <span class="op">-&gt;</span> np.ndarray:</span>
-<span id="cb2-37"><a href="#cb2-37"></a>    <span class="co">"""Oblicza następne pokolenie Gry w Życie."""</span></span>
-<span id="cb2-38"><a href="#cb2-38"></a>    new_grid: np.ndarray <span class="op">=</span> np.copy(grid)</span>
-<span id="cb2-39"><a href="#cb2-39"></a>    <span class="cf">for</span> r <span class="kw">in</span> <span class="bu">range</span>(GRID_HEIGHT):</span>
-<span id="cb2-40"><a href="#cb2-40"></a>        <span class="cf">for</span> c <span class="kw">in</span> <span class="bu">range</span>(GRID_WIDTH):</span>
-<span id="cb2-41"><a href="#cb2-41"></a>            <span class="co"># Użyj max i min do obliczenia granic sąsiedztwa</span></span>
-<span id="cb2-42"><a href="#cb2-42"></a>            r_start <span class="op">=</span> <span class="bu">max</span>(<span class="dv">0</span>, r <span class="op">-</span> <span class="dv">1</span>)</span>
-<span id="cb2-43"><a href="#cb2-43"></a>            r_end <span class="op">=</span> <span class="bu">min</span>(GRID_HEIGHT, r <span class="op">+</span> <span class="dv">2</span>)</span>
-<span id="cb2-44"><a href="#cb2-44"></a>            c_start <span class="op">=</span> <span class="bu">max</span>(<span class="dv">0</span>, c <span class="op">-</span> <span class="dv">1</span>)</span>
-<span id="cb2-45"><a href="#cb2-45"></a>            c_end <span class="op">=</span> <span class="bu">min</span>(GRID_WIDTH, c <span class="op">+</span> <span class="dv">2</span>)</span>
-<span id="cb2-46"><a href="#cb2-46"></a>            <span class="co"># Policz żywych sąsiadów</span></span>
-<span id="cb2-47"><a href="#cb2-47"></a>            live_neighbors <span class="op">=</span> np.<span class="bu">sum</span>(grid[r_start:r_end, c_start:c_end]) <span class="op">-</span> grid[r, c]</span>
-<span id="cb2-48"><a href="#cb2-48"></a>            <span class="co"># Zastosuj reguły Gry w Życie</span></span>
-<span id="cb2-49"><a href="#cb2-49"></a>            <span class="cf">if</span> grid[r, c]:  <span class="co"># Komórka żywa</span></span>
-<span id="cb2-50"><a href="#cb2-50"></a>                <span class="cf">if</span> live_neighbors <span class="kw">not</span> <span class="kw">in</span> (<span class="dv">2</span>, <span class="dv">3</span>):</span>
-<span id="cb2-51"><a href="#cb2-51"></a>                    new_grid[r, c] <span class="op">=</span> <span class="dv">0</span>  <span class="co"># Umiera</span></span>
-<span id="cb2-52"><a href="#cb2-52"></a>            <span class="cf">elif</span> live_neighbors <span class="op">==</span> <span class="dv">3</span>:  <span class="co"># Komórka martwa</span></span>
-<span id="cb2-53"><a href="#cb2-53"></a>                new_grid[r, c] <span class="op">=</span> <span class="dv">1</span>  <span class="co"># Ożywa</span></span>
-<span id="cb2-54"><a href="#cb2-54"></a>    <span class="cf">return</span> new_grid</span>
-<span id="cb2-55"><a href="#cb2-55"></a></span>
-<span id="cb2-56"><a href="#cb2-56"></a></span>
-<span id="cb2-57"><a href="#cb2-57"></a><span class="kw">def</span> draw_grid(screen: pygame.Surface, grid: np.ndarray) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb2-58"><a href="#cb2-58"></a>    <span class="co">"""Rysuje siatkę na ekranie Pygame."""</span></span>
-<span id="cb2-59"><a href="#cb2-59"></a>    <span class="cf">pass</span></span>
-<span id="cb2-60"><a href="#cb2-60"></a></span>
-<span id="cb2-61"><a href="#cb2-61"></a></span>
-<span id="cb2-62"><a href="#cb2-62"></a><span class="kw">def</span> game_event_loop() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb2-63"><a href="#cb2-63"></a>    <span class="co">"""Obsługuje główną pętlę gry, w tym zdarzenia, aktualizacje i rysowanie."""</span></span>
-<span id="cb2-64"><a href="#cb2-64"></a>    paused <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb2-65"><a href="#cb2-65"></a>    running <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb2-66"><a href="#cb2-66"></a>    clock: pygame.time.Clock <span class="op">=</span> pygame.time.Clock()</span>
-<span id="cb2-67"><a href="#cb2-67"></a>    current_grid: np.ndarray <span class="op">=</span> create_random_grid()</span>
-<span id="cb2-68"><a href="#cb2-68"></a>    fps <span class="op">=</span> DEFAULT_FPS</span>
-<span id="cb2-69"><a href="#cb2-69"></a>    screen <span class="op">=</span> pygame.display.set_mode((WIDTH, HEIGHT))</span>
-<span id="cb2-70"><a href="#cb2-70"></a></span>
-<span id="cb2-71"><a href="#cb2-71"></a>    <span class="cf">while</span> running:</span>
-<span id="cb2-72"><a href="#cb2-72"></a>        <span class="cf">pass</span></span>
-<span id="cb2-73"><a href="#cb2-73"></a></span>
-<span id="cb2-74"><a href="#cb2-74"></a></span>
-<span id="cb2-75"><a href="#cb2-75"></a><span class="kw">def</span> main() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb2-76"><a href="#cb2-76"></a>    <span class="co">"""Główna funkcja uruchamiająca Grę w Życie."""</span></span>
-<span id="cb2-77"><a href="#cb2-77"></a>    pygame.init()</span>
-<span id="cb2-78"><a href="#cb2-78"></a>    pygame.display.set_caption(<span class="st">"Conway's Game of Life"</span>)</span>
-<span id="cb2-79"><a href="#cb2-79"></a>    game_event_loop()</span>
-<span id="cb2-80"><a href="#cb2-80"></a>    pygame.quit()</span>
+<span id="cb2-36"><a href="#cb2-36"></a><span class="kw">class</span> PolynomialFunction(DifferentiableFunction):</span>
+<span id="cb2-37"><a href="#cb2-37"></a>    <span class="co">"""Klasa reprezentująca funkcję wielomianową."""</span></span>
+<span id="cb2-38"><a href="#cb2-38"></a></span>
+<span id="cb2-39"><a href="#cb2-39"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, coefficients: <span class="bu">list</span>[<span class="bu">float</span>], name: <span class="bu">str</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>):</span>
+<span id="cb2-40"><a href="#cb2-40"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(<span class="kw">lambda</span> x: <span class="va">self</span>._evaluate_polynomial(x, coefficients), name)</span>
+<span id="cb2-41"><a href="#cb2-41"></a>        <span class="va">self</span>.coefficients <span class="op">=</span> coefficients</span>
+<span id="cb2-42"><a href="#cb2-42"></a></span>
+<span id="cb2-43"><a href="#cb2-43"></a>    <span class="kw">def</span> _evaluate_polynomial(<span class="va">self</span>, x: <span class="bu">float</span>, coeffs: <span class="bu">list</span>[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb2-44"><a href="#cb2-44"></a>        <span class="co">"""Oblicza wartość wielomianu dla danego x używając schematu Hornera."""</span></span>
+<span id="cb2-45"><a href="#cb2-45"></a>        result <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-46"><a href="#cb2-46"></a>        <span class="cf">for</span> coeff <span class="kw">in</span> coeffs:</span>
+<span id="cb2-47"><a href="#cb2-47"></a>            result <span class="op">=</span> result <span class="op">*</span> x <span class="op">+</span> coeff</span>
+<span id="cb2-48"><a href="#cb2-48"></a>        <span class="cf">return</span> result</span>
+<span id="cb2-49"><a href="#cb2-49"></a></span>
+<span id="cb2-50"><a href="#cb2-50"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb2-51"><a href="#cb2-51"></a>        terms <span class="op">=</span> []</span>
+<span id="cb2-52"><a href="#cb2-52"></a>        <span class="cf">for</span> i, coeff <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="va">self</span>.coefficients):</span>
+<span id="cb2-53"><a href="#cb2-53"></a>            power <span class="op">=</span> <span class="bu">len</span>(<span class="va">self</span>.coefficients) <span class="op">-</span> <span class="dv">1</span> <span class="op">-</span> i</span>
+<span id="cb2-54"><a href="#cb2-54"></a>            <span class="cf">if</span> coeff:</span>
+<span id="cb2-55"><a href="#cb2-55"></a>                term <span class="op">=</span> (</span>
+<span id="cb2-56"><a href="#cb2-56"></a>                    <span class="ss">f"</span><span class="sc">{</span><span class="st">'+'</span> <span class="cf">if</span> coeff <span class="op">&gt;</span> <span class="dv">0</span> <span class="kw">and</span> i <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">''</span><span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb2-57"><a href="#cb2-57"></a>                    <span class="ss">f" </span><span class="sc">{</span><span class="st">'-'</span> <span class="cf">if</span> coeff <span class="op">&lt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">''</span><span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb2-58"><a href="#cb2-58"></a>                )</span>
+<span id="cb2-59"><a href="#cb2-59"></a>                <span class="cf">if</span> <span class="bu">abs</span>(coeff) <span class="op">!=</span> <span class="dv">1</span> <span class="kw">or</span> power <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-60"><a href="#cb2-60"></a>                    term <span class="op">+=</span> <span class="bu">str</span>(<span class="bu">abs</span>(coeff))</span>
+<span id="cb2-61"><a href="#cb2-61"></a>                <span class="cf">if</span> power <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb2-62"><a href="#cb2-62"></a>                    term <span class="op">+=</span> <span class="st">"x"</span> <span class="op">+</span> (<span class="ss">f"^</span><span class="sc">{</span>power<span class="sc">}</span><span class="ss">"</span> <span class="cf">if</span> power <span class="op">&gt;</span> <span class="dv">1</span> <span class="cf">else</span> <span class="st">""</span>)</span>
+<span id="cb2-63"><a href="#cb2-63"></a>                terms.append(term)</span>
+<span id="cb2-64"><a href="#cb2-64"></a>        <span class="cf">return</span> <span class="st">""</span>.join(terms) <span class="kw">or</span> <span class="st">"0"</span></span>
+<span id="cb2-65"><a href="#cb2-65"></a></span>
+<span id="cb2-66"><a href="#cb2-66"></a>    <span class="kw">def</span> derivative(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="st">"PolynomialFunction"</span>:</span>
+<span id="cb2-67"><a href="#cb2-67"></a>        <span class="co">"""Oblicza pochodną wielomianu i zwraca nowy obiekt PolynomialFunction."""</span></span>
+<span id="cb2-68"><a href="#cb2-68"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="va">self</span>.coefficients:</span>
+<span id="cb2-69"><a href="#cb2-69"></a>            <span class="cf">return</span> PolynomialFunction([])</span>
+<span id="cb2-70"><a href="#cb2-70"></a>        derivative_coeffs <span class="op">=</span> []</span>
+<span id="cb2-71"><a href="#cb2-71"></a>        <span class="cf">for</span> i, coeff <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="va">self</span>.coefficients[:<span class="op">-</span><span class="dv">1</span>]):</span>
+<span id="cb2-72"><a href="#cb2-72"></a>            derivative_coeffs.append(coeff <span class="op">*</span> (<span class="bu">len</span>(<span class="va">self</span>.coefficients) <span class="op">-</span> <span class="dv">1</span> <span class="op">-</span> i))</span>
+<span id="cb2-73"><a href="#cb2-73"></a>        <span class="cf">return</span> PolynomialFunction(</span>
+<span id="cb2-74"><a href="#cb2-74"></a>            derivative_coeffs,</span>
+<span id="cb2-75"><a href="#cb2-75"></a>            name<span class="op">=</span><span class="ss">f"Pochodna </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>name<span class="sc">}</span><span class="ss">"</span> <span class="cf">if</span> <span class="va">self</span>.name <span class="cf">else</span> <span class="va">None</span>,</span>
+<span id="cb2-76"><a href="#cb2-76"></a>        )</span>
+<span id="cb2-77"><a href="#cb2-77"></a></span>
+<span id="cb2-78"><a href="#cb2-78"></a></span>
+<span id="cb2-79"><a href="#cb2-79"></a><span class="kw">class</span> SineFunction(DifferentiableFunction):</span>
+<span id="cb2-80"><a href="#cb2-80"></a>    <span class="co">"""Klasa reprezentująca funkcję sinus."""</span></span>
 <span id="cb2-81"><a href="#cb2-81"></a></span>
-<span id="cb2-82"><a href="#cb2-82"></a></span>
-<span id="cb2-83"><a href="#cb2-83"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
-<span id="cb2-84"><a href="#cb2-84"></a>    main()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-82"><a href="#cb2-82"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb2-83"><a href="#cb2-83"></a>        <span class="va">self</span>,</span>
+<span id="cb2-84"><a href="#cb2-84"></a>        amplitude: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1.0</span>,</span>
+<span id="cb2-85"><a href="#cb2-85"></a>        frequency: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1.0</span>,</span>
+<span id="cb2-86"><a href="#cb2-86"></a>        phase: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span>,</span>
+<span id="cb2-87"><a href="#cb2-87"></a>        name: <span class="bu">str</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb2-88"><a href="#cb2-88"></a>    ):</span>
+<span id="cb2-89"><a href="#cb2-89"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(<span class="kw">lambda</span> x: amplitude <span class="op">*</span> math.sin(frequency <span class="op">*</span> x <span class="op">+</span> phase), name)</span>
+<span id="cb2-90"><a href="#cb2-90"></a>        <span class="va">self</span>.amplitude <span class="op">=</span> amplitude</span>
+<span id="cb2-91"><a href="#cb2-91"></a>        <span class="va">self</span>.frequency <span class="op">=</span> frequency</span>
+<span id="cb2-92"><a href="#cb2-92"></a>        <span class="va">self</span>.phase <span class="op">=</span> phase</span>
+<span id="cb2-93"><a href="#cb2-93"></a></span>
+<span id="cb2-94"><a href="#cb2-94"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb2-95"><a href="#cb2-95"></a>        amplitude <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>amplitude<span class="sc">}</span><span class="ss"> * "</span> <span class="cf">if</span> <span class="va">self</span>.amplitude <span class="op">!=</span> <span class="dv">1</span> <span class="cf">else</span> <span class="st">""</span></span>
+<span id="cb2-96"><a href="#cb2-96"></a>        s <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>amplitude<span class="sc">}</span><span class="ss">sin(</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>frequency<span class="sc">}</span><span class="ss">*x"</span></span>
+<span id="cb2-97"><a href="#cb2-97"></a>        <span class="cf">if</span> <span class="va">self</span>.phase <span class="op">!=</span> <span class="dv">0</span>:</span>
+<span id="cb2-98"><a href="#cb2-98"></a>            s <span class="op">+=</span> <span class="ss">f"+</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>phase<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb2-99"><a href="#cb2-99"></a>        s <span class="op">+=</span> <span class="st">")"</span></span>
+<span id="cb2-100"><a href="#cb2-100"></a>        <span class="cf">return</span> s</span>
+<span id="cb2-101"><a href="#cb2-101"></a></span>
+<span id="cb2-102"><a href="#cb2-102"></a>    <span class="kw">def</span> derivative(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="st">"SineFunction"</span>:</span>
+<span id="cb2-103"><a href="#cb2-103"></a>        <span class="co">"""Oblicza pochodną funkcji sinus i zwraca nowy obiekt SineFunction."""</span></span>
+<span id="cb2-104"><a href="#cb2-104"></a>        <span class="co"># Pochodna amplitude * sin(frequency * x + phase)</span></span>
+<span id="cb2-105"><a href="#cb2-105"></a>        <span class="co"># to amplitude * frequency * cos(frequency * x + phase)</span></span>
+<span id="cb2-106"><a href="#cb2-106"></a>        <span class="cf">return</span> SineFunction(</span>
+<span id="cb2-107"><a href="#cb2-107"></a>            amplitude<span class="op">=</span><span class="va">self</span>.amplitude <span class="op">*</span> <span class="va">self</span>.frequency,</span>
+<span id="cb2-108"><a href="#cb2-108"></a>            frequency<span class="op">=</span><span class="va">self</span>.frequency,</span>
+<span id="cb2-109"><a href="#cb2-109"></a>            phase<span class="op">=</span><span class="va">self</span>.phase <span class="op">+</span> math.pi <span class="op">/</span> <span class="dv">2</span>,</span>
+<span id="cb2-110"><a href="#cb2-110"></a>            name<span class="op">=</span><span class="ss">f"Pochodna </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>name<span class="sc">}</span><span class="ss">"</span> <span class="cf">if</span> <span class="va">self</span>.name <span class="cf">else</span> <span class="va">None</span>,</span>
+<span id="cb2-111"><a href="#cb2-111"></a>        )</span>
+<span id="cb2-112"><a href="#cb2-112"></a></span>
+<span id="cb2-113"><a href="#cb2-113"></a></span>
+<span id="cb2-114"><a href="#cb2-114"></a><span class="kw">class</span> ExponentialFunction(DifferentiableFunction):</span>
+<span id="cb2-115"><a href="#cb2-115"></a>    <span class="co">"""Klasa reprezentująca funkcję eksponencjalną."""</span></span>
+<span id="cb2-116"><a href="#cb2-116"></a></span>
+<span id="cb2-117"><a href="#cb2-117"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb2-118"><a href="#cb2-118"></a>        <span class="va">self</span>,</span>
+<span id="cb2-119"><a href="#cb2-119"></a>        base: <span class="bu">float</span> <span class="op">=</span> math.e,</span>
+<span id="cb2-120"><a href="#cb2-120"></a>        scalar: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1.0</span>,</span>
+<span id="cb2-121"><a href="#cb2-121"></a>        name: <span class="bu">str</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb2-122"><a href="#cb2-122"></a>    ):</span>
+<span id="cb2-123"><a href="#cb2-123"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(<span class="kw">lambda</span> x: scalar <span class="op">*</span> base<span class="op">**</span>x, name)</span>
+<span id="cb2-124"><a href="#cb2-124"></a>        <span class="va">self</span>.base <span class="op">=</span> base</span>
+<span id="cb2-125"><a href="#cb2-125"></a>        <span class="va">self</span>.scalar <span class="op">=</span> scalar</span>
+<span id="cb2-126"><a href="#cb2-126"></a></span>
+<span id="cb2-127"><a href="#cb2-127"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb2-128"><a href="#cb2-128"></a>        <span class="cf">return</span> (</span>
+<span id="cb2-129"><a href="#cb2-129"></a>            <span class="ss">f"</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>scalar<span class="sc">}</span><span class="ss"> * </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>base<span class="sc">}</span><span class="ss"> ^ x"</span></span>
+<span id="cb2-130"><a href="#cb2-130"></a>            <span class="cf">if</span> <span class="va">self</span>.scalar <span class="op">!=</span> <span class="fl">1.0</span></span>
+<span id="cb2-131"><a href="#cb2-131"></a>            <span class="cf">else</span> <span class="ss">f"</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>base<span class="sc">}</span><span class="ss"> ^ x"</span></span>
+<span id="cb2-132"><a href="#cb2-132"></a>        )</span>
+<span id="cb2-133"><a href="#cb2-133"></a></span>
+<span id="cb2-134"><a href="#cb2-134"></a>    <span class="kw">def</span> derivative(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="st">"ExponentialFunction"</span>:</span>
+<span id="cb2-135"><a href="#cb2-135"></a>        <span class="co">"""Oblicza pochodną funkcji eksponencjalnej."""</span></span>
+<span id="cb2-136"><a href="#cb2-136"></a>        <span class="cf">return</span> ExponentialFunction(</span>
+<span id="cb2-137"><a href="#cb2-137"></a>            base<span class="op">=</span><span class="va">self</span>.base,</span>
+<span id="cb2-138"><a href="#cb2-138"></a>            scalar<span class="op">=</span><span class="va">self</span>.scalar <span class="op">*</span> math.log(<span class="va">self</span>.base),</span>
+<span id="cb2-139"><a href="#cb2-139"></a>            name<span class="op">=</span><span class="ss">f"Pochodna </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>name<span class="sc">}</span><span class="ss">"</span> <span class="cf">if</span> <span class="va">self</span>.name <span class="cf">else</span> <span class="va">None</span>,</span>
+<span id="cb2-140"><a href="#cb2-140"></a>        )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 
 
-</section>
 </section>
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> 
   </div>
