@@ -70,6 +70,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 
 
 <link rel="stylesheet" href="../../css/styles.css">
@@ -337,7 +338,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#tworzenie-skrótu-do-gry-pygame" id="toc-tworzenie-skrótu-do-gry-pygame" class="nav-link" data-scroll-target="#tworzenie-skrótu-do-gry-pygame">Tworzenie skrótu do gry Pygame</a></li>
   <li><a href="#ustawianie-własnej-ikony-dla-skrótu" id="toc-ustawianie-własnej-ikony-dla-skrótu" class="nav-link" data-scroll-target="#ustawianie-własnej-ikony-dla-skrótu">Ustawianie własnej ikony dla skrótu</a></li>
   </ul>
-</nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/bwrob/bwrob.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <div class="quarto-about-marquee">
@@ -508,7 +509,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/bwrob\.github\.io");
+        var filterRegex = new RegExp("https:\/\/bwrob\.github\.io\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -835,6 +836,38 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
   </script>
+<input type="hidden" id="giscus-base-theme" value="dark">
+<input type="hidden" id="giscus-alt-theme" value="light">
+<script>
+  function loadGiscus() {
+    // Function to get the theme based on body class
+    const getTheme = () => {
+      let baseTheme = document.getElementById('giscus-base-theme').value;
+      let altTheme = document.getElementById('giscus-alt-theme').value;
+      if (authorPrefersDark) {
+          [baseTheme, altTheme] = [altTheme, baseTheme];
+      }
+      return document.body.classList.contains('quarto-dark') ? altTheme : baseTheme;
+    };
+    const script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.dataset.repo = "bwrob/bwrob.github.io";
+    script.dataset.repoId = "R_kgDOLzf1hw";
+    script.dataset.category = "General";
+    script.dataset.categoryId = "";
+    script.dataset.mapping = "pathname";
+    script.dataset.reactionsEnabled = "0";
+    script.dataset.emitMetadata = "0";
+    script.dataset.inputPosition = "top";
+    script.dataset.theme = getTheme();
+    script.dataset.lang = "en";
+    script.crossOrigin = "anonymous";
+    // Append the script to the desired div instead of at the end of the body
+    document.getElementById("quarto-content").appendChild(script);
+  }
+  loadGiscus();
+</script>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
@@ -843,7 +876,7 @@ document.addEventListener("DOMContentLoaded", function() {
     </div>   
     <div class="nav-footer-center">
 <p>Copyright 2026, bwrob. Rendered with Quarto 1.9.37</p>
-</div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/bwrob/bwrob.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
@@ -853,4 +886,5 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

@@ -108,6 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 
 
 <link rel="stylesheet" href="../../../css/styles.css">
@@ -423,7 +424,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#modern-python-data-classes" id="toc-modern-python-data-classes" class="nav-link" data-scroll-target="#modern-python-data-classes">Modern Python: Data Classes</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
-</nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/bwrob/bwrob.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
@@ -441,7 +442,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="starting-simple-the-empty-class" class="level2">
 <h2 class="anchored" data-anchor-id="starting-simple-the-empty-class">Starting Simple: The Empty Class</h2>
 <p>Python’s dynamic nature allows for flexibility that can be surprising if you are coming from statically typed languages like C++ or Java. The most minimal class definition in Python is simply an empty block.</p>
-<div id="608b1468" class="cell" data-execution_count="1">
+<div id="ce24bb60" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">class</span> Option:</span>
@@ -449,7 +450,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>This <code>Option</code> class might seem useless, but Python allows us to attach attributes to instances dynamically—a practice sometimes called “monkey patching” in broader contexts.</p>
-<div id="273a9c5b" class="cell" data-execution_count="2">
+<div id="457b3c20" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Create an instance</span></span>
@@ -472,7 +473,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="enforcing-structure-__init__">Enforcing Structure: <code>__init__</code></h2>
 <p>To fix this, we use the <code>__init__</code> method. Think of it as your “initializer” (sometimes called a constructor). It runs the second an object is created, making sure every instance starts off with the right data in the right place.</p>
 <p>Here’s how we can define a <code>EuropeanOption</code> class with a proper setup.</p>
-<div id="40e9f11d" class="cell" data-execution_count="3">
+<div id="57801ee3" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">class</span> EuropeanOption:</span>
@@ -501,7 +502,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="class-attributes-vs.-instance-attributes">Class Attributes vs.&nbsp;Instance Attributes</h2>
 <p>The attributes <code>strike</code>, <code>expiry</code>, and <code>option_type</code> are <strong>instance attributes</strong>. They belong to a specific object; one option’s strike does not affect another’s.</p>
 <p>Sometimes, however, we need to share data across <em>all</em> instances of a class. These are <strong>class attributes</strong>, defined directly in the class body.</p>
-<div id="82420ec5" class="cell" data-execution_count="4">
+<div id="06e0cd0b" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">class</span> EuropeanOption:</span>
@@ -570,7 +571,7 @@ Option 2 contract size: 100</code></pre>
 <section id="instance-methods" class="level3">
 <h3 class="anchored" data-anchor-id="instance-methods">Instance Methods</h3>
 <p>Objects usually need to do more than just hold data. As introduced in the table above, <strong>instance methods</strong> are functions defined inside a class that operate on its instances. As we saw with <code>__init__</code>, the first parameter is always <code>self</code>, referring to the specific object calling the method.</p>
-<div id="dc5ab04d" class="cell" data-execution_count="5">
+<div id="1eef3e60" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">class</span> EuropeanOption:</span>
@@ -601,7 +602,7 @@ Spot 90, Call Payoff: 0.0</code></pre>
 <h2 class="anchored" data-anchor-id="class-methods">Class Methods</h2>
 <p>Sometimes we need a method that operates on the class itself rather than a specific instance. These are <strong>class methods</strong>, receiving the class (<code>cls</code>) as their first argument instead of <code>self</code>. They are marked with the <code>@classmethod</code> decorator.</p>
 <p>A common use case for class methods is creating <strong>factory methods</strong>—alternative ways to instantiate the class.</p>
-<div id="a5a1e1c9" class="cell" data-execution_count="6">
+<div id="f6ede194" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">class</span> EuropeanOption:</span>
@@ -649,7 +650,7 @@ Default option type after change: Put</code></pre>
 <h2 class="anchored" data-anchor-id="static-methods">Static Methods</h2>
 <p>A <strong>static method</strong> behaves like a regular function but lives within the class’s namespace. It doesn’t receive <code>self</code> or <code>cls</code> automatically. We use the <code>@staticmethod</code> decorator for utility functions that are logically related to the class but don’t need access to the class or instance state.</p>
 <p>For an option class, a static method might implement a pricing formula component that is purely mathematical.</p>
-<div id="07a03c6b" class="cell" data-execution_count="7">
+<div id="0dfc484e" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="im">import</span> math</span>
@@ -675,7 +676,7 @@ Default option type after change: Put</code></pre>
 <h2 class="anchored" data-anchor-id="the-property-decorator-property">The Property Decorator: <code>@property</code></h2>
 <p>In finance, invalid data can lead to significant errors. A negative strike price or a negative volatility is nonsensical. In languages like Java or C++, you typically implement <code>getStrike()</code> and <code>setStrike()</code> methods to handle validation. Python offers a cleaner alternative: the <code>@property</code> decorator.</p>
 <p>This allows us to access a method as if it were an attribute, adding logic like validation seamlessly.</p>
-<div id="f0cd99f0" class="cell" data-execution_count="8">
+<div id="33df19d2" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">class</span> EuropeanOption:</span>
@@ -715,7 +716,7 @@ Error caught: Strike price cannot be negative.</code></pre>
 <li><strong>Protected (<code>_variable</code>)</strong>: A single underscore prefix indicates that a variable or method is for internal use only. It’s a signal to other developers: “Don’t touch this unless you know what you are doing.”</li>
 <li><strong>Private (<code>__variable</code>)</strong>: A double underscore prefix triggers <strong>name mangling</strong>. The interpreter changes the variable name to <code>_ClassName__variable</code> to prevent accidental overwrites in subclasses. It is effectively private, but can still be accessed if you really try.</li>
 </ol>
-<div id="49055935" class="cell" data-execution_count="9">
+<div id="36f00e7d" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">class</span> EuropeanOption:</span>
@@ -741,7 +742,7 @@ BS</code></pre>
 <h2 class="anchored" data-anchor-id="memory-optimization-__slots__">Memory Optimization: <code>__slots__</code></h2>
 <p>Standard Python objects store their attributes in a dictionary (<code>__dict__</code>), which allows for the dynamic behavior we saw earlier. However, dictionaries come with memory overhead.</p>
 <p>If you are running a Monte Carlo simulation with millions of paths, this overhead can become a bottleneck. <code>__slots__</code> tells Python to reserve space for <em>only</em> a specific set of attributes, removing the dynamic dictionary and saving memory.</p>
-<div id="327b38b9" class="cell" data-execution_count="10">
+<div id="a7cb987e" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="im">import</span> sys</span>
@@ -781,7 +782,7 @@ Slotted Option Size:  ~48 bytes</code></pre>
 <section id="modern-python-data-classes" class="level2">
 <h2 class="anchored" data-anchor-id="modern-python-data-classes">Modern Python: Data Classes</h2>
 <p>Since Python 3.7, there is an even easier way to create classes that primarily store data. The <code>@dataclass</code> decorator automatically generates <code>__init__</code>, <code>__repr__</code>, <code>__eq__</code>, and other special methods for you, reducing boilerplate code significantly.</p>
-<div id="f399fc6d" class="cell" data-execution_count="11">
+<div id="5a6c2fc8" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
@@ -947,7 +948,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/bwrob\.github\.io");
+        var filterRegex = new RegExp("https:\/\/bwrob\.github\.io\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -1274,6 +1275,38 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
   </script>
+<input type="hidden" id="giscus-base-theme" value="dark">
+<input type="hidden" id="giscus-alt-theme" value="light">
+<script>
+  function loadGiscus() {
+    // Function to get the theme based on body class
+    const getTheme = () => {
+      let baseTheme = document.getElementById('giscus-base-theme').value;
+      let altTheme = document.getElementById('giscus-alt-theme').value;
+      if (authorPrefersDark) {
+          [baseTheme, altTheme] = [altTheme, baseTheme];
+      }
+      return document.body.classList.contains('quarto-dark') ? altTheme : baseTheme;
+    };
+    const script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.dataset.repo = "bwrob/bwrob.github.io";
+    script.dataset.repoId = "R_kgDOLzf1hw";
+    script.dataset.category = "General";
+    script.dataset.categoryId = "";
+    script.dataset.mapping = "pathname";
+    script.dataset.reactionsEnabled = "0";
+    script.dataset.emitMetadata = "0";
+    script.dataset.inputPosition = "top";
+    script.dataset.theme = getTheme();
+    script.dataset.lang = "en";
+    script.crossOrigin = "anonymous";
+    // Append the script to the desired div instead of at the end of the body
+    document.getElementById("quarto-content").appendChild(script);
+  }
+  loadGiscus();
+</script>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
@@ -1282,7 +1315,7 @@ document.addEventListener("DOMContentLoaded", function() {
     </div>   
     <div class="nav-footer-center">
 <p>Copyright 2026, bwrob. Rendered with Quarto 1.9.37</p>
-</div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/bwrob/bwrob.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
@@ -1292,4 +1325,5 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
+<script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
