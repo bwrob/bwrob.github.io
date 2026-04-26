@@ -1,50 +1,67 @@
+"""Deep dive into Python class mechanics and anatomy.
+
+This module demonstrates various aspects of Python classes, including basic
+objects, structured classes, properties, access control, memory optimization
+with slots, and dataclasses.
+"""
+
+from __future__ import annotations
+
 import math
 import sys
 from dataclasses import dataclass
+from typing import Any
 
 
 # 1. The Fuzzy Object
 class Option:
-    pass
+    """A simple class demonstrating a 'fuzzy' object with dynamic attributes."""
 
 
 print("--- The Fuzzy Object ---")
 my_option = Option()
-my_option.strike = 100
-my_option.expiry = "2025-12-20"
-my_option.type = "Call"
-print(f"Fuzzy Option strike: {my_option.strike}")
+my_option.strike = 100  # type: ignore[attr-defined]
+my_option.expiry = "2025-12-20"  # type: ignore[attr-defined]
+my_option.type = "Call"  # type: ignore[attr-defined]
+print(f"Fuzzy Option strike: {my_option.strike}")  # type: ignore[attr-defined]
 
 
 # 2. Structured Class - Base for further examples
 class EuropeanOption:
+    """A structured class representing a European option."""
+
     # Class Attributes
     CONTRACT_SIZE = 100
     _DEFAULT_OPTION_TYPE = "Call"  # Default for new options
 
     def __init__(self, strike: float, expiry: str, option_type: str) -> None:
+        """Initialize the EuropeanOption with strike, expiry, and type."""
         # Instance Attributes
         self.strike = strike
         self.expiry = expiry
         self.option_type = option_type
 
     def payoff(self, spot_price: float) -> float:
-        """Instance Method."""
+        """Calculate the payoff of the option at a given spot price."""
         if self.option_type == "Call":
             return max(spot_price - self.strike, 0.0)
         if self.option_type == "Put":
-            return max(
-                self.strike - spot_price, 0.0
-            )  # Should be self.strike - spot_price
+            return max(self.strike - spot_price, 0.0)
         msg = "Unknown option type"
         raise ValueError(msg)
 
     def __repr__(self) -> str:
-        return f"EuropeanOption(strike={self.strike}, type='{self.option_type}', expiry='{self.expiry}')"
+        """Return a string representation of the EuropeanOption."""
+        return (
+            f"EuropeanOption(strike={self.strike}, "
+            f"type='{self.option_type}', expiry='{self.expiry}')"
+        )
 
     @classmethod
-    def from_string(cls, description: str, expiry: str = "2025-12-20"):
-        """Class Method (Factory)."""
+    def from_string(
+        cls, description: str, expiry: str = "2025-12-20"
+    ) -> EuropeanOption:
+        """Create a EuropeanOption instance from a string description."""
         parts = description.split("-")
         option_type = parts[0]
         strike = float(parts[1])
@@ -52,16 +69,16 @@ class EuropeanOption:
 
     @classmethod
     def set_default_option_type(cls, new_type: str) -> None:
-        """Sets a new default option type for the class."""
+        """Set a new default option type for the class."""
         if new_type not in {"Call", "Put"}:
             msg = "Option type must be 'Call' or 'Put'."
             raise ValueError(msg)
         cls._DEFAULT_OPTION_TYPE = new_type
 
     @staticmethod
-    def d1(S, K, T, r, sigma):
-        """Static Method."""
-        return (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+    def d1(s: float, k: float, t: float, r: float, sigma: float) -> float:
+        """Calculate the d1 component of the Black-Scholes formula."""
+        return (math.log(s / k) + (r + 0.5 * sigma**2) * t) / (sigma * math.sqrt(t))
 
 
 # Usage examples - from initial setup
@@ -79,33 +96,39 @@ print(f"Created from string: {option_from_str}")
 
 # Non-builder class method usage
 print("\n--- Non-builder Class Method Usage ---")
-print(f"Default option type before change: {EuropeanOption._DEFAULT_OPTION_TYPE}")
+# Accessing _DEFAULT_OPTION_TYPE is the point of the lesson.
+print(f"Default option type before change: {EuropeanOption._DEFAULT_OPTION_TYPE}")  # noqa: SLF001
 EuropeanOption.set_default_option_type("Put")
-print(f"Default option type after change: {EuropeanOption._DEFAULT_OPTION_TYPE}")
+print(f"Default option type after change: {EuropeanOption._DEFAULT_OPTION_TYPE}")  # noqa: SLF001
 EuropeanOption.set_default_option_type(
     "Call"
 )  # Reset for consistency in following examples
 
 # Static method usage
 print("\n--- Static Method Usage ---")
-d1_val = EuropeanOption.d1(S=100, K=100, T=1, r=0.05, sigma=0.2)
+d1_val = EuropeanOption.d1(s=100, k=100, t=1, r=0.05, sigma=0.2)
 print(f"d1 value: {d1_val:.4f}")
 
 
 # 3. Properties and Validation - using EuropeanOption as base
 class EuropeanOptionWithProperty(EuropeanOption):
+    """European option class with property-based validation for strike."""
+
     def __init__(self, strike: float, expiry: str, option_type: str) -> None:
+        """Initialize and trigger property validation."""
         # Assign to property to trigger validation
         self.strike = strike
-        self.expiry = expiry  # Will need to adjust parent __init__ for this
+        self.expiry = expiry
         self.option_type = option_type
 
     @property
-    def strike(self):
+    def strike(self) -> float:
+        """Get the strike price."""
         return self._strike
 
     @strike.setter
-    def strike(self, value) -> None:
+    def strike(self, value: float) -> None:
+        """Set the strike price with validation."""
         if value < 0:
             msg = "Strike price cannot be negative."
             raise ValueError(msg)
@@ -124,41 +147,51 @@ except ValueError as e:
 
 # 4. Access Control - using EuropeanOption
 class EuropeanOptionWithAccessControl(EuropeanOption):
+    """European option class demonstrating access control (protected and private)."""
+
     def __init__(self, strike: float, expiry: str, option_type: str) -> None:
+        """Initialize with protected and private members."""
         super().__init__(strike, expiry, option_type)
-        self._internal_cache = {}  # Protected
-        self.__secret_config = "confidential"  # Private
+        self._internal_cache: dict[str, Any] = {}  # Protected
+        self.__secret_config = "confidential"  # noqa: S105
 
 
 print("\n--- Access Control (using EuropeanOptionWithAccessControl) ---")
 opt_access = EuropeanOptionWithAccessControl(100, "2025-12-20", "Call")
-print(f"Protected access: {opt_access._internal_cache}")
+# Demonstrating access to protected/private members is the specific goal.
+print(f"Protected access: {opt_access._internal_cache}")  # noqa: SLF001
 try:
-    print(opt_access.__secret_config)
+    print(opt_access.__secret_config)  # type: ignore[attr-defined] # noqa: SLF001
 except AttributeError:
     print("Cannot access private variable directly.")
 print(
-    f"Mangled name access: {opt_access._EuropeanOptionWithAccessControl__secret_config}"
+    f"Mangled name access: {opt_access._EuropeanOptionWithAccessControl__secret_config}"  # noqa: SLF001
 )
 
 
 # 5. Memory Slots - comparing StandardOption (no slots) vs SlottedOption (with slots)
 class StandardOption(EuropeanOption):
-    # No __slots__
-    pass
+    """Standard option class without __slots__."""
 
 
 class SlottedOption(EuropeanOption):
+    """Option class using __slots__ for memory optimization."""
+
     __slots__ = ["expiry", "option_type", "strike"]  # Must match __init__ attributes
 
     def __init__(self, strike: float, expiry: str, option_type: str) -> None:
+        """Initialize the SlottedOption."""
         self.strike = strike
         self.expiry = expiry
         self.option_type = option_type
 
-    # __repr__ is not inherited if slots are present, needs to be redefined or use parent
+    # __repr__ is not inherited if slots are present, needs to be redefined
     def __repr__(self) -> str:
-        return f"SlottedOption(strike={self.strike}, type='{self.option_type}', expiry='{self.expiry}')"
+        """Return a string representation of the SlottedOption."""
+        return (
+            f"SlottedOption(strike={self.strike}, "
+            f"type='{self.option_type}', expiry='{self.expiry}')"
+        )
 
 
 print("\n--- Memory Optimization (StandardOption vs SlottedOption) ---")
@@ -166,7 +199,8 @@ std_opt_mem = StandardOption(100, "2025-12-20", "Call")
 slot_opt_mem = SlottedOption(100, "2025-12-20", "Call")
 
 
-def get_size(obj):
+def get_size(obj: object) -> int:
+    """Calculate the approximate memory size of an object."""
     size = sys.getsizeof(obj)
     if hasattr(obj, "__dict__"):
         size += sys.getsizeof(obj.__dict__)
@@ -180,6 +214,8 @@ print(f"Slotted Option Size:  ~{get_size(slot_opt_mem)} bytes")
 # 6. Data Classes - using a simple OptionData
 @dataclass
 class OptionData:
+    """A dataclass representing option data."""
+
     strike: float
     expiry: str
     option_type: str = "Call"

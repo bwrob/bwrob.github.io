@@ -1,3 +1,9 @@
+"""Demonstration of inheritance, polymorphism, and protocols in Python.
+
+This module covers Abstract Base Classes (ABCs), multiple inheritance,
+mixins, composition, and structural subtyping using Protocols.
+"""
+
 import math
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -5,9 +11,12 @@ from typing import Protocol, runtime_checkable
 
 # --- 1. Abstract Base Classes ---
 
+ZERO_THRESHOLD = 1e-9
+
 
 class YieldCurve(ABC):
     """Abstract base class for all yield curves.
+
     Enforces that every subclass must implement `discount_factor`.
     """
 
@@ -16,10 +25,11 @@ class YieldCurve(ABC):
         """Calculate discount factor D(t) for time t."""
 
     def zero_rate(self, t: float) -> float:
-        """Concrete method shared by all curves.
+        """Calculate the zero rate for time t.
+
         Z(t) = -ln(D(t)) / t.
         """
-        if t <= 1e-9:  # Avoid division by zero
+        if t <= ZERO_THRESHOLD:  # Avoid division by zero
             return 0.0  # Approximation for t -> 0
         df = self.discount_factor(t)
         return -math.log(df) / t
@@ -29,10 +39,14 @@ class YieldCurve(ABC):
 
 
 class FlatForwardCurve(YieldCurve):
+    """Yield curve with a constant forward rate."""
+
     def __init__(self, rate: float) -> None:
+        """Initialize the flat forward curve with a constant rate."""
         self.rate = rate
 
     def discount_factor(self, t: float) -> float:
+        """Calculate the discount factor for a flat forward curve."""
         return math.exp(-self.rate * t)
 
 
@@ -41,27 +55,34 @@ class FlatForwardCurve(YieldCurve):
 
 class SpreadMixin:
     """Mixin to add a spread to a curve.
+
     Must be mixed with a class that has a 'rate' attribute or similar logic,
     or we can override discount_factor calling super().
     """
 
-    def __init__(self, spread: float, *args, **kwargs) -> None:
+    def __init__(self, spread: float, *args: object, **kwargs: object) -> None:
+        """Initialize the spread mixin."""
         self.spread = spread
         super().__init__(*args, **kwargs)
 
     def discount_factor(self, t: float) -> float:
-        # Get base discount factor
-        base_df = super().discount_factor(t)
+        """Calculate the discount factor including the spread."""
+        # Get base discount factor from the parent class via MRO
+        base_df = (
+            super().discount_factor(t) if hasattr(super(), "discount_factor") else 1.0
+        )
         # Apply spread discount: exp(-spread * t)
         return base_df * math.exp(-self.spread * t)
 
 
 class ShiftedFlatCurve(SpreadMixin, FlatForwardCurve):
-    """Inherits from both SpreadMixin and FlatForwardCurve.
+    """Inherit from both SpreadMixin and FlatForwardCurve.
+
     MRO (Method Resolution Order) ensures SpreadMixin.discount_factor is called first.
     """
 
     def __init__(self, rate: float, spread: float) -> None:
+        """Initialize the shifted flat curve with rate and spread."""
         # Initialize both parents.
         # SpreadMixin.__init__ calls super().__init__, which goes to FlatForwardCurve
         super().__init__(spread=spread, rate=rate)
@@ -73,11 +94,18 @@ class ShiftedFlatCurve(SpreadMixin, FlatForwardCurve):
 
 
 class Interpolator(Protocol):
-    def interpolate(self, t: float, x: list[float], y: list[float]) -> float: ...
+    """Protocol for interpolation strategies."""
+
+    def interpolate(self, t: float, x: list[float], y: list[float]) -> float:
+        """Interpolate y value for a given t."""
+        ...
 
 
 class LinearInterpolator:
+    """Linear interpolation strategy."""
+
     def interpolate(self, t: float, x: list[float], y: list[float]) -> float:
+        """Perform linear interpolation with flat extrapolation."""
         # Simple flat extrapolation for endpoints
         if t <= x[0]:
             return y[0]
@@ -95,9 +123,12 @@ class LinearInterpolator:
 
 
 class InterpolatedZeroCurve(YieldCurve):
+    """Yield curve that uses an interpolation strategy."""
+
     def __init__(
         self, times: list[float], rates: list[float], interpolator: Interpolator
     ) -> None:
+        """Initialize with times, rates, and an interpolator."""
         if len(times) != len(rates):
             msg = "Times and rates must have same length"
             raise ValueError(msg)
@@ -106,6 +137,7 @@ class InterpolatedZeroCurve(YieldCurve):
         self.interpolator = interpolator
 
     def discount_factor(self, t: float) -> float:
+        """Calculate discount factor using interpolated rate."""
         r = self.interpolator.interpolate(t, self.times, self.rates)
         return math.exp(-r * t)
 
@@ -115,10 +147,12 @@ class InterpolatedZeroCurve(YieldCurve):
 
 class LinearInterpolationMixin:
     """Mixin that provides linear interpolation capability.
+
     Assumes the class has access to x and y data, passed as arguments.
     """
 
     def interpolate_linear(self, t: float, x: list[float], y: list[float]) -> float:
+        """Perform linear interpolation."""
         if t <= x[0]:
             return y[0]
         if t >= x[-1]:
@@ -134,11 +168,15 @@ class LinearInterpolationMixin:
 
 
 class MixinZeroCurve(LinearInterpolationMixin, YieldCurve):
+    """Yield curve using a mixin for interpolation."""
+
     def __init__(self, times: list[float], rates: list[float]) -> None:
+        """Initialize with times and rates."""
         self.times = sorted(times)
         self.rates = [r for _, r in sorted(zip(times, rates, strict=False))]
 
     def discount_factor(self, t: float) -> float:
+        """Calculate discount factor using mixin interpolation."""
         # Use the method provided by the Mixin
         r = self.interpolate_linear(t, self.times, self.rates)
         return math.exp(-r * t)
@@ -149,6 +187,8 @@ class MixinZeroCurve(LinearInterpolationMixin, YieldCurve):
 
 @dataclass
 class CashFlow:
+    """Represent a single cash flow at a specific time."""
+
     amount: float
     time: float
 
@@ -166,23 +206,30 @@ def price_bond(cashflows: list[CashFlow], curve: YieldCurve) -> float:
 
 @runtime_checkable
 class Discountable(Protocol):
-    """A Protocol defines a 'shape'. Any class having this method
-    is considered compatible, even if it doesn't inherit from Discountable.
-    """
+    """Define a 'shape' for objects that can provide a discount factor.
 
-    def discount_factor(self, t: float) -> float: ...
-
-
-class SimpleDiscounter:
-    """This class does NOT inherit from YieldCurve,
-    but it satisfies the Discountable protocol.
+    Any class having this method is considered compatible, even if it
+    doesn't inherit from Discountable.
     """
 
     def discount_factor(self, t: float) -> float:
+        """Return the discount factor for time t."""
+        ...
+
+
+class SimpleDiscounter:
+    """Class that satisfies the Discountable protocol without inheriting.
+
+    This demonstrates structural subtyping.
+    """
+
+    def discount_factor(self, t: float) -> float:
+        """Calculate discount factor using simple capitalization."""
         return 1 / (1 + 0.05 * t)  # Simple capitalization
 
 
 def price_asset_structural(amount: float, t: float, model: Discountable) -> float:
+    """Price an asset using any model that satisfies the Discountable protocol."""
     return amount * model.discount_factor(t)
 
 

@@ -132,8 +132,7 @@ def with_optional_delay[T](
 
     @wraps(task_worker)
     def task_defaulted_worker(task_list: TaskListOptionalDelay[T]) -> None:
-        """Add a default delay to tasks in a task list if no delay is
-        specified.
+        """Add a default delay to tasks in a task list if no delay is specified.
 
         Args:
         ----

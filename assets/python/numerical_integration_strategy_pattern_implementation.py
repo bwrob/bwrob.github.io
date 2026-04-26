@@ -1,5 +1,7 @@
-"""An integrator class that allows to perform integration using different
-schemes.
+"""Integrate using different schemes.
+
+This module provides an integrator class that allows to perform integration
+using different schemes as strategies.
 """
 
 from abc import ABC, abstractmethod
@@ -52,7 +54,7 @@ class RectangleScheme(IntegrationScheme):
         start: float,
         end: float,
     ) -> float:
-        """Integrates a function using rectangle integration."""
+        """Integrate a function using rectangle integration."""
         x_points = np.linspace(start, end, self.__steps)
         values = integrand(x_points)
         dx = (end - start) / np.float64(self.__steps)
@@ -89,7 +91,7 @@ class MonteCarloScheme(IntegrationScheme):
         start: float,
         end: float,
     ) -> float:
-        """Integrates a function using Monte Carlo integration."""
+        """Integrate a function using Monte Carlo integration."""
         rng = np.random.default_rng(2137)
         x_points = rng.uniform(start, end, self.__random_points)
         values = integrand(x_points)

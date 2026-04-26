@@ -6,13 +6,14 @@ from rich.console import Console
 from rich.tree import Tree
 
 __ERROR_MSG_NEGATIVE = "Fibonacci is not defined for negative numbers."
+FIB_THRESHOLD = 2
 
 
 def fibonacci_recursive(n: int) -> int:
     """Calculate the nth Fibonacci number using a recursive approach."""
     if n < 0:
         raise ValueError(__ERROR_MSG_NEGATIVE)
-    if n < 2:
+    if n < FIB_THRESHOLD:
         return n
     return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
 
@@ -26,7 +27,7 @@ def fibonacci_recursive_talkative(n: int) -> int:
         node = tree.add(f"fibonacci_recursive({n}) called")
         if n < 0:
             raise ValueError(__ERROR_MSG_NEGATIVE)
-        if n < 2:
+        if n < FIB_THRESHOLD:
             return n
         return worker(n - 1, node) + worker(n - 2, node)
 
@@ -42,7 +43,7 @@ def fibonacci_recursive_cached(n: int) -> int:
     """Calculate the nth Fibonacci number using recursion with memoization."""
     if n < 0:
         raise ValueError(__ERROR_MSG_NEGATIVE)
-    if n < 2:
+    if n < FIB_THRESHOLD:
         return n
 
     if n in __CACHE:
@@ -57,7 +58,7 @@ def fibonacci_recursive_cached_lru(n: int) -> int:
     """Calculate the nth Fibonacci number using recursion with memoization."""
     if n < 0:
         raise ValueError(__ERROR_MSG_NEGATIVE)
-    if n < 2:
+    if n < FIB_THRESHOLD:
         return n
     return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
 
@@ -66,7 +67,7 @@ def fibonacci_iterative(n: int) -> int:
     """Calculate the nth Fibonacci number using an iterative approach."""
     if n < 0:
         raise ValueError(__ERROR_MSG_NEGATIVE)
-    if n < 2:
+    if n < FIB_THRESHOLD:
         return n
 
     a, b = 0, 1

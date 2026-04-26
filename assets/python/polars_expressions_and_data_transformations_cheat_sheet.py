@@ -1,11 +1,21 @@
+"""Cheat sheet for Polars expressions and data transformations.
+
+This module demonstrates common Polars operations including normalization,
+complex column transformations, grouping, joins, and streaming.
+"""
+
 import pathlib
 
 import polars as pl
 import polars.selectors as cs
 import seaborn as sns
 
+SEPAL_LENGTH_THRESHOLD_XL = 6
+SEPAL_LENGTH_THRESHOLD_STREAMING = 5.0
+
 
 def main() -> None:
+    """Run Polars demonstration examples."""
     # 1. Setup & Expressions
     print("1. Setup & Expressions (Normalization chain):")
     df = pl.from_pandas(sns.load_dataset("iris"))
@@ -22,7 +32,7 @@ def main() -> None:
     print(
         df.with_columns(
             max_dim=pl.max_horizontal(cs.numeric()),
-            size_tag=pl.when(pl.col("sepal_length") > 6)
+            size_tag=pl.when(pl.col("sepal_length") > SEPAL_LENGTH_THRESHOLD_XL)
             .then(pl.lit("XL"))
             .otherwise(pl.lit("L")),
             combined=pl.coalesce(pl.col("sepal_length"), pl.col("sepal_width")),
@@ -64,7 +74,7 @@ def main() -> None:
     df.write_csv("iris_temp.csv")
     (
         pl.scan_csv("iris_temp.csv")
-        .filter(pl.col("sepal_length") > 5.0)
+        .filter(pl.col("sepal_length") > SEPAL_LENGTH_THRESHOLD_STREAMING)
         .sink_csv("iris_final.csv")
     )
     print("Streaming complete. Cleaning up...")

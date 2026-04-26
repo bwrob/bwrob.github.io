@@ -1,3 +1,10 @@
+"""Case-insensitive string enum implementation.
+
+This module provides a `CaseInsensitiveStrEnum` class that extends the standard
+`StrEnum` to support case-insensitive member lookup and ensure all member
+values are lowercase.
+"""
+
 from __future__ import annotations
 
 from enum import StrEnum

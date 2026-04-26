@@ -1,9 +1,22 @@
+"""Efficient iteration and generator patterns in Python.
+
+This module demonstrates various techniques for efficient data processing,
+including generators, memory profiling, and the use of built-in iteration
+tools from the `itertools` module.
+"""
+
+from __future__ import annotations
+
 import itertools
 import random
 import tracemalloc
+from collections.abc import Generator, Iterable
 from dataclasses import dataclass
 from datetime import date
 from functools import wraps
+from typing import Any, TypeVar
+
+T = TypeVar("T")
 
 # --- Lists vs. Tuples ---
 print("--- Lists vs. Tuples ---")
@@ -26,7 +39,8 @@ print(next(my_iterator))
 print("\n--- Generators ---")
 
 
-def number_generator(n):
+def number_generator(n: int) -> Generator[int]:
+    """Yield numbers from 0 to n-1."""
     yield from range(n)
 
 
@@ -35,7 +49,7 @@ print("Generator created.")
 
 # --- Example: Flattening a List of Lists ---
 print("\n--- Example: Flattening a List of Lists ---")
-trades_cashflows = [
+trades_cashflows: list[Any] = [
     [10, 20, 30],
     [15, 25],
     [100, -10, 5],
@@ -43,7 +57,8 @@ trades_cashflows = [
 ]
 
 
-def flatten(list_of_lists):
+def flatten(list_of_lists: Iterable[Any]) -> Generator[Any]:
+    """Flatten an iterable of iterables into a single generator."""
     for item in list_of_lists:
         if isinstance(item, list):
             yield from item
@@ -62,17 +77,18 @@ print("\n")
 print("--- Memory Efficiency in Action ---")
 
 
-def profile_memory(func):
-    """A decorator to profile the memory usage of a function."""
+def profile_memory(func: Any) -> Any:  # noqa: ANN401
+    """Decorate a function to profile its memory usage."""
 
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:  # noqa: ANN401
         tracemalloc.start()
         result = func(*args, **kwargs)
         current, peak = tracemalloc.get_traced_memory()
         print(f"Function: {func.__name__}")
         print(
-            f"Current memory usage is {current / 10**6:.6f}MB; Peak was {peak / 10**6:.6f}MB"
+            f"Current memory usage is {current / 10**6:.6f}MB; "
+            f"Peak was {peak / 10**6:.6f}MB"
         )
         tracemalloc.stop()
         return result
@@ -81,28 +97,29 @@ def profile_memory(func):
 
 
 @profile_memory
-def create_list(n):
-    """This function creates a list of n numbers."""
-    return list(range(n))
+def create_list(n_elements: int) -> list[int]:
+    """Create a list of n numbers."""
+    return list(range(n_elements))
 
 
 @profile_memory
-def create_generator(n):
-    """This function creates a generator of n numbers."""
-    return (i for i in range(n))
+def create_generator(n_elements: int) -> Generator[int]:
+    """Create a generator of n numbers."""
+    return (i for i in range(n_elements))
 
 
-n = 1_000_000
+n_val = 1_000_000
 print("Profiling memory for list creation...")
-my_list = create_list(n)
+my_list = create_list(n_val)
 
 print("\nProfiling memory for generator creation...")
-my_generator = create_generator(n)
+my_generator = create_generator(n_val)
 
 
 @profile_memory
-def consume_generator(gen):
-    return list(gen)
+def consume_generator[T](gen_to_consume: Iterable[T]) -> list[T]:
+    """Consume a generator and return its elements as a list."""
+    return list(gen_to_consume)
 
 
 print("\nProfiling memory for generator consumption...")
@@ -133,6 +150,8 @@ print("--- Essential Iteration Tools: sorted ---")
 
 @dataclass
 class Trade:
+    """Represent a financial trade with an ID, maturity date, and notional."""
+
     trade_id: str
     maturity: date
     notional: float
@@ -153,7 +172,7 @@ print("\n")
 # --- The itertools Module: chain.from_iterable ---
 print("--- The itertools Module: chain.from_iterable ---")
 fixed_leg = [50, 50, 50, 50]
-floating_leg = [50 + random.uniform(-5, 5) for _ in range(6)]
+floating_leg = [50 + random.uniform(-5, 5) for _ in range(6)]  # noqa: S311
 bond_legs = [fixed_leg, floating_leg]
 full_swap_leg = itertools.chain.from_iterable(bond_legs)
 
@@ -175,7 +194,8 @@ print("\n")
 print("--- The itertools Module: accumulate (Amortization) ---")
 
 
-def outstanding_balance(balance, payment, rate):
+def outstanding_balance(balance: float, payment: float, rate: float) -> float:
+    """Calculate the remaining balance after a payment and interest application."""
     return balance * (1 + rate) - payment
 
 
@@ -202,8 +222,9 @@ print("--- The itertools Module: pairwise ---")
 payment_dates = [date(2025, 1, 15), date(2025, 7, 15), date(2026, 1, 15)]
 
 
-def year_fraction(start, end):
-    return (end - start).days / 365.25
+def year_fraction(start_date: date, end_date: date) -> float:
+    """Calculate the year fraction between two dates."""
+    return (end_date - start_date).days / 365.25
 
 
 for start, end in itertools.pairwise(payment_dates):

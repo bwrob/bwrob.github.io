@@ -1,5 +1,15 @@
+"""Examples and explanations of Python functions, closures, and decorators.
+
+This module demonstrates how to use functions as first-class objects, how closures
+work, and how to implement custom decorators.
+"""
+
 import time
 from collections.abc import Callable
+from typing import Any
+
+# ruff: noqa: ANN401
+FIB_THRESHOLD = 2
 
 
 # Functions
@@ -8,7 +18,7 @@ def fibonacci_iterative(n: int) -> int:
     if n < 0:
         msg = "Fibonacci is not defined for negative numbers."
         raise ValueError(msg)
-    if n < 2:
+    if n < FIB_THRESHOLD:
         return n
 
     a, b = 0, 1
@@ -29,7 +39,7 @@ def fibonacci_recursive(n: int) -> int:
     if n < 0:
         msg = "Fibonacci is not defined for negative numbers."
         raise ValueError(msg)
-    if n < 2:
+    if n < FIB_THRESHOLD:
         return n
     return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
 
@@ -42,7 +52,7 @@ def fibonacci_recursive_cached(n: int) -> int:
     if n < 0:
         msg = "Fibonacci is not defined for negative numbers."
         raise ValueError(msg)
-    if n < 2:
+    if n < FIB_THRESHOLD:
         return n
 
     if n in FIBONACCI_CACHE:
@@ -55,7 +65,7 @@ def fibonacci_recursive_cached(n: int) -> int:
 
 
 def benchmark(functions: list[Callable[[int], int]], n: int) -> None:
-    """Benchmarks a list of functions."""
+    """Benchmark a list of functions."""
     for func in functions:
         start = time.perf_counter()
         func(n)
@@ -68,8 +78,8 @@ benchmark(fib_functions, 30)
 
 
 # Closures
-def get_greeter(greeting: str) -> Callable:
-    """Returns a greeter function."""
+def get_greeter(greeting: str) -> Callable[[str], str]:
+    """Return a greeter function."""
 
     def greeter(name: str) -> str:
         return f"{greeting}, {name}!"
@@ -80,16 +90,18 @@ def get_greeter(greeting: str) -> Callable:
 good_morning_greeter = get_greeter("Good morning")
 print(good_morning_greeter("World"))
 
-good_morning_greeter.__closure__[0].cell_contents
+
+good_morning_greeter.__closure__[0].cell_contents  # noqa: B018
 
 
-def polynomial_factory(coefficients: tuple[float, ...]) -> callable:
-    """A factory that creates a polynomial function from a tuple of coefficients.
+def polynomial_factory(coefficients: tuple[float, ...]) -> Callable[[float], float]:
+    """Create a polynomial function from a tuple of coefficients.
+
     The coefficients are ordered from the highest power to the lowest.
     """
 
     def polynomial(x: float) -> float:
-        """Evaluates the polynomial for a given x."""
+        """Evaluate the polynomial for a given x."""
         return sum(c * (x**i) for i, c in enumerate(reversed(coefficients)))
 
     return polynomial
@@ -106,11 +118,11 @@ print(p2(5))
 
 
 # Decorators
-def my_cache(func: Callable) -> Callable:
-    """A simple cache decorator."""
+def my_cache(func: Callable[..., Any]) -> Callable[..., Any]:
+    """Cache function results in a simple dictionary."""
     cache = {}
 
-    def wrapper(*args):
+    def wrapper(*args: Any) -> Any:
         if args in cache:
             return cache[args]
         result = func(*args)
@@ -122,11 +134,14 @@ def my_cache(func: Callable) -> Callable:
 
 @my_cache
 def fibonacci_cached_by_me(n: int) -> int:
-    """Calculate the nth Fibonacci number using recursion with our own cache decorator."""
+    """Calculate the nth Fibonacci number using recursion and a custom cache.
+
+    Uses our own cache decorator to avoid redundant calculations.
+    """
     if n < 0:
         msg = "Fibonacci is not defined for negative numbers."
         raise ValueError(msg)
-    if n < 2:
+    if n < FIB_THRESHOLD:
         return n
     return fibonacci_cached_by_me(n - 1) + fibonacci_cached_by_me(n - 2)
 
@@ -134,11 +149,12 @@ def fibonacci_cached_by_me(n: int) -> int:
 fibonacci_cached_by_me(30)
 
 
-def repeat(times: int) -> Callable:
-    """A decorator that repeats a function call a given number of times."""
+def repeat(times: int) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    """Return a decorator that repeats a function call a given number of times."""
 
-    def decorator(func: Callable) -> Callable:
-        def wrapper(*args, **kwargs):
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            result = None
             for _ in range(times):
                 result = func(*args, **kwargs)
             return result
@@ -150,6 +166,7 @@ def repeat(times: int) -> Callable:
 
 @repeat(3)
 def say_hello(name: str) -> None:
+    """Print a hello message."""
     print(f"Hello, {name}!")
 
 
