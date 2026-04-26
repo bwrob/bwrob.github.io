@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-05-02">
-<meta name="description" content="How to use and implement useful iterator utilities in Python.">
+<meta name="dcterms.date" content="2025-10-23">
+<meta name="description" content="How to treat your functions well.">
 
-<title>A Collection of Iterator Utilities – bwrob blog</title>
+<title>Functions, Closures and Decorators – bwrob blog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -63,25 +63,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../assets/logo/python_mug.png" rel="icon" type="image/png">
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-23bbe8b5e4efc1e257f6d59dce478b08.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-18b725f170e06ca68a5ca802173a5a27.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-c293c7c026199e810d85091ccc94fc0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../assets/logo/python_mug.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-23bbe8b5e4efc1e257f6d59dce478b08.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-18b725f170e06ca68a5ca802173a5a27.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-c293c7c026199e810d85091ccc94fc0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -109,17 +109,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="../../css/styles.css">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../css/styles.css">
 <meta property="og:title" content="bwrob blog">
 <meta property="og:description" content="bwrob personal and professional blog">
-<meta property="og:image" content="https://bwrob.github.io/assets/images/posts/python_recipes.png">
+<meta property="og:image" content="https://bwrob.github.io/assets/images/posts/python_academy.png">
 <meta property="og:site_name" content="bwrob blog">
 <meta property="og:image:height" content="1024">
 <meta property="og:image:width" content="1024">
 <meta name="twitter:title" content="bwrob blog">
 <meta name="twitter:description" content="bwrob personal and professional blog">
-<meta name="twitter:image" content="https://bwrob.github.io/assets/images/posts/python_recipes.png">
+<meta name="twitter:image" content="https://bwrob.github.io/assets/images/posts/python_academy.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image-height" content="1024">
 <meta name="twitter:image-width" content="1024">
@@ -292,11 +321,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../assets/logo/python_mug.png" alt="" class="navbar-logo light-content">
-    <img src="../../assets/logo/python_mug.png" alt="" class="navbar-logo dark-content">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../assets/logo/python_mug.png" alt="" class="navbar-logo light-content">
+    <img src="../../../assets/logo/python_mug.png" alt="" class="navbar-logo dark-content">
     </a>
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">bwrob blog</span>
     </a>
   </div>
@@ -307,22 +336,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> <i class="bi bi-cpu" role="img">
+    <a class="nav-link" href="../../../index.html"> <i class="bi bi-cpu" role="img">
 </i> 
 <span class="menu-text">Posts</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../pages/resume.html"> <i class="bi bi-file-earmark-text" role="img">
+    <a class="nav-link" href="../../../pages/resume.html"> <i class="bi bi-file-earmark-text" role="img">
 </i> 
 <span class="menu-text">Resume</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../pages/teaching.html"> <i class="bi bi-tablet-landscape" role="img">
+    <a class="nav-link" href="../../../pages/teaching.html"> <i class="bi bi-tablet-landscape" role="img">
 </i> 
 <span class="menu-text">Teaching</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../pages/hobbies.html"> <i class="bi bi-controller" role="img">
+    <a class="nav-link" href="../../../pages/hobbies.html"> <i class="bi bi-controller" role="img">
 </i> 
 <span class="menu-text">Hobbies</span></a>
   </li>  
@@ -347,7 +376,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
+    <a class="nav-link" href="../../../index.xml"> <i class="bi bi-rss" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -363,14 +392,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">A Collection of Iterator Utilities</h1>
+      <h1 class="title">Functions, Closures and Decorators</h1>
                   <div>
         <div class="description">
-          How to use and implement useful iterator utilities in Python.
+          How to treat your functions well.
         </div>
       </div>
                           <div class="quarto-categories">
-                <div class="quarto-category">Python Recipes</div>
+                <div class="quarto-category">Python Academy</div>
               </div>
                   </div>
   </div>
@@ -382,7 +411,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">May 2, 2025</p>
+        <p class="date">October 23, 2025</p>
       </div>
     </div>
     
@@ -404,12 +433,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#batched" id="toc-batched" class="nav-link active" data-scroll-target="#batched">batched</a></li>
-  <li><a href="#unbox" id="toc-unbox" class="nav-link" data-scroll-target="#unbox">unbox</a></li>
-  <li><a href="#unzip" id="toc-unzip" class="nav-link" data-scroll-target="#unzip">unzip</a></li>
-  <li><a href="#flatten_iterable" id="toc-flatten_iterable" class="nav-link" data-scroll-target="#flatten_iterable">flatten_iterable</a></li>
-  <li><a href="#flatten_string_key_dict" id="toc-flatten_string_key_dict" class="nav-link" data-scroll-target="#flatten_string_key_dict">flatten_string_key_dict</a></li>
-  <li><a href="#group_by_non_consecutive" id="toc-group_by_non_consecutive" class="nav-link" data-scroll-target="#group_by_non_consecutive">group_by_non_consecutive</a></li>
+  <li><a href="#functions" id="toc-functions" class="nav-link active" data-scroll-target="#functions">Functions</a></li>
+  <li><a href="#benchmarking-fibonacci-implementations" id="toc-benchmarking-fibonacci-implementations" class="nav-link" data-scroll-target="#benchmarking-fibonacci-implementations">Benchmarking Fibonacci Implementations</a></li>
+  <li><a href="#closures" id="toc-closures" class="nav-link" data-scroll-target="#closures">Closures</a></li>
+  <li><a href="#decorators" id="toc-decorators" class="nav-link" data-scroll-target="#decorators">Decorators</a></li>
   </ul>
 </nav>
     </div>
@@ -421,259 +448,268 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>We’re always looping through something in Python. Whether it’s processing lines in a file or streaming data from an API, iterables are everywhere.</p>
-<p>Python’s built-in <code>itertools</code> is great, but every now and then you hit a problem that it doesn’t quite cover out of the box. Over time, I’ve put together a small collection of helper functions to handle those “I wish <code>itertools</code> had this” moments. Here are a few of my favorites, complete with some type-safe implementations you can drop into your own projects.</p>
-<section id="batched" class="level2">
-<h2 class="anchored" data-anchor-id="batched">batched</h2>
-<p>This one’s a classic: you have a long list and you want to slice it up into chunks. Maybe you’re feeding data into a neural network or just trying not to hit a rate limit on an API.</p>
-<p>Python 3.12 actually added this to <code>itertools</code>, but if you’re stuck on an older version or just want a standalone version, here’s how you can do it:</p>
-<div id="43fd1e28" class="cell" data-execution_count="1">
+<p>In Python, functions are a lot more flexible than you might think. We’re going to dive into what makes them “first-class citizens” and how that lets us do some really cool things with closures and decorators. If you’ve ever wondered how that <code>@something</code> syntax works, you’re in the right place.</p>
+<section id="functions" class="level2">
+<h2 class="anchored" data-anchor-id="functions">Functions</h2>
+<p>In Python, functions are “first-class citizens”. This just means you can treat them like any other variable. You can:</p>
+<ul>
+<li>assign them to variables,</li>
+<li>pass them as arguments to other functions,</li>
+<li>return them from functions.</li>
+</ul>
+<p>This is a core concept in Python that allows for some powerful patterns. Let’s use a function from our previous post on Fibonacci numbers to see this in action.</p>
+<div id="bc8eb340" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> __future__ <span class="im">import</span> annotations</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="im">from</span> collections.abc <span class="im">import</span> Iterable</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="im">from</span> itertools <span class="im">import</span> islice</span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="im">from</span> sys <span class="im">import</span> maxsize</span>
-<span id="cb1-5"><a href="#cb1-5"></a></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="kw">def</span> batched[T](</span>
-<span id="cb1-7"><a href="#cb1-7"></a>    iterable: Iterable[T],</span>
-<span id="cb1-8"><a href="#cb1-8"></a>    n: <span class="bu">int</span>,</span>
-<span id="cb1-9"><a href="#cb1-9"></a>    <span class="op">*</span>,</span>
-<span id="cb1-10"><a href="#cb1-10"></a>    strict: <span class="bu">bool</span> <span class="op">=</span> <span class="va">False</span>,</span>
-<span id="cb1-11"><a href="#cb1-11"></a>) <span class="op">-&gt;</span> Iterable[<span class="bu">tuple</span>[T, ...]]:</span>
-<span id="cb1-12"><a href="#cb1-12"></a>    <span class="co">"""Split an iterable into batches of size n."""</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a>    <span class="cf">if</span> <span class="kw">not</span> <span class="dv">1</span> <span class="op">&lt;=</span> n <span class="op">&lt;=</span> maxsize:</span>
-<span id="cb1-14"><a href="#cb1-14"></a>        msg <span class="op">=</span> <span class="st">"Batch size n must be at least one and at most sys.maxsize."</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(msg)</span>
-<span id="cb1-16"><a href="#cb1-16"></a></span>
-<span id="cb1-17"><a href="#cb1-17"></a>    iterator <span class="op">=</span> <span class="bu">iter</span>(iterable)</span>
-<span id="cb1-18"><a href="#cb1-18"></a>    <span class="cf">while</span> batch <span class="op">:=</span> <span class="bu">tuple</span>(islice(iterator, n)):</span>
-<span id="cb1-19"><a href="#cb1-19"></a>        <span class="cf">if</span> strict <span class="kw">and</span> <span class="bu">len</span>(batch) <span class="op">!=</span> n:</span>
-<span id="cb1-20"><a href="#cb1-20"></a>            msg <span class="op">=</span> <span class="st">"Incomplete batch for strict batching."</span></span>
-<span id="cb1-21"><a href="#cb1-21"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(msg)</span>
-<span id="cb1-22"><a href="#cb1-22"></a>        <span class="cf">yield</span> batch</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">def</span> fibonacci_iterative(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb1-2"><a href="#cb1-2"></a>    <span class="co">"""Calculate the nth Fibonacci number using an iterative approach."""</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb1-4"><a href="#cb1-4"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
+<span id="cb1-5"><a href="#cb1-5"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb1-6"><a href="#cb1-6"></a>        <span class="cf">return</span> n</span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a>    a, b <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb1-10"><a href="#cb1-10"></a>        a, b <span class="op">=</span> b, a <span class="op">+</span> b</span>
+<span id="cb1-11"><a href="#cb1-11"></a>    <span class="cf">return</span> b</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<section id="example" class="level3">
-<h3 class="anchored" data-anchor-id="example">Example</h3>
-<div id="5a2303b3" class="cell" data-execution_count="2">
-<details class="code-fold">
+<p>Because functions are objects, they come with some handy attributes. For instance, you can get the docstring with <code>__doc__</code> and the function’s name with <code>__name__</code>.</p>
+<div id="d5fa1f6f" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="bu">print</span>(<span class="ss">f"batched(range(10), 3): </span><span class="sc">{</span><span class="bu">list</span>(batched(<span class="bu">range</span>(<span class="dv">10</span>), <span class="dv">3</span>))<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="bu">print</span>(fibonacci_iterative.__doc__)</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="bu">print</span>(fibonacci_iterative.<span class="va">__name__</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>batched(range(10), 3): [(0, 1, 2), (3, 4, 5), (6, 7, 8), (9,)]</code></pre>
+<pre><code>Calculate the nth Fibonacci number using an iterative approach.
+fibonacci_iterative</code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="unbox" class="level2">
-<h2 class="anchored" data-anchor-id="unbox">unbox</h2>
-<p>Ever have a list that <em>should</em> only have one thing in it? Maybe it’s a filtered database result or a unique ID. Instead of doing <code>results[0]</code> and hoping for the best, <code>unbox</code> makes sure your assumption is actually right.</p>
-<p>It grabs that one item and throws a <code>ValueError</code> if it finds more than one (or zero). It’s a great way to catch bugs early.</p>
-<div id="67e34cc0" class="cell" data-execution_count="3">
+<p>And just like other objects, functions inherit from the <code>object</code> base class.</p>
+<div id="9aeb9edb" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">def</span> unbox[T](iterable: Iterable[T]) <span class="op">-&gt;</span> T:</span>
-<span id="cb4-2"><a href="#cb4-2"></a>    <span class="co">"""Unbox an iterable if it contains a single element."""</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a>    iterator <span class="op">=</span> <span class="bu">iter</span>(iterable)</span>
-<span id="cb4-4"><a href="#cb4-4"></a>    first_value <span class="op">=</span> <span class="bu">next</span>(iterator)</span>
-<span id="cb4-5"><a href="#cb4-5"></a>    <span class="cf">try</span>:</span>
-<span id="cb4-6"><a href="#cb4-6"></a>        _ <span class="op">=</span> <span class="bu">next</span>(iterator)</span>
-<span id="cb4-7"><a href="#cb4-7"></a>        msg <span class="op">=</span> <span class="st">"Iterable contains more than one element."</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(msg)</span>
-<span id="cb4-9"><a href="#cb4-9"></a>    <span class="cf">except</span> <span class="pp">StopIteration</span>:</span>
-<span id="cb4-10"><a href="#cb4-10"></a>        <span class="cf">return</span> first_value</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="bu">isinstance</span>(fibonacci_iterative, <span class="bu">object</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>True</code></pre>
 </div>
-<section id="example-1" class="level3">
-<h3 class="anchored" data-anchor-id="example-1">Example</h3>
-<div id="0b03c389" class="cell" data-execution_count="4">
+</div>
+<p>As you can see, functions in Python are more than just Callable blocks of code. Next up, we’ll see how this flexibility allows us to build closures and decorators.</p>
+</section>
+<section id="benchmarking-fibonacci-implementations" class="level2">
+<h2 class="anchored" data-anchor-id="benchmarking-fibonacci-implementations">Benchmarking Fibonacci Implementations</h2>
+<p>To really drive home the point that functions are first-class citizens, let’s put a few of our Fibonacci functions into a list and pass them to a benchmarking function. This function will test each one and see how they perform.</p>
+<div id="8411ee44" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="bu">print</span>(<span class="ss">f"unbox([42]): </span><span class="sc">{</span>unbox([<span class="dv">42</span>])<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2"></a></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="cf">try</span>:</span>
-<span id="cb5-4"><a href="#cb5-4"></a>    _ <span class="op">=</span> unbox([<span class="dv">1</span>, <span class="dv">2</span>])</span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="cf">except</span> <span class="pp">ValueError</span> <span class="im">as</span> e:</span>
-<span id="cb5-6"><a href="#cb5-6"></a>    <span class="bu">print</span>(<span class="ss">f"unbox([1, 2]): </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">def</span> fibonacci_iterative(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb6-2"><a href="#cb6-2"></a>    <span class="co">"""Calculate the nth Fibonacci number using an iterative approach."""</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb6-4"><a href="#cb6-4"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
+<span id="cb6-5"><a href="#cb6-5"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb6-6"><a href="#cb6-6"></a>        <span class="cf">return</span> n</span>
+<span id="cb6-7"><a href="#cb6-7"></a></span>
+<span id="cb6-8"><a href="#cb6-8"></a>    a, b <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb6-10"><a href="#cb6-10"></a>        a, b <span class="op">=</span> b, a <span class="op">+</span> b</span>
+<span id="cb6-11"><a href="#cb6-11"></a>    <span class="cf">return</span> b</span>
+<span id="cb6-12"><a href="#cb6-12"></a></span>
+<span id="cb6-13"><a href="#cb6-13"></a></span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="kw">def</span> fibonacci_recursive(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb6-15"><a href="#cb6-15"></a>    <span class="co">"""Calculate the nth Fibonacci number using a recursive approach."""</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb6-17"><a href="#cb6-17"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
+<span id="cb6-18"><a href="#cb6-18"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb6-19"><a href="#cb6-19"></a>        <span class="cf">return</span> n</span>
+<span id="cb6-20"><a href="#cb6-20"></a>    <span class="cf">return</span> fibonacci_recursive(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">+</span> fibonacci_recursive(n <span class="op">-</span> <span class="dv">2</span>)</span>
+<span id="cb6-21"><a href="#cb6-21"></a></span>
+<span id="cb6-22"><a href="#cb6-22"></a></span>
+<span id="cb6-23"><a href="#cb6-23"></a>FIBONACCI_CACHE: <span class="bu">dict</span>[<span class="bu">int</span>, <span class="bu">int</span>] <span class="op">=</span> {}</span>
+<span id="cb6-24"><a href="#cb6-24"></a></span>
+<span id="cb6-25"><a href="#cb6-25"></a></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="kw">def</span> fibonacci_recursive_cached(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb6-27"><a href="#cb6-27"></a>    <span class="co">"""Calculate the nth Fibonacci number using recursion with memoization."""</span></span>
+<span id="cb6-28"><a href="#cb6-28"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb6-29"><a href="#cb6-29"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
+<span id="cb6-30"><a href="#cb6-30"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb6-31"><a href="#cb6-31"></a>        <span class="cf">return</span> n</span>
+<span id="cb6-32"><a href="#cb6-32"></a></span>
+<span id="cb6-33"><a href="#cb6-33"></a>    <span class="cf">if</span> n <span class="kw">in</span> FIBONACCI_CACHE:</span>
+<span id="cb6-34"><a href="#cb6-34"></a>        <span class="cf">return</span> FIBONACCI_CACHE[n]</span>
+<span id="cb6-35"><a href="#cb6-35"></a></span>
+<span id="cb6-36"><a href="#cb6-36"></a>    result <span class="op">=</span> fibonacci_recursive_cached(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">+</span> fibonacci_recursive_cached(n <span class="op">-</span> <span class="dv">2</span>)</span>
+<span id="cb6-37"><a href="#cb6-37"></a></span>
+<span id="cb6-38"><a href="#cb6-38"></a>    FIBONACCI_CACHE[n] <span class="op">=</span> result</span>
+<span id="cb6-39"><a href="#cb6-39"></a>    <span class="cf">return</span> result</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>unbox([42]): 42
-unbox([1, 2]): Iterable contains more than one element.</code></pre>
 </div>
-</div>
-</section>
-</section>
-<section id="unzip" class="level2">
-<h2 class="anchored" data-anchor-id="unzip">unzip</h2>
-<p>If you’ve ever used Python’s <code>zip</code> function, you know it’s a lifesaver for pairing up data. But what about the other way around? If you have a list of pairs and you want two separate lists, <code>unzip</code> is the tool for the job.</p>
-<div id="5c08f385" class="cell" data-execution_count="5">
+<div id="f3e69a26" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">def</span> unzip[T](iterable: Iterable[<span class="bu">tuple</span>[T, ...]]) <span class="op">-&gt;</span> <span class="bu">tuple</span>[Iterable[T], ...]:</span>
-<span id="cb7-2"><a href="#cb7-2"></a>    <span class="co">"""Unzip an iterable of tuples."""</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a>    zipped <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>iterable, strict<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb7-4"><a href="#cb7-4"></a>    <span class="cf">return</span> <span class="bu">tuple</span>(zipped)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<section id="example-2" class="level3">
-<h3 class="anchored" data-anchor-id="example-2">Example</h3>
-<div id="317bf751" class="cell" data-execution_count="6">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>zipped_data <span class="op">=</span> [(<span class="dv">1</span>, <span class="st">"a"</span>), (<span class="dv">2</span>, <span class="st">"b"</span>), (<span class="dv">3</span>, <span class="st">"c"</span>)]</span>
-<span id="cb8-2"><a href="#cb8-2"></a>unzipped_data <span class="op">=</span> unzip(zipped_data)</span>
-<span id="cb8-3"><a href="#cb8-3"></a><span class="bu">print</span>(<span class="ss">f"unzip(</span><span class="sc">{</span>zipped_data<span class="sc">}</span><span class="ss">): </span><span class="sc">{</span>[<span class="bu">list</span>(it) <span class="cf">for</span> it <span class="kw">in</span> unzipped_data]<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>unzip([(1, 'a'), (2, 'b'), (3, 'c')]): [[1, 2, 3], ['a', 'b', 'c']]</code></pre>
-</div>
-</div>
-</section>
-</section>
-<section id="flatten_iterable" class="level2">
-<h2 class="anchored" data-anchor-id="flatten_iterable">flatten_iterable</h2>
-<p>Nested lists are a headache. <code>flatten_iterable</code> lets you turn a messy, deeply nested structure into a single, clean list. It’s smart enough to leave strings and bytes alone, so you don’t end up with a list of individual characters when you didn’t mean to.</p>
-<div id="4850ad5f" class="cell" data-execution_count="7">
-<details open="" class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="im">from</span> collections.abc <span class="im">import</span> Generator</span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="im">from</span> typing <span class="im">import</span> cast</span>
-<span id="cb10-3"><a href="#cb10-3"></a></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="bu">type</span> NestedIterable[T] <span class="op">=</span> Iterable[NestedIterable[T] <span class="op">|</span> T]</span>
-<span id="cb10-5"><a href="#cb10-5"></a></span>
-<span id="cb10-6"><a href="#cb10-6"></a><span class="kw">def</span> flatten_iterable[T](iterable: NestedIterable[T]) <span class="op">-&gt;</span> <span class="bu">list</span>[T]:</span>
-<span id="cb10-7"><a href="#cb10-7"></a>    <span class="co">"""Flatten an iterable of iterables."""</span></span>
-<span id="cb10-8"><a href="#cb10-8"></a></span>
-<span id="cb10-9"><a href="#cb10-9"></a>    <span class="kw">def</span> _helper(lst: NestedIterable[T]) <span class="op">-&gt;</span> Generator[T]:</span>
-<span id="cb10-10"><a href="#cb10-10"></a>        <span class="cf">for</span> item <span class="kw">in</span> lst:</span>
-<span id="cb10-11"><a href="#cb10-11"></a>            <span class="cf">if</span> <span class="bu">isinstance</span>(item, Iterable) <span class="kw">and</span> <span class="kw">not</span> <span class="bu">isinstance</span>(item, (<span class="bu">str</span>, <span class="bu">bytes</span>)):</span>
-<span id="cb10-12"><a href="#cb10-12"></a>                <span class="cf">yield</span> <span class="cf">from</span> _helper(cast(NestedIterable[T], item))</span>
-<span id="cb10-13"><a href="#cb10-13"></a>            <span class="cf">else</span>:</span>
-<span id="cb10-14"><a href="#cb10-14"></a>                <span class="cf">yield</span> cast(T, item)</span>
-<span id="cb10-15"><a href="#cb10-15"></a></span>
-<span id="cb10-16"><a href="#cb10-16"></a>    <span class="cf">return</span> <span class="bu">list</span>(_helper(iterable))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<section id="example-3" class="level3">
-<h3 class="anchored" data-anchor-id="example-3">Example</h3>
-<div id="eb25de1d" class="cell" data-execution_count="8">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>nested_list <span class="op">=</span> [<span class="dv">1</span>, [<span class="dv">2</span>, <span class="st">"a"</span>, [<span class="dv">3</span>]], <span class="st">"b"</span>]</span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="bu">print</span>(<span class="ss">f"flatten_iterable(</span><span class="sc">{</span>nested_list<span class="sc">}</span><span class="ss">): </span><span class="sc">{</span>flatten_iterable(nested_list)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="im">import</span> time</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="im">from</span> typing <span class="im">import</span> Callable</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="kw">def</span> benchmark(functions: <span class="bu">list</span>[Callable[[<span class="bu">int</span>], <span class="bu">int</span>]], n: <span class="bu">int</span>):</span>
+<span id="cb7-6"><a href="#cb7-6"></a>    <span class="co">"""Benchmarks a list of functions."""</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>    <span class="cf">for</span> func <span class="kw">in</span> functions:</span>
+<span id="cb7-8"><a href="#cb7-8"></a>        start <span class="op">=</span> time.perf_counter()</span>
+<span id="cb7-9"><a href="#cb7-9"></a>        func(n)</span>
+<span id="cb7-10"><a href="#cb7-10"></a>        end <span class="op">=</span> time.perf_counter()</span>
+<span id="cb7-11"><a href="#cb7-11"></a>        <span class="bu">print</span>(<span class="ss">f"Function </span><span class="sc">{</span>func<span class="sc">.</span><span class="va">__name__</span><span class="sc">}</span><span class="ss"> took </span><span class="sc">{</span>end <span class="op">-</span> start<span class="sc">:.6f}</span><span class="ss"> seconds."</span>)</span>
+<span id="cb7-12"><a href="#cb7-12"></a></span>
+<span id="cb7-13"><a href="#cb7-13"></a></span>
+<span id="cb7-14"><a href="#cb7-14"></a>fib_functions <span class="op">=</span> [fibonacci_recursive, fibonacci_recursive_cached, fibonacci_iterative]</span>
+<span id="cb7-15"><a href="#cb7-15"></a>benchmark(fib_functions, <span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>flatten_iterable([1, [2, 'a', [3]], 'b']): [1, 2, 'a', 3, 'b']</code></pre>
+<pre><code>Function fibonacci_recursive took 0.134988 seconds.
+Function fibonacci_recursive_cached took 0.000011 seconds.
+Function fibonacci_iterative took 0.000003 seconds.</code></pre>
 </div>
 </div>
 </section>
-</section>
-<section id="flatten_string_key_dict" class="level2">
-<h2 class="anchored" data-anchor-id="flatten_string_key_dict">flatten_string_key_dict</h2>
-<p>Nested dictionaries are great for structure, but they can be a pain to access. This function flattens them into a single level, using dots to join the keys (like <code>parent.child.grandchild</code>). It’s perfect for turning complex config files into something much easier to work with.</p>
-<div id="9ac47dc3" class="cell" data-execution_count="9">
+<section id="closures" class="level2">
+<h2 class="anchored" data-anchor-id="closures">Closures</h2>
+<p>A closure is basically a function that remembers the environment in which it was created. Let’s use our <code>get_greeter</code> function to see what that means.</p>
+<div id="bd7568de" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="im">from</span> collections.abc <span class="im">import</span> Mapping</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">def</span> get_greeter(greeting: <span class="bu">str</span>) <span class="op">-&gt;</span> Callable:</span>
+<span id="cb9-2"><a href="#cb9-2"></a>    <span class="co">"""Returns a greeter function."""</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a></span>
+<span id="cb9-4"><a href="#cb9-4"></a>    <span class="kw">def</span> greeter(name: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb9-5"><a href="#cb9-5"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>greeting<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">!"</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a></span>
+<span id="cb9-7"><a href="#cb9-7"></a>    <span class="cf">return</span> greeter</span>
+<span id="cb9-8"><a href="#cb9-8"></a></span>
+<span id="cb9-9"><a href="#cb9-9"></a></span>
+<span id="cb9-10"><a href="#cb9-10"></a>good_morning_greeter <span class="op">=</span> get_greeter(<span class="st">"Good morning"</span>)</span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="bu">print</span>(good_morning_greeter(<span class="st">"World"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Good morning, World!</code></pre>
+</div>
+</div>
+<p>When we call <code>get_greeter("Good morning")</code>, we get a new <code>greeter</code> function back. This new function, which we’ve assigned to <code>good_morning_greeter</code>, “remembers” that the <code>greeting</code> variable was “Good morning”.</p>
+<p>This is what a closure does: it “closes over” the variables from the scope where it was created. So even though the <code>get_greeter</code> function has finished running, <code>good_morning_greeter</code> still has access to the <code>greeting</code> variable.</p>
+<p>We can even peek inside the closure with the <code>__closure__</code> attribute, which shows us the variables it has captured.</p>
+<div id="931e22d6" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>good_morning_greeter.__closure__[<span class="dv">0</span>].cell_contents</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>'Good morning'</code></pre>
+</div>
+</div>
+<p>This shows that the value <code>"Good morning"</code> is tucked away in our <code>good_morning_greeter</code> function’s closure.</p>
+<p>Closures are a key ingredient for decorators, which we’ll get to next. They also let us create “function factories” that can produce specialized functions.</p>
+<p>For a more mathematical example, let’s create a function factory that builds a polynomial function from a tuple of coefficients.</p>
+<p>A polynomial is defined as <span class="math inline">\(P(x) = \sum_{i=0}^{n} a_i x^i = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0\)</span>.</p>
+<div id="c404655f" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="im">from</span> typing <span class="im">import</span> Tuple</span>
 <span id="cb13-2"><a href="#cb13-2"></a></span>
-<span id="cb13-3"><a href="#cb13-3"></a><span class="bu">type</span> NestedDict[T] <span class="op">=</span> Mapping[<span class="bu">str</span>, NestedDict[T] <span class="op">|</span> T]</span>
-<span id="cb13-4"><a href="#cb13-4"></a></span>
-<span id="cb13-5"><a href="#cb13-5"></a><span class="kw">def</span> flatten_string_key_dict[T](dictionary: NestedDict[T]) <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, T]:</span>
-<span id="cb13-6"><a href="#cb13-6"></a>    <span class="co">"""Flatten a nested string-keyed dictionary."""</span></span>
-<span id="cb13-7"><a href="#cb13-7"></a></span>
-<span id="cb13-8"><a href="#cb13-8"></a>    <span class="kw">def</span> _generate_items(</span>
-<span id="cb13-9"><a href="#cb13-9"></a>        d: NestedDict[T] <span class="op">|</span> T, prefix: <span class="bu">str</span> <span class="op">=</span> <span class="st">""</span></span>
-<span id="cb13-10"><a href="#cb13-10"></a>    ) <span class="op">-&gt;</span> Generator[<span class="bu">tuple</span>[<span class="bu">str</span>, T]]:</span>
-<span id="cb13-11"><a href="#cb13-11"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(d, <span class="bu">dict</span>):</span>
-<span id="cb13-12"><a href="#cb13-12"></a>            <span class="cf">for</span> key, value <span class="kw">in</span> d.items():</span>
-<span id="cb13-13"><a href="#cb13-13"></a>                <span class="cf">yield</span> <span class="cf">from</span> _generate_items(value, prefix <span class="op">+</span> key <span class="op">+</span> <span class="st">"."</span>)</span>
-<span id="cb13-14"><a href="#cb13-14"></a>        <span class="cf">else</span>:</span>
-<span id="cb13-15"><a href="#cb13-15"></a>            <span class="cf">yield</span> prefix[:<span class="op">-</span><span class="dv">1</span>], cast(T, d)</span>
-<span id="cb13-16"><a href="#cb13-16"></a></span>
-<span id="cb13-17"><a href="#cb13-17"></a>    <span class="cf">return</span> <span class="bu">dict</span>(_generate_items(dictionary))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<section id="example-4" class="level3">
-<h3 class="anchored" data-anchor-id="example-4">Example</h3>
-<div id="f5f1da10" class="cell" data-execution_count="10">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>nested_dict <span class="op">=</span> {<span class="st">"a"</span>: <span class="dv">1</span>, <span class="st">"b"</span>: {<span class="st">"c"</span>: <span class="dv">2</span>, <span class="st">"d"</span>: {<span class="st">"e"</span>: <span class="dv">3</span>}}, <span class="st">"f"</span>: <span class="dv">4</span>}</span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="bu">print</span>(</span>
-<span id="cb14-3"><a href="#cb14-3"></a>    <span class="ss">f"flatten_string_key_dict(</span><span class="sc">{</span>nested_dict<span class="sc">}</span><span class="ss">): "</span></span>
-<span id="cb14-4"><a href="#cb14-4"></a>    <span class="op">+</span> <span class="ss">f"</span><span class="sc">{</span>flatten_string_key_dict(nested_dict)<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb14-5"><a href="#cb14-5"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="kw">def</span> polynomial_factory(coefficients: Tuple[<span class="bu">float</span>, ...]) <span class="op">-&gt;</span> Callable:</span>
+<span id="cb13-4"><a href="#cb13-4"></a>    <span class="co">"""</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a><span class="co">    A factory that creates a polynomial function from a tuple of coefficients.</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a><span class="co">    The coefficients are ordered from the highest power to the lowest.</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a><span class="co">    """</span></span>
+<span id="cb13-8"><a href="#cb13-8"></a>    <span class="kw">def</span> polynomial(x: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb13-9"><a href="#cb13-9"></a>        <span class="co">"""</span></span>
+<span id="cb13-10"><a href="#cb13-10"></a><span class="co">        Evaluates the polynomial for a given x.</span></span>
+<span id="cb13-11"><a href="#cb13-11"></a><span class="co">        """</span></span>
+<span id="cb13-12"><a href="#cb13-12"></a>        <span class="cf">return</span> <span class="bu">sum</span>(c <span class="op">*</span> (x <span class="op">**</span> i) <span class="cf">for</span> i, c <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">reversed</span>(coefficients)))</span>
+<span id="cb13-13"><a href="#cb13-13"></a></span>
+<span id="cb13-14"><a href="#cb13-14"></a>    <span class="cf">return</span> polynomial</span>
+<span id="cb13-15"><a href="#cb13-15"></a></span>
+<span id="cb13-16"><a href="#cb13-16"></a><span class="co"># P(x) = 2x^2 + 3x + 5</span></span>
+<span id="cb13-17"><a href="#cb13-17"></a>p1 <span class="op">=</span> polynomial_factory((<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>))</span>
+<span id="cb13-18"><a href="#cb13-18"></a></span>
+<span id="cb13-19"><a href="#cb13-19"></a><span class="co"># Q(x) = x^3 - 8</span></span>
+<span id="cb13-20"><a href="#cb13-20"></a>p2 <span class="op">=</span> polynomial_factory((<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">8</span>))</span>
+<span id="cb13-21"><a href="#cb13-21"></a></span>
+<span id="cb13-22"><a href="#cb13-22"></a><span class="bu">print</span>(p1(<span class="dv">5</span>))</span>
+<span id="cb13-23"><a href="#cb13-23"></a><span class="bu">print</span>(p2(<span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>flatten_string_key_dict({'a': 1, 'b': {'c': 2, 'd': {'e': 3}}, 'f': 4}): {'a': 1, 'b.c': 2, 'b.d.e': 3, 'f': 4}</code></pre>
+<pre><code>70
+117</code></pre>
 </div>
 </div>
+<p>Here, <code>polynomial_factory</code> returns a new <code>polynomial</code> function. This new function’s closure captures the <code>coefficients</code> tuple. So, <code>p1</code> will always be the polynomial <span class="math inline">\(2x^2 + 3x + 5\)</span>, and <code>p2</code> will always be <span class="math inline">\(x^3 - 8\)</span>.</p>
 </section>
-</section>
-<section id="group_by_non_consecutive" class="level2">
-<h2 class="anchored" data-anchor-id="group_by_non_consecutive">group_by_non_consecutive</h2>
-<p>If you’ve ever used <code>itertools.groupby</code>, you know the catch: your data <em>must</em> be sorted first, or it won’t work as expected. This helper function takes care of that for you by sorting the data before grouping it. It’s a bit more memory-heavy because it has to hold the whole list in memory to sort it, but for most everyday tasks, it’s a huge convenience.</p>
-<div id="57d180ac" class="cell" data-execution_count="11">
+<section id="decorators" class="level2">
+<h2 class="anchored" data-anchor-id="decorators">Decorators</h2>
+<p>Decorators are a neat way to add functionality to functions or classes without changing their code. Think of it as wrapping a function in another function to give it extra abilities.</p>
+<p>In the last post, we used the <code>@cache</code> decorator to speed up our recursive Fibonacci function. Let’s try to build a simple version of that decorator ourselves.</p>
+<div id="9d5e1932" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="im">import</span> itertools</span>
-<span id="cb16-2"><a href="#cb16-2"></a><span class="im">from</span> collections.abc <span class="im">import</span> Callable, Iterator</span>
-<span id="cb16-3"><a href="#cb16-3"></a><span class="im">from</span> typing <span class="im">import</span> Any, Protocol, Self</span>
-<span id="cb16-4"><a href="#cb16-4"></a></span>
-<span id="cb16-5"><a href="#cb16-5"></a><span class="kw">class</span> _SupportsLessThan(Protocol):</span>
-<span id="cb16-6"><a href="#cb16-6"></a>    <span class="kw">def</span> <span class="fu">__lt__</span>(<span class="va">self</span>, other: Self) <span class="op">-&gt;</span> <span class="bu">bool</span>: ...</span>
-<span id="cb16-7"><a href="#cb16-7"></a></span>
-<span id="cb16-8"><a href="#cb16-8"></a><span class="kw">def</span> group_by_non_consecutive[T, SLT: _SupportsLessThan](</span>
-<span id="cb16-9"><a href="#cb16-9"></a>    iterable: Iterable[T],</span>
-<span id="cb16-10"><a href="#cb16-10"></a>    <span class="op">*</span>,</span>
-<span id="cb16-11"><a href="#cb16-11"></a>    key: Callable[[T], SLT] <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>,</span>
-<span id="cb16-12"><a href="#cb16-12"></a>    reverse: <span class="bu">bool</span> <span class="op">=</span> <span class="va">False</span>,</span>
-<span id="cb16-13"><a href="#cb16-13"></a>) <span class="op">-&gt;</span> Iterator[<span class="bu">tuple</span>[SLT, Iterator[T]]]:</span>
-<span id="cb16-14"><a href="#cb16-14"></a>    <span class="co">"""Sort and group an iterable by a key function.</span></span>
-<span id="cb16-15"><a href="#cb16-15"></a></span>
-<span id="cb16-16"><a href="#cb16-16"></a><span class="co">    Unlike itertools.groupby, this function does not require the iterable</span></span>
-<span id="cb16-17"><a href="#cb16-17"></a><span class="co">    to be pre-sorted. It first sorts the entire iterable and then applies</span></span>
-<span id="cb16-18"><a href="#cb16-18"></a><span class="co">    the grouping.</span></span>
-<span id="cb16-19"><a href="#cb16-19"></a><span class="co">    """</span></span>
-<span id="cb16-20"><a href="#cb16-20"></a>    <span class="cf">if</span> key <span class="kw">is</span> <span class="va">None</span>:</span>
-<span id="cb16-21"><a href="#cb16-21"></a></span>
-<span id="cb16-22"><a href="#cb16-22"></a>        <span class="kw">def</span> default_key(x: T) <span class="op">-&gt;</span> SLT:</span>
-<span id="cb16-23"><a href="#cb16-23"></a>            <span class="cf">return</span> cast(SLT, x)</span>
-<span id="cb16-24"><a href="#cb16-24"></a></span>
-<span id="cb16-25"><a href="#cb16-25"></a>        key <span class="op">=</span> default_key</span>
-<span id="cb16-26"><a href="#cb16-26"></a>    sorted_iterable <span class="op">=</span> <span class="bu">sorted</span>(iterable, key<span class="op">=</span>key, reverse<span class="op">=</span>reverse)  <span class="co"># type: ignore[arg-type]</span></span>
-<span id="cb16-27"><a href="#cb16-27"></a>    <span class="cf">return</span> itertools.groupby(sorted_iterable, key<span class="op">=</span>key)  <span class="co"># type: ignore[arg-type]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">def</span> my_cache(func: Callable) <span class="op">-&gt;</span> Callable:</span>
+<span id="cb15-2"><a href="#cb15-2"></a>    <span class="co">"""A simple cache decorator."""</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a>    _cache <span class="op">=</span> {}</span>
+<span id="cb15-4"><a href="#cb15-4"></a>    <span class="kw">def</span> wrapper(<span class="op">*</span>args):</span>
+<span id="cb15-5"><a href="#cb15-5"></a>        <span class="cf">if</span> args <span class="kw">in</span> _cache:</span>
+<span id="cb15-6"><a href="#cb15-6"></a>            <span class="cf">return</span> _cache[args]</span>
+<span id="cb15-7"><a href="#cb15-7"></a>        result <span class="op">=</span> func(<span class="op">*</span>args)</span>
+<span id="cb15-8"><a href="#cb15-8"></a>        _cache[args] <span class="op">=</span> result</span>
+<span id="cb15-9"><a href="#cb15-9"></a>        <span class="cf">return</span> result</span>
+<span id="cb15-10"><a href="#cb15-10"></a>    <span class="cf">return</span> wrapper</span>
+<span id="cb15-11"><a href="#cb15-11"></a></span>
+<span id="cb15-12"><a href="#cb15-12"></a><span class="at">@my_cache</span></span>
+<span id="cb15-13"><a href="#cb15-13"></a><span class="kw">def</span> fibonacci_cached_by_me(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb15-14"><a href="#cb15-14"></a>    <span class="co">"""Calculate the nth Fibonacci number using recursion with our own cache decorator."""</span></span>
+<span id="cb15-15"><a href="#cb15-15"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb15-16"><a href="#cb15-16"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
+<span id="cb15-17"><a href="#cb15-17"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb15-18"><a href="#cb15-18"></a>        <span class="cf">return</span> n</span>
+<span id="cb15-19"><a href="#cb15-19"></a>    <span class="cf">return</span> fibonacci_cached_by_me(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">+</span> fibonacci_cached_by_me(n <span class="op">-</span> <span class="dv">2</span>)</span>
+<span id="cb15-20"><a href="#cb15-20"></a></span>
+<span id="cb15-21"><a href="#cb15-21"></a>fibonacci_cached_by_me(<span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>832040</code></pre>
 </div>
-<section id="example-5" class="level3">
-<h3 class="anchored" data-anchor-id="example-5">Example</h3>
-<div id="303f7109" class="cell" data-execution_count="12">
-<details class="code-fold">
+</div>
+<p>The <code>@my_cache</code> line is just a cleaner way of writing <code>fibonacci_cached_by_me = my_cache(fibonacci_cached_by_me)</code>. A decorator is just a function that takes another function as input and returns a modified function.</p>
+<p>Decorators can also take arguments. To do this, we create a “decorator factory” - a function that returns a decorator. Here’s one that repeats a function call a few times.</p>
+<div id="3b55d711" class="cell" data-execution_count="10">
+<details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># With key function</span></span>
-<span id="cb17-2"><a href="#cb17-2"></a>data <span class="op">=</span> [<span class="st">"apple"</span>, <span class="st">"banana"</span>, <span class="st">"ant"</span>, <span class="st">"bear"</span>, <span class="st">"apricot"</span>]</span>
-<span id="cb17-3"><a href="#cb17-3"></a><span class="bu">print</span>(<span class="ss">f"group_by_non_consecutive(</span><span class="sc">{</span>data<span class="sc">}</span><span class="ss">, key=lambda x: x[0])"</span>)</span>
-<span id="cb17-4"><a href="#cb17-4"></a><span class="cf">for</span> key, group <span class="kw">in</span> group_by_non_consecutive(data, key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">0</span>]):</span>
-<span id="cb17-5"><a href="#cb17-5"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span><span class="bu">list</span>(group)<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb17-6"><a href="#cb17-6"></a><span class="co"># Without key function</span></span>
-<span id="cb17-7"><a href="#cb17-7"></a>data_nums <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>]</span>
-<span id="cb17-8"><a href="#cb17-8"></a><span class="bu">print</span>(<span class="ss">f"group_by_non_consecutive(</span><span class="sc">{</span>data_nums<span class="sc">}</span><span class="ss">)"</span>)</span>
-<span id="cb17-9"><a href="#cb17-9"></a><span class="cf">for</span> key, group <span class="kw">in</span> group_by_non_consecutive(data_nums):</span>
-<span id="cb17-10"><a href="#cb17-10"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span><span class="bu">list</span>(group)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">def</span> repeat(times: <span class="bu">int</span>) <span class="op">-&gt;</span> Callable:</span>
+<span id="cb17-2"><a href="#cb17-2"></a>    <span class="co">"""A decorator that repeats a function call a given number of times."""</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a></span>
+<span id="cb17-4"><a href="#cb17-4"></a>    <span class="kw">def</span> decorator(func: Callable) <span class="op">-&gt;</span> Callable:</span>
+<span id="cb17-5"><a href="#cb17-5"></a>        <span class="kw">def</span> wrapper(<span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb17-6"><a href="#cb17-6"></a>            <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(times):</span>
+<span id="cb17-7"><a href="#cb17-7"></a>                result <span class="op">=</span> func(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
+<span id="cb17-8"><a href="#cb17-8"></a>            <span class="cf">return</span> result</span>
+<span id="cb17-9"><a href="#cb17-9"></a></span>
+<span id="cb17-10"><a href="#cb17-10"></a>        <span class="cf">return</span> wrapper</span>
+<span id="cb17-11"><a href="#cb17-11"></a></span>
+<span id="cb17-12"><a href="#cb17-12"></a>    <span class="cf">return</span> decorator</span>
+<span id="cb17-13"><a href="#cb17-13"></a></span>
+<span id="cb17-14"><a href="#cb17-14"></a></span>
+<span id="cb17-15"><a href="#cb17-15"></a><span class="at">@repeat</span>(<span class="dv">3</span>)</span>
+<span id="cb17-16"><a href="#cb17-16"></a><span class="kw">def</span> say_hello(name: <span class="bu">str</span>):</span>
+<span id="cb17-17"><a href="#cb17-17"></a>    <span class="bu">print</span>(<span class="ss">f"Hello, </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">!"</span>)</span>
+<span id="cb17-18"><a href="#cb17-18"></a></span>
+<span id="cb17-19"><a href="#cb17-19"></a></span>
+<span id="cb17-20"><a href="#cb17-20"></a>say_hello(<span class="st">"World"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>group_by_non_consecutive(['apple', 'banana', 'ant', 'bear', 'apricot'], key=lambda x: x[0])
-  a: ['apple', 'ant', 'apricot']
-  b: ['banana', 'bear']
-group_by_non_consecutive([1, 2, 1, 3, 2, 1])
-  1: [1, 1, 1]
-  2: [2, 2]
-  3: [3]</code></pre>
+<pre><code>Hello, World!
+Hello, World!
+Hello, World!</code></pre>
 </div>
 </div>
-<p>These are some of the helpers I find myself reaching for time and again. Hopefully, they’ll save you some time and keep your code a bit cleaner. You can grab the full script with all these functions and examples below.</p>
+<p>In this case, <code>@repeat(3)</code> is the same as writing <code>say_hello = repeat(3)(say_hello)</code>.</p>
+<p>You’ll see decorators all over the place in Python frameworks like Flask (for routing) and <code>pytest</code> (for fixtures). They’re great for keeping your code clean and organized.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -684,12 +720,11 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Download the whole code <a href="iter_utils.py">here</a>.</p>
+<p>Download the whole code <a href="./functions_closures_decorators.py">here</a>.</p>
 </div>
 </div>
 
 
-</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->

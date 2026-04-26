@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-10-10">
-<meta name="description" content="How to create a case-insensitive enum in Python.">
 
-<title>Case Insensitive Enum – bwrob blog</title>
+<title>Wstęp do programowania – bwrob blog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -113,16 +111,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="../../css/styles.css">
 <meta property="og:title" content="bwrob blog">
 <meta property="og:description" content="bwrob personal and professional blog">
-<meta property="og:image" content="https://bwrob.github.io/assets/images/posts/python_recipes.png">
+<meta property="og:image" content="https://bwrob.github.io/courses/2024-pwr-intro-to-cs/assets/logo/python_mug.png">
 <meta property="og:site_name" content="bwrob blog">
-<meta property="og:image:height" content="1024">
-<meta property="og:image:width" content="1024">
 <meta name="twitter:title" content="bwrob blog">
 <meta name="twitter:description" content="bwrob personal and professional blog">
-<meta name="twitter:image" content="https://bwrob.github.io/assets/images/posts/python_recipes.png">
+<meta name="twitter:image" content="https://bwrob.github.io/courses/2024-pwr-intro-to-cs/assets/logo/python_mug.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image-height" content="1024">
-<meta name="twitter:image-width" content="1024">
 </head>
 
 <body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -288,7 +282,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -360,179 +354,193 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">Case Insensitive Enum</h1>
-                  <div>
-        <div class="description">
-          How to create a case-insensitive enum in Python.
-        </div>
-      </div>
-                          <div class="quarto-categories">
-                <div class="quarto-category">Python Recipes</div>
-              </div>
-                  </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">October 10, 2025</p>
-      </div>
-    </div>
-    
-      <div>
-      <div class="quarto-title-meta-heading">Modified</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date-modified">December 4, 2024</p>
-      </div>
-    </div>
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#implementation" id="toc-implementation" class="nav-link active" data-scroll-target="#implementation">Implementation</a></li>
-  <li><a href="#example-usage" id="toc-example-usage" class="nav-link" data-scroll-target="#example-usage">Example Usage</a></li>
+  <li><a href="#informacje-i-materiały" id="toc-informacje-i-materiały" class="nav-link active" data-scroll-target="#informacje-i-materiały">Informacje i materiały</a></li>
+  <li><a href="#zasady-zaliczenia" id="toc-zasady-zaliczenia" class="nav-link" data-scroll-target="#zasady-zaliczenia">Zasady zaliczenia</a></li>
+  <li><a href="#bash-i-git" id="toc-bash-i-git" class="nav-link" data-scroll-target="#bash-i-git">Bash i git</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Wstęp do programowania</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
-<p>When working with enums in Python, you might want to create an enum that is case-insensitive. This can be particularly useful when you want to allow users to input values without worrying about the case. Here’s how you can achieve this by subclassing <code>StrEnum</code>. To enforce that all enum members are defined in lowercase, we can use a hook <code>__init_subclass__</code>.</p>
-<section id="implementation" class="level2">
-<h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
-<div id="81943047" class="cell" data-execution_count="1">
-<details open="" class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> __future__ <span class="im">import</span> annotations</span>
-<span id="cb1-2"><a href="#cb1-2"></a></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> sys</span>
-<span id="cb1-4"><a href="#cb1-4"></a></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="cf">if</span> sys.version_info <span class="op">&gt;=</span> (<span class="dv">3</span>, <span class="dv">11</span>):</span>
-<span id="cb1-6"><a href="#cb1-6"></a>    <span class="im">from</span> enum <span class="im">import</span> StrEnum</span>
-<span id="cb1-7"><a href="#cb1-7"></a>    <span class="im">from</span> typing <span class="im">import</span> Self, override</span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="cf">else</span>:</span>
-<span id="cb1-9"><a href="#cb1-9"></a>    <span class="im">from</span> backports.strenum <span class="im">import</span> StrEnum</span>
-<span id="cb1-10"><a href="#cb1-10"></a>    <span class="im">from</span> typing_extensions <span class="im">import</span> Self, override</span>
-<span id="cb1-11"><a href="#cb1-11"></a></span>
-<span id="cb1-12"><a href="#cb1-12"></a></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="kw">class</span> CaseInsensitiveStrEnum(StrEnum):</span>
-<span id="cb1-14"><a href="#cb1-14"></a>    <span class="co">"""A case-insensitive string enum.</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a></span>
-<span id="cb1-16"><a href="#cb1-16"></a><span class="co">    This class extends the `StrEnum` class to provide case-insensitive member lookup.</span></span>
-<span id="cb1-17"><a href="#cb1-17"></a><span class="co">    It also provides a custom `_generate_next_value_` method that returns the</span></span>
-<span id="cb1-18"><a href="#cb1-18"></a><span class="co">    lowercase version of the member name for use with `auto()`.</span></span>
-<span id="cb1-19"><a href="#cb1-19"></a><span class="co">    """</span></span>
-<span id="cb1-20"><a href="#cb1-20"></a></span>
-<span id="cb1-21"><a href="#cb1-21"></a>    <span class="at">@classmethod</span></span>
-<span id="cb1-22"><a href="#cb1-22"></a>    <span class="kw">def</span> <span class="fu">__init_subclass__</span>(cls, <span class="op">**</span>kwargs: <span class="bu">dict</span>[<span class="bu">str</span>, Any]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb1-23"><a href="#cb1-23"></a>        <span class="co">"""Implement the special hook that is called when a class is subclassed.</span></span>
-<span id="cb1-24"><a href="#cb1-24"></a></span>
-<span id="cb1-25"><a href="#cb1-25"></a><span class="co">        It allows us to customize the class creation process without using metaclasses.</span></span>
-<span id="cb1-26"><a href="#cb1-26"></a><span class="co">        """</span></span>
-<span id="cb1-27"><a href="#cb1-27"></a>        <span class="bu">super</span>().<span class="fu">__init_subclass__</span>(<span class="op">**</span>kwargs)</span>
-<span id="cb1-28"><a href="#cb1-28"></a></span>
-<span id="cb1-29"><a href="#cb1-29"></a>        <span class="cf">for</span> member <span class="kw">in</span> cls:</span>
-<span id="cb1-30"><a href="#cb1-30"></a>            <span class="cf">if</span> <span class="kw">not</span> member.islower() <span class="kw">or</span> <span class="kw">not</span> member.value.islower():</span>
-<span id="cb1-31"><a href="#cb1-31"></a>                msg <span class="op">=</span> <span class="ss">f"Member '</span><span class="sc">{</span>member<span class="sc">}</span><span class="ss">' and value </span><span class="sc">{</span>member<span class="sc">.</span>value<span class="sc">}</span><span class="ss"> must be lowercase."</span></span>
-<span id="cb1-32"><a href="#cb1-32"></a>                <span class="cf">raise</span> <span class="pp">TypeError</span>(msg)</span>
-<span id="cb1-33"><a href="#cb1-33"></a></span>
-<span id="cb1-34"><a href="#cb1-34"></a>    <span class="at">@override</span></span>
-<span id="cb1-35"><a href="#cb1-35"></a>    <span class="at">@staticmethod</span></span>
-<span id="cb1-36"><a href="#cb1-36"></a>    <span class="kw">def</span> _generate_next_value_(</span>
-<span id="cb1-37"><a href="#cb1-37"></a>        name: <span class="bu">str</span>, start: <span class="bu">int</span>, count: <span class="bu">int</span>, last_values: <span class="bu">list</span>[<span class="bu">str</span>]</span>
-<span id="cb1-38"><a href="#cb1-38"></a>    ) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb1-39"><a href="#cb1-39"></a>        <span class="co">"""Return the lower-cased version of the member name.</span></span>
-<span id="cb1-40"><a href="#cb1-40"></a></span>
-<span id="cb1-41"><a href="#cb1-41"></a><span class="co">        This method is overridden to ensure that when `auto()` is used to create</span></span>
-<span id="cb1-42"><a href="#cb1-42"></a><span class="co">        enum members, their values are the lowercase version of their names.</span></span>
-<span id="cb1-43"><a href="#cb1-43"></a><span class="co">        """</span></span>
-<span id="cb1-44"><a href="#cb1-44"></a>        <span class="cf">return</span> name.lower()</span>
-<span id="cb1-45"><a href="#cb1-45"></a></span>
-<span id="cb1-46"><a href="#cb1-46"></a>    <span class="at">@override</span></span>
-<span id="cb1-47"><a href="#cb1-47"></a>    <span class="at">@classmethod</span></span>
-<span id="cb1-48"><a href="#cb1-48"></a>    <span class="kw">def</span> _missing_(cls, value: <span class="bu">object</span>) <span class="op">-&gt;</span> Self <span class="op">|</span> <span class="va">None</span>:</span>
-<span id="cb1-49"><a href="#cb1-49"></a>        <span class="co">"""Provide case-insensitive member lookup.</span></span>
-<span id="cb1-50"><a href="#cb1-50"></a></span>
-<span id="cb1-51"><a href="#cb1-51"></a><span class="co">        This method is called when a value is not found in the enum.</span></span>
-<span id="cb1-52"><a href="#cb1-52"></a><span class="co">        It is overridden to perform a case-insensitive search for the member.</span></span>
-<span id="cb1-53"><a href="#cb1-53"></a><span class="co">        """</span></span>
-<span id="cb1-54"><a href="#cb1-54"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(value, <span class="bu">str</span>):</span>
-<span id="cb1-55"><a href="#cb1-55"></a>            <span class="cf">return</span> <span class="va">None</span></span>
-<span id="cb1-56"><a href="#cb1-56"></a></span>
-<span id="cb1-57"><a href="#cb1-57"></a>        value <span class="op">=</span> value.lower()</span>
-<span id="cb1-58"><a href="#cb1-58"></a>        <span class="cf">for</span> member <span class="kw">in</span> cls:</span>
-<span id="cb1-59"><a href="#cb1-59"></a>            <span class="cf">if</span> member.name.lower() <span class="op">==</span> value:</span>
-<span id="cb1-60"><a href="#cb1-60"></a>                <span class="cf">return</span> member</span>
-<span id="cb1-61"><a href="#cb1-61"></a></span>
-<span id="cb1-62"><a href="#cb1-62"></a>        <span class="cf">return</span> <span class="va">None</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+
+<div class="course-info-card">
+<div class="course-info-grid">
+<div class="course-info-item">
+<div class="label">
+<p>Instytucja</p>
+</div>
+<div class="value">
+<p>Politechnika Wrocławska</p>
+</div>
+</div>
+<div class="course-info-item">
+<div class="label">
+<p>Semestr</p>
+</div>
+<div class="value">
+<p>Zimowy 2024/25</p>
+</div>
+</div>
+<div class="course-info-item">
+<div class="label">
+<p>Wykładowca</p>
+</div>
+<div class="value">
+<p>dr Andrzej Giniewicz</p>
+</div>
+</div>
+</div>
+</div>
+<p>Laboratoria komputerowe do wykładu Andrzeja Giniewicza.</p>
+<section id="informacje-i-materiały" class="level2">
+<h2 class="anchored" data-anchor-id="informacje-i-materiały">Informacje i materiały</h2>
+<ul>
+<li><a href="https://alfa.im.pwr.edu.pl/~giniew/doku.php?id=rok2425:zimowy:wdp">Strona kursu (wykładowca)</a> - Oficjalna strona kursu z materiałami i ogłoszeniami.</li>
+<li><a href="../../courses/2024-pwr-intro-to-cs/pwr-intro-to-cs-2024-list-comments.html">Komentarze do list zadań</a> - Dodatkowe wyjaśnienia i wskazówki do list zadań.</li>
+</ul>
+</section>
+<section id="zasady-zaliczenia" class="level2">
+<h2 class="anchored" data-anchor-id="zasady-zaliczenia">Zasady zaliczenia</h2>
+<p>Doprecyzowania obowiązujące w moich grupach:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Listy zadań</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Zadanie domowe</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Odpowiedź ustna</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Projekt grupowy</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false" href="">Aktywność</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>Co najmniej pierwsze 4 listy będziemy robić na zajęciach, w systemie deklaracyjnym. Po zajęciach proszę o przesłanie rozwiązań. Kolejne listy zadań będą w formie zadań domowych, do zrobienia i przesłania przed zajęciami. Rozwiązania będą omawiane i wyrywkowo sprawdzane w trakcie zajęć.</p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>Wyobraź sobie, że pomagasz młodszemu koledze lub koleżance, którzy dalej są w liceum. Chcesz przygotować interaktywny notebook tłumaczący jakieś zagadnienie z zakresu matematyki, fizyki, informatyki lub chemii. Wybrany temat może, ale nie musi pochodzić z zakresu nauczania w szkole średniej. Ma być zrozumiały i dostępny dla ucznia liceum. <em>Kod Python nie musi być zrozumiały dla licealisty</em>. Polecam wybrać temat, który Ciebie też interesuje.</p>
+<p>W Twoim dokumencie powinny znaleźć się prawidłowo sformatowane komórki tekstowe, z nagłówkami oraz wzorami. Umieść również obliczenia wykonane w języku Python, jako ilustrację do niektórych przykładów, rozwiązanie zadań, lub wizualizację. Można, ale nie trzeba używać modułów Python nie przedstawionych na kursie.</p>
+<p>Za zadanie domowe można dostać maksymalnie 10 punktów. Po 3 za użycie Pythona, skład i formatowanie komórek Markdown oraz treść tłumacząca zagadnienie. Dodatkowy punkt za ogólna schludność i estetykę zeszytu.</p>
+<p>Gdybyś chciał wydrukować notatnik, powinien zająć przynajmniej dwie strony A4 przy standardowym rozmiarze kroju pisma (podpowiedź - możesz sprawdzić podgląd wydruku w menu File w narzędziu Jupyter Lab, jeśli trudno ocenić Ci ile już napisałeś).</p>
+<p>Termin oddania do 19 listopada (grupa wtorkowa) / 21 listopada (grupa czwartkowa). Zadanie domowe proszę przesyłać mailowo. Proszę załączyć informację czy zgadzasz się na pokazanie Twojej pracy innym studentom i opublikowanie jej tutaj jako przykład.</p>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>Od 7-mych zajęć można zgłaszać się na ochotnika, co najmniej 3 ochotników jest wymaganych na jednych zajęciach.</p>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<p>Można się łączyć w grupy w obrębie moich 2 zajęć (wtorek 7:30 i czwartek 7:30), ale nie poza. Zakładam w sumie 5-8 grup projektowych.</p>
+</div>
+<div id="tabset-1-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-5-tab">
+<p>Punkty zostaną przydzielone na zasadzie normalizacji rozkładu aktywności na zajęciach. Gwarantuję, że jedna <em>duża</em> aktywność (np. przedstawienie pełnego rozwiązania z listy) będzie dawała co najmniej jeden punkt.</p>
+</div>
+</div>
 </div>
 </section>
-<section id="example-usage" class="level2">
-<h2 class="anchored" data-anchor-id="example-usage">Example Usage</h2>
-<p>Here is an example of how to use the <code>CaseInsensitiveStrEnum</code> class:</p>
-<div id="9602291f" class="cell" data-execution_count="2">
-<details open="" class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> enum <span class="im">import</span> auto</span>
+<section id="bash-i-git" class="level2">
+<h2 class="anchored" data-anchor-id="bash-i-git">Bash i git</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Nawigacja systemu plików</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Skryptowanie</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Git i GitLab</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>Przykłady komend użytych na zajęciach:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="bu">pwd</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="bu">cd</span> ~</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">mkdir</span> test</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="bu">cd</span> test</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">touch</span> test.txt</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="ex">code</span> test.txt</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="fu">cp</span> test.txt test2.txt</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">mv</span> test2.txt test3.txt</span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="fu">rm</span> test2.txt</span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="bu">echo</span> <span class="st">"Hello World"</span> <span class="op">&gt;&gt;</span> test3.txt</span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="fu">cat</span> test3.txt</span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="fu">wc</span> <span class="op">&lt;</span> test3.txt</span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="fu">cat</span> test.txt test3.txt <span class="op">&gt;</span> test4.txt</span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="bu">cd</span> ..</span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="fu">rm</span> <span class="at">-ri</span> test</span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="fu">ls</span> <span class="at">-la</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>Przykładowy skrypt zapisany jako plik <code>hello.sh</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">#! bash</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">class</span> TestEnum(CaseInsensitiveStrEnum):</span>
-<span id="cb2-4"><a href="#cb2-4"></a>    test <span class="op">=</span> auto()</span>
-<span id="cb2-5"><a href="#cb2-5"></a>    enumz <span class="op">=</span> auto()</span>
-<span id="cb2-6"><a href="#cb2-6"></a></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="bu">print</span>(<span class="ss">f"List of members: </span><span class="sc">{</span>[member.name <span class="cf">for</span> member <span class="kw">in</span> TestEnum]<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="bu">print</span>(<span class="ss">f"List of values: </span><span class="sc">{</span>[member.value <span class="cf">for</span> member <span class="kw">in</span> TestEnum]<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="bu">print</span>(<span class="ss">f'Accessing "Test": </span><span class="sc">{</span>TestEnum(<span class="st">"Test"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb2-10"><a href="#cb2-10"></a><span class="bu">print</span>(<span class="ss">f'Accessing "test": </span><span class="sc">{</span>TestEnum(<span class="st">"test"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="bu">print</span>(<span class="ss">f'Accessing "ENUMZ": </span><span class="sc">{</span>TestEnum(<span class="st">"ENUMZ"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="bu">echo</span> <span class="st">"Hello </span><span class="va">$1</span><span class="st"> !"</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="cf">if</span> <span class="bu">[</span> <span class="st">"</span><span class="va">$1</span><span class="st">"</span>==<span class="st">"Flip"</span> <span class="bu">]</span> <span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>    <span class="bu">echo</span> ”Long time no see ! ”</span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="cf">elif</span> <span class="bu">[</span> <span class="st">"</span><span class="va">$1</span><span class="st">"</span>==<span class="st">"Flap"</span> <span class="bu">]</span> <span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>    <span class="bu">echo</span> <span class="st">"What do you want?"</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="cf">else</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>    <span class="bu">echo</span> <span class="st">"Who are you again ?"</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="cf">fi</span></span>
 <span id="cb2-12"><a href="#cb2-12"></a></span>
-<span id="cb2-13"><a href="#cb2-13"></a></span>
-<span id="cb2-14"><a href="#cb2-14"></a><span class="cf">try</span>:</span>
-<span id="cb2-15"><a href="#cb2-15"></a>    <span class="kw">class</span> TestEnum(CaseInsensitiveStrEnum):</span>
-<span id="cb2-16"><a href="#cb2-16"></a>        TEST <span class="op">=</span> <span class="st">"TEST"</span>  <span class="co"># This will raise a TypeError</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a><span class="cf">except</span> <span class="pp">TypeError</span> <span class="im">as</span> e:</span>
-<span id="cb2-18"><a href="#cb2-18"></a>    <span class="bu">print</span>(e)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>List of members: ['test', 'enumz']
-List of values: ['test', 'enumz']
-Accessing "Test": test
-Accessing "test": test
-Accessing "ENUMZ": enumz
-Member 'TEST' and value TEST must be lowercase.</code></pre>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="cf">if</span> <span class="ot">! </span><span class="bu">[</span> <span class="ot">-f</span> log.txt <span class="bu">]</span> <span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a>    <span class="fu">touch</span> log.txt</span>
+<span id="cb2-15"><a href="#cb2-15"></a><span class="cf">fi</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a><span class="bu">echo</span> <span class="st">"</span><span class="va">$(</span><span class="fu">date</span><span class="va">)</span><span class="st"> User </span><span class="va">$1</span><span class="st"> visited."</span> <span class="op">&gt;&gt;</span> log.txt</span>
+<span id="cb2-17"><a href="#cb2-17"></a></span>
+<span id="cb2-18"><a href="#cb2-18"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="va">$(</span><span class="fu">seq</span> 5 <span class="at">-1</span> 1<span class="va">)</span></span>
+<span id="cb2-19"><a href="#cb2-19"></a><span class="cf">do</span></span>
+<span id="cb2-20"><a href="#cb2-20"></a>    <span class="bu">echo</span> <span class="st">"Konczymy za </span><span class="va">$i</span><span class="st">"</span></span>
+<span id="cb2-21"><a href="#cb2-21"></a><span class="cf">done</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Jego wykonanie:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">chmod</span> +x hello.sh</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="ex">./hello.sh</span> Flap</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Skrypt w pythonie:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="co">#! python3</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="im">import</span> sys</span>
+<span id="cb4-4"><a href="#cb4-4"></a></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="bu">print</span>(<span class="ss">f"Hello !"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6"></a></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb4-8"><a href="#cb4-8"></a>    <span class="cf">if</span> <span class="bu">len</span>(sys.argv) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb4-9"><a href="#cb4-9"></a>        <span class="cf">for</span> x <span class="kw">in</span> sys.argv[<span class="dv">1</span>:]:</span>
+<span id="cb4-10"><a href="#cb4-10"></a>            <span class="bu">print</span>(<span class="ss">f"Nice to meet you </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Jego wykonanie:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">chmod</span> +x hello.py</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="ex">./hello.py</span> Flip Flap Flop</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<p>Generowanie klucza SSH (warto przeczytać <a href="https://docs.gitlab.com/ee/user/ssh.html#generate-an-ssh-key-pair">oficjalne instrukcje</a>)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">ssh-keygen</span> <span class="at">-t</span> ed25519 <span class="at">-C</span> <span class="st">"imie nazwisk, indeks"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Ustawienie klucza SSH w systemie lokalnym:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="bu">eval</span> <span class="va">$(</span><span class="fu">ssh-agent</span><span class="va">)</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="fu">ssh-add</span> <span class="op">&lt;</span>sciezka klucza<span class="op">&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="fu">ssh</span> git@gitlab.com</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Klonujemy repozytorium GitLab, ustawiamy użycie klucza SSH, tworzymy gałąź <code>main</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">git</span> clone <span class="op">&lt;</span>sciezka ssh<span class="op">&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">git</span> config <span class="at">--global</span> user.name <span class="st">"&lt;imie nazwisko&gt;"</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="fu">git</span> config <span class="at">--global</span> user.email <span class="st">"&lt;email pwr&gt;"</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="fu">git</span> config <span class="at">--local</span> gpg.format ssh</span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="fu">git</span> config <span class="at">--local</span> user.signingkey /ścieżka/do/klucza/id_ec25519.pub</span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="fu">git</span> switch <span class="at">--create</span> main</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Tworzymy plik README.md, dodajemy go do repozytorium, commitujemy i pushujemy.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">touch</span> README.md</span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="fu">git</span> add README.md</span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="fu">git</span> commit <span class="at">-S</span> <span class="at">-m</span> <span class="st">"puste readme"</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="fu">git</span> status</span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="fu">git</span> push</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Download the whole code <a href="case_insensitive_enum.py">here</a>.</p>
 </div>
 </div>
 

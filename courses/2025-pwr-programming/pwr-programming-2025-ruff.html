@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-10-10">
-<meta name="description" content="How to create a case-insensitive enum in Python.">
 
-<title>Case Insensitive Enum – bwrob blog</title>
+<title>Ruff - narzędzie do analizy kodu – bwrob blog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -74,7 +72,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-23bbe8b5e4efc1e257f6d59dce478b08.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
@@ -113,19 +110,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="../../css/styles.css">
 <meta property="og:title" content="bwrob blog">
 <meta property="og:description" content="bwrob personal and professional blog">
-<meta property="og:image" content="https://bwrob.github.io/assets/images/posts/python_recipes.png">
+<meta property="og:image" content="https://bwrob.github.io/courses/2025-pwr-programming/assets/logo/python_mug.png">
 <meta property="og:site_name" content="bwrob blog">
-<meta property="og:image:height" content="1024">
-<meta property="og:image:width" content="1024">
 <meta name="twitter:title" content="bwrob blog">
 <meta name="twitter:description" content="bwrob personal and professional blog">
-<meta name="twitter:image" content="https://bwrob.github.io/assets/images/posts/python_recipes.png">
+<meta name="twitter:image" content="https://bwrob.github.io/courses/2025-pwr-programming/assets/logo/python_mug.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image-height" content="1024">
-<meta name="twitter:image-width" content="1024">
 </head>
 
-<body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed fullcontent quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -288,7 +281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -360,186 +353,94 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">Case Insensitive Enum</h1>
-                  <div>
-        <div class="description">
-          How to create a case-insensitive enum in Python.
-        </div>
-      </div>
-                          <div class="quarto-categories">
-                <div class="quarto-category">Python Recipes</div>
-              </div>
-                  </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">October 10, 2025</p>
-      </div>
-    </div>
-    
-      <div>
-      <div class="quarto-title-meta-heading">Modified</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date-modified">December 4, 2024</p>
-      </div>
-    </div>
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#implementation" id="toc-implementation" class="nav-link active" data-scroll-target="#implementation">Implementation</a></li>
-  <li><a href="#example-usage" id="toc-example-usage" class="nav-link" data-scroll-target="#example-usage">Example Usage</a></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
-
-
-
-
-
-
-<p>When working with enums in Python, you might want to create an enum that is case-insensitive. This can be particularly useful when you want to allow users to input values without worrying about the case. Here’s how you can achieve this by subclassing <code>StrEnum</code>. To enforce that all enum members are defined in lowercase, we can use a hook <code>__init_subclass__</code>.</p>
-<section id="implementation" class="level2">
-<h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
-<div id="81943047" class="cell" data-execution_count="1">
-<details open="" class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> __future__ <span class="im">import</span> annotations</span>
-<span id="cb1-2"><a href="#cb1-2"></a></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> sys</span>
-<span id="cb1-4"><a href="#cb1-4"></a></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="cf">if</span> sys.version_info <span class="op">&gt;=</span> (<span class="dv">3</span>, <span class="dv">11</span>):</span>
-<span id="cb1-6"><a href="#cb1-6"></a>    <span class="im">from</span> enum <span class="im">import</span> StrEnum</span>
-<span id="cb1-7"><a href="#cb1-7"></a>    <span class="im">from</span> typing <span class="im">import</span> Self, override</span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="cf">else</span>:</span>
-<span id="cb1-9"><a href="#cb1-9"></a>    <span class="im">from</span> backports.strenum <span class="im">import</span> StrEnum</span>
-<span id="cb1-10"><a href="#cb1-10"></a>    <span class="im">from</span> typing_extensions <span class="im">import</span> Self, override</span>
-<span id="cb1-11"><a href="#cb1-11"></a></span>
-<span id="cb1-12"><a href="#cb1-12"></a></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="kw">class</span> CaseInsensitiveStrEnum(StrEnum):</span>
-<span id="cb1-14"><a href="#cb1-14"></a>    <span class="co">"""A case-insensitive string enum.</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a></span>
-<span id="cb1-16"><a href="#cb1-16"></a><span class="co">    This class extends the `StrEnum` class to provide case-insensitive member lookup.</span></span>
-<span id="cb1-17"><a href="#cb1-17"></a><span class="co">    It also provides a custom `_generate_next_value_` method that returns the</span></span>
-<span id="cb1-18"><a href="#cb1-18"></a><span class="co">    lowercase version of the member name for use with `auto()`.</span></span>
-<span id="cb1-19"><a href="#cb1-19"></a><span class="co">    """</span></span>
-<span id="cb1-20"><a href="#cb1-20"></a></span>
-<span id="cb1-21"><a href="#cb1-21"></a>    <span class="at">@classmethod</span></span>
-<span id="cb1-22"><a href="#cb1-22"></a>    <span class="kw">def</span> <span class="fu">__init_subclass__</span>(cls, <span class="op">**</span>kwargs: <span class="bu">dict</span>[<span class="bu">str</span>, Any]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb1-23"><a href="#cb1-23"></a>        <span class="co">"""Implement the special hook that is called when a class is subclassed.</span></span>
-<span id="cb1-24"><a href="#cb1-24"></a></span>
-<span id="cb1-25"><a href="#cb1-25"></a><span class="co">        It allows us to customize the class creation process without using metaclasses.</span></span>
-<span id="cb1-26"><a href="#cb1-26"></a><span class="co">        """</span></span>
-<span id="cb1-27"><a href="#cb1-27"></a>        <span class="bu">super</span>().<span class="fu">__init_subclass__</span>(<span class="op">**</span>kwargs)</span>
-<span id="cb1-28"><a href="#cb1-28"></a></span>
-<span id="cb1-29"><a href="#cb1-29"></a>        <span class="cf">for</span> member <span class="kw">in</span> cls:</span>
-<span id="cb1-30"><a href="#cb1-30"></a>            <span class="cf">if</span> <span class="kw">not</span> member.islower() <span class="kw">or</span> <span class="kw">not</span> member.value.islower():</span>
-<span id="cb1-31"><a href="#cb1-31"></a>                msg <span class="op">=</span> <span class="ss">f"Member '</span><span class="sc">{</span>member<span class="sc">}</span><span class="ss">' and value </span><span class="sc">{</span>member<span class="sc">.</span>value<span class="sc">}</span><span class="ss"> must be lowercase."</span></span>
-<span id="cb1-32"><a href="#cb1-32"></a>                <span class="cf">raise</span> <span class="pp">TypeError</span>(msg)</span>
-<span id="cb1-33"><a href="#cb1-33"></a></span>
-<span id="cb1-34"><a href="#cb1-34"></a>    <span class="at">@override</span></span>
-<span id="cb1-35"><a href="#cb1-35"></a>    <span class="at">@staticmethod</span></span>
-<span id="cb1-36"><a href="#cb1-36"></a>    <span class="kw">def</span> _generate_next_value_(</span>
-<span id="cb1-37"><a href="#cb1-37"></a>        name: <span class="bu">str</span>, start: <span class="bu">int</span>, count: <span class="bu">int</span>, last_values: <span class="bu">list</span>[<span class="bu">str</span>]</span>
-<span id="cb1-38"><a href="#cb1-38"></a>    ) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb1-39"><a href="#cb1-39"></a>        <span class="co">"""Return the lower-cased version of the member name.</span></span>
-<span id="cb1-40"><a href="#cb1-40"></a></span>
-<span id="cb1-41"><a href="#cb1-41"></a><span class="co">        This method is overridden to ensure that when `auto()` is used to create</span></span>
-<span id="cb1-42"><a href="#cb1-42"></a><span class="co">        enum members, their values are the lowercase version of their names.</span></span>
-<span id="cb1-43"><a href="#cb1-43"></a><span class="co">        """</span></span>
-<span id="cb1-44"><a href="#cb1-44"></a>        <span class="cf">return</span> name.lower()</span>
-<span id="cb1-45"><a href="#cb1-45"></a></span>
-<span id="cb1-46"><a href="#cb1-46"></a>    <span class="at">@override</span></span>
-<span id="cb1-47"><a href="#cb1-47"></a>    <span class="at">@classmethod</span></span>
-<span id="cb1-48"><a href="#cb1-48"></a>    <span class="kw">def</span> _missing_(cls, value: <span class="bu">object</span>) <span class="op">-&gt;</span> Self <span class="op">|</span> <span class="va">None</span>:</span>
-<span id="cb1-49"><a href="#cb1-49"></a>        <span class="co">"""Provide case-insensitive member lookup.</span></span>
-<span id="cb1-50"><a href="#cb1-50"></a></span>
-<span id="cb1-51"><a href="#cb1-51"></a><span class="co">        This method is called when a value is not found in the enum.</span></span>
-<span id="cb1-52"><a href="#cb1-52"></a><span class="co">        It is overridden to perform a case-insensitive search for the member.</span></span>
-<span id="cb1-53"><a href="#cb1-53"></a><span class="co">        """</span></span>
-<span id="cb1-54"><a href="#cb1-54"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(value, <span class="bu">str</span>):</span>
-<span id="cb1-55"><a href="#cb1-55"></a>            <span class="cf">return</span> <span class="va">None</span></span>
-<span id="cb1-56"><a href="#cb1-56"></a></span>
-<span id="cb1-57"><a href="#cb1-57"></a>        value <span class="op">=</span> value.lower()</span>
-<span id="cb1-58"><a href="#cb1-58"></a>        <span class="cf">for</span> member <span class="kw">in</span> cls:</span>
-<span id="cb1-59"><a href="#cb1-59"></a>            <span class="cf">if</span> member.name.lower() <span class="op">==</span> value:</span>
-<span id="cb1-60"><a href="#cb1-60"></a>                <span class="cf">return</span> member</span>
-<span id="cb1-61"><a href="#cb1-61"></a></span>
-<span id="cb1-62"><a href="#cb1-62"></a>        <span class="cf">return</span> <span class="va">None</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="quarto-about-marquee">
+  <div class="about-image-container">
+  </div>
+  <div class="about-contents">
+    <header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Ruff - narzędzie do analizy kodu</h1>
 </div>
+<div class="quarto-title-meta">
+  </div>
+</header> <main class="content" id="quarto-document-content">
+
+<section id="instalacja" class="level2">
+<h2 data-anchor-id="instalacja">Instalacja</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">conda</span> install <span class="at">-c</span> conda-forge ruff</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="example-usage" class="level2">
-<h2 class="anchored" data-anchor-id="example-usage">Example Usage</h2>
-<p>Here is an example of how to use the <code>CaseInsensitiveStrEnum</code> class:</p>
-<div id="9602291f" class="cell" data-execution_count="2">
-<details open="" class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> enum <span class="im">import</span> auto</span>
-<span id="cb2-2"><a href="#cb2-2"></a></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">class</span> TestEnum(CaseInsensitiveStrEnum):</span>
-<span id="cb2-4"><a href="#cb2-4"></a>    test <span class="op">=</span> auto()</span>
-<span id="cb2-5"><a href="#cb2-5"></a>    enumz <span class="op">=</span> auto()</span>
-<span id="cb2-6"><a href="#cb2-6"></a></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="bu">print</span>(<span class="ss">f"List of members: </span><span class="sc">{</span>[member.name <span class="cf">for</span> member <span class="kw">in</span> TestEnum]<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="bu">print</span>(<span class="ss">f"List of values: </span><span class="sc">{</span>[member.value <span class="cf">for</span> member <span class="kw">in</span> TestEnum]<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="bu">print</span>(<span class="ss">f'Accessing "Test": </span><span class="sc">{</span>TestEnum(<span class="st">"Test"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb2-10"><a href="#cb2-10"></a><span class="bu">print</span>(<span class="ss">f'Accessing "test": </span><span class="sc">{</span>TestEnum(<span class="st">"test"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="bu">print</span>(<span class="ss">f'Accessing "ENUMZ": </span><span class="sc">{</span>TestEnum(<span class="st">"ENUMZ"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb2-12"><a href="#cb2-12"></a></span>
-<span id="cb2-13"><a href="#cb2-13"></a></span>
-<span id="cb2-14"><a href="#cb2-14"></a><span class="cf">try</span>:</span>
-<span id="cb2-15"><a href="#cb2-15"></a>    <span class="kw">class</span> TestEnum(CaseInsensitiveStrEnum):</span>
-<span id="cb2-16"><a href="#cb2-16"></a>        TEST <span class="op">=</span> <span class="st">"TEST"</span>  <span class="co"># This will raise a TypeError</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a><span class="cf">except</span> <span class="pp">TypeError</span> <span class="im">as</span> e:</span>
-<span id="cb2-18"><a href="#cb2-18"></a>    <span class="bu">print</span>(e)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>List of members: ['test', 'enumz']
-List of values: ['test', 'enumz']
-Accessing "Test": test
-Accessing "test": test
-Accessing "ENUMZ": enumz
-Member 'TEST' and value TEST must be lowercase.</code></pre>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Download the whole code <a href="case_insensitive_enum.py">here</a>.</p>
-</div>
-</div>
+<section id="użycie-z-poziomu-terminala" class="level2">
+<h2 data-anchor-id="użycie-z-poziomu-terminala">Użycie z poziomu terminala</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># poprawia formatowanie kodu</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="ex">ruff</span> format</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co"># sprawdza kod</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="ex">ruff</span> check</span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co"># sprawdza kod i poprawia błędy które można naprawić automatycznie</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="ex">ruff</span> check <span class="at">--fix</span> <span class="at">--unsafe-fixes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="dodatkowa-konfiguracja" class="level2">
+<h2 data-anchor-id="dodatkowa-konfiguracja">Dodatkowa konfiguracja</h2>
+<p>Ruff można skonfigurować za pomocą pliku <code>ruff.toml</code>. Przykładowa konfiguracja:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource toml number-lines code-with-copy"><code class="sourceCode toml"><span id="cb3-1"><a href="#cb3-1"></a><span class="dt">line-length</span>    <span class="op">=</span> <span class="dv">79</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="dt">target-version</span> <span class="op">=</span> <span class="st">"py312"</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="kw">[lint]</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>    <span class="dt">select</span> <span class="op">=</span> <span class="op">[</span><span class="st">"ALL"</span><span class="op">]</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>    <span class="dt">ignore</span> <span class="op">=</span> <span class="op">[</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>        <span class="st">"COM"</span><span class="op">,</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a>        <span class="st">"D203"</span><span class="op">,</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>        <span class="st">"D211"</span><span class="op">,</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a>        <span class="st">"D213"</span><span class="op">,</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a>        <span class="st">"FA"</span><span class="op">,</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a>        <span class="st">"ISC"</span><span class="op">,</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a>        <span class="st">"T"</span><span class="op">,</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a>        <span class="st">"TC"</span><span class="op">,</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a>    <span class="op">]</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a></span>
+<span id="cb3-17"><a href="#cb3-17"></a><span class="kw">[format]</span></span>
+<span id="cb3-18"><a href="#cb3-18"></a>    <span class="dt">docstring-code-format</span> <span class="op">=</span> <span class="cn">true</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Aby użyć tej konfiguracji, należy uruchomić Ruff z odpowiednim argumentem:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="ex">ruff</span> <span class="at">--config</span> ruff.toml format</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="ex">ruff</span> <span class="at">--config</span> ruff.toml check</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="ex">ruff</span> <span class="at">--config</span> ruff.toml check <span class="at">--fix</span> <span class="at">--unsafe-fixes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="integracja-z-vscode" class="level2">
+<h2 data-anchor-id="integracja-z-vscode">Integracja z VSCode</h2>
+<ol type="1">
+<li>Instalacja rozszerzenia [ruff].</li>
+<li>Dodanie do pliku <code>.vscode/settings.json</code> następującej konfiguracji.</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource {json} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1"><a href="#cb5-1"></a>{</span>
+<span id="cb5-2"><a href="#cb5-2"></a>   "[python]": {</span>
+<span id="cb5-3"><a href="#cb5-3"></a>        "editor.codeActionsOnSave": {</span>
+<span id="cb5-4"><a href="#cb5-4"></a>            "source.fixAll": "always",</span>
+<span id="cb5-5"><a href="#cb5-5"></a>            "source.organizeImports": "always"</span>
+<span id="cb5-6"><a href="#cb5-6"></a>        },</span>
+<span id="cb5-7"><a href="#cb5-7"></a>        "editor.defaultFormatter": "charliermarsh.ruff",</span>
+<span id="cb5-8"><a href="#cb5-8"></a>        "editor.formatOnSave": true,</span>
+<span id="cb5-9"><a href="#cb5-9"></a>        "editor.formatOnType": true,</span>
+<span id="cb5-10"><a href="#cb5-10"></a>    },</span>
+<span id="cb5-11"><a href="#cb5-11"></a>    "ruff.configuration": "ruff.toml",</span>
+<span id="cb5-12"><a href="#cb5-12"></a>    "ruff.configurationPreference": "filesystemFirst",</span>
+<span id="cb5-13"><a href="#cb5-13"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="zadanie" class="level2">
+<h2 data-anchor-id="zadanie">Zadanie</h2>
+<p>Zainstaluj Ruff i skonfiguruj go w swoim folderze. Użyj go do sprawdzenia i poprawienia kodu rozwiązań z dowolnej listy zadań. Zrób to na kopii kodu, aby nie stracić oryginalnych rozwiązań.</p>
+<p>Najpierw popraw formatowanie kodu, a następnie sprawdź kod pod kątem błędów. Przeanalizuj błędy. Gdy jesteś pewny/a że je rozumiesz, użyj opcji <code>--fix</code> aby poprawić błędy, które można naprawić automatycznie. Popraw ręcznie błędy, które Ruff nie potrafił naprawić.</p>
+<p>Porównaj efekty przed i po użyciu Ruff.</p>
 
 
 </section>
-
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> 
+  </div>
+</div>
+ <!-- /main -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   // Target only pages that are clearly posts (not the homepage)
@@ -583,13 +484,6 @@ document.addEventListener("DOMContentLoaded", function() {
       window.document.body.appendChild(a);
     }
     setColorSchemeToggle(hasAlternateSentinel())
-    const icon = "";
-    const anchorJS = new window.AnchorJS();
-    anchorJS.options = {
-      placement: 'right',
-      icon: icon
-    };
-    anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
         if (clz.startsWith('code-annotation-')) {                     

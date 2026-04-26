@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2025-12-12">
+<meta name="description" content="How to unlock the power of Python’s special methods to build intuitive and consistent classes.">
+
+<title>The Python Data Model – bwrob blog</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../assets/logo/python_mug.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-23bbe8b5e4efc1e257f6d59dce478b08.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-18b725f170e06ca68a5ca802173a5a27.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-c293c7c026199e810d85091ccc94fc0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../../css/styles.css">
+<meta property="og:title" content="bwrob blog">
+<meta property="og:description" content="bwrob personal and professional blog">
+<meta property="og:image" content="https://bwrob.github.io/assets/images/posts/python_academy.png">
+<meta property="og:site_name" content="bwrob blog">
+<meta property="og:image:height" content="1024">
+<meta property="og:image:width" content="1024">
+<meta name="twitter:title" content="bwrob blog">
+<meta name="twitter:description" content="bwrob personal and professional blog">
+<meta name="twitter:image" content="https://bwrob.github.io/assets/images/posts/python_academy.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image-height" content="1024">
+<meta name="twitter:image-width" content="1024">
+</head>
+
+<body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = true;
+    const darkModeDefault = authorPrefersDark;
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../assets/logo/python_mug.png" alt="" class="navbar-logo light-content">
+    <img src="../../../assets/logo/python_mug.png" alt="" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">bwrob blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html"> <i class="bi bi-cpu" role="img">
+</i> 
+<span class="menu-text">Posts</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../pages/resume.html"> <i class="bi bi-file-earmark-text" role="img">
+</i> 
+<span class="menu-text">Resume</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../pages/teaching.html"> <i class="bi bi-tablet-landscape" role="img">
+</i> 
+<span class="menu-text">Teaching</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../pages/hobbies.html"> <i class="bi bi-controller" role="img">
+</i> 
+<span class="menu-text">Hobbies</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bwrob.github.io/debug-dojo/"> <i class="bi bi-bug-fill" role="img">
+</i> 
+<span class="menu-text">debug dojo</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bwrob.github.io/sus-inspector/"> <i class="bi bi-bug-fill" role="img">
+</i> 
+<span class="menu-text">sus inspector</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/bartoszmwroblewski/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/bwrob/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../../index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">The Python Data Model</h1>
+                  <div>
+        <div class="description">
+          How to unlock the power of Python’s special methods to build intuitive and consistent classes.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Python Academy</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">December 12, 2025</p>
+      </div>
+    </div>
+    
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">February 20, 2026</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#the-goal-a-pythonic-portfolio" id="toc-the-goal-a-pythonic-portfolio" class="nav-link" data-scroll-target="#the-goal-a-pythonic-portfolio">The Goal: A Pythonic Portfolio</a></li>
+  <li><a href="#the-initial-portfolio-class" id="toc-the-initial-portfolio-class" class="nav-link" data-scroll-target="#the-initial-portfolio-class">The Initial <code>Portfolio</code> Class</a></li>
+  <li><a href="#emulating-a-collection" id="toc-emulating-a-collection" class="nav-link" data-scroll-target="#emulating-a-collection">Emulating a Collection</a>
+  <ul class="collapse">
+  <li><a href="#len__" id="toc-len__" class="nav-link" data-scroll-target="#len__"><code>__len__</code></a></li>
+  <li><a href="#getitem__" id="toc-getitem__" class="nav-link" data-scroll-target="#getitem__"><code>__getitem__</code></a></li>
+  <li><a href="#enabling-iteration-__iter__" id="toc-enabling-iteration-__iter__" class="nav-link" data-scroll-target="#enabling-iteration-__iter__">Enabling Iteration: <code>__iter__</code></a></li>
+  </ul></li>
+  <li><a href="#membership-and-truthiness-__contains__-and-__bool__" id="toc-membership-and-truthiness-__contains__-and-__bool__" class="nav-link" data-scroll-target="#membership-and-truthiness-__contains__-and-__bool__">Membership and Truthiness: <code>__contains__</code> and <code>__bool__</code></a></li>
+  <li><a href="#operator-overloading-__add__-combining-portfolios" id="toc-operator-overloading-__add__-combining-portfolios" class="nav-link" data-scroll-target="#operator-overloading-__add__-combining-portfolios">Operator Overloading: <code>__add__</code> (Combining Portfolios)</a></li>
+  <li><a href="#string-representation-__repr__-vs-__str__" id="toc-string-representation-__repr__-vs-__str__" class="nav-link" data-scroll-target="#string-representation-__repr__-vs-__str__">String Representation: <code>__repr__</code> vs <code>__str__</code></a></li>
+  <li><a href="#why-this-matters" id="toc-why-this-matters" class="nav-link" data-scroll-target="#why-this-matters">Why This Matters</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Ever wonder why Python’s built-in types just… work? You use <code>len()</code> to get the size of a list, square brackets <code>[]</code> to grab an item from a dictionary, and a <code>for</code> loop to go through a set. It’s consistent, intuitive, and frankly, a joy to use.</p>
+<p>This isn’t magic; it’s the <strong>Python Data Model</strong>. By implementing a few “special methods” (you might know them as <em>dunder</em> methods, short for <strong>d</strong>ouble <strong>under</strong>score), you can make your own custom classes behave exactly like the built-ins.</p>
+<p>In this post, we’re going to build a <code>Portfolio</code> class that feels like a native part of the language. Instead of clunky custom methods, we’ll use the patterns Python already knows and loves.</p>
+</section>
+<section id="the-goal-a-pythonic-portfolio" class="level2">
+<h2 class="anchored" data-anchor-id="the-goal-a-pythonic-portfolio">The Goal: A Pythonic Portfolio</h2>
+<p>We want a <code>Portfolio</code> class that stores a list of financial positions. But we don’t want a clunky interface like <code>portfolio.get_position_by_ticker("AAPL")</code>. We want the market-standard syntax:</p>
+<ul>
+<li><code>len(portfolio)</code> to size up our exposure.</li>
+<li><code>portfolio["AAPL"]</code> to get a quote instantly.</li>
+<li><code>for position in portfolio</code> to audit our holdings.</li>
+</ul>
+<p>Let’s start by defining a simple <code>Position</code> container. To keep our balance sheet clean, we’ll track the total USD value rather than quantity and price.</p>
+<div id="54b68bc0" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> __future__ <span class="im">import</span> annotations</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="im">from</span> collections.abc <span class="im">import</span> Iterator</span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="at">@dataclass</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="kw">class</span> Position:</span>
+<span id="cb1-9"><a href="#cb1-9"></a>    symbol: <span class="bu">str</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>    value_usd: <span class="bu">float</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="the-initial-portfolio-class" class="level2">
+<h2 class="anchored" data-anchor-id="the-initial-portfolio-class">The Initial <code>Portfolio</code> Class</h2>
+<p>We start with a standard class definition. To index our strategy efficiently, we’ll store the positions in a dictionary keyed by their symbol. We name it <code>_contents</code> to signal it’s an internal implementation detail—a trade secret, if you will—encouraging users to access data through the public interface.</p>
+<div id="0b0d0905" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">class</span> Portfolio:</span>
+<span id="cb2-2"><a href="#cb2-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, name: <span class="bu">str</span>, managers: <span class="bu">tuple</span>[<span class="bu">str</span>, ...], contents: <span class="bu">list</span>[Position] <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>):</span>
+<span id="cb2-3"><a href="#cb2-3"></a>        <span class="va">self</span>.name <span class="op">=</span> name</span>
+<span id="cb2-4"><a href="#cb2-4"></a>        <span class="va">self</span>.managers <span class="op">=</span> managers</span>
+<span id="cb2-5"><a href="#cb2-5"></a>        <span class="co"># Store positions in a dictionary keyed by symbol for fast lookup</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>        <span class="va">self</span>._contents <span class="op">=</span> {pos.symbol: pos <span class="cf">for</span> pos <span class="kw">in</span> contents} <span class="cf">if</span> contents <span class="cf">else</span> {}</span>
+<span id="cb2-7"><a href="#cb2-7"></a></span>
+<span id="cb2-8"><a href="#cb2-8"></a>    <span class="kw">def</span> <span class="fu">__repr__</span>(<span class="va">self</span>):</span>
+<span id="cb2-9"><a href="#cb2-9"></a>        <span class="cf">return</span> <span class="ss">f"Portfolio(name=</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>name<span class="sc">!r}</span><span class="ss">, managers=</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>managers<span class="sc">!r}</span><span class="ss">, contents=</span><span class="sc">{</span><span class="bu">list</span>(<span class="va">self</span>._contents.values())<span class="sc">!r}</span><span class="ss">)"</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="co"># Create some data</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>pos1 <span class="op">=</span> Position(<span class="st">"AAPL"</span>, <span class="fl">15000.0</span>)</span>
+<span id="cb2-13"><a href="#cb2-13"></a>pos2 <span class="op">=</span> Position(<span class="st">"GOOG"</span>, <span class="fl">140000.0</span>)</span>
+<span id="cb2-14"><a href="#cb2-14"></a>p <span class="op">=</span> Portfolio(<span class="st">"Tech Fund"</span>, (<span class="st">"Alice"</span>, <span class="st">"Bob"</span>), [pos1, pos2])</span>
+<span id="cb2-15"><a href="#cb2-15"></a><span class="bu">print</span>(p)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Portfolio(name='Tech Fund', managers=('Alice', 'Bob'), contents=[Position(symbol='AAPL', value_usd=15000.0), Position(symbol='GOOG', value_usd=140000.0)])</code></pre>
+</div>
+</div>
+<p>We included <code>__repr__</code> right away. This dunder method provides the “official” string representation, useful for debugging the object’s state.</p>
+</section>
+<section id="emulating-a-collection" class="level2">
+<h2 class="anchored" data-anchor-id="emulating-a-collection">Emulating a Collection</h2>
+<p>Right now, if we try to gauge the size of our portfolio, it raises a <code>TypeError</code>.</p>
+<div id="51135c56" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="cf">try</span>:</span>
+<span id="cb4-2"><a href="#cb4-2"></a>    <span class="bu">len</span>(p)</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="cf">except</span> <span class="pp">TypeError</span> <span class="im">as</span> e:</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    <span class="bu">print</span>(<span class="ss">f"Error: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Error: object of type 'Portfolio' has no len()</code></pre>
+</div>
+</div>
+<p>To enable the <code>len()</code> function, we implement <code>__len__</code>.</p>
+<section id="len__" class="level3">
+<h3 class="anchored" data-anchor-id="len__"><code>__len__</code></h3>
+<div id="60d190d0" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">class</span> Portfolio(Portfolio): <span class="co"># Inheriting to add methods incrementally for this post</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>    <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
+<span id="cb6-3"><a href="#cb6-3"></a>        <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>._contents)</span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a>p <span class="op">=</span> Portfolio(<span class="st">"Tech Fund"</span>, (<span class="st">"Alice"</span>, <span class="st">"Bob"</span>), [pos1, pos2])</span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="bu">print</span>(<span class="ss">f"Portfolio size: </span><span class="sc">{</span><span class="bu">len</span>(p)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Portfolio size: 2</code></pre>
+</div>
+</div>
+<p>Now <code>len(p)</code> delegates to the underlying <code>self._contents</code> dictionary. It’s a classic delegation strategy.</p>
+</section>
+<section id="getitem__" class="level3">
+<h3 class="anchored" data-anchor-id="getitem__"><code>__getitem__</code></h3>
+<p>We don’t want to scan through a list to find a stock; that’s O(N) efficiency, and in performance-critical applications, speed is crucial. The <code>__getitem__</code> method allows us to use the square bracket notation <code>[]</code> to access items directly.</p>
+<div id="c305b6c3" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
+<span id="cb8-2"><a href="#cb8-2"></a>    <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, symbol: <span class="bu">str</span>) <span class="op">-&gt;</span> Position <span class="op">|</span> <span class="va">None</span>:</span>
+<span id="cb8-3"><a href="#cb8-3"></a>        <span class="cf">return</span> <span class="va">self</span>._contents.get(symbol)</span>
+<span id="cb8-4"><a href="#cb8-4"></a></span>
+<span id="cb8-5"><a href="#cb8-5"></a>p <span class="op">=</span> Portfolio(<span class="st">"Tech Fund"</span>, (<span class="st">"Alice"</span>, <span class="st">"Bob"</span>), [pos1, pos2])</span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="bu">print</span>(<span class="ss">f"AAPL position: </span><span class="sc">{</span>p[<span class="st">'AAPL'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="bu">print</span>(<span class="ss">f"MSFT position: </span><span class="sc">{</span>p[<span class="st">'MSFT'</span>]<span class="sc">}</span><span class="ss">"</span>) <span class="co"># Returns None</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>AAPL position: Position(symbol='AAPL', value_usd=15000.0)
+MSFT position: None</code></pre>
+</div>
+</div>
+<p>With this, our <code>Portfolio</code> behaves like a mapping—an efficient way to access our assets.</p>
+</section>
+<section id="enabling-iteration-__iter__" class="level3">
+<h3 class="anchored" data-anchor-id="enabling-iteration-__iter__">Enabling Iteration: <code>__iter__</code></h3>
+<p>Iterating through a collection is fundamental. Since we backed our portfolio with a dictionary, default iteration would just give us the keys (symbols). But when we loop through a portfolio, we usually want the assets themselves. We can dictate this behavior by implementing <code>__iter__</code>.</p>
+<div id="72b0411e" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
+<span id="cb10-2"><a href="#cb10-2"></a>    <span class="kw">def</span> <span class="fu">__iter__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> Iterator[Position]:</span>
+<span id="cb10-3"><a href="#cb10-3"></a>        <span class="cf">return</span> <span class="bu">iter</span>(<span class="va">self</span>._contents.values())</span>
+<span id="cb10-4"><a href="#cb10-4"></a></span>
+<span id="cb10-5"><a href="#cb10-5"></a></span>
+<span id="cb10-6"><a href="#cb10-6"></a>p <span class="op">=</span> Portfolio(<span class="st">"Tech Fund"</span>, (<span class="st">"Alice"</span>, <span class="st">"Bob"</span>), [pos1, pos2])</span>
+<span id="cb10-7"><a href="#cb10-7"></a></span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="bu">print</span>(<span class="st">"Iterating through portfolio:"</span>)</span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="cf">for</span> pos <span class="kw">in</span> p:</span>
+<span id="cb10-10"><a href="#cb10-10"></a>    <span class="bu">print</span>(<span class="ss">f" - </span><span class="sc">{</span>pos<span class="sc">.</span>symbol<span class="sc">}</span><span class="ss">: $</span><span class="sc">{</span>pos<span class="sc">.</span>value_usd<span class="sc">:,.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Iterating through portfolio:
+ - AAPL: $15,000.00
+ - GOOG: $140,000.00</code></pre>
+</div>
+</div>
+<p>Now, <code>for pos in p</code> yields the positions directly. We have full control over the traversal.</p>
+</section>
+</section>
+<section id="membership-and-truthiness-__contains__-and-__bool__" class="level2">
+<h2 class="anchored" data-anchor-id="membership-and-truthiness-__contains__-and-__bool__">Membership and Truthiness: <code>__contains__</code> and <code>__bool__</code></h2>
+<p>We can already check for membership because we implemented <code>__iter__</code>, but that’s like manually auditing every file to find one document—it’s O(N). Since we have a hash map (dictionary) underneath, we can do an O(1) check using <code>__contains__</code>.</p>
+<p>We also want to know if our portfolio is empty. By default, Python checks <code>len()</code>, but implementing <code>__bool__</code> allows us to be explicit about what constitutes a “truthy” portfolio.</p>
+<div id="2fc41677" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
+<span id="cb12-2"><a href="#cb12-2"></a>    <span class="kw">def</span> <span class="fu">__contains__</span>(<span class="va">self</span>, item: <span class="bu">str</span> <span class="op">|</span> Position) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb12-3"><a href="#cb12-3"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(item, <span class="bu">str</span>):</span>
+<span id="cb12-4"><a href="#cb12-4"></a>            <span class="cf">return</span> item <span class="kw">in</span> <span class="va">self</span>._contents</span>
+<span id="cb12-5"><a href="#cb12-5"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(item, Position):</span>
+<span id="cb12-6"><a href="#cb12-6"></a>            <span class="cf">return</span> item.symbol <span class="kw">in</span> <span class="va">self</span>._contents</span>
+<span id="cb12-7"><a href="#cb12-7"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb12-8"><a href="#cb12-8"></a></span>
+<span id="cb12-9"><a href="#cb12-9"></a>    <span class="kw">def</span> <span class="fu">__bool__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb12-10"><a href="#cb12-10"></a>        <span class="cf">return</span> <span class="bu">bool</span>(<span class="va">self</span>._contents)</span>
+<span id="cb12-11"><a href="#cb12-11"></a></span>
+<span id="cb12-12"><a href="#cb12-12"></a></span>
+<span id="cb12-13"><a href="#cb12-13"></a>p <span class="op">=</span> Portfolio(<span class="st">"Tech Fund"</span>, (<span class="st">"Alice"</span>, <span class="st">"Bob"</span>), [pos1, pos2])</span>
+<span id="cb12-14"><a href="#cb12-14"></a></span>
+<span id="cb12-15"><a href="#cb12-15"></a><span class="bu">print</span>(<span class="ss">f"Is 'AAPL' in p? </span><span class="sc">{</span><span class="st">'AAPL'</span> <span class="kw">in</span> p<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-16"><a href="#cb12-16"></a><span class="bu">print</span>(<span class="ss">f"Is 'MSFT' in p? </span><span class="sc">{</span><span class="st">'MSFT'</span> <span class="kw">in</span> p<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-17"><a href="#cb12-17"></a><span class="bu">print</span>(<span class="ss">f"Is p truthy? </span><span class="sc">{</span><span class="bu">bool</span>(p)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-18"><a href="#cb12-18"></a></span>
+<span id="cb12-19"><a href="#cb12-19"></a>empty_p <span class="op">=</span> Portfolio(<span class="st">"Empty"</span>, (<span class="st">"Nobody"</span>,))</span>
+<span id="cb12-20"><a href="#cb12-20"></a><span class="bu">print</span>(<span class="ss">f"Is empty_p truthy? </span><span class="sc">{</span><span class="bu">bool</span>(empty_p)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Is 'AAPL' in p? True
+Is 'MSFT' in p? False
+Is p truthy? True
+Is empty_p truthy? False</code></pre>
+</div>
+</div>
+</section>
+<section id="operator-overloading-__add__-combining-portfolios" class="level2">
+<h2 class="anchored" data-anchor-id="operator-overloading-__add__-combining-portfolios">Operator Overloading: <code>__add__</code> (Combining Portfolios)</h2>
+<p>In Python, objects can be combined using operators. If we have two portfolios, it makes intuitive sense to “add” them together using <code>+</code>.</p>
+<p>We implement this via <code>__add__</code>. This isn’t just concatenation; it’s a consolidation. We need to combine managers and sum up the value of overlapping positions.</p>
+<div id="3f4eaeba" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
+<span id="cb14-2"><a href="#cb14-2"></a>    <span class="kw">def</span> <span class="fu">__add__</span>(<span class="va">self</span>, other: Portfolio) <span class="op">-&gt;</span> Portfolio:</span>
+<span id="cb14-3"><a href="#cb14-3"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(other, Portfolio):</span>
+<span id="cb14-4"><a href="#cb14-4"></a>            <span class="cf">return</span> <span class="va">NotImplemented</span></span>
+<span id="cb14-5"><a href="#cb14-5"></a></span>
+<span id="cb14-6"><a href="#cb14-6"></a>        new_name <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>name<span class="sc">}</span><span class="ss"> + </span><span class="sc">{</span>other<span class="sc">.</span>name<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb14-7"><a href="#cb14-7"></a>        <span class="co"># Combine managers, removing duplicates</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a>        new_managers <span class="op">=</span> <span class="bu">tuple</span>(<span class="bu">sorted</span>(<span class="bu">set</span>(<span class="va">self</span>.managers <span class="op">+</span> other.managers)))</span>
+<span id="cb14-9"><a href="#cb14-9"></a>        <span class="co"># Merge contents</span></span>
+<span id="cb14-10"><a href="#cb14-10"></a>        all_positions <span class="op">=</span> {}</span>
+<span id="cb14-11"><a href="#cb14-11"></a></span>
+<span id="cb14-12"><a href="#cb14-12"></a>        <span class="co"># Add positions from self</span></span>
+<span id="cb14-13"><a href="#cb14-13"></a>        <span class="cf">for</span> pos <span class="kw">in</span> <span class="va">self</span>:</span>
+<span id="cb14-14"><a href="#cb14-14"></a>            all_positions[pos.symbol] <span class="op">=</span> Position(pos.symbol, pos.value_usd)</span>
+<span id="cb14-15"><a href="#cb14-15"></a></span>
+<span id="cb14-16"><a href="#cb14-16"></a>        <span class="co"># Add positions from other</span></span>
+<span id="cb14-17"><a href="#cb14-17"></a>        <span class="cf">for</span> pos <span class="kw">in</span> other:</span>
+<span id="cb14-18"><a href="#cb14-18"></a>            <span class="cf">if</span> pos.symbol <span class="kw">in</span> all_positions:</span>
+<span id="cb14-19"><a href="#cb14-19"></a>                existing <span class="op">=</span> all_positions[pos.symbol]</span>
+<span id="cb14-20"><a href="#cb14-20"></a>                existing.value_usd <span class="op">+=</span> pos.value_usd</span>
+<span id="cb14-21"><a href="#cb14-21"></a>            <span class="cf">else</span>:</span>
+<span id="cb14-22"><a href="#cb14-22"></a>                all_positions[pos.symbol] <span class="op">=</span> Position(pos.symbol, pos.value_usd)</span>
+<span id="cb14-23"><a href="#cb14-23"></a>        <span class="cf">return</span> Portfolio(new_name, new_managers, <span class="bu">list</span>(all_positions.values()))</span>
+<span id="cb14-24"><a href="#cb14-24"></a></span>
+<span id="cb14-25"><a href="#cb14-25"></a></span>
+<span id="cb14-26"><a href="#cb14-26"></a><span class="co"># Example Usage</span></span>
+<span id="cb14-27"><a href="#cb14-27"></a>p1 <span class="op">=</span> Portfolio(<span class="st">"Tech"</span>, (<span class="st">"Alice"</span>,), [Position(<span class="st">"AAPL"</span>, <span class="fl">15000.0</span>)])</span>
+<span id="cb14-28"><a href="#cb14-28"></a>p2 <span class="op">=</span> Portfolio(</span>
+<span id="cb14-29"><a href="#cb14-29"></a>    <span class="st">"Growth"</span>, (<span class="st">"Bob"</span>,), [Position(<span class="st">"AAPL"</span>, <span class="fl">8000.0</span>), Position(<span class="st">"MSFT"</span>, <span class="fl">30000.0</span>)]</span>
+<span id="cb14-30"><a href="#cb14-30"></a>)</span>
+<span id="cb14-31"><a href="#cb14-31"></a></span>
+<span id="cb14-32"><a href="#cb14-32"></a>p3 <span class="op">=</span> p1 <span class="op">+</span> p2</span>
+<span id="cb14-33"><a href="#cb14-33"></a><span class="bu">print</span>(<span class="ss">f"Merged Portfolio: </span><span class="sc">{</span>p3<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb14-34"><a href="#cb14-34"></a><span class="bu">print</span>(<span class="ss">f"Merged AAPL: </span><span class="sc">{</span>p3[<span class="st">'AAPL'</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Merged Portfolio: Portfolio(name='Tech + Growth', managers=('Alice', 'Bob'), contents=[Position(symbol='AAPL', value_usd=23000.0), Position(symbol='MSFT', value_usd=30000.0)])
+Merged AAPL: Position(symbol='AAPL', value_usd=23000.0)</code></pre>
+</div>
+</div>
+</section>
+<section id="string-representation-__repr__-vs-__str__" class="level2">
+<h2 class="anchored" data-anchor-id="string-representation-__repr__-vs-__str__">String Representation: <code>__repr__</code> vs <code>__str__</code></h2>
+<p>Finally, we need to decide how our portfolio presents itself to the world.</p>
+<ul>
+<li><strong><code>__repr__</code> (The Private Ledger):</strong> Unambiguous, developer-focused. It should ideally allow you to recreate the object.</li>
+<li><strong><code>__str__</code> (The Public Face):</strong> Readable, user-focused. “What does this object represent to a human?”</li>
+</ul>
+<p>If <code>__str__</code> is not defined, Python falls back to <code>__repr__</code>. But we want a nice summary.</p>
+<div id="843cf801" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">class</span> Portfolio(Portfolio):</span>
+<span id="cb16-2"><a href="#cb16-2"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>):</span>
+<span id="cb16-3"><a href="#cb16-3"></a>        <span class="cf">return</span> <span class="ss">f"Portfolio '</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>name<span class="sc">}</span><span class="ss">' with </span><span class="sc">{</span><span class="bu">len</span>(<span class="va">self</span>)<span class="sc">}</span><span class="ss"> positions managed by </span><span class="sc">{</span><span class="st">', '</span><span class="sc">.</span>join(<span class="va">self</span>.managers)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb16-4"><a href="#cb16-4"></a></span>
+<span id="cb16-5"><a href="#cb16-5"></a></span>
+<span id="cb16-6"><a href="#cb16-6"></a>p <span class="op">=</span> Portfolio(<span class="st">"Tech Fund"</span>, (<span class="st">"Alice"</span>, <span class="st">"Bob"</span>), [pos1, pos2])</span>
+<span id="cb16-7"><a href="#cb16-7"></a><span class="bu">print</span>(<span class="ss">f"Str: </span><span class="sc">{</span><span class="bu">str</span>(p)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-8"><a href="#cb16-8"></a><span class="bu">print</span>(<span class="ss">f"Repr: </span><span class="sc">{</span><span class="bu">repr</span>(p)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Str: Portfolio 'Tech Fund' with 2 positions managed by Alice, Bob
+Repr: Portfolio(name='Tech Fund', managers=('Alice', 'Bob'), contents=[Position(symbol='AAPL', value_usd=15000.0), Position(symbol='GOOG', value_usd=140000.0)])</code></pre>
+</div>
+</div>
+</section>
+<section id="why-this-matters" class="level2">
+<h2 class="anchored" data-anchor-id="why-this-matters">Why This Matters</h2>
+<p>By implementing these methods, we’ve turned a basic container into a robust and functional class.</p>
+<ul>
+<li><strong>Lookup by Symbol:</strong> Instant access with <code>p['AAPL']</code>.</li>
+<li><strong>Intuitive Iteration:</strong> Seamless traversal with <code>for pos in p</code>.</li>
+<li><strong>Arithmetic:</strong> Combining objects made easy with <code>p1 + p2</code>.</li>
+<li><strong>Expressiveness:</strong> The code reads clearly and naturally.</li>
+</ul>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>The Python Data Model is what makes Python feel like Python. It lets your custom objects play nice with all the built-in features you’re already using. Here’s the “greatest hits” of dunder methods we covered:</p>
+<ul>
+<li><code>__init__</code>: For setting things up.</li>
+<li><code>__repr__</code>: The “developer view” (detailed and exact).</li>
+<li><code>__str__</code>: The “human view” (clean and readable).</li>
+<li><code>__len__</code>: So <code>len(your_obj)</code> actually works.</li>
+<li><code>__getitem__</code>: For that sweet square-bracket <code>[]</code> access.</li>
+<li><code>__iter__</code>: To make your object loopable.</li>
+<li><code>__contains__</code>: For fast <code>x in your_obj</code> checks.</li>
+<li><code>__bool__</code>: To define what “empty” means for your object.</li>
+<li><code>__add__</code>: So you can literally <code>+</code> your objects together.</li>
+</ul>
+<p>When you use these patterns, you’re not just writing code; you’re writing <em>Pythonic</em> code. It’s cleaner, easier to read, and much more fun to work with.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<pre><code>The complete code for this example is available here: [portfolio.py](portfolio.py).</code></pre>
+</div>
+</div>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Target only pages that are clearly posts (not the homepage)
+  if (document.body.classList.contains('homepage')) {
+    return;
+  }
+
+  // Find the metadata block (usually contains published/modified dates)
+  const meta = document.querySelector('.quarto-title-meta');
+  const mainContent = document.querySelector('#quarto-document-content');
+
+  if (meta && mainContent) {
+    // Check if it's already been moved or if it's empty
+    if (mainContent.querySelector('.bottom-meta-block')) return;
+
+    // Create container for bottom metadata
+    const bottomMeta = document.createElement('div');
+    bottomMeta.classList.add('quarto-title-meta', 'bottom-meta-block');
+    bottomMeta.innerHTML = meta.innerHTML;
+
+    // Append to the end of the main content
+    mainContent.appendChild(bottomMeta);
+
+    // Hide the original one in the header banner
+    meta.style.display = 'none';
+  }
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/bwrob\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright 2026, bwrob. Rendered with Quarto 1.9.37</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
