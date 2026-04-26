@@ -487,33 +487,46 @@ Note
 <section id="abstract-schema" class="level2">
 <h2 class="anchored" data-anchor-id="abstract-schema">Abstract schema</h2>
 <p>Each scheme that we’d come up with, even the most complex ones, would have the same main purpose — ‘integrate’. To make the implementation for it, we create a template class that all concrete schemes will inherit from.</p>
-<div id="a8854bf9" class="cell" data-execution_count="1">
+<div id="89268525" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="im">from</span> typing <span class="im">import</span> Callable</span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">class</span> IntegrationScheme(ABC):</span>
-<span id="cb1-5"><a href="#cb1-5"></a>    <span class="co">"""Abstract base class for integration schemas."""</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a></span>
-<span id="cb1-7"><a href="#cb1-7"></a>    <span class="at">@abstractmethod</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a>    <span class="kw">def</span> integrate(</span>
-<span id="cb1-9"><a href="#cb1-9"></a>        <span class="va">self</span>,</span>
-<span id="cb1-10"><a href="#cb1-10"></a>        integrand: Callable[[<span class="bu">float</span>], <span class="bu">float</span>],</span>
-<span id="cb1-11"><a href="#cb1-11"></a>        <span class="op">*</span>,</span>
-<span id="cb1-12"><a href="#cb1-12"></a>        start: <span class="bu">float</span>,</span>
-<span id="cb1-13"><a href="#cb1-13"></a>        end: <span class="bu">float</span>,</span>
-<span id="cb1-14"><a href="#cb1-14"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb1-15"><a href="#cb1-15"></a>        <span class="co">"""Abstract method for integrating a function."""</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
+<span id="annotated-cell-1-2"><a href="#annotated-cell-1-2"></a><span class="im">from</span> typing <span class="im">import</span> Callable</span>
+<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-4" class="code-annotation-target"><a href="#annotated-cell-1-4"></a><span class="kw">class</span> IntegrationScheme(ABC):</span>
+<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5"></a>    <span class="co">"""Abstract base class for integration schemas."""</span></span>
+<span id="annotated-cell-1-6"><a href="#annotated-cell-1-6"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-1-7" class="code-annotation-target"><a href="#annotated-cell-1-7"></a>    <span class="at">@abstractmethod</span></span>
+<span id="annotated-cell-1-8"><a href="#annotated-cell-1-8"></a>    <span class="kw">def</span> integrate(</span>
+<span id="annotated-cell-1-9"><a href="#annotated-cell-1-9"></a>        <span class="va">self</span>,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-1-10" class="code-annotation-target"><a href="#annotated-cell-1-10"></a>        integrand: Callable[[<span class="bu">float</span>], <span class="bu">float</span>],</span>
+<span id="annotated-cell-1-11"><a href="#annotated-cell-1-11"></a>        <span class="op">*</span>,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-1-12" class="code-annotation-target"><a href="#annotated-cell-1-12"></a>        start: <span class="bu">float</span>,</span>
+<span id="annotated-cell-1-13"><a href="#annotated-cell-1-13"></a>        end: <span class="bu">float</span>,</span>
+<span id="annotated-cell-1-14"><a href="#annotated-cell-1-14"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="annotated-cell-1-15"><a href="#annotated-cell-1-15"></a>        <span class="co">"""Abstract method for integrating a function."""</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="4" data-code-annotation="1"><code>ABC</code> defines abstract classes, serving as a template. Concrete subclasses inherit from it; abstract classes cannot be instantiated.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="7" data-code-annotation="2">The <code>@abstractmethod</code> decorator signifies this method must be overridden by all concrete subclasses.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="10" data-code-annotation="3"><code>Callable</code> annotations define function-like objects that can be executed.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="12" data-code-annotation="4">Type annotations improve readability and can be used by static type checkers like <code>mypy</code> to detect errors early.</span>
+</dd>
+</dl>
 </div>
-<p>Unpacking this, we already used some nifty Pythonic tricks in those few lines:</p>
-<ul>
-<li><code>ABC</code> is a way of defining abstract classes. If you try to create an object of a class inheriting from <code>ABC</code> you’d get an error. It is used as a base class for concrete subclasses and serves as a template. Think of an example of <em>animal</em> and <em>cat</em> from the real world. You’ve never seen an abstract animal being in your life (that would be a truly transcendental experience). But you’ve hopefully seen many cats.</li>
-<li>Decorator <code>@abstractmethod</code> signifies that the method is just a mock-up. It needs to be present and overridden in all concrete classes that inherit from <code>IntegrationScheme</code></li>
-<li>Type annotations like <code>start: float</code> don’t affect the script behavior in any way. Those are only for us to not get lost in Python’s dynamic typing magic. They can also be leveraged by static type checkers like <a href="https://mypy.readthedocs.io/en/stable/#">mypy</a> to flag problems with your code before you run it — just like in compiled languages.</li>
-<li><code>Callable</code> annotation signifies a function-like object something you can <em>call</em> through <code>()</code>, like <code>some_func(one, second=two)</code>’ — here <code>some_func</code> is a callable. Calls to an object can be implemented by writing the <code>__call__</code> method for the class.</li>
-</ul>
+</div>
 </section>
 <section id="concrete-schema-implementations" class="level2">
 <h2 class="anchored" data-anchor-id="concrete-schema-implementations">Concrete schema implementations</h2>
@@ -522,100 +535,113 @@ Note
 <p>It’s the simplest way of estimating the area under a curve you can think of — cover it with smaller and smaller rectangles with the value of a function at the leftmost point as height constant width.</p>
 <p><a href="https://en.wikipedia.org/wiki/File:Rectangle_rule.gif"><img src="../../assets/images/posts/24-04-28-strategy-pattern-integration/Rectangle_rule.gif" class="img-fluid" style="width:100.0%"></a></p>
 <p>Implementing this idea is trivial when using <a href="https://numpy.org/">numpy</a>, but let’s add some syntactic sugar so the class is sweeter to work with.</p>
-<div id="7ae4965c" class="cell" data-execution_count="2">
+<div id="ddf5613d" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb2-2"><a href="#cb2-2"></a></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">class</span> RectangleScheme(IntegrationScheme):</span>
-<span id="cb2-4"><a href="#cb2-4"></a>    <span class="co">"""Schema for rectangle integration."""</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a></span>
-<span id="cb2-6"><a href="#cb2-6"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
-<span id="cb2-7"><a href="#cb2-7"></a>        <span class="va">self</span>,</span>
-<span id="cb2-8"><a href="#cb2-8"></a>        steps: <span class="bu">int</span>,</span>
-<span id="cb2-9"><a href="#cb2-9"></a>    ) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb2-10"><a href="#cb2-10"></a>        <span class="co">"""Initializes the rectangle integration config."""</span></span>
-<span id="cb2-11"><a href="#cb2-11"></a>        <span class="cf">if</span> steps <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
-<span id="cb2-12"><a href="#cb2-12"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Steps must be greater than 0."</span>)</span>
-<span id="cb2-13"><a href="#cb2-13"></a>        <span class="va">self</span>._steps <span class="op">=</span> steps</span>
-<span id="cb2-14"><a href="#cb2-14"></a></span>
-<span id="cb2-15"><a href="#cb2-15"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb2-16"><a href="#cb2-16"></a>        <span class="co">"""Returns the string representation of the schema."""</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a>        <span class="cf">return</span> <span class="ss">f"Rectangle schema with </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>_steps<span class="sc">}</span><span class="ss"> steps"</span></span>
-<span id="cb2-18"><a href="#cb2-18"></a></span>
-<span id="cb2-19"><a href="#cb2-19"></a>    <span class="kw">def</span> integrate(</span>
-<span id="cb2-20"><a href="#cb2-20"></a>        <span class="va">self</span>,</span>
-<span id="cb2-21"><a href="#cb2-21"></a>        integrand: Callable[[<span class="bu">float</span>], <span class="bu">float</span>],</span>
-<span id="cb2-22"><a href="#cb2-22"></a>        <span class="op">*</span>,</span>
-<span id="cb2-23"><a href="#cb2-23"></a>        start: <span class="bu">float</span>,</span>
-<span id="cb2-24"><a href="#cb2-24"></a>        end: <span class="bu">float</span>,</span>
-<span id="cb2-25"><a href="#cb2-25"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb2-26"><a href="#cb2-26"></a>        <span class="co">"""Integrates a function using rectangle integration."""</span></span>
-<span id="cb2-27"><a href="#cb2-27"></a>        x_points <span class="op">=</span> np.linspace(start, end, <span class="va">self</span>._steps)</span>
-<span id="cb2-28"><a href="#cb2-28"></a>        values <span class="op">=</span> integrand(x_points)</span>
-<span id="cb2-29"><a href="#cb2-29"></a>        dx <span class="op">=</span> (end <span class="op">-</span> start) <span class="op">/</span> np.float64(<span class="va">self</span>._steps)</span>
-<span id="cb2-30"><a href="#cb2-30"></a>        <span class="cf">return</span> np.<span class="bu">sum</span>(values) <span class="op">*</span> dx</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3"></a><span class="kw">class</span> RectangleScheme(IntegrationScheme):</span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4"></a>    <span class="co">"""Schema for rectangle integration."""</span></span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-6" class="code-annotation-target"><a href="#annotated-cell-2-6"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7"></a>        <span class="va">self</span>,</span>
+<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8"></a>        steps: <span class="bu">int</span>,</span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9"></a>    ) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10"></a>        <span class="co">"""Initializes the rectangle integration config."""</span></span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11"></a>        <span class="cf">if</span> steps <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Steps must be greater than 0."</span>)</span>
+<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13"></a>        <span class="va">self</span>._steps <span class="op">=</span> steps</span>
+<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-15" class="code-annotation-target"><a href="#annotated-cell-2-15"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="annotated-cell-2-16"><a href="#annotated-cell-2-16"></a>        <span class="co">"""Returns the string representation of the schema."""</span></span>
+<span id="annotated-cell-2-17"><a href="#annotated-cell-2-17"></a>        <span class="cf">return</span> <span class="ss">f"Rectangle schema with </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>_steps<span class="sc">}</span><span class="ss"> steps"</span></span>
+<span id="annotated-cell-2-18"><a href="#annotated-cell-2-18"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-2-19" class="code-annotation-target"><a href="#annotated-cell-2-19"></a>    <span class="kw">def</span> integrate(</span>
+<span id="annotated-cell-2-20"><a href="#annotated-cell-2-20"></a>        <span class="va">self</span>,</span>
+<span id="annotated-cell-2-21"><a href="#annotated-cell-2-21"></a>        integrand: Callable[[<span class="bu">float</span>], <span class="bu">float</span>],</span>
+<span id="annotated-cell-2-22"><a href="#annotated-cell-2-22"></a>        <span class="op">*</span>,</span>
+<span id="annotated-cell-2-23"><a href="#annotated-cell-2-23"></a>        start: <span class="bu">float</span>,</span>
+<span id="annotated-cell-2-24"><a href="#annotated-cell-2-24"></a>        end: <span class="bu">float</span>,</span>
+<span id="annotated-cell-2-25"><a href="#annotated-cell-2-25"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="annotated-cell-2-26"><a href="#annotated-cell-2-26"></a>        <span class="co">"""Integrates a function using rectangle integration."""</span></span>
+<span id="annotated-cell-2-27"><a href="#annotated-cell-2-27"></a>        x_points <span class="op">=</span> np.linspace(start, end, <span class="va">self</span>._steps)</span>
+<span id="annotated-cell-2-28"><a href="#annotated-cell-2-28"></a>        values <span class="op">=</span> integrand(x_points)</span>
+<span id="annotated-cell-2-29"><a href="#annotated-cell-2-29"></a>        dx <span class="op">=</span> (end <span class="op">-</span> start) <span class="op">/</span> np.float64(<span class="va">self</span>._steps)</span>
+<span id="annotated-cell-2-30"><a href="#annotated-cell-2-30"></a>        <span class="cf">return</span> np.<span class="bu">sum</span>(values) <span class="op">*</span> dx</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1"><code>RectangleScheme</code> inherits from <code>IntegrationScheme</code>, requiring implementation of <code>integrate</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="6" data-code-annotation="2"><code>__init__</code> sets up the rectangle count, including validation for positive values.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="15" data-code-annotation="3"><code>__str__</code> customizes the string representation of the class instance.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="19" data-code-annotation="4"><code>integrate</code> performs the calculation: linear spacing, function evaluation, and summing area elements.</span>
+</dd>
+</dl>
 </div>
-<ul>
-<li><code>RectangleScheme</code> subclasses <code>IntegrationScheme</code> so we need to implement the <code>integrate</code> method.</li>
-<li><code>__init__</code> method is run each time object of this class is requested. It sets the stage — in this case all we need is the number of rectangles we are to use. To be cautious, we check if the <code>steps</code> number is positive.</li>
-<li><code>__str__</code> is called when we try to represent the object as string — ex. in f-strings or directly calling <code>str()</code>. We just taught our class objects to introduce themselves nicely.</li>
-<li><code>integrate</code> is as simple as the idea behind it:
-<ul>
-<li>get the equaly spaced x values,</li>
-<li>calculate <code>integrand</code> values at the points,</li>
-<li>sum it up,</li>
-<li>multiply the sum by the distance between two consecutive points.</li>
-</ul></li>
-</ul>
+</div>
 </section>
 <section id="simple-monte-carlo" class="level3">
 <h3 class="anchored" data-anchor-id="simple-monte-carlo">Simple Monte Carlo</h3>
 <p>This guy sounds fancy with its luxurious Monaco vibes, but it’s just a peasant in a nice suit. Instead of looking at equaly-spaced points, we shuffle them from uniform distribution on the interval of integration. We calculate the integrand function values at those points and sum them up. Then multiply the sum by the average distance between points and through the magic of probability theory (and not opening actual probability textbook in 10 years) you get a good probabilistic estimator of the integral value. The implementation is analogous to the <code>RectangleScheme</code>.</p>
-<div id="fdd95dd4" class="cell" data-execution_count="3">
+<div id="bd39c23b" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">from</span> typing <span class="im">import</span> Optional</span>
-<span id="cb3-2"><a href="#cb3-2"></a></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="kw">class</span> MonteCarloScheme(IntegrationScheme):</span>
-<span id="cb3-4"><a href="#cb3-4"></a>    <span class="co">"""Schema for Monte Carlo integration."""</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a></span>
-<span id="cb3-6"><a href="#cb3-6"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
-<span id="cb3-7"><a href="#cb3-7"></a>        <span class="va">self</span>,</span>
-<span id="cb3-8"><a href="#cb3-8"></a>        random_points: <span class="bu">int</span>,</span>
-<span id="cb3-9"><a href="#cb3-9"></a>        random_seed: Optional[<span class="bu">int</span>] <span class="op">=</span> <span class="va">None</span>,</span>
-<span id="cb3-10"><a href="#cb3-10"></a>    ) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb3-11"><a href="#cb3-11"></a>        <span class="co">"""Initializes the rectangle integration config."""</span></span>
-<span id="cb3-12"><a href="#cb3-12"></a>        <span class="cf">if</span> random_points <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
-<span id="cb3-13"><a href="#cb3-13"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Points must be greater than 0."</span>)</span>
-<span id="cb3-14"><a href="#cb3-14"></a>        <span class="va">self</span>.__random_points <span class="op">=</span> random_points</span>
-<span id="cb3-15"><a href="#cb3-15"></a>        <span class="va">self</span>.__random_seed <span class="op">=</span> random_seed</span>
-<span id="cb3-16"><a href="#cb3-16"></a></span>
-<span id="cb3-17"><a href="#cb3-17"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb3-18"><a href="#cb3-18"></a>        <span class="co">"""Returns the string representation of the schema."""</span></span>
-<span id="cb3-19"><a href="#cb3-19"></a>        points_msg <span class="op">=</span> <span class="ss">f"Monte Carlo schema with </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>__random_points<span class="sc">}</span><span class="ss"> random points"</span></span>
-<span id="cb3-20"><a href="#cb3-20"></a>        seed_msg <span class="op">=</span> <span class="ss">f" and seed </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>__random_seed<span class="sc">}</span><span class="ss">"</span> <span class="cf">if</span> <span class="va">self</span>.__random_seed <span class="cf">else</span> <span class="st">""</span></span>
-<span id="cb3-21"><a href="#cb3-21"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>points_msg<span class="sc">}{</span>seed_msg<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb3-22"><a href="#cb3-22"></a></span>
-<span id="cb3-23"><a href="#cb3-23"></a>    <span class="kw">def</span> integrate(</span>
-<span id="cb3-24"><a href="#cb3-24"></a>        <span class="va">self</span>,</span>
-<span id="cb3-25"><a href="#cb3-25"></a>        integrand: Callable[[<span class="bu">float</span>], <span class="bu">float</span>],</span>
-<span id="cb3-26"><a href="#cb3-26"></a>        <span class="op">*</span>,</span>
-<span id="cb3-27"><a href="#cb3-27"></a>        start: <span class="bu">float</span>,</span>
-<span id="cb3-28"><a href="#cb3-28"></a>        end: <span class="bu">float</span>,</span>
-<span id="cb3-29"><a href="#cb3-29"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb3-30"><a href="#cb3-30"></a>        <span class="co">"""Integrates a function using Monte Carlo integration."""</span></span>
-<span id="cb3-31"><a href="#cb3-31"></a>        np.random.seed(seed<span class="op">=</span><span class="va">self</span>.__random_seed)</span>
-<span id="cb3-32"><a href="#cb3-32"></a>        x_points <span class="op">=</span> np.random.uniform(start, end, <span class="va">self</span>.__random_points)</span>
-<span id="cb3-33"><a href="#cb3-33"></a>        values <span class="op">=</span> integrand(x_points)</span>
-<span id="cb3-34"><a href="#cb3-34"></a>        average_dx <span class="op">=</span> (end <span class="op">-</span> start) <span class="op">/</span> np.float64(<span class="va">self</span>.__random_points)</span>
-<span id="cb3-35"><a href="#cb3-35"></a>        <span class="cf">return</span> np.<span class="bu">sum</span>(values) <span class="op">*</span> average_dx</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a><span class="im">from</span> typing <span class="im">import</span> Optional</span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2"></a></span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3"></a><span class="kw">class</span> MonteCarloScheme(IntegrationScheme):</span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4"></a>    <span class="co">"""Schema for Monte Carlo integration."""</span></span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-6" class="code-annotation-target"><a href="#annotated-cell-3-6"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7"></a>        <span class="va">self</span>,</span>
+<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8"></a>        random_points: <span class="bu">int</span>,</span>
+<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9"></a>        random_seed: Optional[<span class="bu">int</span>] <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10"></a>    ) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11"></a>        <span class="co">"""Initializes the rectangle integration config."""</span></span>
+<span id="annotated-cell-3-12"><a href="#annotated-cell-3-12"></a>        <span class="cf">if</span> random_points <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="annotated-cell-3-13"><a href="#annotated-cell-3-13"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Points must be greater than 0."</span>)</span>
+<span id="annotated-cell-3-14"><a href="#annotated-cell-3-14"></a>        <span class="va">self</span>.__random_points <span class="op">=</span> random_points</span>
+<span id="annotated-cell-3-15"><a href="#annotated-cell-3-15"></a>        <span class="va">self</span>.__random_seed <span class="op">=</span> random_seed</span>
+<span id="annotated-cell-3-16"><a href="#annotated-cell-3-16"></a></span>
+<span id="annotated-cell-3-17"><a href="#annotated-cell-3-17"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="annotated-cell-3-18"><a href="#annotated-cell-3-18"></a>        <span class="co">"""Returns the string representation of the schema."""</span></span>
+<span id="annotated-cell-3-19"><a href="#annotated-cell-3-19"></a>        points_msg <span class="op">=</span> <span class="ss">f"Monte Carlo schema with </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>__random_points<span class="sc">}</span><span class="ss"> random points"</span></span>
+<span id="annotated-cell-3-20"><a href="#annotated-cell-3-20"></a>        seed_msg <span class="op">=</span> <span class="ss">f" and seed </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>__random_seed<span class="sc">}</span><span class="ss">"</span> <span class="cf">if</span> <span class="va">self</span>.__random_seed <span class="cf">else</span> <span class="st">""</span></span>
+<span id="annotated-cell-3-21"><a href="#annotated-cell-3-21"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>points_msg<span class="sc">}{</span>seed_msg<span class="sc">}</span><span class="ss">"</span></span>
+<span id="annotated-cell-3-22"><a href="#annotated-cell-3-22"></a></span>
+<span id="annotated-cell-3-23"><a href="#annotated-cell-3-23"></a>    <span class="kw">def</span> integrate(</span>
+<span id="annotated-cell-3-24"><a href="#annotated-cell-3-24"></a>        <span class="va">self</span>,</span>
+<span id="annotated-cell-3-25"><a href="#annotated-cell-3-25"></a>        integrand: Callable[[<span class="bu">float</span>], <span class="bu">float</span>],</span>
+<span id="annotated-cell-3-26"><a href="#annotated-cell-3-26"></a>        <span class="op">*</span>,</span>
+<span id="annotated-cell-3-27"><a href="#annotated-cell-3-27"></a>        start: <span class="bu">float</span>,</span>
+<span id="annotated-cell-3-28"><a href="#annotated-cell-3-28"></a>        end: <span class="bu">float</span>,</span>
+<span id="annotated-cell-3-29"><a href="#annotated-cell-3-29"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="annotated-cell-3-30"><a href="#annotated-cell-3-30"></a>        <span class="co">"""Integrates a function using Monte Carlo integration."""</span></span>
+<span id="annotated-cell-3-31"><a href="#annotated-cell-3-31"></a>        np.random.seed(seed<span class="op">=</span><span class="va">self</span>.__random_seed)</span>
+<span id="annotated-cell-3-32"><a href="#annotated-cell-3-32"></a>        x_points <span class="op">=</span> np.random.uniform(start, end, <span class="va">self</span>.__random_points)</span>
+<span id="annotated-cell-3-33"><a href="#annotated-cell-3-33"></a>        values <span class="op">=</span> integrand(x_points)</span>
+<span id="annotated-cell-3-34"><a href="#annotated-cell-3-34"></a>        average_dx <span class="op">=</span> (end <span class="op">-</span> start) <span class="op">/</span> np.float64(<span class="va">self</span>.__random_points)</span>
+<span id="annotated-cell-3-35"><a href="#annotated-cell-3-35"></a>        <span class="cf">return</span> np.<span class="bu">sum</span>(values) <span class="op">*</span> average_dx</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="6" data-code-annotation="1"><code>Optional[int]</code> allows <code>random_seed</code> to be an integer or <code>None</code>, defaulting to <code>None</code> for non-reproducible results. Note: <code>int | None</code> is preferred in Python 3.11+.</span>
+</dd>
+</dl>
 </div>
-<ul>
-<li><code>Optional[int]</code> annotation means that the value of <code>random_seed</code> can be a <code>float</code> or <code>None</code>. With a set seed we get a reproducable results — good for testing but not for actual usage. Hence the default value here is <code>None</code>.</li>
-</ul>
+</div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -634,94 +660,102 @@ Note
 <section id="integrator" class="level2">
 <h2 class="anchored" data-anchor-id="integrator">Integrator</h2>
 <p>What’s left is to have a way of defining the problem to solve and define how our schemes (strategies) interact with it.</p>
-<div id="20db2764" class="cell" data-execution_count="4">
+<div id="62081af0" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="co">"""An integrator class that allows to perform integration using different schemas."""</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="im">from</span> typing <span class="im">import</span> Callable</span>
-<span id="cb4-3"><a href="#cb4-3"></a></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="kw">class</span> Integrator:</span>
-<span id="cb4-5"><a href="#cb4-5"></a>    <span class="co">"""An integrator class that allows to perform integration using different</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a><span class="co">    schemas as strategies."""</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a></span>
-<span id="cb4-8"><a href="#cb4-8"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
-<span id="cb4-9"><a href="#cb4-9"></a>        <span class="va">self</span>,</span>
-<span id="cb4-10"><a href="#cb4-10"></a>        integrand: Callable[[<span class="bu">float</span>], <span class="bu">float</span>],</span>
-<span id="cb4-11"><a href="#cb4-11"></a>        interval_start: <span class="bu">float</span>,</span>
-<span id="cb4-12"><a href="#cb4-12"></a>        interval_end: <span class="bu">float</span>,</span>
-<span id="cb4-13"><a href="#cb4-13"></a>    ) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb4-14"><a href="#cb4-14"></a>        <span class="co">"""Initializes the integrator class."""</span></span>
-<span id="cb4-15"><a href="#cb4-15"></a>        <span class="cf">if</span> interval_start <span class="op">&gt;=</span> interval_end:</span>
-<span id="cb4-16"><a href="#cb4-16"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Start value must be less than end value."</span>)</span>
-<span id="cb4-17"><a href="#cb4-17"></a>        <span class="va">self</span>.__integrand <span class="op">=</span> integrand</span>
-<span id="cb4-18"><a href="#cb4-18"></a>        <span class="va">self</span>.__interval_start <span class="op">=</span> interval_start</span>
-<span id="cb4-19"><a href="#cb4-19"></a>        <span class="va">self</span>.__interval_end <span class="op">=</span> interval_end</span>
-<span id="cb4-20"><a href="#cb4-20"></a></span>
-<span id="cb4-21"><a href="#cb4-21"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(</span>
-<span id="cb4-22"><a href="#cb4-22"></a>        <span class="va">self</span>,</span>
-<span id="cb4-23"><a href="#cb4-23"></a>        schema: IntegrationScheme,</span>
-<span id="cb4-24"><a href="#cb4-24"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb4-25"><a href="#cb4-25"></a>        <span class="co">"""</span></span>
-<span id="cb4-26"><a href="#cb4-26"></a><span class="co">        Calculates the definite integral value of a function.</span></span>
-<span id="cb4-27"><a href="#cb4-27"></a></span>
-<span id="cb4-28"><a href="#cb4-28"></a><span class="co">        Args:</span></span>
-<span id="cb4-29"><a href="#cb4-29"></a><span class="co">            schema: integration schema</span></span>
-<span id="cb4-30"><a href="#cb4-30"></a><span class="co">        """</span></span>
-<span id="cb4-31"><a href="#cb4-31"></a>        <span class="bu">print</span>(<span class="ss">f"Using </span><span class="sc">{</span>schema<span class="sc">}</span><span class="ss">."</span>)</span>
-<span id="cb4-32"><a href="#cb4-32"></a>        <span class="cf">return</span> schema.integrate(</span>
-<span id="cb4-33"><a href="#cb4-33"></a>            <span class="va">self</span>.__integrand,</span>
-<span id="cb4-34"><a href="#cb4-34"></a>            start<span class="op">=</span><span class="va">self</span>.__interval_start,</span>
-<span id="cb4-35"><a href="#cb4-35"></a>            end<span class="op">=</span><span class="va">self</span>.__interval_end,</span>
-<span id="cb4-36"><a href="#cb4-36"></a>        )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a><span class="co">"""An integrator class that allows to perform integration using different schemas."""</span></span>
+<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2"></a><span class="im">from</span> typing <span class="im">import</span> Callable</span>
+<span id="annotated-cell-4-3"><a href="#annotated-cell-4-3"></a></span>
+<span id="annotated-cell-4-4"><a href="#annotated-cell-4-4"></a><span class="kw">class</span> Integrator:</span>
+<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5"></a>    <span class="co">"""An integrator class that allows to perform integration using different</span></span>
+<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6"></a><span class="co">    schemas as strategies."""</span></span>
+<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-8" class="code-annotation-target"><a href="#annotated-cell-4-8"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="annotated-cell-4-9"><a href="#annotated-cell-4-9"></a>        <span class="va">self</span>,</span>
+<span id="annotated-cell-4-10"><a href="#annotated-cell-4-10"></a>        integrand: Callable[[<span class="bu">float</span>], <span class="bu">float</span>],</span>
+<span id="annotated-cell-4-11"><a href="#annotated-cell-4-11"></a>        interval_start: <span class="bu">float</span>,</span>
+<span id="annotated-cell-4-12"><a href="#annotated-cell-4-12"></a>        interval_end: <span class="bu">float</span>,</span>
+<span id="annotated-cell-4-13"><a href="#annotated-cell-4-13"></a>    ) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="annotated-cell-4-14"><a href="#annotated-cell-4-14"></a>        <span class="co">"""Initializes the integrator class."""</span></span>
+<span id="annotated-cell-4-15"><a href="#annotated-cell-4-15"></a>        <span class="cf">if</span> interval_start <span class="op">&gt;=</span> interval_end:</span>
+<span id="annotated-cell-4-16"><a href="#annotated-cell-4-16"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Start value must be less than end value."</span>)</span>
+<span id="annotated-cell-4-17"><a href="#annotated-cell-4-17"></a>        <span class="va">self</span>.__integrand <span class="op">=</span> integrand</span>
+<span id="annotated-cell-4-18"><a href="#annotated-cell-4-18"></a>        <span class="va">self</span>.__interval_start <span class="op">=</span> interval_start</span>
+<span id="annotated-cell-4-19"><a href="#annotated-cell-4-19"></a>        <span class="va">self</span>.__interval_end <span class="op">=</span> interval_end</span>
+<span id="annotated-cell-4-20"><a href="#annotated-cell-4-20"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-21" class="code-annotation-target"><a href="#annotated-cell-4-21"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(</span>
+<span id="annotated-cell-4-22"><a href="#annotated-cell-4-22"></a>        <span class="va">self</span>,</span>
+<span id="annotated-cell-4-23"><a href="#annotated-cell-4-23"></a>        schema: IntegrationScheme,</span>
+<span id="annotated-cell-4-24"><a href="#annotated-cell-4-24"></a>    ) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="annotated-cell-4-25"><a href="#annotated-cell-4-25"></a>        <span class="co">"""</span></span>
+<span id="annotated-cell-4-26"><a href="#annotated-cell-4-26"></a><span class="co">        Calculates the definite integral value of a function.</span></span>
+<span id="annotated-cell-4-27"><a href="#annotated-cell-4-27"></a></span>
+<span id="annotated-cell-4-28"><a href="#annotated-cell-4-28"></a><span class="co">        Args:</span></span>
+<span id="annotated-cell-4-29"><a href="#annotated-cell-4-29"></a><span class="co">            schema: integration schema</span></span>
+<span id="annotated-cell-4-30"><a href="#annotated-cell-4-30"></a><span class="co">        """</span></span>
+<span id="annotated-cell-4-31"><a href="#annotated-cell-4-31"></a>        <span class="bu">print</span>(<span class="ss">f"Using </span><span class="sc">{</span>schema<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="annotated-cell-4-32"><a href="#annotated-cell-4-32"></a>        <span class="cf">return</span> schema.integrate(</span>
+<span id="annotated-cell-4-33"><a href="#annotated-cell-4-33"></a>            <span class="va">self</span>.__integrand,</span>
+<span id="annotated-cell-4-34"><a href="#annotated-cell-4-34"></a>            start<span class="op">=</span><span class="va">self</span>.__interval_start,</span>
+<span id="annotated-cell-4-35"><a href="#annotated-cell-4-35"></a>            end<span class="op">=</span><span class="va">self</span>.__interval_end,</span>
+<span id="annotated-cell-4-36"><a href="#annotated-cell-4-36"></a>        )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="8" data-code-annotation="1">The <code>__init__</code> takes in the obvious parameters — function to integrate, start and end of the interval. It also checks if it’s a proper integral.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="21" data-code-annotation="2">We get to implement our own <code>__call__</code> method now. It’s clear what <code>Integrator</code> class does. No need to have a method with a descriptive name like <code>Integrator.integrate</code>. To use it you pass through the integration scheme into the integrator — notice annotation of the abstract <code>IntegrationScheme</code>. It prints the info on strategy used (using the <code>__str__</code> methods) and calls <code>integrate</code> method of the scheme. No care in the world on how the value is actually calculated.</span>
+</dd>
+</dl>
 </div>
-<ul>
-<li>The <code>__init__</code> takes in the obvious parameters — function to integrate, start and end of the interval. It also checks if it’s a proper integral.</li>
-<li>We get to implement our own <code>__call__</code> method now. It’s clear what <code>Integrator</code> class does. No need to have a method with a descriptive name like <code>Integrator.integrate</code>. To use it you pass through the integration scheme into the integrator — notice annotation of the abstract <code>IntegrationScheme</code>. It prints the info on strategy used (using the <code>__str__</code> methods) and calls <code>integrate</code> method of the scheme. No care in the world on how the value is actually calculated.</li>
-</ul>
+</div>
 </section>
 <section id="lets-integrate" class="level2">
 <h2 class="anchored" data-anchor-id="lets-integrate">Let’s integrate!</h2>
 <p>Ok, now to the integrating! Let’s set up the stage:</p>
-<div id="9db27c39" class="cell" data-execution_count="5">
+<div id="2a640d18" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>start, end <span class="op">=</span> <span class="dv">0</span>, np.pi <span class="op">/</span> <span class="fl">2.0</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="kw">def</span> f(x: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb5-4"><a href="#cb5-4"></a>    <span class="cf">return</span> np.sin(x) <span class="op">+</span> np.cos(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>start, end <span class="op">=</span> <span class="dv">0</span>, np.pi <span class="op">/</span> <span class="fl">2.0</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">def</span> f(x: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb1-4"><a href="#cb1-4"></a>    <span class="cf">return</span> np.sin(x) <span class="op">+</span> np.cos(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Excited? Don’t be… yet.</p>
 <p>We should get some benchmark value first. As none of us would bother to integrate this by hand, we’ll use SciPy. Unexpectedly (SciPy uses C and Fortran underneath), we get the result in a breeze and it is very close to <a href="https://www.wolframalpha.com/input?i=integrate+sin%28x%29+%2B+cos%28x%29+over+0+to+pi%2F2">actual value of 2.0</a>.</p>
-<div id="5548c7cd" class="cell" data-execution_count="6">
+<div id="987857b0" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">from</span> scipy.integrate <span class="im">import</span> quad</span>
-<span id="cb6-2"><a href="#cb6-2"></a></span>
-<span id="cb6-3"><a href="#cb6-3"></a>scipy_quad, err <span class="op">=</span> quad(f, start, end)</span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="bu">print</span>(scipy_quad)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> scipy.integrate <span class="im">import</span> quad</span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a>scipy_quad, err <span class="op">=</span> quad(f, start, end)</span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="bu">print</span>(scipy_quad)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>1.9999999999999998</code></pre>
 </div>
 </div>
 <p>Now let’s use our <code>Integrator</code> class and see.</p>
-<div id="4e9d1f6b" class="cell" data-execution_count="7">
+<div id="22262d95" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>integrator <span class="op">=</span> Integrator(</span>
-<span id="cb8-2"><a href="#cb8-2"></a>    f,</span>
-<span id="cb8-3"><a href="#cb8-3"></a>    interval_start<span class="op">=</span>start,</span>
-<span id="cb8-4"><a href="#cb8-4"></a>    interval_end<span class="op">=</span>end,</span>
-<span id="cb8-5"><a href="#cb8-5"></a>)</span>
-<span id="cb8-6"><a href="#cb8-6"></a></span>
-<span id="cb8-7"><a href="#cb8-7"></a>iterations <span class="op">=</span> [<span class="dv">2</span><span class="op">**</span>i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">21</span>,<span class="dv">5</span>)]</span>
-<span id="cb8-8"><a href="#cb8-8"></a>rectangle_results <span class="op">=</span> [integrator(RectangleScheme(steps<span class="op">=</span>i)) <span class="cf">for</span> i <span class="kw">in</span> iterations]</span>
-<span id="cb8-9"><a href="#cb8-9"></a>mc_results <span class="op">=</span> [integrator(MonteCarloScheme(random_points<span class="op">=</span>i)) <span class="cf">for</span> i <span class="kw">in</span> iterations]</span>
-<span id="cb8-10"><a href="#cb8-10"></a></span>
-<span id="cb8-11"><a href="#cb8-11"></a><span class="bu">print</span>(<span class="ss">f"Rectangle schema results:</span><span class="ch">\n</span><span class="sc">{</span>rectangle_results<span class="sc">}</span><span class="ss">."</span>)</span>
-<span id="cb8-12"><a href="#cb8-12"></a><span class="bu">print</span>(<span class="ss">f"Monte Carlo schema results:</span><span class="ch">\n</span><span class="sc">{</span>mc_results<span class="sc">}</span><span class="ss">."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>integrator <span class="op">=</span> Integrator(</span>
+<span id="cb4-2"><a href="#cb4-2"></a>    f,</span>
+<span id="cb4-3"><a href="#cb4-3"></a>    interval_start<span class="op">=</span>start,</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    interval_end<span class="op">=</span>end,</span>
+<span id="cb4-5"><a href="#cb4-5"></a>)</span>
+<span id="cb4-6"><a href="#cb4-6"></a></span>
+<span id="cb4-7"><a href="#cb4-7"></a>iterations <span class="op">=</span> [<span class="dv">2</span><span class="op">**</span>i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">21</span>,<span class="dv">5</span>)]</span>
+<span id="cb4-8"><a href="#cb4-8"></a>rectangle_results <span class="op">=</span> [integrator(RectangleScheme(steps<span class="op">=</span>i)) <span class="cf">for</span> i <span class="kw">in</span> iterations]</span>
+<span id="cb4-9"><a href="#cb4-9"></a>mc_results <span class="op">=</span> [integrator(MonteCarloScheme(random_points<span class="op">=</span>i)) <span class="cf">for</span> i <span class="kw">in</span> iterations]</span>
+<span id="cb4-10"><a href="#cb4-10"></a></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="bu">print</span>(<span class="ss">f"Rectangle schema results:</span><span class="ch">\n</span><span class="sc">{</span>rectangle_results<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="bu">print</span>(<span class="ss">f"Monte Carlo schema results:</span><span class="ch">\n</span><span class="sc">{</span>mc_results<span class="sc">}</span><span class="ss">."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Using Rectangle schema with 1 steps.
@@ -737,7 +771,7 @@ Using Monte Carlo schema with 1048576 random points.
 Rectangle schema results:
 [np.float64(1.5707963267948966), np.float64(1.986172817555692), np.float64(1.9995804632216618), np.float64(1.9999869013603688), np.float64(1.9999995906791064)].
 Monte Carlo schema results:
-[np.float64(1.9795719796176898), np.float64(1.9663857822207833), np.float64(1.9955541502011007), np.float64(1.9986104969592058), np.float64(1.999923282528058)].</code></pre>
+[np.float64(1.999577321692059), np.float64(2.060167276426143), np.float64(2.000738003048459), np.float64(1.9993282785199098), np.float64(2.00021631192361)].</code></pre>
 </div>
 </div>
 <p>The performance and convergence of those schemes is terrible. Like anything in Python, if you want robust and performing code, you need to implement it with C or use any/all of the enhancement frameworks that Python provides (see Numba). Additionally, the simple methods we implemented are very naive. The standard numerical packages use sophisticated algorithms honed for many decades.</p>

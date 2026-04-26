@@ -82,6 +82,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../../site_libs/bootstrap/bootstrap-18b725f170e06ca68a5ca802173a5a27.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../../site_libs/bootstrap/bootstrap-dark-c293c7c026199e810d85091ccc94fc0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -460,7 +463,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="naive-recursive-approach">Naive Recursive Approach</h2>
 <p>The Fibonacci sequence is defined by the recurrence relation: <span class="math inline">\(F_n = F_{n-1} + F_{n-2}\)</span> with seed values <span class="math inline">\(F_0=0\)</span> and <span class="math inline">\(F_1=1\)</span>.</p>
 <p>A naive implementation of this in Python is a direct translation of the mathematical formula:</p>
-<div id="d2894766" class="cell" data-execution_count="1">
+<div id="f8ba475f" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">def</span> fibonacci_recursive(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
@@ -473,7 +476,7 @@ window.Quarto = {
 </details>
 </div>
 <p>This approach is very intuitive, but it is also very slow. For <code>n=40</code>, it already takes a noticeable amount of time to compute. The reason for this is that the function calls itself twice for each <code>n</code>, leading to an exponential growth of the call stack.</p>
-<div id="56ed858d" class="cell" data-execution_count="2">
+<div id="842ac2a2" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> time <span class="im">import</span> perf_counter</span>
@@ -485,14 +488,14 @@ window.Quarto = {
 <span id="cb2-7"><a href="#cb2-7"></a><span class="bu">print</span>(<span class="ss">f"Execution taken </span><span class="sc">{</span>end <span class="op">-</span> start<span class="sc">:.2f}</span><span class="ss"> seconds"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Execution taken 15.96 seconds</code></pre>
+<pre><code>Execution taken 12.32 seconds</code></pre>
 </div>
 </div>
 </section>
 <section id="visualizing-the-call-stack" class="level2">
 <h2 class="anchored" data-anchor-id="visualizing-the-call-stack">Visualizing the Call Stack</h2>
 <p>To better understand the problem, let’s visualize the call stack. We can create a “talkative” version of our function that logs every call.</p>
-<div id="e5fe0785" class="cell" data-execution_count="3">
+<div id="039f6928" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="im">from</span> rich.console <span class="im">import</span> Console</span>
@@ -518,7 +521,7 @@ window.Quarto = {
 </details>
 </div>
 <p>For <code>n=6</code>, the call tree looks like this:</p>
-<div id="d7b14a23" class="cell" data-execution_count="4">
+<div id="0f4b694f" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>_ <span class="op">=</span> fibonacci_recursive_talkative(<span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -558,7 +561,7 @@ window.Quarto = {
 <section id="memoization" class="level2">
 <h2 class="anchored" data-anchor-id="memoization">Memoization</h2>
 <p>We can improve the performance by storing the results of the function calls in a cache (a dictionary). This technique is called memoization.</p>
-<div id="3cc5cc65" class="cell" data-execution_count="5">
+<div id="83f01987" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>FIBONACCI_CACHE: <span class="bu">dict</span>[<span class="bu">int</span>, <span class="bu">int</span>] <span class="op">=</span> {}</span>
@@ -581,7 +584,7 @@ window.Quarto = {
 </details>
 </div>
 <p>This version is much faster. However, it will fail for large <code>n</code> (e.g., <code>n=8_000</code>) because of Python’s recursion depth limit.</p>
-<div id="b2c8a705" class="cell" data-execution_count="6">
+<div id="4c057466" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="cf">try</span>:</span>
@@ -597,7 +600,7 @@ window.Quarto = {
 <section id="decorators-for-caching" class="level2">
 <h2 class="anchored" data-anchor-id="decorators-for-caching">Decorators for Caching</h2>
 <p>A more elegant way to implement memoization is by using a decorator. A decorator is a function that takes another function and extends its behavior without explicitly modifying it. Python’s <code>functools</code> module provides a built-in decorator <code>lru_cache</code> that does exactly what we need.</p>
-<div id="5bb49de1" class="cell" data-execution_count="7">
+<div id="2f48f92e" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="im">from</span> functools <span class="im">import</span> cache</span>
@@ -620,7 +623,7 @@ window.Quarto = {
 <section id="iterative-approach" class="level2">
 <h2 class="anchored" data-anchor-id="iterative-approach">Iterative Approach</h2>
 <p>Another way to solve the problem is to use an iterative approach. This is equivalent to tail recursion optimization.</p>
-<div id="c42f157a" class="cell" data-execution_count="8">
+<div id="a41cd507" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">def</span> fibonacci_iterative(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
@@ -641,81 +644,91 @@ window.Quarto = {
 <section id="performance-comparison" class="level2">
 <h2 class="anchored" data-anchor-id="performance-comparison">Performance Comparison</h2>
 <p>To compare the performance of these implementations, we can use the <code>perfplot</code> library. It allows us to easily benchmark different functions over a range of input sizes.</p>
-<div id="6b8c109a" class="cell" data-execution_count="9">
+<div id="b078abb4" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="im">import</span> numba</span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="im">import</span> perfplot</span>
-<span id="cb11-3"><a href="#cb11-3"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb11-4"><a href="#cb11-4"></a></span>
-<span id="cb11-5"><a href="#cb11-5"></a></span>
-<span id="cb11-6"><a href="#cb11-6"></a><span class="kw">def</span> fibonacci_internal_cached_decorator(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
-<span id="cb11-7"><a href="#cb11-7"></a>    <span class="co">"""Calculate the nth Fibonacci number using recursion with memoization.</span></span>
-<span id="cb11-8"><a href="#cb11-8"></a></span>
-<span id="cb11-9"><a href="#cb11-9"></a></span>
-<span id="cb11-10"><a href="#cb11-10"></a><span class="co">    This version uses an internal helper function decorated with @cache.</span></span>
-<span id="cb11-11"><a href="#cb11-11"></a><span class="co">    This forces the cache to be local to this function.</span></span>
-<span id="cb11-12"><a href="#cb11-12"></a><span class="co">    """</span></span>
-<span id="cb11-13"><a href="#cb11-13"></a></span>
-<span id="cb11-14"><a href="#cb11-14"></a>    <span class="at">@cache</span></span>
-<span id="cb11-15"><a href="#cb11-15"></a>    <span class="kw">def</span> helper(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
-<span id="cb11-16"><a href="#cb11-16"></a>        <span class="co">"""Calculate the nth Fibonacci number using recursion with memoization."""</span></span>
-<span id="cb11-17"><a href="#cb11-17"></a>        <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
-<span id="cb11-18"><a href="#cb11-18"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
-<span id="cb11-19"><a href="#cb11-19"></a>        <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
-<span id="cb11-20"><a href="#cb11-20"></a>            <span class="cf">return</span> n</span>
-<span id="cb11-21"><a href="#cb11-21"></a>        <span class="cf">return</span> helper(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">+</span> helper(n <span class="op">-</span> <span class="dv">2</span>)</span>
-<span id="cb11-22"><a href="#cb11-22"></a></span>
-<span id="cb11-23"><a href="#cb11-23"></a>    <span class="cf">return</span> helper(n)</span>
-<span id="cb11-24"><a href="#cb11-24"></a></span>
-<span id="cb11-25"><a href="#cb11-25"></a></span>
-<span id="cb11-26"><a href="#cb11-26"></a>fibonacci_iterative_jit <span class="op">=</span> numba.njit(fibonacci_iterative)</span>
-<span id="cb11-27"><a href="#cb11-27"></a></span>
-<span id="cb11-28"><a href="#cb11-28"></a><span class="co"># Force compilation</span></span>
-<span id="cb11-29"><a href="#cb11-29"></a>_ <span class="op">=</span> fibonacci_iterative_jit(<span class="dv">10</span>)</span>
-<span id="cb11-30"><a href="#cb11-30"></a></span>
-<span id="cb11-31"><a href="#cb11-31"></a></span>
-<span id="cb11-32"><a href="#cb11-32"></a><span class="kw">def</span> fibonacci_linalg_numpy(n):</span>
-<span id="cb11-33"><a href="#cb11-33"></a>    <span class="co">"""Calculate the nth Fibonacci number using matrix exponentiation with NumPy."""</span></span>
-<span id="cb11-34"><a href="#cb11-34"></a></span>
-<span id="cb11-35"><a href="#cb11-35"></a>    <span class="cf">if</span> n <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
-<span id="cb11-36"><a href="#cb11-36"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
-<span id="cb11-37"><a href="#cb11-37"></a>    <span class="cf">if</span> n <span class="op">==</span> <span class="dv">1</span>:</span>
-<span id="cb11-38"><a href="#cb11-38"></a>        <span class="cf">return</span> <span class="dv">1</span></span>
-<span id="cb11-39"><a href="#cb11-39"></a></span>
-<span id="cb11-40"><a href="#cb11-40"></a>    Q <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">1</span>], [<span class="dv">1</span>, <span class="dv">0</span>]], dtype<span class="op">=</span>np.uint64)</span>
-<span id="cb11-41"><a href="#cb11-41"></a>    <span class="co"># This is the line that cannot be compiled by Numba in nopython mode</span></span>
-<span id="cb11-42"><a href="#cb11-42"></a>    result_matrix <span class="op">=</span> np.linalg.matrix_power(Q, n <span class="op">-</span> <span class="dv">1</span>)</span>
-<span id="cb11-43"><a href="#cb11-43"></a>    <span class="cf">return</span> result_matrix[<span class="dv">0</span>, <span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1"></a><span class="im">import</span> numba</span>
+<span id="annotated-cell-9-2"><a href="#annotated-cell-9-2"></a><span class="im">import</span> perfplot</span>
+<span id="annotated-cell-9-3"><a href="#annotated-cell-9-3"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="annotated-cell-9-4"><a href="#annotated-cell-9-4"></a></span>
+<span id="annotated-cell-9-5"><a href="#annotated-cell-9-5"></a></span>
+<span id="annotated-cell-9-6"><a href="#annotated-cell-9-6"></a><span class="kw">def</span> fibonacci_internal_cached_decorator(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="annotated-cell-9-7"><a href="#annotated-cell-9-7"></a>    <span class="co">"""Calculate the nth Fibonacci number using recursion with memoization.</span></span>
+<span id="annotated-cell-9-8"><a href="#annotated-cell-9-8"></a></span>
+<span id="annotated-cell-9-9"><a href="#annotated-cell-9-9"></a></span>
+<span id="annotated-cell-9-10"><a href="#annotated-cell-9-10"></a><span class="co">    This version uses an internal helper function decorated with @cache.</span></span>
+<span id="annotated-cell-9-11"><a href="#annotated-cell-9-11"></a><span class="co">    This forces the cache to be local to this function.</span></span>
+<span id="annotated-cell-9-12"><a href="#annotated-cell-9-12"></a><span class="co">    """</span></span>
+<span id="annotated-cell-9-13"><a href="#annotated-cell-9-13"></a></span>
+<span id="annotated-cell-9-14"><a href="#annotated-cell-9-14"></a>    <span class="at">@cache</span></span>
+<span id="annotated-cell-9-15"><a href="#annotated-cell-9-15"></a>    <span class="kw">def</span> helper(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="annotated-cell-9-16"><a href="#annotated-cell-9-16"></a>        <span class="co">"""Calculate the nth Fibonacci number using recursion with memoization."""</span></span>
+<span id="annotated-cell-9-17"><a href="#annotated-cell-9-17"></a>        <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="annotated-cell-9-18"><a href="#annotated-cell-9-18"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
+<span id="annotated-cell-9-19"><a href="#annotated-cell-9-19"></a>        <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="annotated-cell-9-20"><a href="#annotated-cell-9-20"></a>            <span class="cf">return</span> n</span>
+<span id="annotated-cell-9-21"><a href="#annotated-cell-9-21"></a>        <span class="cf">return</span> helper(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">+</span> helper(n <span class="op">-</span> <span class="dv">2</span>)</span>
+<span id="annotated-cell-9-22"><a href="#annotated-cell-9-22"></a></span>
+<span id="annotated-cell-9-23"><a href="#annotated-cell-9-23"></a>    <span class="cf">return</span> helper(n)</span>
+<span id="annotated-cell-9-24"><a href="#annotated-cell-9-24"></a></span>
+<span id="annotated-cell-9-25"><a href="#annotated-cell-9-25"></a></span>
+<span id="annotated-cell-9-26"><a href="#annotated-cell-9-26"></a>fibonacci_iterative_jit <span class="op">=</span> numba.njit(fibonacci_iterative)</span>
+<span id="annotated-cell-9-27"><a href="#annotated-cell-9-27"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-9-28" class="code-annotation-target"><a href="#annotated-cell-9-28"></a>_ <span class="op">=</span> fibonacci_iterative_jit(<span class="dv">10</span>)</span>
+<span id="annotated-cell-9-29"><a href="#annotated-cell-9-29"></a></span>
+<span id="annotated-cell-9-30"><a href="#annotated-cell-9-30"></a></span>
+<span id="annotated-cell-9-31"><a href="#annotated-cell-9-31"></a><span class="kw">def</span> fibonacci_linalg_numpy(n):</span>
+<span id="annotated-cell-9-32"><a href="#annotated-cell-9-32"></a>    <span class="co">"""Calculate the nth Fibonacci number using matrix exponentiation with NumPy."""</span></span>
+<span id="annotated-cell-9-33"><a href="#annotated-cell-9-33"></a></span>
+<span id="annotated-cell-9-34"><a href="#annotated-cell-9-34"></a>    <span class="cf">if</span> n <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="annotated-cell-9-35"><a href="#annotated-cell-9-35"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="annotated-cell-9-36"><a href="#annotated-cell-9-36"></a>    <span class="cf">if</span> n <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="annotated-cell-9-37"><a href="#annotated-cell-9-37"></a>        <span class="cf">return</span> <span class="dv">1</span></span>
+<span id="annotated-cell-9-38"><a href="#annotated-cell-9-38"></a></span>
+<span id="annotated-cell-9-39"><a href="#annotated-cell-9-39"></a>    Q <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">1</span>], [<span class="dv">1</span>, <span class="dv">0</span>]], dtype<span class="op">=</span>np.uint64)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-9-40" class="code-annotation-target"><a href="#annotated-cell-9-40"></a>    result_matrix <span class="op">=</span> np.linalg.matrix_power(Q, n <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="annotated-cell-9-41"><a href="#annotated-cell-9-41"></a>    <span class="cf">return</span> result_matrix[<span class="dv">0</span>, <span class="dv">0</span>]</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-9" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-9" data-code-lines="28" data-code-annotation="1">Force compilation</span>
+</dd>
+<dt data-target-cell="annotated-cell-9" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-9" data-code-lines="40" data-code-annotation="2">This is the line that cannot be compiled by Numba in nopython mode</span>
+</dd>
+</dl>
 </div>
-<div id="03a9f110" class="cell" data-execution_count="10">
+</div>
+<div id="7a5d660a" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>perfplot.show(</span>
-<span id="cb12-2"><a href="#cb12-2"></a>    setup<span class="op">=</span><span class="kw">lambda</span> n: n,</span>
-<span id="cb12-3"><a href="#cb12-3"></a>    kernels<span class="op">=</span>[</span>
-<span id="cb12-4"><a href="#cb12-4"></a>        fibonacci_recursive,</span>
-<span id="cb12-5"><a href="#cb12-5"></a>        fibonacci_internal_cached_decorator,</span>
-<span id="cb12-6"><a href="#cb12-6"></a>        fibonacci_iterative,</span>
-<span id="cb12-7"><a href="#cb12-7"></a>    ],</span>
-<span id="cb12-8"><a href="#cb12-8"></a>    n_range<span class="op">=</span>[i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">16</span>)],</span>
-<span id="cb12-9"><a href="#cb12-9"></a>    xlabel<span class="op">=</span><span class="st">"n"</span>,</span>
-<span id="cb12-10"><a href="#cb12-10"></a>    labels<span class="op">=</span>[</span>
-<span id="cb12-11"><a href="#cb12-11"></a>        <span class="st">"recursive"</span>,</span>
-<span id="cb12-12"><a href="#cb12-12"></a>        <span class="st">"recursive cached"</span>,</span>
-<span id="cb12-13"><a href="#cb12-13"></a>        <span class="st">"iterative"</span>,</span>
-<span id="cb12-14"><a href="#cb12-14"></a>    ],</span>
-<span id="cb12-15"><a href="#cb12-15"></a>    title<span class="op">=</span><span class="st">"Recursive vs cached vs iterative"</span>,</span>
-<span id="cb12-16"><a href="#cb12-16"></a>    show_progress<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb12-17"><a href="#cb12-17"></a>    equality_check<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb12-18"><a href="#cb12-18"></a>    logx<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb12-19"><a href="#cb12-19"></a>    logy<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb12-20"><a href="#cb12-20"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>perfplot.show(</span>
+<span id="cb11-2"><a href="#cb11-2"></a>    setup<span class="op">=</span><span class="kw">lambda</span> n: n,</span>
+<span id="cb11-3"><a href="#cb11-3"></a>    kernels<span class="op">=</span>[</span>
+<span id="cb11-4"><a href="#cb11-4"></a>        fibonacci_recursive,</span>
+<span id="cb11-5"><a href="#cb11-5"></a>        fibonacci_internal_cached_decorator,</span>
+<span id="cb11-6"><a href="#cb11-6"></a>        fibonacci_iterative,</span>
+<span id="cb11-7"><a href="#cb11-7"></a>    ],</span>
+<span id="cb11-8"><a href="#cb11-8"></a>    n_range<span class="op">=</span>[i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">16</span>)],</span>
+<span id="cb11-9"><a href="#cb11-9"></a>    xlabel<span class="op">=</span><span class="st">"n"</span>,</span>
+<span id="cb11-10"><a href="#cb11-10"></a>    labels<span class="op">=</span>[</span>
+<span id="cb11-11"><a href="#cb11-11"></a>        <span class="st">"recursive"</span>,</span>
+<span id="cb11-12"><a href="#cb11-12"></a>        <span class="st">"recursive cached"</span>,</span>
+<span id="cb11-13"><a href="#cb11-13"></a>        <span class="st">"iterative"</span>,</span>
+<span id="cb11-14"><a href="#cb11-14"></a>    ],</span>
+<span id="cb11-15"><a href="#cb11-15"></a>    title<span class="op">=</span><span class="st">"Recursive vs cached vs iterative"</span>,</span>
+<span id="cb11-16"><a href="#cb11-16"></a>    show_progress<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb11-17"><a href="#cb11-17"></a>    equality_check<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb11-18"><a href="#cb11-18"></a>    logx<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb11-19"><a href="#cb11-19"></a>    logy<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb11-20"><a href="#cb11-20"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"a08f0b5d3c4a46ffaba4c85a5c94adca","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"3792360532d6421a9e366de395dfc6d3","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 <div class="cell-output cell-output-display">
@@ -724,38 +737,38 @@ window.Quarto = {
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-11-output-3.png" width="828" height="527" class="figure-img"></p>
+<p><a href="index_files/figure-html/cell-11-output-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="index_files/figure-html/cell-11-output-3.png" width="828" height="527" class="figure-img"></a></p>
 </figure>
 </div>
 </div>
 </div>
 <p>There are more advanced techniques and algorithms to compute Fibonacci numbers, below is a sneak peek for the future at two more efficient methods: using Numba’s JIT compilation and matrix exponentiation with NumPy.</p>
-<div id="438d086e" class="cell" data-execution_count="11">
+<div id="d231fdcd" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>perfplot.show(</span>
-<span id="cb13-2"><a href="#cb13-2"></a>    setup<span class="op">=</span><span class="kw">lambda</span> n: n,</span>
-<span id="cb13-3"><a href="#cb13-3"></a>    kernels<span class="op">=</span>[</span>
-<span id="cb13-4"><a href="#cb13-4"></a>        fibonacci_iterative,</span>
-<span id="cb13-5"><a href="#cb13-5"></a>        fibonacci_iterative_jit,</span>
-<span id="cb13-6"><a href="#cb13-6"></a>        fibonacci_linalg_numpy,</span>
-<span id="cb13-7"><a href="#cb13-7"></a>    ],</span>
-<span id="cb13-8"><a href="#cb13-8"></a>    n_range<span class="op">=</span>[<span class="dv">2</span><span class="op">**</span>i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>)],</span>
-<span id="cb13-9"><a href="#cb13-9"></a>    xlabel<span class="op">=</span><span class="st">"n"</span>,</span>
-<span id="cb13-10"><a href="#cb13-10"></a>    labels<span class="op">=</span>[</span>
-<span id="cb13-11"><a href="#cb13-11"></a>        <span class="st">"iterative (native)"</span>,</span>
-<span id="cb13-12"><a href="#cb13-12"></a>        <span class="st">"iterative (numba jit)"</span>,</span>
-<span id="cb13-13"><a href="#cb13-13"></a>        <span class="st">"matrix (numpy linalg)"</span>,</span>
-<span id="cb13-14"><a href="#cb13-14"></a>    ],</span>
-<span id="cb13-15"><a href="#cb13-15"></a>    equality_check<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb13-16"><a href="#cb13-16"></a>    show_progress<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb13-17"><a href="#cb13-17"></a>    logx<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb13-18"><a href="#cb13-18"></a>    logy<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb13-19"><a href="#cb13-19"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>perfplot.show(</span>
+<span id="cb12-2"><a href="#cb12-2"></a>    setup<span class="op">=</span><span class="kw">lambda</span> n: n,</span>
+<span id="cb12-3"><a href="#cb12-3"></a>    kernels<span class="op">=</span>[</span>
+<span id="cb12-4"><a href="#cb12-4"></a>        fibonacci_iterative,</span>
+<span id="cb12-5"><a href="#cb12-5"></a>        fibonacci_iterative_jit,</span>
+<span id="cb12-6"><a href="#cb12-6"></a>        fibonacci_linalg_numpy,</span>
+<span id="cb12-7"><a href="#cb12-7"></a>    ],</span>
+<span id="cb12-8"><a href="#cb12-8"></a>    n_range<span class="op">=</span>[<span class="dv">2</span><span class="op">**</span>i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>)],</span>
+<span id="cb12-9"><a href="#cb12-9"></a>    xlabel<span class="op">=</span><span class="st">"n"</span>,</span>
+<span id="cb12-10"><a href="#cb12-10"></a>    labels<span class="op">=</span>[</span>
+<span id="cb12-11"><a href="#cb12-11"></a>        <span class="st">"iterative (native)"</span>,</span>
+<span id="cb12-12"><a href="#cb12-12"></a>        <span class="st">"iterative (numba jit)"</span>,</span>
+<span id="cb12-13"><a href="#cb12-13"></a>        <span class="st">"matrix (numpy linalg)"</span>,</span>
+<span id="cb12-14"><a href="#cb12-14"></a>    ],</span>
+<span id="cb12-15"><a href="#cb12-15"></a>    equality_check<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb12-16"><a href="#cb12-16"></a>    show_progress<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb12-17"><a href="#cb12-17"></a>    logx<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb12-18"><a href="#cb12-18"></a>    logy<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb12-19"><a href="#cb12-19"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"0ce3f56b89df40d4a43aa689aa81b277","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"a98b3aab5fbd4f01b2f4e7cc50798794","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 <div class="cell-output cell-output-display">
@@ -764,7 +777,7 @@ window.Quarto = {
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-12-output-3.png" width="871" height="476" class="figure-img"></p>
+<p><a href="index_files/figure-html/cell-12-output-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="index_files/figure-html/cell-12-output-3.png" width="871" height="477" class="figure-img"></a></p>
 </figure>
 </div>
 </div>
@@ -816,7 +829,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 <script type="application/vnd.jupyter.widget-state+json">
-{"state":{"0ce3f56b89df40d4a43aa689aa81b277":{"model_module":"@jupyter-widgets/output","model_module_version":"1.0.0","model_name":"OutputModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/output","_model_module_version":"1.0.0","_model_name":"OutputModel","_view_count":null,"_view_module":"@jupyter-widgets/output","_view_module_version":"1.0.0","_view_name":"OutputView","layout":"IPY_MODEL_1289403467464b1387f0acc70bf7ab1b","msg_id":"","outputs":[{"data":{"text/html":"<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\"></pre>\n","text/plain":""},"metadata":{},"output_type":"display_data"}],"tabbable":null,"tooltip":null}},"1289403467464b1387f0acc70bf7ab1b":{"model_module":"@jupyter-widgets/base","model_module_version":"2.0.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"2.0.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border_bottom":null,"border_left":null,"border_right":null,"border_top":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"242d7c8002ad42788bb7552c750b7f56":{"model_module":"@jupyter-widgets/base","model_module_version":"2.0.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"2.0.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border_bottom":null,"border_left":null,"border_right":null,"border_top":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"a08f0b5d3c4a46ffaba4c85a5c94adca":{"model_module":"@jupyter-widgets/output","model_module_version":"1.0.0","model_name":"OutputModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/output","_model_module_version":"1.0.0","_model_name":"OutputModel","_view_count":null,"_view_module":"@jupyter-widgets/output","_view_module_version":"1.0.0","_view_name":"OutputView","layout":"IPY_MODEL_242d7c8002ad42788bb7552c750b7f56","msg_id":"","outputs":[{"data":{"text/html":"<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\"></pre>\n","text/plain":""},"metadata":{},"output_type":"display_data"}],"tabbable":null,"tooltip":null}}},"version_major":2,"version_minor":0}
+{"state":{"3792360532d6421a9e366de395dfc6d3":{"model_module":"@jupyter-widgets/output","model_module_version":"1.0.0","model_name":"OutputModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/output","_model_module_version":"1.0.0","_model_name":"OutputModel","_view_count":null,"_view_module":"@jupyter-widgets/output","_view_module_version":"1.0.0","_view_name":"OutputView","layout":"IPY_MODEL_6038280a7cff41b188db45663642f2c5","msg_id":"","outputs":[{"data":{"text/html":"<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\"></pre>\n","text/plain":""},"metadata":{},"output_type":"display_data"}],"tabbable":null,"tooltip":null}},"6038280a7cff41b188db45663642f2c5":{"model_module":"@jupyter-widgets/base","model_module_version":"2.0.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"2.0.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border_bottom":null,"border_left":null,"border_right":null,"border_top":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"a98b3aab5fbd4f01b2f4e7cc50798794":{"model_module":"@jupyter-widgets/output","model_module_version":"1.0.0","model_name":"OutputModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/output","_model_module_version":"1.0.0","_model_name":"OutputModel","_view_count":null,"_view_module":"@jupyter-widgets/output","_view_module_version":"1.0.0","_view_name":"OutputView","layout":"IPY_MODEL_aaa6ddc55c5b4659b84b6bd63e5a16ae","msg_id":"","outputs":[{"data":{"text/html":"<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\"></pre>\n","text/plain":""},"metadata":{},"output_type":"display_data"}],"tabbable":null,"tooltip":null}},"aaa6ddc55c5b4659b84b6bd63e5a16ae":{"model_module":"@jupyter-widgets/base","model_module_version":"2.0.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"2.0.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border_bottom":null,"border_left":null,"border_right":null,"border_top":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}}},"version_major":2,"version_minor":0}
 </script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -1277,6 +1290,38 @@ document.addEventListener("DOMContentLoaded", function() {
     </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

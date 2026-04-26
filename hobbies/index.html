@@ -45,6 +45,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-18b725f170e06ca68a5ca802173a5a27.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-c293c7c026199e810d85091ccc94fc0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -346,7 +349,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <div class="hobby-section">
 <div class="hobby-card">
-<p><img src="../assets/images/gaming.jpg" class="img-fluid"></p>
+<p><a href="../assets/images/gaming.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="../assets/images/gaming.jpg" class="img-fluid"></a></p>
 <section id="gaming" class="level3 hobby-content">
 <h3 class="anchored" data-anchor-id="gaming">Gaming</h3>
 <p>I enjoy deep, single-player experiences, with a particular fondness for roguelikes and expansive open worlds. Gaming is my primary way to unwind and explore interactive storytelling.</p>
@@ -354,35 +357,35 @@ ul.task-list li input[type="checkbox"] {
 </section>
 </div>
 <div class="hobby-card">
-<p><img src="../assets/images/photography.JPG" class="img-fluid"></p>
+<p><a href="../assets/images/photography.JPG" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="../assets/images/photography.JPG" class="img-fluid"></a></p>
 <section id="photography" class="level3 hobby-content">
 <h3 class="anchored" data-anchor-id="photography">Photography</h3>
 <p>Capturing the world through the lens of a Sony A6000. I find beauty in the contrast of urban settings and the serenity of nature, always looking for interesting compositions and the play of light.</p>
 </section>
 </div>
 <div class="hobby-card">
-<p><img src="../assets/images/maths.JPG" class="img-fluid"></p>
+<p><a href="../assets/images/maths.JPG" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="../assets/images/maths.JPG" class="img-fluid"></a></p>
 <section id="history-of-science-mathematics" class="level3 hobby-content">
 <h3 class="anchored" data-anchor-id="history-of-science-mathematics">History of Science &amp; Mathematics</h3>
 <p>Intrigued by the “tectonic creep” of progress. I enjoy exploring how revolutionary ideas were built upon the incremental small wins of those who came before.</p>
 </section>
 </div>
 <div class="hobby-card">
-<p><img src="../assets/images/cooking.jpg" class="img-fluid"></p>
+<p><a href="../assets/images/cooking.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="../assets/images/cooking.jpg" class="img-fluid"></a></p>
 <section id="cooking" class="level3 hobby-content">
 <h3 class="anchored" data-anchor-id="cooking">Cooking</h3>
 <p>A creative outlet focused on Asian fusion. I love the challenge of making something delicious from leftovers and experimenting with bold, cross-cultural flavors like kimchi with local staples.</p>
 </section>
 </div>
 <div class="hobby-card">
-<p><img src="../assets/images/road_bike.jpg" class="img-fluid"></p>
+<p><a href="../assets/images/road_bike.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="../assets/images/road_bike.jpg" class="img-fluid"></a></p>
 <section id="road-cycling" class="level3 hobby-content">
 <h3 class="anchored" data-anchor-id="road-cycling">Road Cycling</h3>
 <p>A proud owner of a refurbished 90s vintage road bike. It’s a perfect blend of mechanical simplicity and the freedom of the open road.</p>
 </section>
 </div>
 <div class="hobby-card">
-<p><img src="../assets/images/strolling.jpg" class="img-fluid"></p>
+<p><a href="../assets/images/strolling.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="../assets/images/strolling.jpg" class="img-fluid"></a></p>
 <section id="strolling" class="level3 hobby-content">
 <h3 class="anchored" data-anchor-id="strolling">Strolling</h3>
 <p>Awareness meditation in motion. Walking through my neighborhood without distractions allows me to observe the subtle changes in the world around me and clear my mind.</p>
@@ -880,6 +883,38 @@ document.addEventListener("DOMContentLoaded", function() {
     </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

@@ -413,8 +413,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>We’ve all been there: you’re about to commit a Jupyter notebook, but it’s full of massive dataframes, messy plots, or maybe it doesn’t even have a proper title. It’s just good hygiene to keep things tidy, especially if you’re sharing your work or putting it in version control.</p>
-<p>Since notebooks are just JSON under the hood, we can easily whip up a zero-dependency Python script to do the “chores” for us.</p>
-<div id="7120c38c" class="cell" data-execution_count="1">
+<p>Since notebooks are just JSON under the hood, we can easily whip up a zero-dependency Python script to do the “chores” for us. Let’s define a helper class to represent the structure of a notebook cell, and then write some functions to check for common quality issues.</p>
+<div id="3c6ca915" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">"""Check Jupyter notebooks for quality criteria."""</span></span>
@@ -432,67 +432,93 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-13"><a href="#cb1-13"></a>    outputs: <span class="bu">list</span>[<span class="bu">dict</span>]</span>
 <span id="cb1-14"><a href="#cb1-14"></a>    execution_count: <span class="bu">int</span></span>
 <span id="cb1-15"><a href="#cb1-15"></a>    source: <span class="bu">list</span>[<span class="bu">str</span>]</span>
-<span id="cb1-16"><a href="#cb1-16"></a>    metadata: <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">str</span>]</span>
-<span id="cb1-17"><a href="#cb1-17"></a></span>
-<span id="cb1-18"><a href="#cb1-18"></a></span>
-<span id="cb1-19"><a href="#cb1-19"></a><span class="kw">def</span> first_cell_is_markdown(cells: <span class="bu">list</span>[Cell]) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
-<span id="cb1-20"><a href="#cb1-20"></a>    <span class="co">"""Check if the first cell in the notebook is a markdown cell."""</span></span>
-<span id="cb1-21"><a href="#cb1-21"></a>    first <span class="op">=</span> cells[<span class="dv">0</span>]</span>
-<span id="cb1-22"><a href="#cb1-22"></a>    cell_type: <span class="bu">str</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> first.get(<span class="st">"cell_type"</span>)</span>
-<span id="cb1-23"><a href="#cb1-23"></a>    <span class="cf">return</span> cell_type <span class="op">==</span> <span class="st">"markdown"</span></span>
-<span id="cb1-24"><a href="#cb1-24"></a></span>
-<span id="cb1-25"><a href="#cb1-25"></a></span>
-<span id="cb1-26"><a href="#cb1-26"></a><span class="kw">def</span> outputs_are_empty(cells: <span class="bu">list</span>[Cell]) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
-<span id="cb1-27"><a href="#cb1-27"></a>    <span class="co">"""Check if all cells in the notebook have empty outputs."""</span></span>
-<span id="cb1-28"><a href="#cb1-28"></a>    <span class="cf">for</span> cell <span class="kw">in</span> cells:</span>
-<span id="cb1-29"><a href="#cb1-29"></a>        outputs <span class="op">=</span> cell.get(<span class="st">"outputs"</span>)</span>
-<span id="cb1-30"><a href="#cb1-30"></a>        <span class="cf">if</span> outputs:</span>
-<span id="cb1-31"><a href="#cb1-31"></a>            <span class="cf">return</span> <span class="va">False</span></span>
-<span id="cb1-32"><a href="#cb1-32"></a>    <span class="cf">return</span> <span class="va">True</span></span>
-<span id="cb1-33"><a href="#cb1-33"></a></span>
-<span id="cb1-34"><a href="#cb1-34"></a></span>
-<span id="cb1-35"><a href="#cb1-35"></a><span class="kw">def</span> check_notebook(path: Path) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
-<span id="cb1-36"><a href="#cb1-36"></a>    <span class="co">"""Check if a notebook satisfies the quality criteria."""</span></span>
-<span id="cb1-37"><a href="#cb1-37"></a>    json_string <span class="op">=</span> path.read_text(encoding<span class="op">=</span><span class="st">"utf8"</span>)</span>
-<span id="cb1-38"><a href="#cb1-38"></a>    data <span class="op">=</span> json.loads(json_string)</span>
-<span id="cb1-39"><a href="#cb1-39"></a></span>
-<span id="cb1-40"><a href="#cb1-40"></a>    cells <span class="op">=</span> data.get(<span class="st">"cells"</span>)</span>
-<span id="cb1-41"><a href="#cb1-41"></a>    <span class="cf">if</span> <span class="kw">not</span> cells:</span>
-<span id="cb1-42"><a href="#cb1-42"></a>        <span class="cf">return</span> <span class="va">True</span></span>
-<span id="cb1-43"><a href="#cb1-43"></a>    cells <span class="op">=</span> cast(<span class="st">"list[Cell]"</span>, cells)</span>
-<span id="cb1-44"><a href="#cb1-44"></a></span>
-<span id="cb1-45"><a href="#cb1-45"></a>    <span class="cf">return</span> <span class="bu">all</span>(</span>
-<span id="cb1-46"><a href="#cb1-46"></a>        (</span>
-<span id="cb1-47"><a href="#cb1-47"></a>            first_cell_is_markdown(cells),</span>
-<span id="cb1-48"><a href="#cb1-48"></a>            outputs_are_empty(cells),</span>
-<span id="cb1-49"><a href="#cb1-49"></a>            <span class="co"># Potentially more checks could be added here in the future.</span></span>
-<span id="cb1-50"><a href="#cb1-50"></a>        )</span>
-<span id="cb1-51"><a href="#cb1-51"></a>    )</span>
-<span id="cb1-52"><a href="#cb1-52"></a></span>
-<span id="cb1-53"><a href="#cb1-53"></a></span>
-<span id="cb1-54"><a href="#cb1-54"></a><span class="kw">def</span> check_directory(path_str: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
-<span id="cb1-55"><a href="#cb1-55"></a>    <span class="co">"""Check all notebooks in a directory and its subdirectories."""</span></span>
-<span id="cb1-56"><a href="#cb1-56"></a>    all_notebooks <span class="op">=</span> Path(path_str).glob(<span class="st">"**/*.ipynb"</span>)</span>
-<span id="cb1-57"><a href="#cb1-57"></a>    failed <span class="op">=</span> [path <span class="cf">for</span> path <span class="kw">in</span> all_notebooks <span class="cf">if</span> <span class="kw">not</span> check_notebook(path)]</span>
-<span id="cb1-58"><a href="#cb1-58"></a></span>
-<span id="cb1-59"><a href="#cb1-59"></a>    <span class="cf">if</span> <span class="kw">not</span> failed:</span>
-<span id="cb1-60"><a href="#cb1-60"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
-<span id="cb1-61"><a href="#cb1-61"></a></span>
-<span id="cb1-62"><a href="#cb1-62"></a>    failed_str <span class="op">=</span> <span class="st">"</span><span class="ch">\n\t</span><span class="st">"</span>.join(<span class="bu">str</span>(path) <span class="cf">for</span> path <span class="kw">in</span> failed)</span>
-<span id="cb1-63"><a href="#cb1-63"></a>    <span class="bu">print</span>(<span class="ss">f"Failed check on notebooks:</span><span class="ch">\n\t</span><span class="sc">{</span>failed_str<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb1-64"><a href="#cb1-64"></a>    <span class="cf">return</span> <span class="dv">1</span></span>
-<span id="cb1-65"><a href="#cb1-65"></a></span>
-<span id="cb1-66"><a href="#cb1-66"></a></span>
-<span id="cb1-67"><a href="#cb1-67"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
-<span id="cb1-68"><a href="#cb1-68"></a>    sys.exit(check_directory(<span class="st">"."</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-16"><a href="#cb1-16"></a>    metadata: <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">str</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<p>There are two main checks implemented:</p>
-<ol type="1">
-<li><strong><code>first_cell_is_markdown</code></strong>: Ensures the first cell of the notebook is a Markdown cell. This is useful for making sure every notebook starts with a title or introduction.</li>
-<li><strong><code>outputs_are_empty</code></strong>: Iterates through all cells and checks if any have outputs. This helps prevent committing large dataframes, plots, or potentially sensitive information that might be stored in the notebook’s execution results.</li>
-</ol>
-<p>The <code>check_directory</code> function uses <code>Path.glob("**/*.ipynb")</code> to find all Jupyter notebooks in the current directory and all subdirectories. It then runs the <code>check_notebook</code> function on each one. Using the <code>pathlib</code> library makes it easy to handle file paths in a cross-platform way.</p>
+<p>This script will perform a couple of simple checks on each notebook:</p>
+<div id="ac0faec1" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1"></a><span class="kw">def</span> first_cell_is_markdown(cells: <span class="bu">list</span>[Cell]) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>    <span class="co">"""Check if the first cell in the notebook is a markdown cell."""</span></span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3"></a>    first <span class="op">=</span> cells[<span class="dv">0</span>]</span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4"></a>    cell_type: <span class="bu">str</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> first.get(<span class="st">"cell_type"</span>)</span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a>    <span class="cf">return</span> cell_type <span class="op">==</span> <span class="st">"markdown"</span></span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6"></a></span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-8" class="code-annotation-target"><a href="#annotated-cell-2-8"></a><span class="kw">def</span> outputs_are_empty(cells: <span class="bu">list</span>[Cell]) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9"></a>    <span class="co">"""Check if all cells in the notebook have empty outputs."""</span></span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10"></a>    <span class="cf">for</span> cell <span class="kw">in</span> cells:</span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11"></a>        outputs <span class="op">=</span> cell.get(<span class="st">"outputs"</span>)</span>
+<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12"></a>        <span class="cf">if</span> outputs:</span>
+<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13"></a>            <span class="cf">return</span> <span class="va">False</span></span>
+<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14"></a>    <span class="cf">return</span> <span class="va">True</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="1" data-code-annotation="1">Ensures the first cell of the notebook is a Markdown cell. This is useful for making sure every notebook starts with a title or introduction.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="8" data-code-annotation="2">Iterates through all cells and checks if any have outputs. This helps prevent committing large dataframes, plots, or potentially sensitive information that might be stored in the notebook’s execution results.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>Then we need some logic to run these checks on all notebooks in a directory:</p>
+<div id="8d719a72" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1"></a><span class="kw">def</span> check_notebook(path: Path) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2"></a>    <span class="co">"""Check if a notebook satisfies the quality criteria."""</span></span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3"></a>    json_string <span class="op">=</span> path.read_text(encoding<span class="op">=</span><span class="st">"utf8"</span>)</span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4"></a>    data <span class="op">=</span> json.loads(json_string)</span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5"></a></span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6"></a>    cells <span class="op">=</span> data.get(<span class="st">"cells"</span>)</span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7"></a>    <span class="cf">if</span> <span class="kw">not</span> cells:</span>
+<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8"></a>        <span class="cf">return</span> <span class="va">True</span></span>
+<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9"></a>    cells <span class="op">=</span> cast(<span class="st">"list[Cell]"</span>, cells)</span>
+<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10"></a></span>
+<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11"></a>    <span class="cf">return</span> <span class="bu">all</span>(</span>
+<span id="annotated-cell-3-12"><a href="#annotated-cell-3-12"></a>        (</span>
+<span id="annotated-cell-3-13"><a href="#annotated-cell-3-13"></a>            first_cell_is_markdown(cells),</span>
+<span id="annotated-cell-3-14"><a href="#annotated-cell-3-14"></a>            outputs_are_empty(cells),</span>
+<span id="annotated-cell-3-15"><a href="#annotated-cell-3-15"></a>            <span class="co"># Potentially more checks could be added here in the future.</span></span>
+<span id="annotated-cell-3-16"><a href="#annotated-cell-3-16"></a>        )</span>
+<span id="annotated-cell-3-17"><a href="#annotated-cell-3-17"></a>    )</span>
+<span id="annotated-cell-3-18"><a href="#annotated-cell-3-18"></a></span>
+<span id="annotated-cell-3-19"><a href="#annotated-cell-3-19"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-20" class="code-annotation-target"><a href="#annotated-cell-3-20"></a><span class="kw">def</span> check_directory(path_str: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="annotated-cell-3-21"><a href="#annotated-cell-3-21"></a>    <span class="co">"""Check all notebooks in a directory and its subdirectories."""</span></span>
+<span id="annotated-cell-3-22"><a href="#annotated-cell-3-22"></a>    all_notebooks <span class="op">=</span> Path(path_str).glob(<span class="st">"**/*.ipynb"</span>)</span>
+<span id="annotated-cell-3-23"><a href="#annotated-cell-3-23"></a>    failed <span class="op">=</span> [path <span class="cf">for</span> path <span class="kw">in</span> all_notebooks <span class="cf">if</span> <span class="kw">not</span> check_notebook(path)]</span>
+<span id="annotated-cell-3-24"><a href="#annotated-cell-3-24"></a></span>
+<span id="annotated-cell-3-25"><a href="#annotated-cell-3-25"></a>    <span class="cf">if</span> <span class="kw">not</span> failed:</span>
+<span id="annotated-cell-3-26"><a href="#annotated-cell-3-26"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="annotated-cell-3-27"><a href="#annotated-cell-3-27"></a></span>
+<span id="annotated-cell-3-28"><a href="#annotated-cell-3-28"></a>    failed_str <span class="op">=</span> <span class="st">"</span><span class="ch">\n\t</span><span class="st">"</span>.join(<span class="bu">str</span>(path) <span class="cf">for</span> path <span class="kw">in</span> failed)</span>
+<span id="annotated-cell-3-29"><a href="#annotated-cell-3-29"></a>    <span class="bu">print</span>(<span class="ss">f"Failed check on notebooks:</span><span class="ch">\n\t</span><span class="sc">{</span>failed_str<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="annotated-cell-3-30"><a href="#annotated-cell-3-30"></a>    <span class="cf">return</span> <span class="dv">1</span></span>
+<span id="annotated-cell-3-31"><a href="#annotated-cell-3-31"></a></span>
+<span id="annotated-cell-3-32"><a href="#annotated-cell-3-32"></a></span>
+<span id="annotated-cell-3-33"><a href="#annotated-cell-3-33"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="annotated-cell-3-34"><a href="#annotated-cell-3-34"></a>    sys.exit(check_directory(<span class="st">"."</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="20" data-code-annotation="1">Uses <code>Path.glob("**/*.ipynb")</code> to find all Jupyter notebooks in the current directory and all subdirectories. It then runs the <code>check_notebook</code> function on each one. Using the <code>pathlib</code> library makes it easy to handle file paths in a cross-platform way.</span>
+</dd>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="1" data-code-annotation="2">Iterates through all found notebooks and collects those that fail the checks. If any notebooks fail, it prints their paths and exits with a non-zero status code to indicate failure.</span>
+</dd>
+</dl>
+</div>
+</div>
 <p>Automating these little chores saves a lot of headache in the long run. It’s a simple base that you can easily tweak or add more rules to as you go.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">

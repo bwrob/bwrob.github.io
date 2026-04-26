@@ -45,6 +45,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap-18b725f170e06ca68a5ca802173a5a27.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-c293c7c026199e810d85091ccc94fc0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -386,7 +389,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <div class="columns">
 <div class="column" style="width:25%;">
-<p><img src="../../assets/images/posts/python_academy.png" class="course-logo img-fluid"></p>
+<p><a href="../../assets/images/posts/python_academy.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="../../assets/images/posts/python_academy.png" class="course-logo img-fluid"></a></p>
 </div><div class="column" style="width:70%;">
 <p>A comprehensive Python training program designed for intermediate Python users, targeting quantitative analysts and data scientists. Covering core language mechanics needed to graduate from “Python user” to “Python developer”, with a focus on writing clean, efficient, and maintainable code in a professional environment.</p>
 </div>
@@ -913,6 +916,38 @@ document.addEventListener("DOMContentLoaded", function() {
     </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

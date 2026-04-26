@@ -431,18 +431,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Polars separates <strong>Expressions</strong> (the <em>what</em>) from <strong>Contexts</strong> (the <em>where</em>). This architecture allows the engine to optimize queries globally before execution.</p>
 <section id="loading-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="loading-the-data">1. Loading the Data</h2>
-<div id="e63e8ce6" class="cell" data-execution_count="1">
+<div id="0acb33dc" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> polars.selectors <span class="im">as</span> cs</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="im">from</span> datetime <span class="im">import</span> datetime, timedelta</span>
-<span id="cb1-5"><a href="#cb1-5"></a></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co"># Load from seaborn and convert</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a>df <span class="op">=</span> pl.from_pandas(sns.load_dataset(<span class="st">'iris'</span>))</span>
-<span id="cb1-8"><a href="#cb1-8"></a>df.head(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="annotated-cell-1-2"><a href="#annotated-cell-1-2"></a><span class="im">import</span> polars.selectors <span class="im">as</span> cs</span>
+<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4"></a><span class="im">from</span> datetime <span class="im">import</span> datetime, timedelta</span>
+<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-6" class="code-annotation-target"><a href="#annotated-cell-1-6"></a>df <span class="op">=</span> pl.from_pandas(sns.load_dataset(<span class="st">'iris'</span>))</span>
+<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7"></a>df.head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="6" data-code-annotation="1">Load from seaborn and convert.</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><style>
 .dataframe > thead > tr,
@@ -500,34 +507,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="expressions-the-building-blocks" class="level2">
 <h2 class="anchored" data-anchor-id="expressions-the-building-blocks">2. Expressions: The Building Blocks</h2>
 <p>Expressions are the atomic units of logic. They are lazily evaluated and can be chained indefinitely.</p>
-<div id="5b85ead7" class="cell" data-execution_count="2">
+<div id="eeccbfc8" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Complex logic: normalization, clipping, and casting</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a>expr <span class="op">=</span> (</span>
-<span id="cb2-3"><a href="#cb2-3"></a>    (pl.col(<span class="st">"sepal_length"</span>) <span class="op">-</span> pl.col(<span class="st">"sepal_length"</span>).mean())</span>
-<span id="cb2-4"><a href="#cb2-4"></a>    <span class="op">/</span> pl.col(<span class="st">"sepal_length"</span>).std()</span>
-<span id="cb2-5"><a href="#cb2-5"></a>).clip(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>).cast(pl.Float32)</span>
-<span id="cb2-6"><a href="#cb2-6"></a></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="co"># Column-level string/date operations</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a>species_upper <span class="op">=</span> pl.col(<span class="st">"species"</span>).<span class="bu">str</span>.to_uppercase()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a>expr <span class="op">=</span> (</span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>    (pl.col(<span class="st">"sepal_length"</span>) <span class="op">-</span> pl.col(<span class="st">"sepal_length"</span>).mean())</span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3"></a>    <span class="op">/</span> pl.col(<span class="st">"sepal_length"</span>).std()</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4"></a>).clip(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>).cast(pl.Float32)</span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-6" class="code-annotation-target"><a href="#annotated-cell-2-6"></a>species_upper <span class="op">=</span> pl.col(<span class="st">"species"</span>).<span class="bu">str</span>.to_uppercase()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="4" data-code-annotation="1">Complex logic: normalization, clipping, and casting.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="6" data-code-annotation="2">Column-level string/date operations.</span>
+</dd>
+</dl>
+</div>
 </div>
 </section>
 <section id="power-selectors-polars.selectors" class="level2">
 <h2 class="anchored" data-anchor-id="power-selectors-polars.selectors">3. Power Selectors (<code>polars.selectors</code>)</h2>
 <p>Selectors target columns based on their properties, types, or names.</p>
-<div id="44411b21" class="cell" data-execution_count="3">
+<div id="ba12a510" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Target numeric columns that contain 'width'</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a>df.select(cs.numeric() <span class="op">&amp;</span> cs.contains(<span class="st">"width"</span>))</span>
-<span id="cb3-3"><a href="#cb3-3"></a></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="co"># Apply a transformation to all numeric columns except 'sepal_length'</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a>df.select(</span>
-<span id="cb3-6"><a href="#cb3-6"></a>    (cs.numeric() <span class="op">-</span> cs.by_name(<span class="st">"sepal_length"</span>)) <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a>).head(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1"></a>df.select(cs.numeric() <span class="op">&amp;</span> cs.contains(<span class="st">"width"</span>))</span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2"></a></span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3"></a>df.select(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-4" class="code-annotation-target"><a href="#annotated-cell-3-4"></a>    (cs.numeric() <span class="op">-</span> cs.by_name(<span class="st">"sepal_length"</span>)) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5"></a>).head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="1" data-code-annotation="1">Target numeric columns that contain ‘width’.</span>
+</dd>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="4" data-code-annotation="2">Apply a transformation to all numeric columns except ‘sepal_length’.</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div><style>
 .dataframe > thead > tr,
@@ -575,18 +602,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-selection-select" class="level2">
 <h2 class="anchored" data-anchor-id="context-selection-select">4. Context: Selection (<code>select</code>)</h2>
 <p>In the <code>select</code> context, expressions must return a result of the same length or a scalar (which is broadcasted).</p>
-<div id="24ca2674" class="cell" data-execution_count="4">
+<div id="543a644e" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>df.select(</span>
-<span id="cb4-2"><a href="#cb4-2"></a>    <span class="co"># Simple selection</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a>    <span class="st">"species"</span>,</span>
-<span id="cb4-4"><a href="#cb4-4"></a>    <span class="co"># Multiple aggregations as scalars (broadcasted)</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a>    mean_petal <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).mean(),</span>
-<span id="cb4-6"><a href="#cb4-6"></a>    <span class="co"># Sorting one column based on another within select</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a>    sorted_sepal <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>).sort_by(<span class="st">"petal_width"</span>)</span>
-<span id="cb4-8"><a href="#cb4-8"></a>).head(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>df.select(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-2" class="code-annotation-target"><a href="#annotated-cell-4-2"></a>    <span class="st">"species"</span>,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3"></a>    mean_petal <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).mean(),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4"></a>    sorted_sepal <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>).sort_by(<span class="st">"petal_width"</span>)</span>
+<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5"></a>).head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="2" data-code-annotation="1">Simple selection.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="3" data-code-annotation="2">Multiple aggregations as scalars (broadcasted).</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="4" data-code-annotation="3">Sorting one column based on another within select.</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <div><style>
 .dataframe > thead > tr,
@@ -634,18 +674,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-modification-with_columns" class="level2">
 <h2 class="anchored" data-anchor-id="context-modification-with_columns">5. Context: Modification (<code>with_columns</code>)</h2>
 <p>Used to append new columns or overwrite existing ones while keeping the rest of the DataFrame.</p>
-<div id="8da3a26f" class="cell" data-execution_count="5">
+<div id="e05ac443" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>df.with_columns(</span>
-<span id="cb5-2"><a href="#cb5-2"></a>    <span class="co"># Complex boolean logic</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a>    is_large <span class="op">=</span> (pl.col(<span class="st">"sepal_length"</span>) <span class="op">&gt;</span> <span class="dv">5</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"petal_length"</span>) <span class="op">&gt;</span> <span class="fl">1.5</span>),</span>
-<span id="cb5-4"><a href="#cb5-4"></a>    <span class="co"># Row-wise maximum across numeric columns</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a>    max_dim <span class="op">=</span> pl.max_horizontal(cs.numeric()),</span>
-<span id="cb5-6"><a href="#cb5-6"></a>    <span class="co"># Renaming on the fly</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a>    sepal_sum <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>) <span class="op">+</span> pl.col(<span class="st">"sepal_width"</span>)</span>
-<span id="cb5-8"><a href="#cb5-8"></a>).head(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1"></a>df.with_columns(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-2" class="code-annotation-target"><a href="#annotated-cell-5-2"></a>    is_large <span class="op">=</span> (pl.col(<span class="st">"sepal_length"</span>) <span class="op">&gt;</span> <span class="dv">5</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"petal_length"</span>) <span class="op">&gt;</span> <span class="fl">1.5</span>),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-5-3" class="code-annotation-target"><a href="#annotated-cell-5-3"></a>    max_dim <span class="op">=</span> pl.max_horizontal(cs.numeric()),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-5-4" class="code-annotation-target"><a href="#annotated-cell-5-4"></a>    sepal_sum <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>) <span class="op">+</span> pl.col(<span class="st">"sepal_width"</span>)</span>
+<span id="annotated-cell-5-5"><a href="#annotated-cell-5-5"></a>).head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="2" data-code-annotation="1">Complex boolean logic.</span>
+</dd>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="3" data-code-annotation="2">Row-wise maximum across numeric columns.</span>
+</dd>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="4" data-code-annotation="3">Renaming on the fly.</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <div><style>
 .dataframe > thead > tr,
@@ -718,19 +771,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-aggregation-group_by" class="level2">
 <h2 class="anchored" data-anchor-id="context-aggregation-group_by">6. Context: Aggregation (<code>group_by</code>)</h2>
 <p>Expressions in <code>agg</code> are evaluated independently for each group.</p>
-<div id="d80727fd" class="cell" data-execution_count="6">
+<div id="279bdc9c" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>df.group_by(<span class="st">"species"</span>).agg(</span>
-<span id="cb6-2"><a href="#cb6-2"></a>    <span class="co"># Count rows</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a>    pl.<span class="bu">len</span>().alias(<span class="st">"count"</span>),</span>
-<span id="cb6-4"><a href="#cb6-4"></a>    <span class="co"># Multiple aggregations on multiple columns via selectors</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a>    cs.numeric().mean().name.prefix(<span class="st">"avg_"</span>),</span>
-<span id="cb6-6"><a href="#cb6-6"></a>    <span class="co"># Aggregation into a list (very powerful)</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a>    petal_lengths <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).implode(),</span>
-<span id="cb6-8"><a href="#cb6-8"></a>    <span class="co"># Complex: Mean of top 3 values per group</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a>    top_3_mean <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>).sort(descending<span class="op">=</span><span class="va">True</span>).head(<span class="dv">3</span>).mean()</span>
-<span id="cb6-10"><a href="#cb6-10"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>df.group_by(<span class="st">"species"</span>).agg(</span>
+<span id="cb1-2"><a href="#cb1-2"></a>    pl.<span class="bu">len</span>().alias(<span class="st">"count"</span>),</span>
+<span id="cb1-3"><a href="#cb1-3"></a>    cs.numeric().mean().name.prefix(<span class="st">"avg_"</span>),</span>
+<span id="cb1-4"><a href="#cb1-4"></a>    petal_lengths <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).implode(),</span>
+<span id="cb1-5"><a href="#cb1-5"></a>    top_3_mean <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>).sort(descending<span class="op">=</span><span class="va">True</span>).head(<span class="dv">3</span>).mean()</span>
+<span id="cb1-6"><a href="#cb1-6"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <div><style>
@@ -800,22 +849,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<ol type="1">
+<li>Count rows.</li>
+<li>Multiple aggregations on multiple columns via selectors.</li>
+<li>Aggregation into a list (very powerful).</li>
+<li>Complex: Mean of top 3 values per group.</li>
+</ol>
 </section>
 <section id="window-functions-over" class="level2">
 <h2 class="anchored" data-anchor-id="window-functions-over">7. Window Functions (<code>over</code>)</h2>
 <p>Window functions allow you to perform group-level calculations without collapsing the rows.</p>
-<div id="dd60f80c" class="cell" data-execution_count="7">
+<div id="c416bb13" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>df.with_columns(</span>
-<span id="cb7-2"><a href="#cb7-2"></a>    <span class="co"># Rank within species based on petal length</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a>    rank_in_species <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).rank(<span class="st">"dense"</span>, descending<span class="op">=</span><span class="va">True</span>).over(<span class="st">"species"</span>),</span>
-<span id="cb7-4"><a href="#cb7-4"></a>    <span class="co"># Diff from group mean</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a>    diff_from_group <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>) <span class="op">-</span> pl.col(<span class="st">"sepal_length"</span>).mean().over(<span class="st">"species"</span>),</span>
-<span id="cb7-6"><a href="#cb7-6"></a>    <span class="co"># Cumulative sum within species</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a>    cum_sum <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>).cum_sum().over(<span class="st">"species"</span>)</span>
-<span id="cb7-8"><a href="#cb7-8"></a>).head(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>df.with_columns(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-7-2" class="code-annotation-target"><a href="#annotated-cell-7-2"></a>    rank_in_species <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).rank(<span class="st">"dense"</span>, descending<span class="op">=</span><span class="va">True</span>).over(<span class="st">"species"</span>),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-7-3" class="code-annotation-target"><a href="#annotated-cell-7-3"></a>    diff_from_group <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>) <span class="op">-</span> pl.col(<span class="st">"sepal_length"</span>).mean().over(<span class="st">"species"</span>),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-7-4" class="code-annotation-target"><a href="#annotated-cell-7-4"></a>    cum_sum <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>).cum_sum().over(<span class="st">"species"</span>)</span>
+<span id="annotated-cell-7-5"><a href="#annotated-cell-7-5"></a>).head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="2" data-code-annotation="1">Rank within species based on petal length.</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="3" data-code-annotation="2">Diff from group mean.</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="4" data-code-annotation="3">Cumulative sum within species.</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <div><style>
 .dataframe > thead > tr,
@@ -888,29 +956,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="complex-types-lists-structs" class="level2">
 <h2 class="anchored" data-anchor-id="complex-types-lists-structs">8. Complex Types: Lists &amp; Structs</h2>
 <p>Polars has first-class support for nested data.</p>
-<div id="650f2d37" class="cell" data-execution_count="8">
+<div id="b82fe6ef" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Create a struct (row-wise grouping of columns)</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a>df_struct <span class="op">=</span> df.with_columns(</span>
-<span id="cb8-3"><a href="#cb8-3"></a>    dims <span class="op">=</span> pl.struct(<span class="st">"sepal_length"</span>, <span class="st">"sepal_width"</span>)</span>
-<span id="cb8-4"><a href="#cb8-4"></a>)</span>
-<span id="cb8-5"><a href="#cb8-5"></a></span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="co"># Extracting from a struct</span></span>
-<span id="cb8-7"><a href="#cb8-7"></a>df_struct.select(</span>
-<span id="cb8-8"><a href="#cb8-8"></a>    pl.col(<span class="st">"dims"</span>).struct.field(<span class="st">"sepal_length"</span>)</span>
-<span id="cb8-9"><a href="#cb8-9"></a>).head(<span class="dv">3</span>)</span>
-<span id="cb8-10"><a href="#cb8-10"></a></span>
-<span id="cb8-11"><a href="#cb8-11"></a><span class="co"># List mastery: eval() allows running full expressions inside a list column</span></span>
-<span id="cb8-12"><a href="#cb8-12"></a>df.group_by(<span class="st">"species"</span>).agg(</span>
-<span id="cb8-13"><a href="#cb8-13"></a>    pl.col(<span class="st">"petal_length"</span>).implode()</span>
-<span id="cb8-14"><a href="#cb8-14"></a>).with_columns(</span>
-<span id="cb8-15"><a href="#cb8-15"></a>    <span class="co"># For every list: sort, take top 2, and mean</span></span>
-<span id="cb8-16"><a href="#cb8-16"></a>    top_2_avg <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).<span class="bu">list</span>.<span class="bu">eval</span>(</span>
-<span id="cb8-17"><a href="#cb8-17"></a>        pl.element().sort(descending<span class="op">=</span><span class="va">True</span>).head(<span class="dv">2</span>).mean()</span>
-<span id="cb8-18"><a href="#cb8-18"></a>    )</span>
-<span id="cb8-19"><a href="#cb8-19"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1"></a>df_struct <span class="op">=</span> df.with_columns(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-8-2" class="code-annotation-target"><a href="#annotated-cell-8-2"></a>    dims <span class="op">=</span> pl.struct(<span class="st">"sepal_length"</span>, <span class="st">"sepal_width"</span>)</span>
+<span id="annotated-cell-8-3"><a href="#annotated-cell-8-3"></a>)</span>
+<span id="annotated-cell-8-4"><a href="#annotated-cell-8-4"></a></span>
+<span id="annotated-cell-8-5"><a href="#annotated-cell-8-5"></a>df_struct.select(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-8-6" class="code-annotation-target"><a href="#annotated-cell-8-6"></a>    pl.col(<span class="st">"dims"</span>).struct.field(<span class="st">"sepal_length"</span>)</span>
+<span id="annotated-cell-8-7"><a href="#annotated-cell-8-7"></a>).head(<span class="dv">3</span>)</span>
+<span id="annotated-cell-8-8"><a href="#annotated-cell-8-8"></a></span>
+<span id="annotated-cell-8-9"><a href="#annotated-cell-8-9"></a>df.group_by(<span class="st">"species"</span>).agg(</span>
+<span id="annotated-cell-8-10"><a href="#annotated-cell-8-10"></a>    pl.col(<span class="st">"petal_length"</span>).implode()</span>
+<span id="annotated-cell-8-11"><a href="#annotated-cell-8-11"></a>).with_columns(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-8-12" class="code-annotation-target"><a href="#annotated-cell-8-12"></a>    top_2_avg <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).<span class="bu">list</span>.<span class="bu">eval</span>(</span>
+<span id="annotated-cell-8-13"><a href="#annotated-cell-8-13"></a>        pl.element().sort(descending<span class="op">=</span><span class="va">True</span>).head(<span class="dv">2</span>).mean()</span>
+<span id="annotated-cell-8-14"><a href="#annotated-cell-8-14"></a>    )</span>
+<span id="annotated-cell-8-15"><a href="#annotated-cell-8-15"></a>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="2" data-code-annotation="1">Create a struct (row-wise grouping of columns).</span>
+</dd>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="6" data-code-annotation="2">Extracting from a struct.</span>
+</dd>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="12" data-code-annotation="3">List mastery: eval() allows running full expressions inside a list column.</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <div><style>
 .dataframe > thead > tr,
@@ -935,9 +1015,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>"versicolor"</td>
-<td>[4.7, 4.5, … 4.1]</td>
-<td>[5.05]</td>
+<td>"setosa"</td>
+<td>[1.4, 1.4, … 1.4]</td>
+<td>[1.9]</td>
 </tr>
 <tr class="even">
 <td>"virginica"</td>
@@ -945,9 +1025,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>[6.8]</td>
 </tr>
 <tr class="odd">
-<td>"setosa"</td>
-<td>[1.4, 1.4, … 1.4]</td>
-<td>[1.9]</td>
+<td>"versicolor"</td>
+<td>[4.7, 4.5, … 4.1]</td>
+<td>[5.05]</td>
 </tr>
 </tbody>
 </table>
@@ -958,28 +1038,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="time-series-mastery-asof-rolling" class="level2">
 <h2 class="anchored" data-anchor-id="time-series-mastery-asof-rolling">9. Time Series Mastery: <code>asof</code> &amp; Rolling</h2>
 <p>Polars is blazingly fast for time-series.</p>
-<div id="65570457" class="cell" data-execution_count="9">
+<div id="20e6366c" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Setup time data</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a>ts_df <span class="op">=</span> df.with_columns(</span>
-<span id="cb9-3"><a href="#cb9-3"></a>    time <span class="op">=</span> pl.datetime_range(datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>), datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="op">+</span> timedelta(days<span class="op">=</span><span class="dv">149</span>), <span class="st">"1d"</span>, eager<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb9-4"><a href="#cb9-4"></a>)</span>
-<span id="cb9-5"><a href="#cb9-5"></a></span>
-<span id="cb9-6"><a href="#cb9-6"></a><span class="co"># Rolling window: 3-day mean of petal length</span></span>
-<span id="cb9-7"><a href="#cb9-7"></a>ts_df.with_columns(</span>
-<span id="cb9-8"><a href="#cb9-8"></a>    rolling_mean <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).rolling_mean_by(window_size<span class="op">=</span><span class="st">"3d"</span>, by<span class="op">=</span><span class="st">"time"</span>)</span>
-<span id="cb9-9"><a href="#cb9-9"></a>).head(<span class="dv">5</span>)</span>
-<span id="cb9-10"><a href="#cb9-10"></a></span>
-<span id="cb9-11"><a href="#cb9-11"></a><span class="co"># Join Asof: join on closest match (backwards/forward/nearest)</span></span>
-<span id="cb9-12"><a href="#cb9-12"></a>quotes <span class="op">=</span> pl.DataFrame({</span>
-<span id="cb9-13"><a href="#cb9-13"></a>    <span class="st">"time"</span>: [datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">0</span>), datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">5</span>)],</span>
-<span id="cb9-14"><a href="#cb9-14"></a>    <span class="st">"price"</span>: [<span class="fl">100.0</span>, <span class="fl">101.0</span>]</span>
-<span id="cb9-15"><a href="#cb9-15"></a>})</span>
-<span id="cb9-16"><a href="#cb9-16"></a>trades <span class="op">=</span> pl.DataFrame({<span class="st">"time"</span>: [datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">2</span>)]})</span>
-<span id="cb9-17"><a href="#cb9-17"></a></span>
-<span id="cb9-18"><a href="#cb9-18"></a>trades.join_asof(quotes, on<span class="op">=</span><span class="st">"time"</span>, strategy<span class="op">=</span><span class="st">"backward"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1"></a>ts_df <span class="op">=</span> df.with_columns(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-9-2" class="code-annotation-target"><a href="#annotated-cell-9-2"></a>    time <span class="op">=</span> pl.datetime_range(datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>), datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="op">+</span> timedelta(days<span class="op">=</span><span class="dv">149</span>), <span class="st">"1d"</span>, eager<span class="op">=</span><span class="va">True</span>)</span>
+<span id="annotated-cell-9-3"><a href="#annotated-cell-9-3"></a>)</span>
+<span id="annotated-cell-9-4"><a href="#annotated-cell-9-4"></a></span>
+<span id="annotated-cell-9-5"><a href="#annotated-cell-9-5"></a>ts_df.with_columns(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-9-6" class="code-annotation-target"><a href="#annotated-cell-9-6"></a>    rolling_mean <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).rolling_mean_by(window_size<span class="op">=</span><span class="st">"3d"</span>, by<span class="op">=</span><span class="st">"time"</span>)</span>
+<span id="annotated-cell-9-7"><a href="#annotated-cell-9-7"></a>).head(<span class="dv">5</span>)</span>
+<span id="annotated-cell-9-8"><a href="#annotated-cell-9-8"></a></span>
+<span id="annotated-cell-9-9"><a href="#annotated-cell-9-9"></a>quotes <span class="op">=</span> pl.DataFrame({</span>
+<span id="annotated-cell-9-10"><a href="#annotated-cell-9-10"></a>    <span class="st">"time"</span>: [datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">0</span>), datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">5</span>)],</span>
+<span id="annotated-cell-9-11"><a href="#annotated-cell-9-11"></a>    <span class="st">"price"</span>: [<span class="fl">100.0</span>, <span class="fl">101.0</span>]</span>
+<span id="annotated-cell-9-12"><a href="#annotated-cell-9-12"></a>})</span>
+<span id="annotated-cell-9-13"><a href="#annotated-cell-9-13"></a>trades <span class="op">=</span> pl.DataFrame({<span class="st">"time"</span>: [datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">2</span>)]})</span>
+<span id="annotated-cell-9-14"><a href="#annotated-cell-9-14"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-9-15" class="code-annotation-target"><a href="#annotated-cell-9-15"></a>trades.join_asof(quotes, on<span class="op">=</span><span class="st">"time"</span>, strategy<span class="op">=</span><span class="st">"backward"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-9" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-9" data-code-lines="2" data-code-annotation="1">Setup time data.</span>
+</dd>
+<dt data-target-cell="annotated-cell-9" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-9" data-code-lines="6" data-code-annotation="2">Rolling window: 3-day mean of petal length.</span>
+</dd>
+<dt data-target-cell="annotated-cell-9" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-9" data-code-lines="15" data-code-annotation="3">Join Asof: join on closest match (backwards/forward/nearest).</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <div><style>
 .dataframe > thead > tr,
@@ -1014,15 +1107,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reshaping-pivot-and-unpivot" class="level2">
 <h2 class="anchored" data-anchor-id="reshaping-pivot-and-unpivot">10. Reshaping: <code>pivot</code> and <code>unpivot</code></h2>
 <p>Convert data between wide and long formats.</p>
-<div id="b12f21c4" class="cell" data-execution_count="10">
+<div id="4ee4135b" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Wide to Long (unpivot/melt)</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a>long_df <span class="op">=</span> df.unpivot(index<span class="op">=</span>[<span class="st">"species"</span>], on<span class="op">=</span>cs.numeric())</span>
-<span id="cb10-3"><a href="#cb10-3"></a></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="co"># Long to Wide (pivot)</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a>long_df.pivot(on<span class="op">=</span><span class="st">"variable"</span>, values<span class="op">=</span><span class="st">"value"</span>, index<span class="op">=</span><span class="st">"species"</span>, aggregate_function<span class="op">=</span><span class="st">"mean"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-10-1" class="code-annotation-target"><a href="#annotated-cell-10-1"></a>long_df <span class="op">=</span> df.unpivot(index<span class="op">=</span>[<span class="st">"species"</span>], on<span class="op">=</span>cs.numeric())</span>
+<span id="annotated-cell-10-2"><a href="#annotated-cell-10-2"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-10-3" class="code-annotation-target"><a href="#annotated-cell-10-3"></a>long_df.pivot(on<span class="op">=</span><span class="st">"variable"</span>, values<span class="op">=</span><span class="st">"value"</span>, index<span class="op">=</span><span class="st">"species"</span>, aggregate_function<span class="op">=</span><span class="st">"mean"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-10" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-10" data-code-lines="1" data-code-annotation="1">Wide to Long (unpivot/melt).</span>
+</dd>
+<dt data-target-cell="annotated-cell-10" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-10" data-code-lines="3" data-code-annotation="2">Long to Wide (pivot).</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <div><style>
 .dataframe > thead > tr,
@@ -1080,16 +1183,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="set-operations-semi-and-anti-joins" class="level2">
 <h2 class="anchored" data-anchor-id="set-operations-semi-and-anti-joins">11. Set Operations: <code>semi</code> and <code>anti</code> joins</h2>
 <p>Filter one DataFrame by another without duplicating rows or merging columns.</p>
-<div id="1d787722" class="cell" data-execution_count="11">
+<div id="29f40fc5" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># Only Setosa (Semi join acts as a filter)</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a>species_filter <span class="op">=</span> pl.DataFrame({<span class="st">"species"</span>: [<span class="st">"setosa"</span>]})</span>
-<span id="cb11-3"><a href="#cb11-3"></a>df.join(species_filter, on<span class="op">=</span><span class="st">"species"</span>, how<span class="op">=</span><span class="st">"semi"</span>).head(<span class="dv">3</span>)</span>
-<span id="cb11-4"><a href="#cb11-4"></a></span>
-<span id="cb11-5"><a href="#cb11-5"></a><span class="co"># Everything BUT Setosa (Anti join)</span></span>
-<span id="cb11-6"><a href="#cb11-6"></a>df.join(species_filter, on<span class="op">=</span><span class="st">"species"</span>, how<span class="op">=</span><span class="st">"anti"</span>).head(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-11"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1"></a>species_filter <span class="op">=</span> pl.DataFrame({<span class="st">"species"</span>: [<span class="st">"setosa"</span>]})</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-11-2" class="code-annotation-target"><a href="#annotated-cell-11-2"></a>df.join(species_filter, on<span class="op">=</span><span class="st">"species"</span>, how<span class="op">=</span><span class="st">"semi"</span>).head(<span class="dv">3</span>)</span>
+<span id="annotated-cell-11-3"><a href="#annotated-cell-11-3"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-11-4" class="code-annotation-target"><a href="#annotated-cell-11-4"></a>df.join(species_filter, on<span class="op">=</span><span class="st">"species"</span>, how<span class="op">=</span><span class="st">"anti"</span>).head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-11" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-11" data-code-lines="2" data-code-annotation="1">Only Setosa (Semi join acts as a filter).</span>
+</dd>
+<dt data-target-cell="annotated-cell-11" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-11" data-code-lines="4" data-code-annotation="2">Everything BUT Setosa (Anti join).</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <div><style>
 .dataframe > thead > tr,
@@ -1147,13 +1260,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="optimization-categorical-vs-enum" class="level2">
 <h2 class="anchored" data-anchor-id="optimization-categorical-vs-enum">12. Optimization: Categorical vs Enum</h2>
 <p>Strings should almost always be encoded. <code>Enum</code> is fixed and faster; <code>Categorical</code> is dynamic.</p>
-<div id="da7362ad" class="cell" data-execution_count="12">
+<div id="da2c92d1" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># Use Enum for fixed sets (Species is perfect)</span></span>
-<span id="cb12-2"><a href="#cb12-2"></a>species_enum <span class="op">=</span> pl.Enum([<span class="st">"setosa"</span>, <span class="st">"versicolor"</span>, <span class="st">"virginica"</span>])</span>
-<span id="cb12-3"><a href="#cb12-3"></a>df.with_columns(pl.col(<span class="st">"species"</span>).cast(species_enum)).head(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-12"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-12-1" class="code-annotation-target"><a href="#annotated-cell-12-1"></a>species_enum <span class="op">=</span> pl.Enum([<span class="st">"setosa"</span>, <span class="st">"versicolor"</span>, <span class="st">"virginica"</span>])</span>
+<span id="annotated-cell-12-2"><a href="#annotated-cell-12-2"></a>df.with_columns(pl.col(<span class="st">"species"</span>).cast(species_enum)).head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-12" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="1" data-code-annotation="1">Use Enum for fixed sets (Species is perfect).</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="12">
 <div><style>
 .dataframe > thead > tr,
@@ -1210,17 +1330,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="missing-data-interpolate-coalesce" class="level2">
 <h2 class="anchored" data-anchor-id="missing-data-interpolate-coalesce">13. Missing Data: Interpolate &amp; Coalesce</h2>
-<div id="9322d1b0" class="cell" data-execution_count="13">
+<div id="18c7ee7c" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># Coalesce: first non-null value from multiple columns</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a>messy <span class="op">=</span> pl.DataFrame({<span class="st">"a"</span>: [<span class="dv">1</span>, <span class="va">None</span>, <span class="va">None</span>], <span class="st">"b"</span>: [<span class="va">None</span>, <span class="dv">2</span>, <span class="va">None</span>], <span class="st">"c"</span>: [<span class="va">None</span>, <span class="va">None</span>, <span class="dv">3</span>]})</span>
-<span id="cb13-3"><a href="#cb13-3"></a>messy.select(filled <span class="op">=</span> pl.coalesce(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>))</span>
-<span id="cb13-4"><a href="#cb13-4"></a></span>
-<span id="cb13-5"><a href="#cb13-5"></a><span class="co"># Interpolate: linear fill for missing numeric data</span></span>
-<span id="cb13-6"><a href="#cb13-6"></a>df_missing <span class="op">=</span> pl.DataFrame({<span class="st">"val"</span>: [<span class="fl">1.0</span>, <span class="va">None</span>, <span class="fl">3.0</span>]})</span>
-<span id="cb13-7"><a href="#cb13-7"></a>df_missing.select(pl.col(<span class="st">"val"</span>).interpolate())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-13"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1"></a>messy <span class="op">=</span> pl.DataFrame({<span class="st">"a"</span>: [<span class="dv">1</span>, <span class="va">None</span>, <span class="va">None</span>], <span class="st">"b"</span>: [<span class="va">None</span>, <span class="dv">2</span>, <span class="va">None</span>], <span class="st">"c"</span>: [<span class="va">None</span>, <span class="va">None</span>, <span class="dv">3</span>]})</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-13-2" class="code-annotation-target"><a href="#annotated-cell-13-2"></a>messy.select(filled <span class="op">=</span> pl.coalesce(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>))</span>
+<span id="annotated-cell-13-3"><a href="#annotated-cell-13-3"></a></span>
+<span id="annotated-cell-13-4"><a href="#annotated-cell-13-4"></a>df_missing <span class="op">=</span> pl.DataFrame({<span class="st">"val"</span>: [<span class="fl">1.0</span>, <span class="va">None</span>, <span class="fl">3.0</span>]})</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-13-5" class="code-annotation-target"><a href="#annotated-cell-13-5"></a>df_missing.select(pl.col(<span class="st">"val"</span>).interpolate())</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-13" data-code-lines="2" data-code-annotation="1">Coalesce: first non-null value from multiple columns.</span>
+</dd>
+<dt data-target-cell="annotated-cell-13" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-13" data-code-lines="5" data-code-annotation="2">Interpolate: linear fill for missing numeric data.</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <div><style>
 .dataframe > thead > tr,
@@ -1258,18 +1388,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="concatenation-pl.concat" class="level2">
 <h2 class="anchored" data-anchor-id="concatenation-pl.concat">14. Concatenation: <code>pl.concat</code></h2>
 <p>Combine DataFrames vertically, horizontally, or diagonally.</p>
-<div id="2a8b1ffa" class="cell" data-execution_count="14">
+<div id="9ef59f68" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>df1 <span class="op">=</span> df.head(<span class="dv">2</span>)</span>
-<span id="cb14-2"><a href="#cb14-2"></a>df2 <span class="op">=</span> df.tail(<span class="dv">2</span>)</span>
-<span id="cb14-3"><a href="#cb14-3"></a></span>
-<span id="cb14-4"><a href="#cb14-4"></a><span class="co"># Vertical (stacking)</span></span>
-<span id="cb14-5"><a href="#cb14-5"></a>pl.concat([df1, df2], how<span class="op">=</span><span class="st">"vertical"</span>)</span>
-<span id="cb14-6"><a href="#cb14-6"></a></span>
-<span id="cb14-7"><a href="#cb14-7"></a><span class="co"># Horizontal (side-by-side)</span></span>
-<span id="cb14-8"><a href="#cb14-8"></a>pl.concat([df1.select(<span class="st">"species"</span>), df2.select(cs.numeric())], how<span class="op">=</span><span class="st">"horizontal"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-14"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1"></a>df1 <span class="op">=</span> df.head(<span class="dv">2</span>)</span>
+<span id="annotated-cell-14-2"><a href="#annotated-cell-14-2"></a>df2 <span class="op">=</span> df.tail(<span class="dv">2</span>)</span>
+<span id="annotated-cell-14-3"><a href="#annotated-cell-14-3"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-14-4" class="code-annotation-target"><a href="#annotated-cell-14-4"></a>pl.concat([df1, df2], how<span class="op">=</span><span class="st">"vertical"</span>)</span>
+<span id="annotated-cell-14-5"><a href="#annotated-cell-14-5"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-14-6" class="code-annotation-target"><a href="#annotated-cell-14-6"></a>pl.concat([df1.select(<span class="st">"species"</span>), df2.select(cs.numeric())], how<span class="op">=</span><span class="st">"horizontal"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-14" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="4" data-code-annotation="1">Vertical (stacking).</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="6" data-code-annotation="2">Horizontal (side-by-side).</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="14">
 <div><style>
 .dataframe > thead > tr,
@@ -1319,20 +1459,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="out-of-core-partitioning" class="level2">
 <h2 class="anchored" data-anchor-id="out-of-core-partitioning">15. Out-of-Core &amp; Partitioning</h2>
-<div id="5ac94f62" class="cell" data-execution_count="15">
+<div id="e5b102e0" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># Streaming flow for massive data</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a>(</span>
-<span id="cb15-3"><a href="#cb15-3"></a>    pl.scan_csv(<span class="st">"huge.csv"</span>)</span>
-<span id="cb15-4"><a href="#cb15-4"></a>    .<span class="bu">filter</span>(pl.col(<span class="st">"val"</span>) <span class="op">&gt;</span> <span class="dv">0</span>)</span>
-<span id="cb15-5"><a href="#cb15-5"></a>    .sink_csv(<span class="st">"output.csv"</span>)</span>
-<span id="cb15-6"><a href="#cb15-6"></a>)</span>
-<span id="cb15-7"><a href="#cb15-7"></a></span>
-<span id="cb15-8"><a href="#cb15-8"></a><span class="co"># Partitioned writing (Data Lake pattern)</span></span>
-<span id="cb15-9"><a href="#cb15-9"></a><span class="co"># Writes files into folders like: output/species=setosa/data.parquet</span></span>
-<span id="cb15-10"><a href="#cb15-10"></a>df.write_parquet(<span class="st">"output_lake"</span>, use_pyarrow<span class="op">=</span><span class="va">True</span>, pyarrow_options<span class="op">=</span>{<span class="st">"partition_cols"</span>: [<span class="st">"species"</span>]})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-15"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-15-1"><a href="#annotated-cell-15-1"></a>(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-15-2" class="code-annotation-target"><a href="#annotated-cell-15-2"></a>    pl.scan_csv(<span class="st">"huge.csv"</span>)</span>
+<span id="annotated-cell-15-3"><a href="#annotated-cell-15-3"></a>    .<span class="bu">filter</span>(pl.col(<span class="st">"val"</span>) <span class="op">&gt;</span> <span class="dv">0</span>)</span>
+<span id="annotated-cell-15-4"><a href="#annotated-cell-15-4"></a>    .sink_csv(<span class="st">"output.csv"</span>)</span>
+<span id="annotated-cell-15-5"><a href="#annotated-cell-15-5"></a>)</span>
+<span id="annotated-cell-15-6"><a href="#annotated-cell-15-6"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-15-7" class="code-annotation-target"><a href="#annotated-cell-15-7"></a>df.write_parquet(<span class="st">"output_lake"</span>, use_pyarrow<span class="op">=</span><span class="va">True</span>, pyarrow_options<span class="op">=</span>{<span class="st">"partition_cols"</span>: [<span class="st">"species"</span>]})</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-15" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-15" data-code-lines="2" data-code-annotation="1">Streaming flow for massive data.</span>
+</dd>
+<dt data-target-cell="annotated-cell-15" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-15" data-code-lines="7" data-code-annotation="2">Partitioned writing (Data Lake pattern: writes files into folders like output/species=setosa/data.parquet).</span>
+</dd>
+</dl>
+</div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
