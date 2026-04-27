@@ -2,7 +2,7 @@
 title: "Serverless Marimo Dashboard"
 description: "A quick and easy way to set up a dashboard for your Marimo data using serverless technologies."
 date: "2026-04-24"
-date-modified: "2026-04-24"
+date-modified: "2026-04-27"
 categories: [Python Recipes, Data Science]
 
 image: ../../assets/images/posts/python_recipes.png
@@ -11,13 +11,24 @@ toc-depth: 2
 ---
 
 
-Marimo is a fantastic tool for collecting and analyzing data, in many ways more powerful than Jupyter.
-Thanks to it's app view (layouts) it can be used to create interactive dashboards.
+`marimo` is a fantastic tool for collecting and analyzing data, in many ways more powerful than Jupyter.
+One of the selling points for me is it's reactive data flow model. No more worrying about running cells in the right order or dealing with stale data.
+With `marimo`, your data is always up to date and your analysis is always accurate. This design, combined with it's app view (layouts) makes it an efficient vehicle for creating interactive dashboards.
+
+If you're new to `marimo`, you can get started with the tutorials shiped with the library. Just run in your shell of choice:
+
+```bash
+uv run marimo tutorial
+```
+
 Setting up a dashboard to convey an important analysis (like convincing your partner to buy new gaming PC) can be a 10x solution.
 But paying for hosting and maintaining a server for a this can eat up valuable cash resources for those RAM sticks.
-That's where `webasembly` and `pyodide` come in. Here is how you can create a serverless Marimo dashboard:
+That's where `webasembly` and `pyodide` come in. You can run fully fledged Python applications directly in the browser.
+The scope of packages supported is not as wide as a regular Python environment, but it's still pretty good and growing. You can check out the [pyodide documentation](https://pyodide.org/en/stable/) for more details on what's available.
 
-1. Create a simple dashboard using `marimo`. Set the layout to create an interactive experience. Beware, not all python libraries are supported, but you can still do a lot with the ones that are. Check out the [pyodide documentation](https://pyodide.org/en/stable/) for more details on what's available.
+Here is how you can create a serverless Marimo dashboard:
+
+1. Create a simple dashboard using `marimo`. Set the layout to create an interactive experience. Beware, not all python libraries are supported, but you can still do a lot with the ones that are - `pandas`, `matplotlib`, `plotly`, `polars` and more.
 
 2. Use `marimo` to export your dashbooard to webassembly. Marimo has built-in support for exporting to webassembly, so you can easily create a standalone dashboard that can be hosted anywhere.
 
@@ -25,7 +36,7 @@ That's where `webasembly` and `pyodide` come in. Here is how you can create a se
 uv run marimo export html-wasm assets/python/serverless_marimo_dashboard_example.py --output assets/marimo-dashboard --mode run
 ```
 
-3. To check if your dashboard works, you can use a simple HTTP server to serve the files locally. For example, you can use Python's built-in HTTP server:
+3. To check if your dashboard works, you can use a simple HTTP server to serve the files locally. For example, you can use Python's built-in HTTP server module:
 
 ```bash
 python -m http.server --directory assets/marimo-dashboard
@@ -33,7 +44,8 @@ python -m http.server --directory assets/marimo-dashboard
 ```
 4. Host your dashboard on a static site hosting service like GitHub Pages, Netlify, or Vercel. Since the dashboard is just a static file, you don't need to worry about server maintenance or costs.
 
-5. When you open the dashboard in your browser, it will load the webassembly module and run your Python code to display the data. You can interact with the dashboard just like you would with any other web application. The compute is done locally in the browser using pyodide, the uer is paying for it with their CPU cycles, so it's truly serverless.
+5. When you open the dashboard in your browser, it will load the webassembly module and run your Python code to display the data.
+You can interact with the dashboard just like you would with any other web application. The compute is done locally in the browser using pyodide, the user is paying for it with their CPU cycles.
 
 
 You can try the dashboard out [here](https://bwrob.github.io/assets/marimo-dashboard/index.html).
