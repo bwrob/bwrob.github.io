@@ -1,5 +1,5 @@
 ---
-title: "Polars Expressions & Contexts: The Iris Edition"
+title: "Polars Cheatsheet: Expressions & Contexts"
 
 description: "A high-density guide to Polars' expression engine, showcasing complex transformations across all execution contexts."
 date: "2026-04-05"
@@ -9,7 +9,13 @@ format-links: [html]
 toc-depth: 3
 ---
 
-Polars separates **Expressions** (the *what*) from **Contexts** (the *where*). This architecture allows the engine to optimize queries globally before execution.
+Can there be anything lazier than a panda? Apparently, yes: a polar bear. Polars is considered the new kid on the block, but is in fact a mature, high-performance DataFrame library that has been gaining traction rapidly.
+
+Polars DSL separates **Expressions** (the *what*) from **Contexts** (the *where*). This architecture allows the engine to optimize queries globally before execution. It also allows for consistent syntax between lazy and eger execution modes, and across different operations (selection, modification, aggregation).
+
+Expressions are lazy representations of data transformations. They can be simple column references, complex chains of operations, or even entire subqueries. They are the building blocks of all data manipulation in Polars. Creating expression is not the same as executing it. Expressions are only evaluated when they are placed in a context. They can be created independently and reused across different contexts.
+
+Contexts determine how and when these expressions are evaluated, whether it's during selection, modification, aggregation, or window functions. Depending on the context, the same expression can yield different results. For example, an expression that calculates a mean will return a single scalar in a `select` context, but will return a mean per group in a `group_by` context.
 
 ## 1. Loading the Data
 
