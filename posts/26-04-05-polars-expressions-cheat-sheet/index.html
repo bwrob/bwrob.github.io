@@ -9,7 +9,7 @@
 <meta name="dcterms.date" content="2026-04-05">
 <meta name="description" content="A high-density guide to Polars’ expression engine, showcasing complex transformations across all execution contexts.">
 
-<title>Polars Expressions &amp; Contexts: The Iris Edition – bwrob blog</title>
+<title>Polars Cheatsheet: Expressions &amp; Contexts – bwrob blog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -367,7 +367,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Polars Expressions &amp; Contexts: The Iris Edition</h1>
+      <h1 class="title">Polars Cheatsheet: Expressions &amp; Contexts</h1>
                   <div>
         <div class="description">
           A high-density guide to Polars’ expression engine, showcasing complex transformations across all execution contexts.
@@ -428,10 +428,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>Polars separates <strong>Expressions</strong> (the <em>what</em>) from <strong>Contexts</strong> (the <em>where</em>). This architecture allows the engine to optimize queries globally before execution.</p>
+<p>Can there be anything lazier than a panda? Apparently, yes: a polar bear. Polars is considered the new kid on the block, but is in fact a mature, high-performance DataFrame library that has been gaining traction rapidly.</p>
+<p>Polars DSL separates <strong>Expressions</strong> (the <em>what</em>) from <strong>Contexts</strong> (the <em>where</em>). This architecture allows the engine to optimize queries globally before execution. It also allows for consistent syntax between lazy and eger execution modes, and across different operations (selection, modification, aggregation).</p>
+<p>Expressions are lazy representations of data transformations. They can be simple column references, complex chains of operations, or even entire subqueries. They are the building blocks of all data manipulation in Polars. Creating expression is not the same as executing it. Expressions are only evaluated when they are placed in a context. They can be created independently and reused across different contexts.</p>
+<p>Contexts determine how and when these expressions are evaluated, whether it’s during selection, modification, aggregation, or window functions. Depending on the context, the same expression can yield different results. For example, an expression that calculates a mean will return a single scalar in a <code>select</code> context, but will return a mean per group in a <code>group_by</code> context.</p>
 <section id="loading-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="loading-the-data">1. Loading the Data</h2>
-<div id="29a22428" class="cell" data-execution_count="1">
+<div id="56cde613" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
@@ -507,7 +510,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="expressions-the-building-blocks" class="level2">
 <h2 class="anchored" data-anchor-id="expressions-the-building-blocks">2. Expressions: The Building Blocks</h2>
 <p>Expressions are the atomic units of logic. They are lazily evaluated and can be chained indefinitely.</p>
-<div id="e3fe1f49" class="cell" data-execution_count="2">
+<div id="30baf6c9" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a>expr <span class="op">=</span> (</span>
@@ -534,7 +537,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="power-selectors-polars.selectors" class="level2">
 <h2 class="anchored" data-anchor-id="power-selectors-polars.selectors">3. Power Selectors (<code>polars.selectors</code>)</h2>
 <p>Selectors target columns based on their properties, types, or names.</p>
-<div id="0f6de6b6" class="cell" data-execution_count="3">
+<div id="d19dcd12" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1"></a>df.select(cs.numeric() <span class="op">&amp;</span> cs.contains(<span class="st">"width"</span>))</span>
@@ -602,7 +605,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-selection-select" class="level2">
 <h2 class="anchored" data-anchor-id="context-selection-select">4. Context: Selection (<code>select</code>)</h2>
 <p>In the <code>select</code> context, expressions must return a result of the same length or a scalar (which is broadcasted).</p>
-<div id="5e07f81b" class="cell" data-execution_count="4">
+<div id="507725e1" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>df.select(</span>
@@ -674,7 +677,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-modification-with_columns" class="level2">
 <h2 class="anchored" data-anchor-id="context-modification-with_columns">5. Context: Modification (<code>with_columns</code>)</h2>
 <p>Used to append new columns or overwrite existing ones while keeping the rest of the DataFrame.</p>
-<div id="f0133b59" class="cell" data-execution_count="5">
+<div id="fbdc90c8" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1"></a>df.with_columns(</span>
@@ -771,7 +774,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-aggregation-group_by" class="level2">
 <h2 class="anchored" data-anchor-id="context-aggregation-group_by">6. Context: Aggregation (<code>group_by</code>)</h2>
 <p>Expressions in <code>agg</code> are evaluated independently for each group.</p>
-<div id="d33b2a04" class="cell" data-execution_count="6">
+<div id="1b6a7e8e" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>df.group_by(<span class="st">"species"</span>).agg(</span>
@@ -815,16 +818,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>"versicolor"</td>
-<td>50</td>
-<td>5.936</td>
-<td>2.77</td>
-<td>4.26</td>
-<td>1.326</td>
-<td>[4.7, 4.5, … 4.1]</td>
-<td>6.9</td>
-</tr>
-<tr class="even">
 <td>"virginica"</td>
 <td>50</td>
 <td>6.588</td>
@@ -833,6 +826,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>2.026</td>
 <td>[6.0, 5.1, … 5.1]</td>
 <td>7.766667</td>
+</tr>
+<tr class="even">
+<td>"versicolor"</td>
+<td>50</td>
+<td>5.936</td>
+<td>2.77</td>
+<td>4.26</td>
+<td>1.326</td>
+<td>[4.7, 4.5, … 4.1]</td>
+<td>6.9</td>
 </tr>
 <tr class="odd">
 <td>"setosa"</td>
@@ -859,7 +862,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="window-functions-over" class="level2">
 <h2 class="anchored" data-anchor-id="window-functions-over">7. Window Functions (<code>over</code>)</h2>
 <p>Window functions allow you to perform group-level calculations without collapsing the rows.</p>
-<div id="9ac1475a" class="cell" data-execution_count="7">
+<div id="caddff6a" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>df.with_columns(</span>
@@ -956,7 +959,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="complex-types-lists-structs" class="level2">
 <h2 class="anchored" data-anchor-id="complex-types-lists-structs">8. Complex Types: Lists &amp; Structs</h2>
 <p>Polars has first-class support for nested data.</p>
-<div id="2d88cd0c" class="cell" data-execution_count="8">
+<div id="2d266bbc" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1"></a>df_struct <span class="op">=</span> df.with_columns(</span>
@@ -1038,7 +1041,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="time-series-mastery-asof-rolling" class="level2">
 <h2 class="anchored" data-anchor-id="time-series-mastery-asof-rolling">9. Time Series Mastery: <code>asof</code> &amp; Rolling</h2>
 <p>Polars is blazingly fast for time-series.</p>
-<div id="91ed97c2" class="cell" data-execution_count="9">
+<div id="1379706a" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1"></a>ts_df <span class="op">=</span> df.with_columns(</span>
@@ -1107,7 +1110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reshaping-pivot-and-unpivot" class="level2">
 <h2 class="anchored" data-anchor-id="reshaping-pivot-and-unpivot">10. Reshaping: <code>pivot</code> and <code>unpivot</code></h2>
 <p>Convert data between wide and long formats.</p>
-<div id="c5087c79" class="cell" data-execution_count="10">
+<div id="56721130" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-10-1" class="code-annotation-target"><a href="#annotated-cell-10-1"></a>long_df <span class="op">=</span> df.unpivot(index<span class="op">=</span>[<span class="st">"species"</span>], on<span class="op">=</span>cs.numeric())</span>
@@ -1183,7 +1186,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="set-operations-semi-and-anti-joins" class="level2">
 <h2 class="anchored" data-anchor-id="set-operations-semi-and-anti-joins">11. Set Operations: <code>semi</code> and <code>anti</code> joins</h2>
 <p>Filter one DataFrame by another without duplicating rows or merging columns.</p>
-<div id="b36b0bc0" class="cell" data-execution_count="11">
+<div id="9cd1414c" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-11"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1"></a>species_filter <span class="op">=</span> pl.DataFrame({<span class="st">"species"</span>: [<span class="st">"setosa"</span>]})</span>
@@ -1260,7 +1263,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="optimization-categorical-vs-enum" class="level2">
 <h2 class="anchored" data-anchor-id="optimization-categorical-vs-enum">12. Optimization: Categorical vs Enum</h2>
 <p>Strings should almost always be encoded. <code>Enum</code> is fixed and faster; <code>Categorical</code> is dynamic.</p>
-<div id="c2d73f98" class="cell" data-execution_count="12">
+<div id="70cbd4f1" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-12"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-12-1" class="code-annotation-target"><a href="#annotated-cell-12-1"></a>species_enum <span class="op">=</span> pl.Enum([<span class="st">"setosa"</span>, <span class="st">"versicolor"</span>, <span class="st">"virginica"</span>])</span>
@@ -1330,7 +1333,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="missing-data-interpolate-coalesce" class="level2">
 <h2 class="anchored" data-anchor-id="missing-data-interpolate-coalesce">13. Missing Data: Interpolate &amp; Coalesce</h2>
-<div id="59824d6e" class="cell" data-execution_count="13">
+<div id="5c34f4ba" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-13"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1"></a>messy <span class="op">=</span> pl.DataFrame({<span class="st">"a"</span>: [<span class="dv">1</span>, <span class="va">None</span>, <span class="va">None</span>], <span class="st">"b"</span>: [<span class="va">None</span>, <span class="dv">2</span>, <span class="va">None</span>], <span class="st">"c"</span>: [<span class="va">None</span>, <span class="va">None</span>, <span class="dv">3</span>]})</span>
@@ -1388,7 +1391,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="concatenation-pl.concat" class="level2">
 <h2 class="anchored" data-anchor-id="concatenation-pl.concat">14. Concatenation: <code>pl.concat</code></h2>
 <p>Combine DataFrames vertically, horizontally, or diagonally.</p>
-<div id="e9c135f5" class="cell" data-execution_count="14">
+<div id="2adc02b4" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-14"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1"></a>df1 <span class="op">=</span> df.head(<span class="dv">2</span>)</span>
@@ -1459,7 +1462,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="out-of-core-partitioning" class="level2">
 <h2 class="anchored" data-anchor-id="out-of-core-partitioning">15. Out-of-Core &amp; Partitioning</h2>
-<div id="5c9a8374" class="cell" data-execution_count="15">
+<div id="eda7e05c" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-15"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-15-1"><a href="#annotated-cell-15-1"></a>(</span>
@@ -1959,7 +1962,7 @@ document.addEventListener("DOMContentLoaded", function() {
     script.src = "https://giscus.app/client.js";
     script.async = true;
     script.dataset.repo = "bwrob/bwrob.github.io";
-    script.dataset.repoId = "";
+    script.dataset.repoId = "R_kgDOLzf1hw";
     script.dataset.category = "General";
     script.dataset.categoryId = "";
     script.dataset.mapping = "pathname";
