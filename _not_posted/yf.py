@@ -6,7 +6,6 @@ app = marimo.App(width="medium")
 
 @app.cell
 def _():
-    import marimo as mo
     import yfinance as yf
 
     return (yf,)
@@ -25,6 +24,7 @@ def _():
 @app.cell
 def _(link):
     from io import StringIO
+
     import pandas as pd
     import requests
 
@@ -65,11 +65,12 @@ def _(yf_df):
 
 @app.cell
 def _(stacked):
-    import polars as pl
-    import polars.selectors as cs
     from pathlib import Path
 
-    ticker_path = Path(".") / "assets" / "data" / "ticker_data.arrow"
+    import polars as pl
+    import polars.selectors as cs
+
+    ticker_path = Path("assets") / "data" / "ticker_data.arrow"
 
     df_pl = (
         pl.from_pandas(stacked)
@@ -90,12 +91,11 @@ def _(stacked):
 
 
 @app.cell
-def _(df_pl, ticker_path):
+def _(df_pl, ticker_path) -> None:
     df_pl.write_ipc(
         ticker_path,
         compression="zstd",
     )
-    return
 
 
 if __name__ == "__main__":

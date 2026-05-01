@@ -1,3 +1,4 @@
+import operator
 import time
 
 import jax
@@ -58,7 +59,7 @@ def deriv_numba(y, dx):
     fastmath=True,
     target="parallel",
 )
-def deriv_numba_guvec(y, dx, out):
+def deriv_numba_guvec(y, dx, out) -> None:
     n = y.shape[0]
     inv_dx = 1.0 / dx
     inv_2dx = 0.5 / dx
@@ -121,7 +122,7 @@ def deriv_scipy(y, dx):
 # ==========================================
 
 
-def run_benchmark():
+def run_benchmark() -> None:
     print("Generating data (10,000,000 points)...")
     n_points = 100_000_000
     dx = 0.001
@@ -169,8 +170,8 @@ def run_benchmark():
         avg_time = (end_time - start_time) / iterations
         results[name] = avg_time
 
-    sorted_results = dict(sorted(results.items(), key=lambda item: item[1]))
-    baseline_time = list(sorted_results.values())[0]
+    sorted_results = dict(sorted(results.items(), key=operator.itemgetter(1)))
+    baseline_time = next(iter(sorted_results.values()))
 
     for name, avg_time in sorted_results.items():
         relative = avg_time / baseline_time

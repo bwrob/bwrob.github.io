@@ -1,87 +1,67 @@
-"""Cheat sheet for Polars expressions and data transformations.
+"""Cheat sheet for Polars expressions in Finance.
 
-This module demonstrates common Polars operations including normalization,
-complex column transformations, grouping, joins, and streaming.
+This module demonstrates financial metrics and transformations using Polars,
+including log returns, realized volatility, Sharpe ratio, and correlation.
 """
 
 import pathlib
 
 import polars as pl
 import polars.selectors as cs
-import seaborn as sns
-
-SEPAL_LENGTH_THRESHOLD_XL = 6
-SEPAL_LENGTH_THRESHOLD_STREAMING = 5.0
 
 
 def main() -> None:
-    """Run Polars demonstration examples."""
-    # 1. Setup & Expressions
-    print("1. Setup & Expressions (Normalization chain):")
-    df = pl.from_pandas(sns.load_dataset("iris"))
-    norm_expr = (
-        ((cs.numeric() - cs.numeric().mean()) / cs.numeric().std())
-        .clip(-1, 1)
-        .cast(pl.Float32)
-        .name.suffix("_norm")
-    )
-    print(df.select(norm_expr).head(3))
+    """Run Polars finance demonstration examples."""
+    # 0. Load Data
+    data_path = pathlib.Path(__file__).parent.parent / "data" / "ticker_data.arrow"
+    if not data_path.exists():
+        print(f"Data not found at {data_path}.")
+        return
 
-    # 2. Transformations (Horizontal + Boolean + Coalesce)
-    print("\n2. Transformations (Complex columns):")
-    print(
-        df.with_columns(
-            max_dim=pl.max_horizontal(cs.numeric()),
-            size_tag=pl.when(pl.col("sepal_length") > SEPAL_LENGTH_THRESHOLD_XL)
-            .then(pl.lit("XL"))
-            .otherwise(pl.lit("L")),
-            combined=pl.coalesce(pl.col("sepal_length"), pl.col("sepal_width")),
-        ).head(3)
-    )
+    df = pl.read_ipc(data_path).sort(["ticker", "date"])
 
-    # 3. Group Logic (Agg + Window + Rank)
-    print("\n3. Group Logic (Aggregated Top-3 Mean + Rank):")
-    print(
-        df.group_by("species")
+    # 1. Feature Engineering (Log Returns & Volatility)
+    print("1. Feature Engineering:")
+    df = df.with_columns(
+        ret=(pl.col("close") / pl.col("close").shift(1)).log().over("ticker"),
+    ).with_columns(
+        vol=(pl.col("ret").rolling_std(window_size=21) * (252**0.5)).over("ticker")
+    )
+    print(df.select("date", "ticker", "ret", "vol").tail(3))
+
+    # 2. Aggregations (Risk Metrics)
+    print("\n2. Risk Aggregations:")
+    risk = (
+        df.group_by("ticker")
         .agg(
-            n=pl.len(),
-            avg_sepal=pl.col("sepal_length").mean(),
-            top_3_sepal_avg=pl.col("sepal_length").sort(descending=True).head(3).mean(),
+            ann_ret=pl.col("ret").mean() * 252,
+            ann_vol=pl.col("ret").std() * (252**0.5),
+            max_dd=(pl.col("close") / pl.col("close").cum_max() - 1).min(),
         )
-        .with_columns(rank=pl.col("avg_sepal").rank("dense", descending=True))
+        .with_columns(sharpe=pl.col("ann_ret") / pl.col("ann_vol"))
+        .sort("sharpe", descending=True)
     )
+    print(risk.head(5))
 
-    # 4. Table Ops (Joins & Sets)
-    print("\n4. Table Operations (Semi-join):")
-    filter_df = pl.DataFrame({"species": ["setosa"]})
-    print(df.join(filter_df, on="species", how="semi").head(3))
-
-    # 5. Advanced Types (Time-series & List Eval)
-    print("\n5. Advanced Types (List eval):")
-    print(
-        df.group_by("species")
-        .agg(pl.col("petal_length").implode())
-        .select(
-            "species",
-            top_2=pl.col("petal_length").list.eval(
-                pl.element().sort(descending=True).head(2)
-            ),
-        )
+    # 3. Selectors & Shocks
+    print("\n3. Selectors (1% Price Shock):")
+    shock_expr = (cs.starts_with("open", "high", "low", "close") * 1.01).name.suffix(
+        "_shock"
     )
+    print(df.select("ticker", shock_expr).head(3))
 
-    # 6. Performance (Streaming)
-    print("\n6. Performance (Streaming Scan->Transform->Sink):")
-    df.write_csv("iris_temp.csv")
-    (
-        pl.scan_csv("iris_temp.csv")
-        .filter(pl.col("sepal_length") > SEPAL_LENGTH_THRESHOLD_STREAMING)
-        .sink_csv("iris_final.csv")
+    # 4. Window Functions (Cross-sectional Relative Strength)
+    print("\n4. Window Functions (Relative Strength):")
+    rel_strength = df.with_columns(
+        rel_to_market=pl.col("close") / pl.col("close").mean().over("date")
     )
-    print("Streaming complete. Cleaning up...")
-    if pathlib.Path("iris_temp.csv").exists():
-        pathlib.Path("iris_temp.csv").unlink()
-    if pathlib.Path("iris_final.csv").exists():
-        pathlib.Path("iris_final.csv").unlink()
+    print(rel_strength.select("date", "ticker", "rel_to_market").head(3))
+
+    # 5. Correlation Matrix
+    print("\n5. Correlation Matrix:")
+    wide_ret = df.pivot(index="date", on="ticker", values="ret").drop_nulls()
+    corr = wide_ret.select(cs.numeric()).corr()
+    print(corr.head(5))
 
 
 if __name__ == "__main__":
