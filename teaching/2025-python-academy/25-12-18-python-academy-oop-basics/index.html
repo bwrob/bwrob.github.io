@@ -478,7 +478,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="abstract-base-classes-abcs">Abstract Base Classes (ABCs)</h2>
 <p>To keep things sane, we need rules. We need a contract that says: “If you want to be a Yield Curve, you <em>must</em> provide a discount factor.”</p>
 <p>Python handles this with <strong>Abstract Base Classes (ABCs)</strong>.</p>
-<div id="d43ad53b" class="cell" data-execution_count="1">
+<div id="251147bc" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
@@ -511,7 +511,7 @@ window.Quarto = {
 <section id="concrete-implementations" class="level2">
 <h2 class="anchored" data-anchor-id="concrete-implementations">Concrete Implementations</h2>
 <p>With the ground rules established, let’s build something real. The simplest case is a <strong>Flat Forward Curve</strong>, where the rate is constant forever.</p>
-<div id="04359b04" class="cell" data-execution_count="2">
+<div id="3856bc85" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">class</span> FlatForwardCurve(YieldCurve):</span>
@@ -528,7 +528,7 @@ window.Quarto = {
 <p>Before we get to complex curves, let’s talk about one of Python’s superpowers: <strong>Multiple Inheritance</strong>. In many languages, a class can only have one parent. In Python, it can have many.</p>
 <p>While this can get messy (the infamous “Diamond Problem”), it’s perfect for <strong>Mixins</strong>. A Mixin is a small class designed to “mix in” specific functionality to other classes.</p>
 <p>Suppose we want to take our <code>FlatForwardCurve</code> (or <em>any</em> curve) and add a constant spread to it. Instead of rewriting the curve logic, we create a <code>SpreadMixin</code>.</p>
-<div id="0cc66cf6" class="cell" data-execution_count="3">
+<div id="6dfbc945" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a><span class="kw">class</span> SpreadMixin:</span>
@@ -561,7 +561,7 @@ window.Quarto = {
 </div>
 </div>
 <p>When we create <code>ShiftedFlatCurve</code>, Python’s <strong>Method Resolution Order (MRO)</strong> ensures that <code>SpreadMixin</code> runs first. Its <code>super().discount_factor</code> call then hops over to <code>FlatForwardCurve</code>.</p>
-<div id="dc11f433" class="cell" data-execution_count="4">
+<div id="8760a53b" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>shifted <span class="op">=</span> ShiftedFlatCurve(rate<span class="op">=</span><span class="fl">0.05</span>, spread<span class="op">=</span><span class="fl">0.02</span>)</span>
@@ -581,7 +581,7 @@ window.Quarto = {
 <section id="approach-a-composition-the-strategy-pattern" class="level3">
 <h3 class="anchored" data-anchor-id="approach-a-composition-the-strategy-pattern">Approach A: Composition (The Strategy Pattern)</h3>
 <p>Here, we treat interpolation as a tool the curve <em>uses</em>. We define an <code>Interpolator</code> protocol and pass a concrete implementation (like <code>LinearInterpolator</code>) to the curve.</p>
-<div id="0bffe546" class="cell" data-execution_count="5">
+<div id="ff963297" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="im">from</span> typing <span class="im">import</span> Protocol</span>
@@ -631,7 +631,7 @@ window.Quarto = {
 <section id="approach-b-inheritance-mixins" class="level3">
 <h3 class="anchored" data-anchor-id="approach-b-inheritance-mixins">Approach B: Inheritance (Mixins)</h3>
 <p>Alternatively, we can “mix in” the ability to interpolate, just like we mixed in the spread logic.</p>
-<div id="3f8f89a0" class="cell" data-execution_count="6">
+<div id="c379a684" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">class</span> LinearInterpolationMixin:</span>
@@ -667,7 +667,7 @@ window.Quarto = {
 <section id="the-payoff-polymorphism" class="level2">
 <h2 class="anchored" data-anchor-id="the-payoff-polymorphism">The Payoff: Polymorphism</h2>
 <p>Here is where the magic happens. Because we adhered to our <code>YieldCurve</code> contract, our pricing function can be completely ignorant of the complexity we just built.</p>
-<div id="e5a470d2" class="cell" data-execution_count="7">
+<div id="7af73cc6" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
@@ -687,7 +687,7 @@ window.Quarto = {
 </details>
 </div>
 <p>Let’s test it:</p>
-<div id="df090a9b" class="cell" data-execution_count="8">
+<div id="2270b8c0" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Define a bond: coupon of 5 at t=1, principal 105 at t=2</span></span>
@@ -718,7 +718,7 @@ Price (Mixin): 97.90</code></pre>
 <h2 class="anchored" data-anchor-id="protocols-when-inheritance-feels-heavy">Protocols: When Inheritance Feels Heavy</h2>
 <p>Inheritance is a commitment. Sometimes you want to use a class from a third-party library that <em>looks</em> like a yield curve but doesn’t inherit from your specific <code>YieldCurve</code> ABC.</p>
 <p>Python has a solution for this: <strong>Protocols</strong> (often called “Structural Subtyping” or “Duck Typing”). A Protocol defines a shape. It says, “I don’t care who your parents are, as long as you have a <code>discount_factor</code> method.”</p>
-<div id="b8bd44de" class="cell" data-execution_count="9">
+<div id="ce6d5479" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="im">from</span> typing <span class="im">import</span> runtime_checkable</span>

@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2026-04-05">
-<meta name="description" content="A high-density guide to Polars’ expression engine, showcasing complex transformations across all execution contexts.">
+<meta name="description" content="An in-depth guide to Polars’ expression engine, focusing on financial metrics, risk aggregations, and high-performance time-series transformations for quantitative research.">
 
-<title>Polars Cheatsheet: Expressions &amp; Contexts – bwrob blog</title>
+<title>Polars for Finance: High-Performance Expressions &amp; Contexts – bwrob blog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -367,14 +367,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Polars Cheatsheet: Expressions &amp; Contexts</h1>
+      <h1 class="title">Polars for Finance: High-Performance Expressions &amp; Contexts</h1>
                   <div>
         <div class="description">
-          A high-density guide to Polars’ expression engine, showcasing complex transformations across all execution contexts.
+          An in-depth guide to Polars’ expression engine, focusing on financial metrics, risk aggregations, and high-performance time-series transformations for quantitative research.
         </div>
       </div>
                           <div class="quarto-categories">
                 <div class="quarto-category">Data Science</div>
+                <div class="quarto-category">Finance</div>
+                <div class="quarto-category">Programming</div>
               </div>
                   </div>
   </div>
@@ -402,21 +404,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#loading-the-data" id="toc-loading-the-data" class="nav-link active" data-scroll-target="#loading-the-data">1. Loading the Data</a></li>
-  <li><a href="#expressions-the-building-blocks" id="toc-expressions-the-building-blocks" class="nav-link" data-scroll-target="#expressions-the-building-blocks">2. Expressions: The Building Blocks</a></li>
-  <li><a href="#power-selectors-polars.selectors" id="toc-power-selectors-polars.selectors" class="nav-link" data-scroll-target="#power-selectors-polars.selectors">3. Power Selectors (<code>polars.selectors</code>)</a></li>
-  <li><a href="#context-selection-select" id="toc-context-selection-select" class="nav-link" data-scroll-target="#context-selection-select">4. Context: Selection (<code>select</code>)</a></li>
-  <li><a href="#context-modification-with_columns" id="toc-context-modification-with_columns" class="nav-link" data-scroll-target="#context-modification-with_columns">5. Context: Modification (<code>with_columns</code>)</a></li>
-  <li><a href="#context-aggregation-group_by" id="toc-context-aggregation-group_by" class="nav-link" data-scroll-target="#context-aggregation-group_by">6. Context: Aggregation (<code>group_by</code>)</a></li>
-  <li><a href="#window-functions-over" id="toc-window-functions-over" class="nav-link" data-scroll-target="#window-functions-over">7. Window Functions (<code>over</code>)</a></li>
-  <li><a href="#complex-types-lists-structs" id="toc-complex-types-lists-structs" class="nav-link" data-scroll-target="#complex-types-lists-structs">8. Complex Types: Lists &amp; Structs</a></li>
-  <li><a href="#time-series-mastery-asof-rolling" id="toc-time-series-mastery-asof-rolling" class="nav-link" data-scroll-target="#time-series-mastery-asof-rolling">9. Time Series Mastery: <code>asof</code> &amp; Rolling</a></li>
-  <li><a href="#reshaping-pivot-and-unpivot" id="toc-reshaping-pivot-and-unpivot" class="nav-link" data-scroll-target="#reshaping-pivot-and-unpivot">10. Reshaping: <code>pivot</code> and <code>unpivot</code></a></li>
-  <li><a href="#set-operations-semi-and-anti-joins" id="toc-set-operations-semi-and-anti-joins" class="nav-link" data-scroll-target="#set-operations-semi-and-anti-joins">11. Set Operations: <code>semi</code> and <code>anti</code> joins</a></li>
-  <li><a href="#optimization-categorical-vs-enum" id="toc-optimization-categorical-vs-enum" class="nav-link" data-scroll-target="#optimization-categorical-vs-enum">12. Optimization: Categorical vs Enum</a></li>
-  <li><a href="#missing-data-interpolate-coalesce" id="toc-missing-data-interpolate-coalesce" class="nav-link" data-scroll-target="#missing-data-interpolate-coalesce">13. Missing Data: Interpolate &amp; Coalesce</a></li>
-  <li><a href="#concatenation-pl.concat" id="toc-concatenation-pl.concat" class="nav-link" data-scroll-target="#concatenation-pl.concat">14. Concatenation: <code>pl.concat</code></a></li>
-  <li><a href="#out-of-core-partitioning" id="toc-out-of-core-partitioning" class="nav-link" data-scroll-target="#out-of-core-partitioning">15. Out-of-Core &amp; Partitioning</a></li>
+  <li><a href="#loading-financial-data" id="toc-loading-financial-data" class="nav-link active" data-scroll-target="#loading-financial-data">1. Loading Financial Data</a></li>
+  <li><a href="#expressions-the-atomic-units-of-logic" id="toc-expressions-the-atomic-units-of-logic" class="nav-link" data-scroll-target="#expressions-the-atomic-units-of-logic">2. Expressions: The Atomic Units of Logic</a></li>
+  <li><a href="#context-selection-feature-engineering" id="toc-context-selection-feature-engineering" class="nav-link" data-scroll-target="#context-selection-feature-engineering">3. Context: Selection &amp; Feature Engineering</a></li>
+  <li><a href="#context-aggregation-group_by" id="toc-context-aggregation-group_by" class="nav-link" data-scroll-target="#context-aggregation-group_by">4. Context: Aggregation (<code>group_by</code>)</a></li>
+  <li><a href="#power-selectors-polars.selectors" id="toc-power-selectors-polars.selectors" class="nav-link" data-scroll-target="#power-selectors-polars.selectors">5. Power Selectors (<code>polars.selectors</code>)</a></li>
+  <li><a href="#window-functions-over" id="toc-window-functions-over" class="nav-link" data-scroll-target="#window-functions-over">6. Window Functions (<code>over</code>)</a></li>
+  <li><a href="#time-series-rolling-metrics-asof-joins" id="toc-time-series-rolling-metrics-asof-joins" class="nav-link" data-scroll-target="#time-series-rolling-metrics-asof-joins">7. Time Series: Rolling Metrics &amp; Asof Joins</a></li>
+  <li><a href="#reshaping-for-correlation-analysis" id="toc-reshaping-for-correlation-analysis" class="nav-link" data-scroll-target="#reshaping-for-correlation-analysis">8. Reshaping for Correlation Analysis</a></li>
+  <li><a href="#performance-optimization-categoricals-streaming" id="toc-performance-optimization-categoricals-streaming" class="nav-link" data-scroll-target="#performance-optimization-categoricals-streaming">9. Performance Optimization: Categoricals &amp; Streaming</a>
+  <ul class="collapse">
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/bwrob/bwrob.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -428,30 +427,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>Can there be anything lazier than a panda? Apparently, yes: a polar bear. Polars is considered the new kid on the block, but is in fact a mature, high-performance DataFrame library that has been gaining traction rapidly.</p>
-<p>Polars DSL separates <strong>Expressions</strong> (the <em>what</em>) from <strong>Contexts</strong> (the <em>where</em>). This architecture allows the engine to optimize queries globally before execution. It also allows for consistent syntax between lazy and eger execution modes, and across different operations (selection, modification, aggregation).</p>
-<p>Expressions are lazy representations of data transformations. They can be simple column references, complex chains of operations, or even entire subqueries. They are the building blocks of all data manipulation in Polars. Creating expression is not the same as executing it. Expressions are only evaluated when they are placed in a context. They can be created independently and reused across different contexts.</p>
-<p>Contexts determine how and when these expressions are evaluated, whether it’s during selection, modification, aggregation, or window functions. Depending on the context, the same expression can yield different results. For example, an expression that calculates a mean will return a single scalar in a <code>select</code> context, but will return a mean per group in a <code>group_by</code> context.</p>
-<section id="loading-the-data" class="level2">
-<h2 class="anchored" data-anchor-id="loading-the-data">1. Loading the Data</h2>
-<div id="56cde613" class="cell" data-execution_count="1">
+<p>In quantitative finance, the ability to process massive tick-level or daily datasets quickly is a competitive advantage. While Python has long relied on Pandas, its single-threaded nature and memory overhead often become bottlenecks during heavy backtesting or risk simulations. Polars has emerged as a high-performance alternative, written in Rust and built on the Apache Arrow memory model.</p>
+<p>The core of Polars’ efficiency lies in its <strong>Expression Engine</strong>. Unlike Pandas, where operations are often executed eagerly and sequentially, Polars separates the logic of <em>what</em> to calculate (<strong>Expressions</strong>) from <em>where</em> and <em>how</em> to calculate it (<strong>Contexts</strong>). This allows the query optimizer to look at your entire chain of operations, prune unnecessary columns, and parallelize the computation across all available CPU cores without being hindered by Python’s Global Interpreter Lock (GIL).</p>
+<section id="loading-financial-data" class="level2">
+<h2 class="anchored" data-anchor-id="loading-financial-data">1. Loading Financial Data</h2>
+<p>We start by loading OHLCV (Open, High, Low, Close, Volume) data for S&amp;P 500 constituents. Using the Arrow IPC (Feather) format is preferred in finance because it provides near-instantaneous loading via memory-mapping, preserving the data types and structure without the parsing overhead of CSV or Parquet.</p>
+<div id="a346a2c4" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="annotated-cell-1-2"><a href="#annotated-cell-1-2"></a><span class="im">import</span> polars.selectors <span class="im">as</span> cs</span>
-<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4"></a><span class="im">from</span> datetime <span class="im">import</span> datetime, timedelta</span>
+<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4"></a><span class="im">import</span> os</span>
 <span id="annotated-cell-1-5"><a href="#annotated-cell-1-5"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-6" class="code-annotation-target"><a href="#annotated-cell-1-6"></a>df <span class="op">=</span> pl.from_pandas(sns.load_dataset(<span class="st">'iris'</span>))</span>
-<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7"></a>df.head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-6" class="code-annotation-target"><a href="#annotated-cell-1-6"></a>root <span class="op">=</span> Path(os.path.abspath(<span class="st">""</span>)).parent.parent</span>
+<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-1-8" class="code-annotation-target"><a href="#annotated-cell-1-8"></a>df <span class="op">=</span> pl.read_ipc(root <span class="op">/</span> <span class="st">"assets"</span> <span class="op">/</span> <span class="st">"data"</span> <span class="op">/</span> <span class="st">"ticker_data.arrow"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-1-9" class="code-annotation-target"><a href="#annotated-cell-1-9"></a>df <span class="op">=</span> df.sort([<span class="st">"ticker"</span>, <span class="st">"date"</span>])</span>
+<span id="annotated-cell-1-10"><a href="#annotated-cell-1-10"></a></span>
+<span id="annotated-cell-1-11"><a href="#annotated-cell-1-11"></a>df.head(<span class="dv">5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="6" data-code-annotation="1">Load from seaborn and convert.</span>
+<span data-code-cell="annotated-cell-1" data-code-lines="6" data-code-annotation="1">Set root path to project directory.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="8" data-code-annotation="2">Load ticker data from an Arrow file. Polars’ <code>read_ipc</code> is significantly faster than Pandas’ <code>read_feather</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="9" data-code-annotation="3">Sorting is critical for time-series operations like shifts and rolling windows.</span>
 </dd>
 </dl>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Could not memory_map compressed IPC file, defaulting to normal read. Toggle off 'memory_map' to silence this warning.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><style>
@@ -461,45 +474,73 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (3, 5)</small>
+<small>shape: (5, 7)</small>
 <table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th">sepal_length</th>
-<th data-quarto-table-cell-role="th">sepal_width</th>
-<th data-quarto-table-cell-role="th">petal_length</th>
-<th data-quarto-table-cell-role="th">petal_width</th>
-<th data-quarto-table-cell-role="th">species</th>
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">ticker</th>
+<th data-quarto-table-cell-role="th">open</th>
+<th data-quarto-table-cell-role="th">high</th>
+<th data-quarto-table-cell-role="th">low</th>
+<th data-quarto-table-cell-role="th">close</th>
+<th data-quarto-table-cell-role="th">volume</th>
 </tr>
 <tr class="even">
-<td>f64</td>
-<td>f64</td>
-<td>f64</td>
-<td>f64</td>
+<td>date</td>
 <td>str</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>5.1</td>
-<td>3.5</td>
-<td>1.4</td>
-<td>0.2</td>
-<td>"setosa"</td>
+<td>2006-01-03</td>
+<td>"A"</td>
+<td>19.918699</td>
+<td>20.025999</td>
+<td>19.5728</td>
+<td>19.9783</td>
+<td>5.307088e6</td>
 </tr>
 <tr class="even">
-<td>4.9</td>
-<td>3.0</td>
-<td>1.4</td>
-<td>0.2</td>
-<td>"setosa"</td>
+<td>2006-01-04</td>
+<td>"A"</td>
+<td>20.008101</td>
+<td>20.1751</td>
+<td>19.900801</td>
+<td>20.032</td>
+<td>4.195817e6</td>
 </tr>
 <tr class="odd">
-<td>4.7</td>
-<td>3.2</td>
-<td>1.3</td>
-<td>0.2</td>
-<td>"setosa"</td>
+<td>2006-01-05</td>
+<td>"A"</td>
+<td>19.9485</td>
+<td>20.556801</td>
+<td>19.9485</td>
+<td>20.556801</td>
+<td>4.835402e6</td>
+</tr>
+<tr class="even">
+<td>2006-01-06</td>
+<td>"A"</td>
+<td>20.574699</td>
+<td>20.747601</td>
+<td>20.3302</td>
+<td>20.664101</td>
+<td>6.146307e6</td>
+</tr>
+<tr class="odd">
+<td>2006-01-09</td>
+<td>"A"</td>
+<td>20.664101</td>
+<td>20.753599</td>
+<td>20.527</td>
+<td>20.6045</td>
+<td>4.082859e6</td>
 </tr>
 </tbody>
 </table>
@@ -507,54 +548,66 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="expressions-the-building-blocks" class="level2">
-<h2 class="anchored" data-anchor-id="expressions-the-building-blocks">2. Expressions: The Building Blocks</h2>
-<p>Expressions are the atomic units of logic. They are lazily evaluated and can be chained indefinitely.</p>
-<div id="30baf6c9" class="cell" data-execution_count="2">
+<section id="expressions-the-atomic-units-of-logic" class="level2">
+<h2 class="anchored" data-anchor-id="expressions-the-atomic-units-of-logic">2. Expressions: The Atomic Units of Logic</h2>
+<p>Expressions are the building blocks of Polars logic. They are lazily evaluated and represent a tree of operations. In a financial context, we can define modular expressions for standard metrics like log returns or volatility and reuse them across different DataFrames or pipelines.</p>
+<p>One major advantage here is <strong>composability</strong>. You can define an expression once and apply it to any column that fits the required data type.</p>
+<div id="d1aa5433" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a>expr <span class="op">=</span> (</span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>    (pl.col(<span class="st">"sepal_length"</span>) <span class="op">-</span> pl.col(<span class="st">"sepal_length"</span>).mean())</span>
-<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3"></a>    <span class="op">/</span> pl.col(<span class="st">"sepal_length"</span>).std()</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4"></a>).clip(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>).cast(pl.Float32)</span>
-<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-6" class="code-annotation-target"><a href="#annotated-cell-2-6"></a>species_upper <span class="op">=</span> pl.col(<span class="st">"species"</span>).<span class="bu">str</span>.to_uppercase()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1"></a>log_return <span class="op">=</span> (pl.col(<span class="st">"close"</span>) <span class="op">/</span> pl.col(<span class="st">"close"</span>).shift(<span class="dv">1</span>)).log().over(<span class="st">"ticker"</span>)</span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a></span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3"></a>realized_vol <span class="op">=</span> (log_return.rolling_std(window_size<span class="op">=</span><span class="dv">21</span>) <span class="op">*</span> (<span class="dv">252</span><span class="op">**</span><span class="fl">0.5</span>)).over(</span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4"></a>    <span class="st">"ticker"</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-5" class="code-annotation-target"><a href="#annotated-cell-2-5"></a>)</span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6"></a></span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7"></a></span>
+<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8"></a><span class="kw">def</span> min_max_scale(name: <span class="bu">str</span>) <span class="op">-&gt;</span> pl.Expr:</span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9"></a>    col <span class="op">=</span> pl.col(name)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-10" class="code-annotation-target"><a href="#annotated-cell-2-10"></a>    <span class="cf">return</span> (col <span class="op">-</span> col.<span class="bu">min</span>()) <span class="op">/</span> (col.<span class="bu">max</span>() <span class="op">-</span> col.<span class="bu">min</span>())</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="4" data-code-annotation="1">Complex logic: normalization, clipping, and casting.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="1" data-code-annotation="1">Log Returns: ln(P_t / P_{t-1}). We use <code>.over("ticker")</code> to ensure returns are calculated within each instrument.</span>
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="6" data-code-annotation="2">Column-level string/date operations.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="5" data-code-annotation="2">Realized Volatility: Annualized standard deviation of log returns. window_size=21 represents a typical trading month.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="10" data-code-annotation="3">Min-Max Scaling: A common normalization for machine learning features.</span>
 </dd>
 </dl>
 </div>
 </div>
 </section>
-<section id="power-selectors-polars.selectors" class="level2">
-<h2 class="anchored" data-anchor-id="power-selectors-polars.selectors">3. Power Selectors (<code>polars.selectors</code>)</h2>
-<p>Selectors target columns based on their properties, types, or names.</p>
-<div id="d19dcd12" class="cell" data-execution_count="3">
+<section id="context-selection-feature-engineering" class="level2">
+<h2 class="anchored" data-anchor-id="context-selection-feature-engineering">3. Context: Selection &amp; Feature Engineering</h2>
+<p>Contexts are the environments where expressions are executed. The two most common are <code>select</code> (creating a new DataFrame from expressions) and <code>with_columns</code> (adding or updating columns in an existing DataFrame).</p>
+<p>For financial feature engineering, <code>with_columns</code> is the workhorse. It allows for the parallel creation of multiple technical indicators in a single pass over the data.</p>
+<div id="bc01e39b" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1"></a>df.select(cs.numeric() <span class="op">&amp;</span> cs.contains(<span class="st">"width"</span>))</span>
-<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2"></a></span>
-<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3"></a>df.select(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-4" class="code-annotation-target"><a href="#annotated-cell-3-4"></a>    (cs.numeric() <span class="op">-</span> cs.by_name(<span class="st">"sepal_length"</span>)) <span class="op">*</span> <span class="dv">100</span></span>
-<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5"></a>).head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a>df <span class="op">=</span> df.with_columns(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2"></a>    ret<span class="op">=</span>log_return,</span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3"></a>    vol<span class="op">=</span>realized_vol,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-4" class="code-annotation-target"><a href="#annotated-cell-3-4"></a>    typical_price<span class="op">=</span>(pl.col(<span class="st">"high"</span>) <span class="op">+</span> pl.col(<span class="st">"low"</span>) <span class="op">+</span> pl.col(<span class="st">"close"</span>)) <span class="op">/</span> <span class="dv">3</span>,</span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5"></a>)</span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6"></a></span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7"></a>df.tail(<span class="dv">5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="1" data-code-annotation="1">Target numeric columns that contain ‘width’.</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="1">Append log returns and realized volatility to the DataFrame.</span>
 </dd>
 <dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="4" data-code-annotation="2">Apply a transformation to all numeric columns except ‘sepal_length’.</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="4" data-code-annotation="2">Typical price is a common input for indicators like Money Flow Index.</span>
 </dd>
 </dl>
 </div>
@@ -566,35 +619,94 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (3, 3)</small>
+<small>shape: (5, 10)</small>
 <table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th">sepal_width</th>
-<th data-quarto-table-cell-role="th">petal_length</th>
-<th data-quarto-table-cell-role="th">petal_width</th>
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">ticker</th>
+<th data-quarto-table-cell-role="th">open</th>
+<th data-quarto-table-cell-role="th">high</th>
+<th data-quarto-table-cell-role="th">low</th>
+<th data-quarto-table-cell-role="th">close</th>
+<th data-quarto-table-cell-role="th">volume</th>
+<th data-quarto-table-cell-role="th">ret</th>
+<th data-quarto-table-cell-role="th">vol</th>
+<th data-quarto-table-cell-role="th">typical_price</th>
 </tr>
 <tr class="even">
-<td>f64</td>
-<td>f64</td>
-<td>f64</td>
+<td>date</td>
+<td>str</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>350.0</td>
-<td>140.0</td>
-<td>20.0</td>
+<td>2026-04-22</td>
+<td>"ZTS"</td>
+<td>118.949997</td>
+<td>119.910004</td>
+<td>116.599998</td>
+<td>117.519997</td>
+<td>3.5146e6</td>
+<td>-0.0056</td>
+<td>0.272725</td>
+<td>118.010002</td>
 </tr>
 <tr class="even">
-<td>300.0</td>
-<td>140.0</td>
-<td>20.0</td>
+<td>2026-04-23</td>
+<td>"ZTS"</td>
+<td>117.190002</td>
+<td>117.599998</td>
+<td>114.949997</td>
+<td>116.059998</td>
+<td>4.5328e6</td>
+<td>-0.012501</td>
+<td>0.276069</td>
+<td>116.203331</td>
 </tr>
 <tr class="odd">
-<td>320.0</td>
-<td>130.0</td>
-<td>20.0</td>
+<td>2026-04-24</td>
+<td>"ZTS"</td>
+<td>116.010002</td>
+<td>117.050003</td>
+<td>115.410004</td>
+<td>116.870003</td>
+<td>4.1851e6</td>
+<td>0.006955</td>
+<td>0.276144</td>
+<td>116.443344</td>
+</tr>
+<tr class="even">
+<td>2026-04-27</td>
+<td>"ZTS"</td>
+<td>116.620003</td>
+<td>119.68</td>
+<td>116.599998</td>
+<td>117.870003</td>
+<td>3.1603e6</td>
+<td>0.00852</td>
+<td>0.277579</td>
+<td>118.050003</td>
+</tr>
+<tr class="odd">
+<td>2026-04-28</td>
+<td>"ZTS"</td>
+<td>117.230003</td>
+<td>118.290001</td>
+<td>116.080002</td>
+<td>116.650002</td>
+<td>2.9725e6</td>
+<td>-0.010404</td>
+<td>0.260076</td>
+<td>117.006668</td>
 </tr>
 </tbody>
 </table>
@@ -602,31 +714,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="context-selection-select" class="level2">
-<h2 class="anchored" data-anchor-id="context-selection-select">4. Context: Selection (<code>select</code>)</h2>
-<p>In the <code>select</code> context, expressions must return a result of the same length or a scalar (which is broadcasted).</p>
-<div id="507725e1" class="cell" data-execution_count="4">
+<section id="context-aggregation-group_by" class="level2">
+<h2 class="anchored" data-anchor-id="context-aggregation-group_by">4. Context: Aggregation (<code>group_by</code>)</h2>
+<p>The <code>group_by</code> context allows for powerful split-apply-combine operations. In Polars, these aggregations are “push-down” optimized. When you run a risk summary, Polars doesn’t just group the data; it uses vectorized SIMD instructions to calculate sums and means across the groups simultaneously.</p>
+<p>This is where we calculate portfolio-level or ticker-level risk metrics like Maximum Drawdown or the Sharpe Ratio.</p>
+<div id="0cd61352" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>df.select(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-2" class="code-annotation-target"><a href="#annotated-cell-4-2"></a>    <span class="st">"species"</span>,</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3"></a>    mean_petal <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).mean(),</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4"></a>    sorted_sepal <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>).sort_by(<span class="st">"petal_width"</span>)</span>
-<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5"></a>).head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>risk_summary <span class="op">=</span> df.group_by(<span class="st">"ticker"</span>).agg(</span>
+<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2"></a>    annual_return<span class="op">=</span>(pl.col(<span class="st">"ret"</span>).mean() <span class="op">*</span> <span class="dv">252</span>),</span>
+<span id="annotated-cell-4-3"><a href="#annotated-cell-4-3"></a>    annual_vol<span class="op">=</span>(pl.col(<span class="st">"ret"</span>).std() <span class="op">*</span> (<span class="dv">252</span><span class="op">**</span><span class="fl">0.5</span>)),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4"></a>    max_drawdown<span class="op">=</span>((pl.col(<span class="st">"close"</span>) <span class="op">/</span> pl.col(<span class="st">"close"</span>).cum_max() <span class="op">-</span> <span class="dv">1</span>).<span class="bu">min</span>()),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-5" class="code-annotation-target"><a href="#annotated-cell-4-5"></a>    sharpe_ratio<span class="op">=</span>(pl.col(<span class="st">"ret"</span>).mean() <span class="op">/</span> pl.col(<span class="st">"ret"</span>).std()) <span class="op">*</span> (<span class="dv">252</span><span class="op">**</span><span class="fl">0.5</span>),</span>
+<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6"></a>)</span>
+<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7"></a></span>
+<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8"></a>risk_summary.sort(<span class="st">"sharpe_ratio"</span>, descending<span class="op">=</span><span class="va">True</span>).head(<span class="dv">5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="2" data-code-annotation="1">Simple selection.</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="4" data-code-annotation="1">Max Drawdown calculation using cumulative maximum.</span>
 </dd>
 <dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="3" data-code-annotation="2">Multiple aggregations as scalars (broadcasted).</span>
-</dd>
-<dt data-target-cell="annotated-cell-4" data-target-annotation="3">3</dt>
-<dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="4" data-code-annotation="3">Sorting one column based on another within select.</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="5" data-code-annotation="2">Risk-adjusted return (assuming 0% risk-free rate for simplicity).</span>
 </dd>
 </dl>
 </div>
@@ -638,35 +750,59 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (3, 3)</small>
+<small>shape: (5, 5)</small>
 <table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th">species</th>
-<th data-quarto-table-cell-role="th">mean_petal</th>
-<th data-quarto-table-cell-role="th">sorted_sepal</th>
+<th data-quarto-table-cell-role="th">ticker</th>
+<th data-quarto-table-cell-role="th">annual_return</th>
+<th data-quarto-table-cell-role="th">annual_vol</th>
+<th data-quarto-table-cell-role="th">max_drawdown</th>
+<th data-quarto-table-cell-role="th">sharpe_ratio</th>
 </tr>
 <tr class="even">
 <td>str</td>
-<td>f64</td>
-<td>f64</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>"setosa"</td>
-<td>3.758</td>
-<td>4.9</td>
+<td>"SNDK"</td>
+<td>2.785047</td>
+<td>0.98521</td>
+<td>-0.475009</td>
+<td>2.826855</td>
 </tr>
 <tr class="even">
-<td>"setosa"</td>
-<td>3.758</td>
-<td>4.8</td>
+<td>"GEV"</td>
+<td>1.023233</td>
+<td>0.533674</td>
+<td>-0.382856</td>
+<td>1.917337</td>
 </tr>
 <tr class="odd">
-<td>"setosa"</td>
-<td>3.758</td>
-<td>4.3</td>
+<td>"Q"</td>
+<td>0.743194</td>
+<td>0.545531</td>
+<td>-0.271231</td>
+<td>1.362331</td>
+</tr>
+<tr class="even">
+<td>"CEG"</td>
+<td>0.475289</td>
+<td>0.490132</td>
+<td>-0.507023</td>
+<td>0.969717</td>
+</tr>
+<tr class="odd">
+<td>"AVGO"</td>
+<td>0.351236</td>
+<td>0.378535</td>
+<td>-0.483</td>
+<td>0.927882</td>
 </tr>
 </tbody>
 </table>
@@ -674,31 +810,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="context-modification-with_columns" class="level2">
-<h2 class="anchored" data-anchor-id="context-modification-with_columns">5. Context: Modification (<code>with_columns</code>)</h2>
-<p>Used to append new columns or overwrite existing ones while keeping the rest of the DataFrame.</p>
-<div id="fbdc90c8" class="cell" data-execution_count="5">
+<section id="power-selectors-polars.selectors" class="level2">
+<h2 class="anchored" data-anchor-id="power-selectors-polars.selectors">5. Power Selectors (<code>polars.selectors</code>)</h2>
+<p>Selectors are a recent addition to Polars that allow you to target columns based on their properties (name, dtype, etc.) rather than hardcoding names. This is incredibly useful for stress testing or “what-if” analysis where you might want to apply a shock to all price-related columns simultaneously.</p>
+<div id="e6ce985c" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1"></a>df.with_columns(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-2" class="code-annotation-target"><a href="#annotated-cell-5-2"></a>    is_large <span class="op">=</span> (pl.col(<span class="st">"sepal_length"</span>) <span class="op">&gt;</span> <span class="dv">5</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"petal_length"</span>) <span class="op">&gt;</span> <span class="fl">1.5</span>),</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-5-3" class="code-annotation-target"><a href="#annotated-cell-5-3"></a>    max_dim <span class="op">=</span> pl.max_horizontal(cs.numeric()),</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-5-4" class="code-annotation-target"><a href="#annotated-cell-5-4"></a>    sepal_sum <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>) <span class="op">+</span> pl.col(<span class="st">"sepal_width"</span>)</span>
-<span id="annotated-cell-5-5"><a href="#annotated-cell-5-5"></a>).head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-1" class="code-annotation-target"><a href="#annotated-cell-5-1"></a>price_shock <span class="op">=</span> cs.starts_with(<span class="st">"open"</span>, <span class="st">"high"</span>, <span class="st">"low"</span>, <span class="st">"close"</span>) <span class="op">*</span> <span class="fl">1.01</span></span>
+<span id="annotated-cell-5-2"><a href="#annotated-cell-5-2"></a></span>
+<span id="annotated-cell-5-3"><a href="#annotated-cell-5-3"></a>df.select(</span>
+<span id="annotated-cell-5-4"><a href="#annotated-cell-5-4"></a>    <span class="st">"date"</span>,</span>
+<span id="annotated-cell-5-5"><a href="#annotated-cell-5-5"></a>    <span class="st">"ticker"</span>,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-5-6" class="code-annotation-target"><a href="#annotated-cell-5-6"></a>    price_shock.name.suffix(<span class="st">"_shock"</span>),</span>
+<span id="annotated-cell-5-7"><a href="#annotated-cell-5-7"></a>).head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="2" data-code-annotation="1">Complex boolean logic.</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="1" data-code-annotation="1">Scenario Analysis: Apply a 1% upward shock to all OHLC columns.</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="3" data-code-annotation="2">Row-wise maximum across numeric columns.</span>
-</dd>
-<dt data-target-cell="annotated-cell-5" data-target-annotation="3">3</dt>
-<dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="4" data-code-annotation="3">Renaming on the fly.</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="6" data-code-annotation="2">Apply the shock expression and append a suffix to the column names.</span>
 </dd>
 </dl>
 </div>
@@ -710,60 +844,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (3, 8)</small>
+<small>shape: (3, 6)</small>
 <table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th">sepal_length</th>
-<th data-quarto-table-cell-role="th">sepal_width</th>
-<th data-quarto-table-cell-role="th">petal_length</th>
-<th data-quarto-table-cell-role="th">petal_width</th>
-<th data-quarto-table-cell-role="th">species</th>
-<th data-quarto-table-cell-role="th">is_large</th>
-<th data-quarto-table-cell-role="th">max_dim</th>
-<th data-quarto-table-cell-role="th">sepal_sum</th>
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">ticker</th>
+<th data-quarto-table-cell-role="th">open_shock</th>
+<th data-quarto-table-cell-role="th">high_shock</th>
+<th data-quarto-table-cell-role="th">low_shock</th>
+<th data-quarto-table-cell-role="th">close_shock</th>
 </tr>
 <tr class="even">
-<td>f64</td>
-<td>f64</td>
-<td>f64</td>
-<td>f64</td>
+<td>date</td>
 <td>str</td>
-<td>bool</td>
-<td>f64</td>
-<td>f64</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>5.1</td>
-<td>3.5</td>
-<td>1.4</td>
-<td>0.2</td>
-<td>"setosa"</td>
-<td>false</td>
-<td>5.1</td>
-<td>8.6</td>
+<td>2006-01-03</td>
+<td>"A"</td>
+<td>20.117886</td>
+<td>20.226259</td>
+<td>19.768528</td>
+<td>20.178083</td>
 </tr>
 <tr class="even">
-<td>4.9</td>
-<td>3.0</td>
-<td>1.4</td>
-<td>0.2</td>
-<td>"setosa"</td>
-<td>false</td>
-<td>4.9</td>
-<td>7.9</td>
+<td>2006-01-04</td>
+<td>"A"</td>
+<td>20.208181</td>
+<td>20.376852</td>
+<td>20.099808</td>
+<td>20.232319</td>
 </tr>
 <tr class="odd">
-<td>4.7</td>
-<td>3.2</td>
-<td>1.3</td>
-<td>0.2</td>
-<td>"setosa"</td>
-<td>false</td>
-<td>4.7</td>
-<td>7.9</td>
+<td>2006-01-05</td>
+<td>"A"</td>
+<td>20.147984</td>
+<td>20.762369</td>
+<td>20.147984</td>
+<td>20.762369</td>
 </tr>
 </tbody>
 </table>
@@ -771,19 +895,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="context-aggregation-group_by" class="level2">
-<h2 class="anchored" data-anchor-id="context-aggregation-group_by">6. Context: Aggregation (<code>group_by</code>)</h2>
-<p>Expressions in <code>agg</code> are evaluated independently for each group.</p>
-<div id="1b6a7e8e" class="cell" data-execution_count="6">
+<section id="window-functions-over" class="level2">
+<h2 class="anchored" data-anchor-id="window-functions-over">6. Window Functions (<code>over</code>)</h2>
+<p>Window functions (<code>over</code>) are perhaps the most powerful tool for cross-sectional analysis. They allow you to compute group-level statistics (like a sector average or a market-cap weight) and project them back onto the original rows without performing a merge/join.</p>
+<p>In quantitative research, this is used for z-scoring features across the universe or calculating relative strength.</p>
+<div id="9cc2d3a1" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>df.group_by(<span class="st">"species"</span>).agg(</span>
-<span id="cb1-2"><a href="#cb1-2"></a>    pl.<span class="bu">len</span>().alias(<span class="st">"count"</span>),</span>
-<span id="cb1-3"><a href="#cb1-3"></a>    cs.numeric().mean().name.prefix(<span class="st">"avg_"</span>),</span>
-<span id="cb1-4"><a href="#cb1-4"></a>    petal_lengths <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).implode(),</span>
-<span id="cb1-5"><a href="#cb1-5"></a>    top_3_mean <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>).sort(descending<span class="op">=</span><span class="va">True</span>).head(<span class="dv">3</span>).mean()</span>
-<span id="cb1-6"><a href="#cb1-6"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1"></a>df.with_columns(</span>
+<span id="annotated-cell-6-2"><a href="#annotated-cell-6-2"></a>    vol_z<span class="op">=</span>(pl.col(<span class="st">"volume"</span>) <span class="op">-</span> pl.col(<span class="st">"volume"</span>).mean().over(<span class="st">"ticker"</span>))</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-6-3" class="code-annotation-target"><a href="#annotated-cell-6-3"></a>    <span class="op">/</span> pl.col(<span class="st">"volume"</span>).std().over(<span class="st">"ticker"</span>),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-6-4" class="code-annotation-target"><a href="#annotated-cell-6-4"></a>    rel_strength<span class="op">=</span>pl.col(<span class="st">"close"</span>) <span class="op">/</span> pl.col(<span class="st">"close"</span>).mean().over(<span class="st">"date"</span>),</span>
+<span id="annotated-cell-6-5"><a href="#annotated-cell-6-5"></a>).head(<span class="dv">5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="3" data-code-annotation="1">Z-score of volume: identifying unusual trading activity relative to the ticker’s history.</span>
+</dd>
+<dt data-target-cell="annotated-cell-6" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="4" data-code-annotation="2">Cross-sectional Relative Strength: Price relative to the market average for that specific day.</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <div><style>
 .dataframe > thead > tr,
@@ -792,98 +928,131 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (3, 8)</small>
+<small>shape: (5, 12)</small>
 <table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th">species</th>
-<th data-quarto-table-cell-role="th">count</th>
-<th data-quarto-table-cell-role="th">avg_sepal_length</th>
-<th data-quarto-table-cell-role="th">avg_sepal_width</th>
-<th data-quarto-table-cell-role="th">avg_petal_length</th>
-<th data-quarto-table-cell-role="th">avg_petal_width</th>
-<th data-quarto-table-cell-role="th">petal_lengths</th>
-<th data-quarto-table-cell-role="th">top_3_mean</th>
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">ticker</th>
+<th data-quarto-table-cell-role="th">open</th>
+<th data-quarto-table-cell-role="th">high</th>
+<th data-quarto-table-cell-role="th">low</th>
+<th data-quarto-table-cell-role="th">close</th>
+<th data-quarto-table-cell-role="th">volume</th>
+<th data-quarto-table-cell-role="th">ret</th>
+<th data-quarto-table-cell-role="th">vol</th>
+<th data-quarto-table-cell-role="th">typical_price</th>
+<th data-quarto-table-cell-role="th">vol_z</th>
+<th data-quarto-table-cell-role="th">rel_strength</th>
 </tr>
 <tr class="even">
+<td>date</td>
 <td>str</td>
-<td>u32</td>
-<td>f64</td>
-<td>f64</td>
-<td>f64</td>
-<td>f64</td>
-<td>list[f64]</td>
-<td>f64</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>"virginica"</td>
-<td>50</td>
-<td>6.588</td>
-<td>2.974</td>
-<td>5.552</td>
-<td>2.026</td>
-<td>[6.0, 5.1, … 5.1]</td>
-<td>7.766667</td>
+<td>2006-01-03</td>
+<td>"A"</td>
+<td>19.918699</td>
+<td>20.025999</td>
+<td>19.5728</td>
+<td>19.9783</td>
+<td>5.307088e6</td>
+<td>null</td>
+<td>null</td>
+<td>19.859035</td>
+<td>1.077447</td>
+<td>0.749611</td>
 </tr>
 <tr class="even">
-<td>"versicolor"</td>
-<td>50</td>
-<td>5.936</td>
-<td>2.77</td>
-<td>4.26</td>
-<td>1.326</td>
-<td>[4.7, 4.5, … 4.1]</td>
-<td>6.9</td>
+<td>2006-01-04</td>
+<td>"A"</td>
+<td>20.008101</td>
+<td>20.1751</td>
+<td>19.900801</td>
+<td>20.032</td>
+<td>4.195817e6</td>
+<td>0.002684</td>
+<td>null</td>
+<td>20.035969</td>
+<td>0.542916</td>
+<td>0.748959</td>
 </tr>
 <tr class="odd">
-<td>"setosa"</td>
-<td>50</td>
-<td>5.006</td>
-<td>3.428</td>
-<td>1.462</td>
-<td>0.246</td>
-<td>[1.4, 1.4, … 1.4]</td>
-<td>5.733333</td>
+<td>2006-01-05</td>
+<td>"A"</td>
+<td>19.9485</td>
+<td>20.556801</td>
+<td>19.9485</td>
+<td>20.556801</td>
+<td>4.835402e6</td>
+<td>0.025861</td>
+<td>null</td>
+<td>20.354034</td>
+<td>0.850562</td>
+<td>0.766769</td>
+</tr>
+<tr class="even">
+<td>2006-01-06</td>
+<td>"A"</td>
+<td>20.574699</td>
+<td>20.747601</td>
+<td>20.3302</td>
+<td>20.664101</td>
+<td>6.146307e6</td>
+<td>0.005206</td>
+<td>null</td>
+<td>20.580635</td>
+<td>1.481119</td>
+<td>0.764833</td>
+</tr>
+<tr class="odd">
+<td>2006-01-09</td>
+<td>"A"</td>
+<td>20.664101</td>
+<td>20.753599</td>
+<td>20.527</td>
+<td>20.6045</td>
+<td>4.082859e6</td>
+<td>-0.002888</td>
+<td>null</td>
+<td>20.628368</td>
+<td>0.488583</td>
+<td>0.754984</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 </div>
-<ol type="1">
-<li>Count rows.</li>
-<li>Multiple aggregations on multiple columns via selectors.</li>
-<li>Aggregation into a list (very powerful).</li>
-<li>Complex: Mean of top 3 values per group.</li>
-</ol>
 </section>
-<section id="window-functions-over" class="level2">
-<h2 class="anchored" data-anchor-id="window-functions-over">7. Window Functions (<code>over</code>)</h2>
-<p>Window functions allow you to perform group-level calculations without collapsing the rows.</p>
-<div id="caddff6a" class="cell" data-execution_count="7">
+<section id="time-series-rolling-metrics-asof-joins" class="level2">
+<h2 class="anchored" data-anchor-id="time-series-rolling-metrics-asof-joins">7. Time Series: Rolling Metrics &amp; Asof Joins</h2>
+<p>Polars was built with time-series as a first-class citizen. Its rolling expressions are highly optimized for windowed calculations. Furthermore, the <code>join_asof</code> function solves the “as-of” join problem (matching a trade to the most recent quote) with performance that far exceeds Pandas.</p>
+<div id="01f69a8d" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>df.with_columns(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-7-2" class="code-annotation-target"><a href="#annotated-cell-7-2"></a>    rank_in_species <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).rank(<span class="st">"dense"</span>, descending<span class="op">=</span><span class="va">True</span>).over(<span class="st">"species"</span>),</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-7-3" class="code-annotation-target"><a href="#annotated-cell-7-3"></a>    diff_from_group <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>) <span class="op">-</span> pl.col(<span class="st">"sepal_length"</span>).mean().over(<span class="st">"species"</span>),</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-7-4" class="code-annotation-target"><a href="#annotated-cell-7-4"></a>    cum_sum <span class="op">=</span> pl.col(<span class="st">"sepal_length"</span>).cum_sum().over(<span class="st">"species"</span>)</span>
-<span id="annotated-cell-7-5"><a href="#annotated-cell-7-5"></a>).head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-7-2"><a href="#annotated-cell-7-2"></a>    vwap<span class="op">=</span>(pl.col(<span class="st">"close"</span>) <span class="op">*</span> pl.col(<span class="st">"volume"</span>)).rolling_sum(<span class="dv">20</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-7-3" class="code-annotation-target"><a href="#annotated-cell-7-3"></a>    <span class="op">/</span> pl.col(<span class="st">"volume"</span>).rolling_sum(<span class="dv">20</span>)</span>
+<span id="annotated-cell-7-4"><a href="#annotated-cell-7-4"></a>).head(<span class="dv">5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-lines="2" data-code-annotation="1">Rank within species based on petal length.</span>
-</dd>
-<dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-7" data-code-lines="3" data-code-annotation="2">Diff from group mean.</span>
-</dd>
-<dt data-target-cell="annotated-cell-7" data-target-annotation="3">3</dt>
-<dd>
-<span data-code-cell="annotated-cell-7" data-code-lines="4" data-code-annotation="3">Cumulative sum within species.</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="3" data-code-annotation="1">Volume-Weighted Average Price (VWAP) over a rolling 20-day window.</span>
 </dd>
 </dl>
 </div>
@@ -895,60 +1064,101 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (3, 8)</small>
+<small>shape: (5, 11)</small>
 <table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th">sepal_length</th>
-<th data-quarto-table-cell-role="th">sepal_width</th>
-<th data-quarto-table-cell-role="th">petal_length</th>
-<th data-quarto-table-cell-role="th">petal_width</th>
-<th data-quarto-table-cell-role="th">species</th>
-<th data-quarto-table-cell-role="th">rank_in_species</th>
-<th data-quarto-table-cell-role="th">diff_from_group</th>
-<th data-quarto-table-cell-role="th">cum_sum</th>
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">ticker</th>
+<th data-quarto-table-cell-role="th">open</th>
+<th data-quarto-table-cell-role="th">high</th>
+<th data-quarto-table-cell-role="th">low</th>
+<th data-quarto-table-cell-role="th">close</th>
+<th data-quarto-table-cell-role="th">volume</th>
+<th data-quarto-table-cell-role="th">ret</th>
+<th data-quarto-table-cell-role="th">vol</th>
+<th data-quarto-table-cell-role="th">typical_price</th>
+<th data-quarto-table-cell-role="th">vwap</th>
 </tr>
 <tr class="even">
-<td>f64</td>
-<td>f64</td>
-<td>f64</td>
-<td>f64</td>
+<td>date</td>
 <td>str</td>
-<td>u32</td>
-<td>f64</td>
-<td>f64</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
+<td>f32</td>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>5.1</td>
-<td>3.5</td>
-<td>1.4</td>
-<td>0.2</td>
-<td>"setosa"</td>
-<td>5</td>
-<td>0.094</td>
-<td>5.1</td>
+<td>2006-01-03</td>
+<td>"A"</td>
+<td>19.918699</td>
+<td>20.025999</td>
+<td>19.5728</td>
+<td>19.9783</td>
+<td>5.307088e6</td>
+<td>null</td>
+<td>null</td>
+<td>19.859035</td>
+<td>null</td>
 </tr>
 <tr class="even">
-<td>4.9</td>
-<td>3.0</td>
-<td>1.4</td>
-<td>0.2</td>
-<td>"setosa"</td>
-<td>5</td>
-<td>-0.106</td>
-<td>10.0</td>
+<td>2006-01-04</td>
+<td>"A"</td>
+<td>20.008101</td>
+<td>20.1751</td>
+<td>19.900801</td>
+<td>20.032</td>
+<td>4.195817e6</td>
+<td>0.002684</td>
+<td>null</td>
+<td>20.035969</td>
+<td>null</td>
 </tr>
 <tr class="odd">
-<td>4.7</td>
-<td>3.2</td>
-<td>1.3</td>
-<td>0.2</td>
-<td>"setosa"</td>
-<td>6</td>
-<td>-0.306</td>
-<td>14.7</td>
+<td>2006-01-05</td>
+<td>"A"</td>
+<td>19.9485</td>
+<td>20.556801</td>
+<td>19.9485</td>
+<td>20.556801</td>
+<td>4.835402e6</td>
+<td>0.025861</td>
+<td>null</td>
+<td>20.354034</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td>2006-01-06</td>
+<td>"A"</td>
+<td>20.574699</td>
+<td>20.747601</td>
+<td>20.3302</td>
+<td>20.664101</td>
+<td>6.146307e6</td>
+<td>0.005206</td>
+<td>null</td>
+<td>20.580635</td>
+<td>null</td>
+</tr>
+<tr class="odd">
+<td>2006-01-09</td>
+<td>"A"</td>
+<td>20.664101</td>
+<td>20.753599</td>
+<td>20.527</td>
+<td>20.6045</td>
+<td>4.082859e6</td>
+<td>-0.002888</td>
+<td>null</td>
+<td>20.628368</td>
+<td>null</td>
 </tr>
 </tbody>
 </table>
@@ -956,41 +1166,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="complex-types-lists-structs" class="level2">
-<h2 class="anchored" data-anchor-id="complex-types-lists-structs">8. Complex Types: Lists &amp; Structs</h2>
-<p>Polars has first-class support for nested data.</p>
-<div id="2d266bbc" class="cell" data-execution_count="8">
+<section id="reshaping-for-correlation-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="reshaping-for-correlation-analysis">8. Reshaping for Correlation Analysis</h2>
+<p>Quant analysts often need to compute correlation matrices or covariance matrices for portfolio optimization. This requires pivoting “long” ticker data into a “wide” format where each column represents a different asset’s returns.</p>
+<div id="00a1ebad" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1"></a>df_struct <span class="op">=</span> df.with_columns(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-8-2" class="code-annotation-target"><a href="#annotated-cell-8-2"></a>    dims <span class="op">=</span> pl.struct(<span class="st">"sepal_length"</span>, <span class="st">"sepal_width"</span>)</span>
-<span id="annotated-cell-8-3"><a href="#annotated-cell-8-3"></a>)</span>
-<span id="annotated-cell-8-4"><a href="#annotated-cell-8-4"></a></span>
-<span id="annotated-cell-8-5"><a href="#annotated-cell-8-5"></a>df_struct.select(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-8-6" class="code-annotation-target"><a href="#annotated-cell-8-6"></a>    pl.col(<span class="st">"dims"</span>).struct.field(<span class="st">"sepal_length"</span>)</span>
-<span id="annotated-cell-8-7"><a href="#annotated-cell-8-7"></a>).head(<span class="dv">3</span>)</span>
-<span id="annotated-cell-8-8"><a href="#annotated-cell-8-8"></a></span>
-<span id="annotated-cell-8-9"><a href="#annotated-cell-8-9"></a>df.group_by(<span class="st">"species"</span>).agg(</span>
-<span id="annotated-cell-8-10"><a href="#annotated-cell-8-10"></a>    pl.col(<span class="st">"petal_length"</span>).implode()</span>
-<span id="annotated-cell-8-11"><a href="#annotated-cell-8-11"></a>).with_columns(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-8-12" class="code-annotation-target"><a href="#annotated-cell-8-12"></a>    top_2_avg <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).<span class="bu">list</span>.<span class="bu">eval</span>(</span>
-<span id="annotated-cell-8-13"><a href="#annotated-cell-8-13"></a>        pl.element().sort(descending<span class="op">=</span><span class="va">True</span>).head(<span class="dv">2</span>).mean()</span>
-<span id="annotated-cell-8-14"><a href="#annotated-cell-8-14"></a>    )</span>
-<span id="annotated-cell-8-15"><a href="#annotated-cell-8-15"></a>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1"></a>wide_returns <span class="op">=</span> df.pivot(</span>
+<span id="annotated-cell-8-2"><a href="#annotated-cell-8-2"></a>    index<span class="op">=</span><span class="st">"date"</span>,</span>
+<span id="annotated-cell-8-3"><a href="#annotated-cell-8-3"></a>    on<span class="op">=</span><span class="st">"ticker"</span>,</span>
+<span id="annotated-cell-8-4"><a href="#annotated-cell-8-4"></a>    values<span class="op">=</span><span class="st">"ret"</span>,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-8-5" class="code-annotation-target"><a href="#annotated-cell-8-5"></a>).drop_nulls()</span>
+<span id="annotated-cell-8-6"><a href="#annotated-cell-8-6"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-8-7" class="code-annotation-target"><a href="#annotated-cell-8-7"></a>corr_matrix <span class="op">=</span> wide_returns.select(cs.numeric()).corr()</span>
+<span id="annotated-cell-8-8"><a href="#annotated-cell-8-8"></a>corr_matrix.head(<span class="dv">5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-8" data-code-lines="2" data-code-annotation="1">Create a struct (row-wise grouping of columns).</span>
+<span data-code-cell="annotated-cell-8" data-code-lines="5" data-code-annotation="1">Transforming data from Long format (tidy) to Wide format for multivariate analysis.</span>
 </dd>
 <dt data-target-cell="annotated-cell-8" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-8" data-code-lines="6" data-code-annotation="2">Extracting from a struct.</span>
-</dd>
-<dt data-target-cell="annotated-cell-8" data-target-annotation="3">3</dt>
-<dd>
-<span data-code-cell="annotated-cell-8" data-code-lines="12" data-code-annotation="3">List mastery: eval() allows running full expressions inside a list column.</span>
+<span data-code-cell="annotated-cell-8" data-code-lines="7" data-code-annotation="2">Efficient correlation matrix calculation. Polars handles the underlying matrix math in parallel.</span>
 </dd>
 </dl>
 </div>
@@ -1002,385 +1201,549 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (3, 3)</small>
+<small>shape: (5, 501)</small>
 <table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th">species</th>
-<th data-quarto-table-cell-role="th">petal_length</th>
-<th data-quarto-table-cell-role="th">top_2_avg</th>
-</tr>
-<tr class="even">
-<td>str</td>
-<td>list[f64]</td>
-<td>list[f64]</td>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>"setosa"</td>
-<td>[1.4, 1.4, … 1.4]</td>
-<td>[1.9]</td>
-</tr>
-<tr class="even">
-<td>"virginica"</td>
-<td>[6.0, 5.1, … 5.1]</td>
-<td>[6.8]</td>
-</tr>
-<tr class="odd">
-<td>"versicolor"</td>
-<td>[4.7, 4.5, … 4.1]</td>
-<td>[5.05]</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</section>
-<section id="time-series-mastery-asof-rolling" class="level2">
-<h2 class="anchored" data-anchor-id="time-series-mastery-asof-rolling">9. Time Series Mastery: <code>asof</code> &amp; Rolling</h2>
-<p>Polars is blazingly fast for time-series.</p>
-<div id="1379706a" class="cell" data-execution_count="9">
-<details open="" class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1"></a>ts_df <span class="op">=</span> df.with_columns(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-9-2" class="code-annotation-target"><a href="#annotated-cell-9-2"></a>    time <span class="op">=</span> pl.datetime_range(datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>), datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="op">+</span> timedelta(days<span class="op">=</span><span class="dv">149</span>), <span class="st">"1d"</span>, eager<span class="op">=</span><span class="va">True</span>)</span>
-<span id="annotated-cell-9-3"><a href="#annotated-cell-9-3"></a>)</span>
-<span id="annotated-cell-9-4"><a href="#annotated-cell-9-4"></a></span>
-<span id="annotated-cell-9-5"><a href="#annotated-cell-9-5"></a>ts_df.with_columns(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-9-6" class="code-annotation-target"><a href="#annotated-cell-9-6"></a>    rolling_mean <span class="op">=</span> pl.col(<span class="st">"petal_length"</span>).rolling_mean_by(window_size<span class="op">=</span><span class="st">"3d"</span>, by<span class="op">=</span><span class="st">"time"</span>)</span>
-<span id="annotated-cell-9-7"><a href="#annotated-cell-9-7"></a>).head(<span class="dv">5</span>)</span>
-<span id="annotated-cell-9-8"><a href="#annotated-cell-9-8"></a></span>
-<span id="annotated-cell-9-9"><a href="#annotated-cell-9-9"></a>quotes <span class="op">=</span> pl.DataFrame({</span>
-<span id="annotated-cell-9-10"><a href="#annotated-cell-9-10"></a>    <span class="st">"time"</span>: [datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">0</span>), datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">5</span>)],</span>
-<span id="annotated-cell-9-11"><a href="#annotated-cell-9-11"></a>    <span class="st">"price"</span>: [<span class="fl">100.0</span>, <span class="fl">101.0</span>]</span>
-<span id="annotated-cell-9-12"><a href="#annotated-cell-9-12"></a>})</span>
-<span id="annotated-cell-9-13"><a href="#annotated-cell-9-13"></a>trades <span class="op">=</span> pl.DataFrame({<span class="st">"time"</span>: [datetime(<span class="dv">2023</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">2</span>)]})</span>
-<span id="annotated-cell-9-14"><a href="#annotated-cell-9-14"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-9-15" class="code-annotation-target"><a href="#annotated-cell-9-15"></a>trades.join_asof(quotes, on<span class="op">=</span><span class="st">"time"</span>, strategy<span class="op">=</span><span class="st">"backward"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-annotation">
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-9" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-9" data-code-lines="2" data-code-annotation="1">Setup time data.</span>
-</dd>
-<dt data-target-cell="annotated-cell-9" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-9" data-code-lines="6" data-code-annotation="2">Rolling window: 3-day mean of petal length.</span>
-</dd>
-<dt data-target-cell="annotated-cell-9" data-target-annotation="3">3</dt>
-<dd>
-<span data-code-cell="annotated-cell-9" data-code-lines="15" data-code-annotation="3">Join Asof: join on closest match (backwards/forward/nearest).</span>
-</dd>
-</dl>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="9">
-<div><style>
-.dataframe > thead > tr,
-.dataframe > tbody > tr {
-  text-align: right;
-  white-space: pre-wrap;
-}
-</style>
-<small>shape: (1, 2)</small>
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th">time</th>
-<th data-quarto-table-cell-role="th">price</th>
-</tr>
-<tr class="even">
-<td>datetime[μs]</td>
-<td>f64</td>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>2023-01-01 10:02:00</td>
-<td>100.0</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</section>
-<section id="reshaping-pivot-and-unpivot" class="level2">
-<h2 class="anchored" data-anchor-id="reshaping-pivot-and-unpivot">10. Reshaping: <code>pivot</code> and <code>unpivot</code></h2>
-<p>Convert data between wide and long formats.</p>
-<div id="56721130" class="cell" data-execution_count="10">
-<details open="" class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-10-1" class="code-annotation-target"><a href="#annotated-cell-10-1"></a>long_df <span class="op">=</span> df.unpivot(index<span class="op">=</span>[<span class="st">"species"</span>], on<span class="op">=</span>cs.numeric())</span>
-<span id="annotated-cell-10-2"><a href="#annotated-cell-10-2"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-10-3" class="code-annotation-target"><a href="#annotated-cell-10-3"></a>long_df.pivot(on<span class="op">=</span><span class="st">"variable"</span>, values<span class="op">=</span><span class="st">"value"</span>, index<span class="op">=</span><span class="st">"species"</span>, aggregate_function<span class="op">=</span><span class="st">"mean"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-annotation">
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-10" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-10" data-code-lines="1" data-code-annotation="1">Wide to Long (unpivot/melt).</span>
-</dd>
-<dt data-target-cell="annotated-cell-10" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-10" data-code-lines="3" data-code-annotation="2">Long to Wide (pivot).</span>
-</dd>
-</dl>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="10">
-<div><style>
-.dataframe > thead > tr,
-.dataframe > tbody > tr {
-  text-align: right;
-  white-space: pre-wrap;
-}
-</style>
-<small>shape: (3, 5)</small>
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th">species</th>
-<th data-quarto-table-cell-role="th">sepal_length</th>
-<th data-quarto-table-cell-role="th">sepal_width</th>
-<th data-quarto-table-cell-role="th">petal_length</th>
-<th data-quarto-table-cell-role="th">petal_width</th>
-</tr>
-<tr class="even">
-<td>str</td>
-<td>f64</td>
-<td>f64</td>
-<td>f64</td>
-<td>f64</td>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>"setosa"</td>
-<td>5.006</td>
-<td>3.428</td>
-<td>1.462</td>
-<td>0.246</td>
-</tr>
-<tr class="even">
-<td>"versicolor"</td>
-<td>5.936</td>
-<td>2.77</td>
-<td>4.26</td>
-<td>1.326</td>
-</tr>
-<tr class="odd">
-<td>"virginica"</td>
-<td>6.588</td>
-<td>2.974</td>
-<td>5.552</td>
-<td>2.026</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</section>
-<section id="set-operations-semi-and-anti-joins" class="level2">
-<h2 class="anchored" data-anchor-id="set-operations-semi-and-anti-joins">11. Set Operations: <code>semi</code> and <code>anti</code> joins</h2>
-<p>Filter one DataFrame by another without duplicating rows or merging columns.</p>
-<div id="9cd1414c" class="cell" data-execution_count="11">
-<details open="" class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-11"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1"></a>species_filter <span class="op">=</span> pl.DataFrame({<span class="st">"species"</span>: [<span class="st">"setosa"</span>]})</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-11-2" class="code-annotation-target"><a href="#annotated-cell-11-2"></a>df.join(species_filter, on<span class="op">=</span><span class="st">"species"</span>, how<span class="op">=</span><span class="st">"semi"</span>).head(<span class="dv">3</span>)</span>
-<span id="annotated-cell-11-3"><a href="#annotated-cell-11-3"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-11-4" class="code-annotation-target"><a href="#annotated-cell-11-4"></a>df.join(species_filter, on<span class="op">=</span><span class="st">"species"</span>, how<span class="op">=</span><span class="st">"anti"</span>).head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-annotation">
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-11" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-11" data-code-lines="2" data-code-annotation="1">Only Setosa (Semi join acts as a filter).</span>
-</dd>
-<dt data-target-cell="annotated-cell-11" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-11" data-code-lines="4" data-code-annotation="2">Everything BUT Setosa (Anti join).</span>
-</dd>
-</dl>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="11">
-<div><style>
-.dataframe > thead > tr,
-.dataframe > tbody > tr {
-  text-align: right;
-  white-space: pre-wrap;
-}
-</style>
-<small>shape: (3, 5)</small>
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th">sepal_length</th>
-<th data-quarto-table-cell-role="th">sepal_width</th>
-<th data-quarto-table-cell-role="th">petal_length</th>
-<th data-quarto-table-cell-role="th">petal_width</th>
-<th data-quarto-table-cell-role="th">species</th>
+<th data-quarto-table-cell-role="th">A</th>
+<th data-quarto-table-cell-role="th">AAPL</th>
+<th data-quarto-table-cell-role="th">ABBV</th>
+<th data-quarto-table-cell-role="th">ABNB</th>
+<th data-quarto-table-cell-role="th">ABT</th>
+<th data-quarto-table-cell-role="th">ACGL</th>
+<th data-quarto-table-cell-role="th">ACN</th>
+<th data-quarto-table-cell-role="th">ADBE</th>
+<th data-quarto-table-cell-role="th">ADI</th>
+<th data-quarto-table-cell-role="th">ADM</th>
+<th data-quarto-table-cell-role="th">ADP</th>
+<th data-quarto-table-cell-role="th">ADSK</th>
+<th data-quarto-table-cell-role="th">AEE</th>
+<th data-quarto-table-cell-role="th">AEP</th>
+<th data-quarto-table-cell-role="th">AES</th>
+<th data-quarto-table-cell-role="th">AFL</th>
+<th data-quarto-table-cell-role="th">AIG</th>
+<th data-quarto-table-cell-role="th">AIZ</th>
+<th data-quarto-table-cell-role="th">AJG</th>
+<th data-quarto-table-cell-role="th">AKAM</th>
+<th data-quarto-table-cell-role="th">ALB</th>
+<th data-quarto-table-cell-role="th">ALGN</th>
+<th data-quarto-table-cell-role="th">ALL</th>
+<th data-quarto-table-cell-role="th">ALLE</th>
+<th data-quarto-table-cell-role="th">AMAT</th>
+<th data-quarto-table-cell-role="th">AMCR</th>
+<th data-quarto-table-cell-role="th">AMD</th>
+<th data-quarto-table-cell-role="th">AME</th>
+<th data-quarto-table-cell-role="th">AMGN</th>
+<th data-quarto-table-cell-role="th">AMP</th>
+<th data-quarto-table-cell-role="th">AMT</th>
+<th data-quarto-table-cell-role="th">AMZN</th>
+<th data-quarto-table-cell-role="th">ANET</th>
+<th data-quarto-table-cell-role="th">AON</th>
+<th data-quarto-table-cell-role="th">AOS</th>
+<th data-quarto-table-cell-role="th">APA</th>
+<th data-quarto-table-cell-role="th">APD</th>
+<th data-quarto-table-cell-role="th">…</th>
+<th data-quarto-table-cell-role="th">VICI</th>
+<th data-quarto-table-cell-role="th">VLO</th>
+<th data-quarto-table-cell-role="th">VLTO</th>
+<th data-quarto-table-cell-role="th">VMC</th>
+<th data-quarto-table-cell-role="th">VRSK</th>
+<th data-quarto-table-cell-role="th">VRSN</th>
+<th data-quarto-table-cell-role="th">VRT</th>
+<th data-quarto-table-cell-role="th">VRTX</th>
+<th data-quarto-table-cell-role="th">VST</th>
+<th data-quarto-table-cell-role="th">VTR</th>
+<th data-quarto-table-cell-role="th">VTRS</th>
+<th data-quarto-table-cell-role="th">VZ</th>
+<th data-quarto-table-cell-role="th">WAB</th>
+<th data-quarto-table-cell-role="th">WAT</th>
+<th data-quarto-table-cell-role="th">WBD</th>
+<th data-quarto-table-cell-role="th">WDAY</th>
+<th data-quarto-table-cell-role="th">WDC</th>
+<th data-quarto-table-cell-role="th">WEC</th>
+<th data-quarto-table-cell-role="th">WELL</th>
+<th data-quarto-table-cell-role="th">WFC</th>
+<th data-quarto-table-cell-role="th">WM</th>
+<th data-quarto-table-cell-role="th">WMB</th>
+<th data-quarto-table-cell-role="th">WMT</th>
+<th data-quarto-table-cell-role="th">WRB</th>
+<th data-quarto-table-cell-role="th">WSM</th>
+<th data-quarto-table-cell-role="th">WST</th>
+<th data-quarto-table-cell-role="th">WTW</th>
+<th data-quarto-table-cell-role="th">WY</th>
+<th data-quarto-table-cell-role="th">WYNN</th>
+<th data-quarto-table-cell-role="th">XEL</th>
+<th data-quarto-table-cell-role="th">XOM</th>
+<th data-quarto-table-cell-role="th">XYL</th>
+<th data-quarto-table-cell-role="th">XYZ</th>
+<th data-quarto-table-cell-role="th">YUM</th>
+<th data-quarto-table-cell-role="th">ZBH</th>
+<th data-quarto-table-cell-role="th">ZBRA</th>
+<th data-quarto-table-cell-role="th">ZTS</th>
 </tr>
 <tr class="even">
 <td>f64</td>
 <td>f64</td>
 <td>f64</td>
 <td>f64</td>
-<td>str</td>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>7.0</td>
-<td>3.2</td>
-<td>4.7</td>
-<td>1.4</td>
-<td>"versicolor"</td>
-</tr>
-<tr class="even">
-<td>6.4</td>
-<td>3.2</td>
-<td>4.5</td>
-<td>1.5</td>
-<td>"versicolor"</td>
-</tr>
-<tr class="odd">
-<td>6.9</td>
-<td>3.1</td>
-<td>4.9</td>
-<td>1.5</td>
-<td>"versicolor"</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</section>
-<section id="optimization-categorical-vs-enum" class="level2">
-<h2 class="anchored" data-anchor-id="optimization-categorical-vs-enum">12. Optimization: Categorical vs Enum</h2>
-<p>Strings should almost always be encoded. <code>Enum</code> is fixed and faster; <code>Categorical</code> is dynamic.</p>
-<div id="70cbd4f1" class="cell" data-execution_count="12">
-<details open="" class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-12"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-12-1" class="code-annotation-target"><a href="#annotated-cell-12-1"></a>species_enum <span class="op">=</span> pl.Enum([<span class="st">"setosa"</span>, <span class="st">"versicolor"</span>, <span class="st">"virginica"</span>])</span>
-<span id="annotated-cell-12-2"><a href="#annotated-cell-12-2"></a>df.with_columns(pl.col(<span class="st">"species"</span>).cast(species_enum)).head(<span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-annotation">
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-12" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-12" data-code-lines="1" data-code-annotation="1">Use Enum for fixed sets (Species is perfect).</span>
-</dd>
-</dl>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="12">
-<div><style>
-.dataframe > thead > tr,
-.dataframe > tbody > tr {
-  text-align: right;
-  white-space: pre-wrap;
-}
-</style>
-<small>shape: (3, 5)</small>
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th">sepal_length</th>
-<th data-quarto-table-cell-role="th">sepal_width</th>
-<th data-quarto-table-cell-role="th">petal_length</th>
-<th data-quarto-table-cell-role="th">petal_width</th>
-<th data-quarto-table-cell-role="th">species</th>
-</tr>
-<tr class="even">
 <td>f64</td>
 <td>f64</td>
 <td>f64</td>
 <td>f64</td>
-<td>enum</td>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>5.1</td>
-<td>3.5</td>
-<td>1.4</td>
-<td>0.2</td>
-<td>"setosa"</td>
-</tr>
-<tr class="even">
-<td>4.9</td>
-<td>3.0</td>
-<td>1.4</td>
-<td>0.2</td>
-<td>"setosa"</td>
-</tr>
-<tr class="odd">
-<td>4.7</td>
-<td>3.2</td>
-<td>1.3</td>
-<td>0.2</td>
-<td>"setosa"</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</section>
-<section id="missing-data-interpolate-coalesce" class="level2">
-<h2 class="anchored" data-anchor-id="missing-data-interpolate-coalesce">13. Missing Data: Interpolate &amp; Coalesce</h2>
-<div id="5c34f4ba" class="cell" data-execution_count="13">
-<details open="" class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-13"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1"></a>messy <span class="op">=</span> pl.DataFrame({<span class="st">"a"</span>: [<span class="dv">1</span>, <span class="va">None</span>, <span class="va">None</span>], <span class="st">"b"</span>: [<span class="va">None</span>, <span class="dv">2</span>, <span class="va">None</span>], <span class="st">"c"</span>: [<span class="va">None</span>, <span class="va">None</span>, <span class="dv">3</span>]})</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-13-2" class="code-annotation-target"><a href="#annotated-cell-13-2"></a>messy.select(filled <span class="op">=</span> pl.coalesce(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>))</span>
-<span id="annotated-cell-13-3"><a href="#annotated-cell-13-3"></a></span>
-<span id="annotated-cell-13-4"><a href="#annotated-cell-13-4"></a>df_missing <span class="op">=</span> pl.DataFrame({<span class="st">"val"</span>: [<span class="fl">1.0</span>, <span class="va">None</span>, <span class="fl">3.0</span>]})</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-13-5" class="code-annotation-target"><a href="#annotated-cell-13-5"></a>df_missing.select(pl.col(<span class="st">"val"</span>).interpolate())</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-annotation">
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-13" data-code-lines="2" data-code-annotation="1">Coalesce: first non-null value from multiple columns.</span>
-</dd>
-<dt data-target-cell="annotated-cell-13" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-13" data-code-lines="5" data-code-annotation="2">Interpolate: linear fill for missing numeric data.</span>
-</dd>
-</dl>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="13">
-<div><style>
-.dataframe > thead > tr,
-.dataframe > tbody > tr {
-  text-align: right;
-  white-space: pre-wrap;
-}
-</style>
-<small>shape: (3, 1)</small>
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th">val</th>
-</tr>
-<tr class="even">
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>…</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
 <td>f64</td>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td>1.0</td>
+<td>0.252005</td>
+<td>0.159886</td>
+<td>0.387158</td>
+<td>0.291319</td>
+<td>0.051918</td>
+<td>0.314924</td>
+<td>0.220464</td>
+<td>0.365594</td>
+<td>0.082219</td>
+<td>0.250166</td>
+<td>0.352096</td>
+<td>0.01177</td>
+<td>-0.145537</td>
+<td>0.20628</td>
+<td>0.149047</td>
+<td>-0.048577</td>
+<td>0.142817</td>
+<td>0.096217</td>
+<td>0.21591</td>
+<td>0.184219</td>
+<td>0.467583</td>
+<td>0.129767</td>
+<td>0.202938</td>
+<td>0.322944</td>
+<td>0.333373</td>
+<td>0.084619</td>
+<td>0.375688</td>
+<td>0.321947</td>
+<td>0.361348</td>
+<td>0.011551</td>
+<td>0.34124</td>
+<td>0.173192</td>
+<td>0.162829</td>
+<td>0.229952</td>
+<td>-0.147347</td>
+<td>0.205694</td>
+<td>…</td>
+<td>0.016885</td>
+<td>-0.049898</td>
+<td>0.323352</td>
+<td>0.333929</td>
+<td>0.135326</td>
+<td>0.065517</td>
+<td>0.177153</td>
+<td>0.315086</td>
+<td>0.133985</td>
+<td>-0.169327</td>
+<td>0.253472</td>
+<td>-0.07502</td>
+<td>0.337305</td>
+<td>0.62843</td>
+<td>0.056035</td>
+<td>0.257507</td>
+<td>0.22573</td>
+<td>-0.032459</td>
+<td>-0.059922</td>
+<td>0.214895</td>
+<td>0.004414</td>
+<td>-0.119114</td>
+<td>0.066659</td>
+<td>0.013125</td>
+<td>0.385525</td>
+<td>0.357492</td>
+<td>0.103034</td>
+<td>0.16268</td>
+<td>0.289355</td>
+<td>0.007724</td>
+<td>-0.119016</td>
+<td>0.23687</td>
+<td>0.381205</td>
+<td>0.216098</td>
+<td>0.196699</td>
+<td>0.274606</td>
+<td>0.362176</td>
+</tr>
+<tr class="even">
+<td>0.252005</td>
 <td>1.0</td>
-</tr>
-<tr class="even">
-<td>2.0</td>
+<td>0.032607</td>
+<td>0.353655</td>
+<td>0.207605</td>
+<td>0.10381</td>
+<td>0.050583</td>
+<td>0.132521</td>
+<td>0.365957</td>
+<td>-0.057716</td>
+<td>0.06369</td>
+<td>0.121071</td>
+<td>-0.158196</td>
+<td>-0.146113</td>
+<td>0.018032</td>
+<td>0.205258</td>
+<td>0.216694</td>
+<td>0.115361</td>
+<td>0.003543</td>
+<td>-0.085321</td>
+<td>0.028355</td>
+<td>0.376391</td>
+<td>0.127262</td>
+<td>0.008084</td>
+<td>0.178174</td>
+<td>0.273976</td>
+<td>0.092632</td>
+<td>0.342363</td>
+<td>0.248612</td>
+<td>0.294118</td>
+<td>0.025718</td>
+<td>0.231091</td>
+<td>0.098731</td>
+<td>-0.052414</td>
+<td>0.18999</td>
+<td>-0.127354</td>
+<td>0.106166</td>
+<td>…</td>
+<td>0.109663</td>
+<td>-0.125555</td>
+<td>0.149918</td>
+<td>0.116569</td>
+<td>-0.076417</td>
+<td>0.007996</td>
+<td>0.242075</td>
+<td>0.07343</td>
+<td>-0.009934</td>
+<td>0.081029</td>
+<td>0.401407</td>
+<td>-0.069197</td>
+<td>0.336963</td>
+<td>0.267525</td>
+<td>0.150331</td>
+<td>0.083502</td>
+<td>0.115886</td>
+<td>-0.190388</td>
+<td>0.044669</td>
+<td>0.36324</td>
+<td>-0.072876</td>
+<td>-0.057587</td>
+<td>0.033092</td>
+<td>0.117635</td>
+<td>0.27519</td>
+<td>0.175975</td>
+<td>0.068427</td>
+<td>0.108035</td>
+<td>0.365579</td>
+<td>-0.149933</td>
+<td>-0.108486</td>
+<td>0.194755</td>
+<td>0.151375</td>
+<td>0.146997</td>
+<td>0.06224</td>
+<td>0.188564</td>
+<td>0.252188</td>
 </tr>
 <tr class="odd">
-<td>3.0</td>
+<td>0.159886</td>
+<td>0.032607</td>
+<td>1.0</td>
+<td>0.025042</td>
+<td>0.17823</td>
+<td>0.1801</td>
+<td>0.051987</td>
+<td>0.065414</td>
+<td>0.029073</td>
+<td>0.030087</td>
+<td>-0.049793</td>
+<td>0.074998</td>
+<td>0.27563</td>
+<td>0.201132</td>
+<td>0.01249</td>
+<td>0.162784</td>
+<td>0.032822</td>
+<td>0.151542</td>
+<td>0.089796</td>
+<td>0.13993</td>
+<td>0.098696</td>
+<td>0.106788</td>
+<td>0.131893</td>
+<td>0.054494</td>
+<td>0.021722</td>
+<td>0.108147</td>
+<td>0.003968</td>
+<td>0.181843</td>
+<td>0.389602</td>
+<td>-0.032594</td>
+<td>0.105185</td>
+<td>-0.112818</td>
+<td>-0.002974</td>
+<td>0.035057</td>
+<td>0.120331</td>
+<td>-0.133418</td>
+<td>0.137989</td>
+<td>…</td>
+<td>0.028821</td>
+<td>-0.092267</td>
+<td>0.206458</td>
+<td>0.08881</td>
+<td>0.081341</td>
+<td>-0.101082</td>
+<td>0.004792</td>
+<td>0.433486</td>
+<td>-0.154702</td>
+<td>0.184427</td>
+<td>0.14594</td>
+<td>0.123576</td>
+<td>0.107561</td>
+<td>0.05267</td>
+<td>0.036274</td>
+<td>-0.130214</td>
+<td>-0.060284</td>
+<td>0.194187</td>
+<td>0.229703</td>
+<td>-0.040875</td>
+<td>0.105738</td>
+<td>0.055912</td>
+<td>0.229642</td>
+<td>0.057308</td>
+<td>0.04018</td>
+<td>0.160114</td>
+<td>0.013678</td>
+<td>0.040071</td>
+<td>-0.121142</td>
+<td>0.183901</td>
+<td>-0.111634</td>
+<td>0.084572</td>
+<td>0.053288</td>
+<td>0.195927</td>
+<td>0.009359</td>
+<td>-0.03683</td>
+<td>-0.018306</td>
+</tr>
+<tr class="even">
+<td>0.387158</td>
+<td>0.353655</td>
+<td>0.025042</td>
+<td>1.0</td>
+<td>0.179758</td>
+<td>0.069289</td>
+<td>0.408465</td>
+<td>0.469951</td>
+<td>0.41908</td>
+<td>-0.003487</td>
+<td>0.454314</td>
+<td>0.500417</td>
+<td>-0.086092</td>
+<td>-0.187378</td>
+<td>-0.005041</td>
+<td>0.155108</td>
+<td>0.131687</td>
+<td>0.26926</td>
+<td>0.201723</td>
+<td>0.092757</td>
+<td>0.196378</td>
+<td>0.559737</td>
+<td>0.112407</td>
+<td>0.127923</td>
+<td>0.296559</td>
+<td>0.276444</td>
+<td>0.173123</td>
+<td>0.297822</td>
+<td>0.195929</td>
+<td>0.433715</td>
+<td>-0.006856</td>
+<td>0.417421</td>
+<td>0.322316</td>
+<td>0.226075</td>
+<td>0.217916</td>
+<td>-0.153585</td>
+<td>-0.079396</td>
+<td>…</td>
+<td>0.053546</td>
+<td>-0.091131</td>
+<td>0.448981</td>
+<td>0.12535</td>
+<td>0.24754</td>
+<td>0.193942</td>
+<td>0.155101</td>
+<td>0.2933</td>
+<td>0.108703</td>
+<td>-0.09358</td>
+<td>0.293449</td>
+<td>-0.223877</td>
+<td>0.354082</td>
+<td>0.348563</td>
+<td>0.159664</td>
+<td>0.396202</td>
+<td>0.156269</td>
+<td>-0.177693</td>
+<td>-0.075159</td>
+<td>0.368768</td>
+<td>0.012266</td>
+<td>-0.014705</td>
+<td>-0.084896</td>
+<td>-0.146465</td>
+<td>0.44977</td>
+<td>0.284118</td>
+<td>0.182924</td>
+<td>0.037971</td>
+<td>0.439027</td>
+<td>-0.130453</td>
+<td>-0.272673</td>
+<td>0.284202</td>
+<td>0.451018</td>
+<td>0.021685</td>
+<td>0.142714</td>
+<td>0.384437</td>
+<td>0.45244</td>
+</tr>
+<tr class="odd">
+<td>0.291319</td>
+<td>0.207605</td>
+<td>0.17823</td>
+<td>0.179758</td>
+<td>1.0</td>
+<td>0.135045</td>
+<td>0.082257</td>
+<td>-0.01935</td>
+<td>0.121082</td>
+<td>0.129791</td>
+<td>0.053078</td>
+<td>-0.057555</td>
+<td>0.235583</td>
+<td>0.179526</td>
+<td>0.038046</td>
+<td>0.225051</td>
+<td>0.124796</td>
+<td>0.100274</td>
+<td>0.090429</td>
+<td>0.032748</td>
+<td>-0.07607</td>
+<td>0.23032</td>
+<td>0.184531</td>
+<td>0.133566</td>
+<td>0.092136</td>
+<td>0.224374</td>
+<td>-0.145982</td>
+<td>0.167634</td>
+<td>0.177653</td>
+<td>0.073567</td>
+<td>0.151422</td>
+<td>-0.07323</td>
+<td>-0.16457</td>
+<td>0.005134</td>
+<td>0.142195</td>
+<td>-0.005853</td>
+<td>0.199751</td>
+<td>…</td>
+<td>0.141295</td>
+<td>-0.051328</td>
+<td>0.31528</td>
+<td>0.121736</td>
+<td>0.047432</td>
+<td>0.100863</td>
+<td>0.08491</td>
+<td>0.126726</td>
+<td>0.014749</td>
+<td>0.292106</td>
+<td>0.13791</td>
+<td>0.088639</td>
+<td>0.223678</td>
+<td>0.151275</td>
+<td>0.095275</td>
+<td>-0.110802</td>
+<td>0.028947</td>
+<td>0.160011</td>
+<td>0.325483</td>
+<td>-0.008272</td>
+<td>0.135166</td>
+<td>-0.005325</td>
+<td>0.131658</td>
+<td>0.12927</td>
+<td>0.217428</td>
+<td>0.32369</td>
+<td>0.019537</td>
+<td>0.198712</td>
+<td>0.092924</td>
+<td>0.155969</td>
+<td>-0.001896</td>
+<td>0.056342</td>
+<td>-0.007221</td>
+<td>0.300103</td>
+<td>0.180629</td>
+<td>-0.065155</td>
+<td>0.275692</td>
 </tr>
 </tbody>
 </table>
@@ -1388,104 +1751,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="concatenation-pl.concat" class="level2">
-<h2 class="anchored" data-anchor-id="concatenation-pl.concat">14. Concatenation: <code>pl.concat</code></h2>
-<p>Combine DataFrames vertically, horizontally, or diagonally.</p>
-<div id="2adc02b4" class="cell" data-execution_count="14">
-<details open="" class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-14"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1"></a>df1 <span class="op">=</span> df.head(<span class="dv">2</span>)</span>
-<span id="annotated-cell-14-2"><a href="#annotated-cell-14-2"></a>df2 <span class="op">=</span> df.tail(<span class="dv">2</span>)</span>
-<span id="annotated-cell-14-3"><a href="#annotated-cell-14-3"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-14-4" class="code-annotation-target"><a href="#annotated-cell-14-4"></a>pl.concat([df1, df2], how<span class="op">=</span><span class="st">"vertical"</span>)</span>
-<span id="annotated-cell-14-5"><a href="#annotated-cell-14-5"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-14-6" class="code-annotation-target"><a href="#annotated-cell-14-6"></a>pl.concat([df1.select(<span class="st">"species"</span>), df2.select(cs.numeric())], how<span class="op">=</span><span class="st">"horizontal"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-annotation">
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-14" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-14" data-code-lines="4" data-code-annotation="1">Vertical (stacking).</span>
-</dd>
-<dt data-target-cell="annotated-cell-14" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-14" data-code-lines="6" data-code-annotation="2">Horizontal (side-by-side).</span>
-</dd>
-</dl>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="14">
-<div><style>
-.dataframe > thead > tr,
-.dataframe > tbody > tr {
-  text-align: right;
-  white-space: pre-wrap;
-}
-</style>
-<small>shape: (2, 5)</small>
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th">species</th>
-<th data-quarto-table-cell-role="th">sepal_length</th>
-<th data-quarto-table-cell-role="th">sepal_width</th>
-<th data-quarto-table-cell-role="th">petal_length</th>
-<th data-quarto-table-cell-role="th">petal_width</th>
-</tr>
-<tr class="even">
-<td>str</td>
-<td>f64</td>
-<td>f64</td>
-<td>f64</td>
-<td>f64</td>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>"setosa"</td>
-<td>6.2</td>
-<td>3.4</td>
-<td>5.4</td>
-<td>2.3</td>
-</tr>
-<tr class="even">
-<td>"setosa"</td>
-<td>5.9</td>
-<td>3.0</td>
-<td>5.1</td>
-<td>1.8</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</section>
-<section id="out-of-core-partitioning" class="level2">
-<h2 class="anchored" data-anchor-id="out-of-core-partitioning">15. Out-of-Core &amp; Partitioning</h2>
-<div id="eda7e05c" class="cell" data-execution_count="15">
-<details open="" class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-15"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-15-1"><a href="#annotated-cell-15-1"></a>(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-15-2" class="code-annotation-target"><a href="#annotated-cell-15-2"></a>    pl.scan_csv(<span class="st">"huge.csv"</span>)</span>
-<span id="annotated-cell-15-3"><a href="#annotated-cell-15-3"></a>    .<span class="bu">filter</span>(pl.col(<span class="st">"val"</span>) <span class="op">&gt;</span> <span class="dv">0</span>)</span>
-<span id="annotated-cell-15-4"><a href="#annotated-cell-15-4"></a>    .sink_csv(<span class="st">"output.csv"</span>)</span>
-<span id="annotated-cell-15-5"><a href="#annotated-cell-15-5"></a>)</span>
-<span id="annotated-cell-15-6"><a href="#annotated-cell-15-6"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-15-7" class="code-annotation-target"><a href="#annotated-cell-15-7"></a>df.write_parquet(<span class="st">"output_lake"</span>, use_pyarrow<span class="op">=</span><span class="va">True</span>, pyarrow_options<span class="op">=</span>{<span class="st">"partition_cols"</span>: [<span class="st">"species"</span>]})</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-annotation">
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-15" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-15" data-code-lines="2" data-code-annotation="1">Streaming flow for massive data.</span>
-</dd>
-<dt data-target-cell="annotated-cell-15" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-15" data-code-lines="7" data-code-annotation="2">Partitioned writing (Data Lake pattern: writes files into folders like output/species=setosa/data.parquet).</span>
-</dd>
-</dl>
-</div>
-</div>
+<section id="performance-optimization-categoricals-streaming" class="level2">
+<h2 class="anchored" data-anchor-id="performance-optimization-categoricals-streaming">9. Performance Optimization: Categoricals &amp; Streaming</h2>
+<p>When working with millions of rows, string columns (like tickers) can consume massive amounts of memory. Polars provides a <code>Categorical</code> type (similar to Pandas) and an <code>Enum</code> type (for fixed sets) that represent strings as integers under the hood.</p>
+<p>For datasets that exceed RAM, Polars supports <strong>LazyFrames</strong> and <strong>Streaming</strong>. Instead of loading the whole file, Polars builds a query plan and executes it in batches (sinks).</p>
+<ol type="1">
+<li>Memory Optimization: Tickers should almost always be Categorical or Enum.</li>
+<li>Trigger execution in a memory-efficient, batched manner using streaming.</li>
+</ol>
+<section id="summary" class="level3">
+<h3 class="anchored" data-anchor-id="summary">Summary</h3>
+<p>Polars is not just a faster Pandas; it’s a fundamentally different execution model. By leveraging Rust’s safety and speed, Apache Arrow’s memory efficiency, and a sophisticated query optimizer, Polars allows you to perform complex financial engineering tasks on your laptop that previously required distributed clusters.</p>
+<ul>
+<li><strong>Speed</strong>: Often 10x-50x faster than Pandas for grouping and joins.</li>
+<li><strong>Memory</strong>: Drastically lower footprint due to Arrow and zero-copy operations.</li>
+<li><strong>Syntax</strong>: A consistent, functional DSL that reduces the “copy-paste” bugs common in Pandas.</li>
+</ul>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1496,11 +1777,12 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Download the companion script <a href="../../assets/python/polars_expressions_and_data_transformations_cheat_sheet.py">here</a>.</p>
+<p>Download the updated companion script <a href="../../assets/python/polars_expressions_and_data_transformations_cheat_sheet.py">here</a>.</p>
 </div>
 </div>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
