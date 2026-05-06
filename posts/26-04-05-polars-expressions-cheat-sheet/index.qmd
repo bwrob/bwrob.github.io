@@ -139,7 +139,7 @@ Polars was built with time-series as a first-class citizen. Its rolling expressi
 df.with_columns(
     vwap=(pl.col("close") * pl.col("volume")).rolling_sum(20)
     / pl.col("volume").rolling_sum(20)  # <1>
-).over("ticker").head(5)
+).head(5)
 ```
 
 1. Volume-Weighted Average Price (VWAP) over a rolling 20-day window.
@@ -169,16 +169,15 @@ When working with millions of rows, string columns (like tickers) can consume ma
 For datasets that exceed RAM, Polars supports **LazyFrames** and **Streaming**. Instead of loading the whole file, Polars builds a query plan and executes it in batches (sinks).
 
 ```{python}
-df = df.with_columns(pl.col("ticker").cast(pl.Categorical))  # <1>
+#| eval: false
+#| echo: false
 
-# | eval: false
-(
-    pl.scan_ipc("large_dataset.arrow")
-    .filter(pl.col("vol") > 0.3)
-    .group_by("ticker")
-    .agg(pl.col("ret").mean())
-    .collect(streaming=True)  # <2>
-)
+df = pl.scan_ipc("large_dataset.arrow")
+.filter(pl.col("vol") > 0.3)
+.group_by("ticker")
+.agg(pl.col("ret").mean())
+.with_columns(pl.col("ticker").cast(pl.Categorical))
+.collect(streaming=True)  # <2>
 ```
 
 1. Memory Optimization: Tickers should almost always be Categorical or Enum.

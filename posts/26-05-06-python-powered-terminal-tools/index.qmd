@@ -9,72 +9,51 @@ categories: [Dev Env]
 image: ../../assets/images/posts/24-08-11-linux-in-windows/image.jpg
 
 format-links: [html]
-toc-depth: 2
+toc-depth: 0
 ---
 
 # The Ultimate Python Terminal Ecosystem
 
 A curated, logically ordered note of modern, Python-native terminal utilities that can be installed directly via `uv`.
 
-## 📝 Text Editing & AI
+* **[`textual-code`](https://github.com/rishubil/textual-code)**
 
-Tools for writing code and getting assistance without leaving the terminal.
+    The best modern TUI code editor. Built on Textual, offering VS Code/Sublime-like features (file explorer, multi-cursor, mouse support) out of the box. *(Note: requires Python 3.12+)*
 
-* **[`textual-code`](https://github.com/Nesswit/textual-code)** (`uv tool install textual-code`): The best modern TUI code editor. Built on Textual, offering VS Code/Sublime-like features (file explorer, multi-cursor, mouse support) out of the box. *(Note: requires Python 3.12+)*
-* **[`amp-editor`](https://github.com/jmacdonald/amp)** (`uv tool install amp-editor`): A fast, Vi-inspired editor with built-in fuzzy finding. A direct upgrade from minimalist editors like `babi`.
-* **[`caffee`](https://github.com/iamthe000/CAFFEE_Editor)** (`uv tool install caffee`): A lightweight, actively maintained, and fast minimalist editor.
+    ```bash
+    uv tool install textual-code --python 3.13
+    ```
 
-## 📁 File & Data Exploration
+* **[`ranger-fm`](https://github.com/ranger/ranger)**
 
-Replacements for standard file browsers and data viewing tools.
+    The classic, highly customizable terminal file manager with Vim bindings and a multi-column preview layout.
 
-* **[`ranger-fm`](https://github.com/ranger/ranger)** (`uv tool install ranger-fm`): The classic, highly customizable terminal file manager with Vim bindings and a multi-column preview layout.
-* **[`visidata`](https://github.com/saulpw/visidata)** (`uv tool install visidata`): The "Excel of the terminal." Incredibly fast tabular data explorer for CSV, Excel, SQLite, and JSON files.
+    ```bash
+    uv tool install ranger-fm
+    ```
+
+* **[`visidata`](https://github.com/saulpw/visidata)**
+
+    The "Excel of the terminal." Incredibly fast tabular data explorer for CSV, Excel, SQLite, IPC and JSON files.
+
+    ```bash
+    uv tool install --with pyarrow visidata
+    ```
+
+
+<!---
 * **[`pyfx`](https://github.com/cielong/pyfx)** (`uv tool install pyfx`): An interactive JSON viewer and query engine (using JSONPath). A Python alternative to `jq`.
-* **[`parqv`](https://github.com/sanspareilsmyn/parqv)** (`uv tool install parqv`): A TUI specifically designed for exploring and understanding large Parquet, JSON, and CSV datasets.
 * **[`frogmouth`](https://github.com/Textualize/frogmouth)** (`uv tool install frogmouth`): A terminal-based Markdown browser with clickable hyperlinks and beautiful rendering.
 * **[`rich-cli`](https://github.com/Textualize/rich-cli)** (`uv tool install rich-cli`): A massive upgrade to `cat`. Renders files with full syntax highlighting and proper formatting.
-
-## 🌐 Networking & APIs
-
-Tools for querying, testing, and debugging network requests.
-
-* **[`posting`](https://github.com/darrenburns/posting)** (`uv tool install posting`): A beautiful Postman/Insomnia alternative for testing HTTP APIs right in the terminal.
-* **[`httpie`](https://github.com/httpie/cli)** (`uv tool install httpie`): A modern, human-friendly replacement for `curl` with colorized output and an intuitive syntax.
-* **[`mitmproxy`](https://github.com/mitmproxy/mitmproxy)** (`uv tool install mitmproxy`): An interactive, SSL-capable intercepting HTTP proxy for inspecting and modifying network traffic.
-
-## 🗄️ Database Management
-
-Database interaction and exploration without bulky GUIs.
-
 * **[`harlequin`](https://github.com/tconbeer/harlequin)** (`uv tool install harlequin`): A drop-in terminal IDE replacement for DBeaver/DataGrip. Supports DuckDB, SQLite, PostgreSQL, etc., with a schema sidebar and query editor.
 * **[`litecli` / `pgcli` / `mycli`](https://github.com/dbcli/litecli)** (`uv tool install litecli`): Database REPL replacements offering syntax highlighting and smart, context-aware autocomplete.
-
-## ⚙️ System & Infrastructure
-
-Monitoring system resources, logs, and containers.
-
 * **[`glances`](https://github.com/nicolargo/glances)** (`uv tool install glances`): The absolute powerhouse system monitor. Tracks CPU, RAM, Docker, GPUs, temperatures, and network speeds all at once.
 * **[`bpytop`](https://github.com/aristocratos/bpytop)** (`uv tool install bpytop`): A highly stylish, visually impressive system monitor with process trees and mouse support.
 * **[`s-tui`](https://github.com/amanusk/s-tui)** (`uv tool install s-tui`): Focused hardware monitor to track CPU temperature, frequency, power consumption, and thermal throttling (includes stress testing).
-* **[`sen`](https://github.com/TomasTomecek/sen)** (`uv tool install sen`): A comprehensive TUI dashboard for managing Docker containers and images.
 * **[`toolong`](https://github.com/Textualize/toolong)** (`uv tool install toolong`): A modern replacement for `tail -f` and `less` for tailing, searching, and filtering log files in real-time.
-
-## 🔧 Git & Development Utilities
-
-Making daily developer workflows smoother.
-
 * **[`pygitzen`](https://github.com/SunnyTamang/pygitzen)** (`uv tool install pygitzen`): A Python-native Git dashboard to stage files, view diffs, and commit without remembering complex commands.
 * **[`icdiff`](https://github.com/jeffkaufman/icdiff)** (`uv tool install icdiff`): Improved colored diffs. Displays side-by-side terminal diffs with word-level color coding.
-* **[`ptpython`](https://github.com/prompt-toolkit/ptpython)** (`uv tool install ptpython`): An advanced interactive Python REPL with real-time syntax highlighting, multiline editing, and IDE-like autocomplete.
-* **[`howdoi`](https://github.com/gleitz/howdoi)** (`uv tool install howdoi`): Scrapes StackOverflow to give you instant code snippets in the terminal (e.g., `howdoi reverse list in python`).
-
-## 📅 Task Management & Automation
-
-Organizing workflows, schedules, and scripts.
-
 * **[`poethepoet`](https://github.com/nat-n/poethepoet)** (`uv tool install poethepoet`): The ultimate Python task runner. Replaces Makefiles by letting you define scripts and commands directly in your `pyproject.toml`.
 * **[`cronboard`](https://github.com/antoniorodr/cronboard)** (`uv tool install cronboard`): A TUI dashboard for managing cron jobs visually. Lets you create, pause, and delete tasks, and translates complex cron syntax into plain English in real-time.
 * **[`yacron`](https://github.com/gjcarneiro/yacron)** (`uv tool install yacron`): A modern, YAML-based replacement for cron that reliably handles logging and overlapping background jobs.
-* **[`taskdog`](https://github.com/Kohei-Wada/taskdog)** (`uv tool install taskdog`): A local-first TUI task manager with Gantt charts and dependency tracking for personal schedules.
-* **[`kanban-tui`](https://github.com/Zaloog/kanban-tui)** (`uv tool install kanban-tui`): A clean, keyboard-driven Kanban board for the terminal.
+-->
