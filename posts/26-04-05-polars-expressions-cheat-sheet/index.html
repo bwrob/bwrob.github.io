@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2026-04-05">
-<meta name="description" content="An in-depth guide to Polars’ expression engine, focusing on financial metrics, risk aggregations, and high-performance time-series transformations for quantitative research.">
+<meta name="description" content="Guide to Polars’ high-performance expression engine for finance.">
 
-<title>Polars for Finance: High-Performance Expressions &amp; Contexts – bwrob blog</title>
+<title>Polars in Finance Cheetsheet – bwrob blog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -69,19 +69,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../assets/logo/python_mug.png" rel="icon" type="image/png">
+<link href="../../assets/logo/favicon.png" rel="icon" type="image/png">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-23bbe8b5e4efc1e257f6d59dce478b08.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c89401ba80df35c521c37d10ce24507b.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-380536e8419f4ac8f47591615487bbe9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-3e88e1ca354df9b1dd37f313d6288942.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-69747d97b9db79652cc8568ca6039266.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-71fed244ee45c0ac90a9915dda84bc59.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-5d054612542c5bae0124933af9c58a48.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -297,8 +297,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../assets/logo/python_mug.png" alt="" class="navbar-logo light-content">
-    <img src="../../assets/logo/python_mug.png" alt="" class="navbar-logo dark-content">
+    <img src="../../assets/logo/logo_full.png" alt="" class="navbar-logo light-content">
+    <img src="../../assets/logo/logo_full.png" alt="" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">bwrob blog</span>
@@ -313,32 +313,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li class="nav-item">
     <a class="nav-link" href="../../index.html"> <i class="bi bi-cpu" role="img">
 </i> 
-<span class="menu-text">Posts</span></a>
+<span class="menu-text">posts</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../../resume/index.html"> <i class="bi bi-file-earmark-text" role="img">
 </i> 
-<span class="menu-text">Resume</span></a>
+<span class="menu-text">resume</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../../teaching/index.html"> <i class="bi bi-tablet-landscape" role="img">
 </i> 
-<span class="menu-text">Teaching</span></a>
+<span class="menu-text">teaching</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../../hobbies/index.html"> <i class="bi bi-controller" role="img">
 </i> 
-<span class="menu-text">Hobbies</span></a>
+<span class="menu-text">hobbies</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="https://bwrob.github.io/debug-dojo/"> <i class="bi bi-bug-fill" role="img">
 </i> 
-<span class="menu-text">debug dojo</span></a>
+<span class="menu-text">debug-dojo</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="https://bwrob.github.io/sus-inspector/"> <i class="bi bi-bug-fill" role="img">
 </i> 
-<span class="menu-text">sus inspector</span></a>
+<span class="menu-text">sus-inspector</span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://www.linkedin.com/in/bartoszmwroblewski/"> <i class="bi bi-linkedin" role="img">
@@ -367,10 +367,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Polars for Finance: High-Performance Expressions &amp; Contexts</h1>
+      <h1 class="title">Polars in Finance Cheetsheet</h1>
                   <div>
         <div class="description">
-          An in-depth guide to Polars’ expression engine, focusing on financial metrics, risk aggregations, and high-performance time-series transformations for quantitative research.
+          Guide to Polars’ high-performance expression engine for finance.
         </div>
       </div>
                           <div class="quarto-categories">
@@ -392,6 +392,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </div>
     </div>
     
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">April 5, 2026</p>
+      </div>
+    </div>
       
     </div>
     
@@ -417,7 +423,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/bwrob/bwrob.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+</nav>
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
@@ -432,7 +438,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="loading-financial-data" class="level2">
 <h2 class="anchored" data-anchor-id="loading-financial-data">1. Loading Financial Data</h2>
 <p>We start by loading OHLCV (Open, High, Low, Close, Volume) data for S&amp;P 500 constituents. Using the Arrow IPC (Feather) format is preferred in finance because it provides near-instantaneous loading via memory-mapping, preserving the data types and structure without the parsing overhead of CSV or Parquet.</p>
-<div id="50d9370b" class="cell" data-execution_count="1">
+<div id="5f5122a2" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
@@ -552,7 +558,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="expressions-the-atomic-units-of-logic">2. Expressions: The Atomic Units of Logic</h2>
 <p>Expressions are the building blocks of Polars logic. They are lazily evaluated and represent a tree of operations. In a financial context, we can define modular expressions for standard metrics like log returns or volatility and reuse them across different DataFrames or pipelines.</p>
 <p>One major advantage here is <strong>composability</strong>. You can define an expression once and apply it to any column that fits the required data type.</p>
-<div id="5682c3c1" class="cell" data-execution_count="2">
+<div id="4378c5fe" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1"></a>log_return <span class="op">=</span> (pl.col(<span class="st">"close"</span>) <span class="op">/</span> pl.col(<span class="st">"close"</span>).shift(<span class="dv">1</span>)).log().over(<span class="st">"ticker"</span>)</span>
@@ -588,7 +594,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="context-selection-feature-engineering">3. Context: Selection &amp; Feature Engineering</h2>
 <p>Contexts are the environments where expressions are executed. The two most common are <code>select</code> (creating a new DataFrame from expressions) and <code>with_columns</code> (adding or updating columns in an existing DataFrame).</p>
 <p>For financial feature engineering, <code>with_columns</code> is the workhorse. It allows for the parallel creation of multiple technical indicators in a single pass over the data.</p>
-<div id="276b35a3" class="cell" data-execution_count="3">
+<div id="0a1b6784" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a>df <span class="op">=</span> df.with_columns(</span>
@@ -718,7 +724,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="context-aggregation-group_by">4. Context: Aggregation (<code>group_by</code>)</h2>
 <p>The <code>group_by</code> context allows for powerful split-apply-combine operations. In Polars, these aggregations are “push-down” optimized. When you run a risk summary, Polars doesn’t just group the data; it uses vectorized SIMD instructions to calculate sums and means across the groups simultaneously.</p>
 <p>This is where we calculate portfolio-level or ticker-level risk metrics like Maximum Drawdown or the Sharpe Ratio.</p>
-<div id="e0741358" class="cell" data-execution_count="4">
+<div id="be8bf084" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>risk_summary <span class="op">=</span> df.group_by(<span class="st">"ticker"</span>).agg(</span>
@@ -813,7 +819,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="power-selectors-polars.selectors" class="level2">
 <h2 class="anchored" data-anchor-id="power-selectors-polars.selectors">5. Power Selectors (<code>polars.selectors</code>)</h2>
 <p>Selectors are a recent addition to Polars that allow you to target columns based on their properties (name, dtype, etc.) rather than hardcoding names. This is incredibly useful for stress testing or “what-if” analysis where you might want to apply a shock to all price-related columns simultaneously.</p>
-<div id="b30b22c9" class="cell" data-execution_count="5">
+<div id="9126667c" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-1" class="code-annotation-target"><a href="#annotated-cell-5-1"></a>price_shock <span class="op">=</span> cs.starts_with(<span class="st">"open"</span>, <span class="st">"high"</span>, <span class="st">"low"</span>, <span class="st">"close"</span>) <span class="op">*</span> <span class="fl">1.01</span></span>
@@ -899,7 +905,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="window-functions-over">6. Window Functions (<code>over</code>)</h2>
 <p>Window functions (<code>over</code>) are perhaps the most powerful tool for cross-sectional analysis. They allow you to compute group-level statistics (like a sector average or a market-cap weight) and project them back onto the original rows without performing a merge/join.</p>
 <p>In quantitative research, this is used for z-scoring features across the universe or calculating relative strength.</p>
-<div id="d4778506" class="cell" data-execution_count="6">
+<div id="fd617ea7" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1"></a>df.with_columns(</span>
@@ -1040,7 +1046,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="time-series-rolling-metrics-asof-joins" class="level2">
 <h2 class="anchored" data-anchor-id="time-series-rolling-metrics-asof-joins">7. Time Series: Rolling Metrics &amp; Asof Joins</h2>
 <p>Polars was built with time-series as a first-class citizen. Its rolling expressions are highly optimized for windowed calculations. Furthermore, the <code>join_asof</code> function solves the “as-of” join problem (matching a trade to the most recent quote) with performance that far exceeds Pandas.</p>
-<div id="0f7ff5f7" class="cell" data-execution_count="7">
+<div id="e5b23f57" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>df.with_columns(</span>
@@ -1169,7 +1175,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reshaping-for-correlation-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="reshaping-for-correlation-analysis">8. Reshaping for Correlation Analysis</h2>
 <p>Quant analysts often need to compute correlation matrices or covariance matrices for portfolio optimization. This requires pivoting “long” ticker data into a “wide” format where each column represents a different asset’s returns.</p>
-<div id="f71280bf" class="cell" data-execution_count="8">
+<div id="f33c8857" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1"></a>wide_returns <span class="op">=</span> df.pivot(</span>
@@ -2266,8 +2272,8 @@ document.addEventListener("DOMContentLoaded", function() {
       &nbsp;
     </div>   
     <div class="nav-footer-center">
-<p>Copyright 2026, bwrob. Rendered with Quarto 1.9.37</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/bwrob/bwrob.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+<p>bwrob.github.io · Terminal Theme · 2026. Built with Quarto.</p>
+</div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
