@@ -1,34 +1,255 @@
 /*-- scss:defaults --*/
 
-// Anchor everything to Deep Blue
-$primary: #2c3e50;
-$headings-color: #ffffff;
-$code-block-bg-alpha: -.3;
+// Personalized Tokyo Night Palette
+$primary: #7aa2f7;
+$body-bg: #1a1b26;
+$body-color: #c0caf5;
+// Nerdy Nerd Font stack
+$font-family-base: "Hack Nerd Font", "JetBrainsMono Nerd Font", "CascadiaCode Nerd Font", ui-monospace, monospace;
+$font-family-monospace: "Hack Nerd Font", "JetBrainsMono Nerd Font", "CascadiaCode Nerd Font", ui-monospace, monospace;
+$headings-font-family: "Hack Nerd Font", "JetBrainsMono Nerd Font", "CascadiaCode Nerd Font", ui-monospace, monospace;
+$headings-font-weight: 700;
+$headings-color: #c0caf5;
+$link-color: #7aa2f7;
 
 /*-- scss:rules --*/
 
-// Modernize Callouts
-.callout {
-  border-left-width: 4px !important;
-  border-radius: 8px !important;
-  background-color: rgba(255, 255, 255, 0.05) !important;
+/* Hallmark · macrostructure: Index-First · theme: Tokyo Night (Nerd/Mono) · studied: yes */
+
+:root {
+  --color-paper:    #1a1b26;
+  --color-paper-2:  #24283b;
+  --color-rule:     #414868;
+  --color-ink:      #c0caf5;
+  --color-ink-2:    #a9b1d6;
+  --color-muted:    #565f89;
+  --color-accent:   #7aa2f7;
+  --color-cyan:     #7dcfff;
+  --color-magenta:  #bb9af7;
+  --color-green:    #9ece6a;
+  --color-orange:   #ff9e64;
+  --color-red:      #f7768e;
+
+  --font-mono: "Hack Nerd Font", "JetBrainsMono Nerd Font", "CascadiaCode Nerd Font", ui-monospace, monospace;
+  --font-display: "Hack Nerd Font", "JetBrainsMono Nerd Font", "CascadiaCode Nerd Font", ui-monospace, monospace;
 }
 
-// Ensure the navbar stays solid blue even in dark mode
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink-2);
+  font-family: var(--font-mono);
+  line-height: 1.6;
+}
+
+/* Heading Discipline - All Nerd Font Mono */
+:where(h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6) {
+  font-weight: 700;
+  letter-spacing: -0.01ch;
+  line-height: 1.2;
+  color: var(--color-ink);
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+}
+
+h1, .h1 { font-size: 2.25rem; }
+h2, .h2 { font-size: 1.6rem; border-bottom: 1px solid var(--color-rule); padding-bottom: 0.5rem; }
+h3, .h3 { font-size: 1.25rem; }
+h4, .h4 { font-size: 1rem; color: var(--color-accent); }
+
+/* Page Header Block */
+.page-header-block {
+  background: var(--color-paper-2);
+  border: 1px solid var(--color-rule);
+  border-radius: 12px;
+  padding: 5rem 3rem 3rem 3rem;
+  margin-top: 1.5rem;
+  margin-bottom: 4rem;
+  position: relative;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.4);
+}
+
+.page-header-block h1 {
+  margin-top: 0 !important;
+  font-size: 2.25rem !important;
+}
+.page-header-block h1::before {
+  content: "> ";
+  color: var(--color-accent);
+  opacity: 0.6;
+}
+
+/* Resume Layout */
+.resume-top-row {
+  display: flex; gap: 3rem; align-items: center; flex-wrap: wrap; margin-bottom: 2rem;
+}
+.resume-photo-column { flex-shrink: 0; }
+.resume-identity-column { flex: 1; min-width: 300px; }
+.resume-description { font-size: 1rem; line-height: 1.6; color: var(--color-ink-2); margin-bottom: 2rem; }
+
+/* Profile Image Refinement */
+.hero-img-profile {
+  border: 2px solid var(--color-magenta);
+  padding: 4px;
+  background: var(--color-paper);
+  border-radius: 12px;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  box-shadow: 0 0 20px rgba(187, 154, 247, 0.15);
+  filter: grayscale(0.2) contrast(1.1);
+  transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease;
+}
+.hero-img-profile:hover {
+  filter: grayscale(0) contrast(1.15);
+  transform: scale(1.02);
+  box-shadow: 0 0 25px rgba(187, 154, 247, 0.3);
+}
+
+/* ASCII Header */
+.hero-ascii pre {
+  color: var(--color-magenta);
+  font-size: clamp(0.35rem, 0.9vw, 0.6rem);
+  line-height: 1.1;
+  margin: 0;
+  opacity: 0.9;
+  text-shadow: 0 0 15px rgba(187, 154, 247, 0.25);
+}
+
+/* Stats Strip */
+.stats-strip {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--color-cyan);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--color-paper-2);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-rule);
+  display: inline-block;
+}
+.status-ok::before { content: "● "; color: var(--color-green); }
+
+/* Navbar */
 .navbar {
-  background-color: #2c3e50 !important; /* Always Solid Blue */
+  border-bottom: 1px solid var(--color-rule) !important;
+  background-color: rgba(26, 27, 38, 0.85) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.navbar-brand {
+  margin: 0 !important;
+}
+.navbar-title {
+  display: none !important;
+}
+.nav-link { font-size: 0.8rem; color: var(--color-ink-2) !important; text-transform: lowercase; }
+.nav-link:hover { color: var(--color-cyan) !important; }
+
+/* Card Listing Refinement */
+.quarto-listing-container-grid .listing-card {
+  background: rgba(36, 40, 59, 0.4) !important;
+  border: 1px solid var(--color-rule) !important;
+  border-radius: 8px !important;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  overflow: hidden;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
 }
 
-.navbar .navbar-brand,
-.navbar .nav-link {
-  color: #ffffff !important;
+.quarto-listing-container-grid .card-body.post-contents {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1 !important;
+  padding: 1.25rem !important;
+  background: transparent !important;
 }
 
-.navbar .nav-link:hover {
-  color: #3498db !important;
+/* Fix categories positioning - KILL AUTO MARGIN */
+.listing-categories {
+  padding-top: 0.5rem !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.4rem !important;
+  position: static !important;
+  margin-top: 0 !important; /* Move it up */
 }
 
-// Harmonize Title Block
-.quarto-title-block .quarto-title-banner {
-  background-color: #2c3e50 !important; /* 100% Solid */
+.listing-categories .listing-category {
+  background: rgba(122, 162, 247, 0.08) !important;
+  color: var(--color-accent) !important;
+  border: 1px solid rgba(122, 162, 247, 0.15) !important;
+  font-size: 0.6rem !important;
+  padding: 0.2rem 0.6rem !important;
+  border-radius: 4px !important;
+  margin: 0 !important;
 }
+
+/* FIX: Surgically remove bright title backgrounds */
+.quarto-listing-container-grid .listing-title,
+.quarto-listing-container-grid .card-title {
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.listing-title {
+  font-weight: 700 !important;
+  color: var(--color-ink) !important;
+  font-size: 1.15rem !important;
+}
+
+/* Force description to bottom instead */
+.listing-description {
+  margin-top: auto !important;
+  padding-top: 1rem !important;
+}
+
+/* Global Styles */
+a { color: var(--color-accent); text-decoration: none; }
+a:hover { color: var(--color-cyan); text-decoration: underline; }
+
+/* Post Header Cleanup */
+.quarto-title-block .quarto-title-banner,
+.quarto-title-block,
+header#title-block-header {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+/* Syntax Highlighting - Tokyo Night */
+code span.kw { color: var(--color-magenta); font-weight: bold; } /* Keyword */
+code span.dt { color: var(--color-cyan); } /* Datatype */
+code span.dv { color: var(--color-orange); } /* DecVal */
+code span.bn { color: var(--color-orange); } /* BaseN */
+code span.fl { color: var(--color-orange); } /* Float */
+code span.ch { color: var(--color-green); } /* Char */
+code span.st { color: var(--color-green); } /* String */
+code span.co { color: var(--color-muted); font-style: italic; } /* Comment */
+code span.ot { color: var(--color-accent); } /* Other */
+code span.al { color: var(--color-red); font-weight: bold; } /* Alert */
+code span.fu { color: var(--color-accent); } /* Function */
+code span.er { color: var(--color-red); text-decoration: underline; } /* Error */
+code span.wa { color: var(--color-orange); font-weight: bold; } /* Warning */
+code span.cn { color: var(--color-orange); } /* Constant */
+code span.sc { color: var(--color-magenta); } /* SpecialChar */
+code span.vs { color: var(--color-green); } /* VerbatimString */
+code span.ss { color: var(--color-cyan); } /* SpecialString */
+code span.im { color: var(--color-magenta); } /* Import */
+code span.va { color: var(--color-ink); } /* Variable */
+code span.cf { color: var(--color-magenta); } /* ControlFlow */
+code span.op { color: var(--color-cyan); } /* Operator */
+code span.bu { color: var(--color-accent); } /* BuiltIn */
+code span.ex { color: var(--color-accent); } /* Extension */
+code span.pp { color: var(--color-magenta); } /* Preprocessor */
+code span.at { color: var(--color-cyan); } /* Attribute */
+code span.do { color: var(--color-muted); } /* Documentation */
+code span.an { color: var(--color-muted); } /* Annotation */
+code span.cv { color: var(--color-muted); } /* CommentVar */
+code span.in { color: var(--color-muted); } /* Information */
+
+/* Footer fix */
+.nav-footer { border-top: 1px solid var(--color-rule); background: var(--color-paper-2) !important; color: var(--color-muted) !important; }
