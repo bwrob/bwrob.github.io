@@ -1,0 +1,230 @@
+---
+title: "Matematyk na Rynkach Finansowych"
+description: "Jak odnaleźć się i przetrwać w świecie współczesnych finansów."
+
+
+date: "2025-03-22"
+date-modified: "2026-02-20"
+
+categories: [Kariera, Rynki Finansowe, Zarządzanie Ryzykiem]
+
+image: ../../assets/images/posts/25-03-22-mathematician-in-finance/financial_whirlpool.png
+
+format-links: [html]
+---
+
+::: {.lang-switcher}
+[English 🇬🇧](index.qmd){.lang-btn}
+[Polski 🇵🇱](index-pl.qmd){.lang-btn .active}
+:::
+
+![](../../assets/images/posts/25-03-22-mathematician-in-finance/financial_whirlpool.png){width="95%" fig-align="center"}
+
+## Podsumowanie
+
+Wpis ten stanowi podsumowanie wykładu, który miałem przyjemność wygłosić na Uniwersytecie Wrocławskim. Mówiłem w nim o tym, jak z perspektywy matematyka wygląda praca w sektorze finansowym. Przyjrzeliśmy się różnym ścieżkom kariery, umiejętnościom kluczowym na rynku (które wykraczają daleko poza umiejętność prowadzenia dowodów matematycznych) oraz realiom odnalezienia się w tej branży.
+
+## Ekosystem finansowy
+
+Pierwsze zderzenie z rynkami finansowymi może przytłaczać. Wszystko wygląda jak chaotyczna plątanina liczb, krzyków (choć dziś, w erze handlu elektronicznego, krzyku na parkietach jest już niewiele) i hermetycznego żargonu. W gruncie rzeczy rynki to jednak dość proste ekosystemy, w których przedmiotem wymiany są kapitał i ryzyko. To platforma spotkania dla tych, którzy mają fundusze, ale brakuje im pomysłów na projekty, z tymi, którzy mają świetne projekty, ale nie mają na nie środków.
+
+Głównych aktorów na rynkowej scenie możemy podzielić na kilka grup. Po pierwsze: **Spekulanci** – to oni biorą na siebie ryzyko w nadziei, że trafnie przewidzą kierunek zmian cen. Ich obecność zapewnia płynność niezbędną do funkcjonowania rynku. Po drugie: **Zabezpieczających się (Hedgers)** – czyli „poszukiwacze ubezpieczenia”. Oni z kolei mierzą się już z jakimś realnym ryzykiem (np. rolnik obawiający się spadku cen pszenicy) i chcą się go pozbyć.
+
+Pomiędzy nimi działają **Arbitrażyści**. Pełnią oni rolę „czyścicieli rynku”, wyłapując minimalne różnice cen tego samego aktywa w różnych miejscach. Jeśli złoto w Londynie jest tańsze niż w Nowym Jorku, kupią je tam, gdzie taniej, i natychmiast sprzedadzą drożej, dopóki ceny się nie zrównają. Na koniec mamy **Pośredników** (brokerów czy animatorzy rynku – market makers), którzy dbają o to, by transakcja w ogóle doszła do skutku, pobierając za to drobną prowizję.
+
+Dla matematyka taki ekosystem to wymarzony plac zabaw. Dlaczego? Ponieważ każda z tych relacji opiera się na niepewności – a jeśli jest coś, w czym jako matematycy czujemy się mocni, to właśnie w ubieraniu nieznanego w precyzyjne liczby.
+
+## Dlaczego nas potrzebują?
+
+Można zadawać sobie pytanie: po co instytucjom finansowym ktoś, kto przez lata badał nielokalne operatory nieograniczone? Odpowiedź jest prosta – nowoczesne finanse opierają się na modelach, które w rzeczywistości są skomplikowanymi problemami matematycznymi.
+
+Weźmy na warsztat **wycenę instrumentów pochodnych (pricing)**. Chcąc sprzedać komuś opcję (czyli np. prawo do zakupu akcji po określonej cenie za pół roku), musisz precyzyjnie określić jej dzisiejszą wartość. W grę wchodzą tu rachunek stochastyczny, równaniami różniczkowe cząstkowe i zaawansowane metody numeryczne. To nie jest wróżenie z fusów, tylko rozwiązywanie równania przewodnictwa cieplnego w realiach rynkowych.
+
+Kolejny filar to **Zarządzanie Ryzykiem (Risk Management)**. Po kryzysie z 2008 roku skończył się czas działania „na oko”. Banki muszą z niemal stuprocentową pewnością wiedzieć, jak dotkliwe straty mogą ponieść podczas rynkowego tąpnięcia. Wymaga to teorii prawdopodobieństwa i statystyki z najwyższej półki do modelowania tzw. „grubych ogonów” (fat tails) – czyli rzadkich, ale katastrofalnych w skutkach zjawisk, których standardowe rozkłady nie są w stanie wyszukać i opisać.
+
+Poza wyceną i ryzykiem, matematycy pracują nad **Handlem Algorytmicznym (Algorithmic Trading)** – gdzie przy użyciu optymalizacji i przetwarzania sygnałów transakcje realizowane są w ułamkach sekund – oraz nad **Optymalizacją Portfela**, stosując algebrę liniową do poszukiwania idealnego balansu między oczekiwaną stopą zwrotu a ryzykiem.
+
+## Różne oblicza quantów
+
+Warto pamiętać, że pojęcie „quanta” kryje pod sobą bardzo zróżnicowane role. W zależności od Twoich predyspozycji możesz trafić do zupełnie innych światów. Niektóre stanowiska to czysta, „twarda” matematyka finansowa skupiona wokół wyceny derywatów. Inne z kolei są bliższe inżynierii oprogramowania, gdzie programista po prostu musi dodatkowo rozumieć, czym jest krzywa dochodowości (Yield Curve).
+
+```{python}
+# | echo: false
+# | output: asis
+# | collapse: true
+
+from IPython.display import display, Markdown
+import plotly.graph_objects as go
+import dataclasses
+
+
+@dataclasses.dataclass
+class QuantType:
+    skills: dict[str, int]
+    description: str
+
+
+job_skills = {
+    "Front Office Quant": QuantType(
+        skills={
+            "Analiza danych": 1,
+            "Inżynieria oprogramowania": 1,
+            "Matematyka finansowa": 3,
+            "Programowanie": 3,
+            "Wiedza o rynkach": 3,
+            "Regulacje i nadzór": 1,
+        },
+        description="Tworzy i wdraża modele matematyczne do wyceny, zarządzania ryzykiem i strategii inwestycyjnych bezpośrednio na biurkach handlowych (trading desks).",
+    ),
+    "Market Risk Quant": QuantType(
+        skills={
+            "Analiza danych": 1,
+            "Modelowanie ryzyka": 3,
+            "Matematyka finansowa": 2,
+            "Programowanie": 2,
+            "Wiedza o rynkach": 2,
+            "Regulacje i nadzór": 2,
+        },
+        description="Projektuje i weryfikuje modele szacowania ryzyka rynkowego, upewniając się, że bank nie przekracza dopuszczalnych limitów i spełnia wymogi nadzoru finansowego.",
+    ),
+    "Credit Risk Quant": QuantType(
+        skills={
+            "Analiza danych": 2,
+            "Modelowanie ryzyka": 3,
+            "Matematyka finansowa": 3,
+            "Programowanie": 2,
+            "Inżynieria oprogramowania": 1,
+            "Wiedza o rynkach": 2,
+        },
+        description="Analizuje ryzyko kredytowe, czyli prawdopodobieństwo niewypłacalności kontrahentów lub dłużników. Rola wymagająca silnych fundamentów statystycznych.",
+    ),
+    "Validation Quant": QuantType(
+        skills={
+            "Analiza danych": 1,
+            "Matematyka finansowa": 3,
+            "Programowanie": 2,
+            "Walidacja modeli": 3,
+            "Regulacje i nadzór": 3,
+        },
+        description="Rola typu 'wewnętrzna policja'. Odpowiada za niezależny przegląd i testowanie modeli stworzonych przez inne zespoły, by zapobiec ewentualnym błędom i stratom.",
+    ),
+    "Quant Researcher": QuantType(
+        skills={
+            "Eksploracja danych (Data Mining)": 2,
+            "Programowanie": 2,
+            "Uczenie statystyczne": 3,
+            "Matematyka finansowa": 3,
+            "Wiedza o rynkach": 3,
+        },
+        description="Stanowisko o charakterze naukowo-badawczym (think tank). Skupia się na poszukiwaniu nowych sygnałów rynkowych i udoskonalaniu metod wyceny aktywów.",
+    ),
+    "Algorithmic Trader": QuantType(
+        skills={
+            "Eksploracja danych (Data Mining)": 2,
+            "Inżynieria oprogramowania": 2,
+            "Mikrostruktura rynku": 3,
+            "Programowanie": 3,
+            "Wiedza o rynkach": 3,
+            "Zarządzanie danymi": 2,
+            "Uczenie statystyczne": 3,
+        },
+        description="Programuje i nadzoruje algorytmy realizujące transakcje na żywym rynku. Wymaga głębokiego zrozumienia mikrostruktury rynku.",
+    ),
+    "Quant Developer": QuantType(
+        skills={
+            "Inżynieria oprogramowania": 3,
+            "Matematyka finansowa": 1,
+            "Programowanie": 3,
+            "Projektowanie algorytmów": 3,
+            "Wiedza o rynkach": 2,
+            "Regulacje i nadzór": 1,
+            "Zarządzanie danymi": 2,
+        },
+        description="Filar każdego zespołu ilościowego. Odpowiada za budowę ultraszybkich i stabilnych systemem informatycznych, które dźwigają skomplikowane obliczenia.",
+    ),
+}
+
+all_skills = set()
+for data in job_skills.values():
+    all_skills.update(data.skills.keys())
+all_skills = tuple(reversed(sorted(all_skills)))
+
+
+tabs = all_skills
+display(Markdown(":::{.panel-tabset}"))
+
+for job_title, data in job_skills.items():
+    display(Markdown("\n"))
+    display(Markdown("### {}".format(job_title)))
+    display(Markdown("\n"))
+    display(Markdown(data.description))
+
+    skill_values = [data.skills.get(skill, 0) for skill in all_skills]
+    fig = go.Figure(
+        data=[
+            go.Bar(
+                y=all_skills,
+                x=skill_values,
+                orientation="h",
+            )
+        ]
+    )
+
+    fig.update_layout(
+        title=f"Poziomy umiejętności - {job_title}",
+        xaxis_showgrid=False,
+        xaxis=dict(tickmode="linear", tick0=0, dtick=1),
+        width=600,
+    )
+
+    display(fig)
+
+display(Markdown(":::"))
+```
+
+## Rzeczywistość codziennej pracy
+
+Praca jako quant to jednak nie tylko pisanie eleganckich wzorów na tablicy. Większość czasu spędzisz na **kodowaniu i testowaniu**. Nawet najbardziej błyskotliwy pomysł jest bezwartościowy, jeśli nie da się go szybko zaimplementować lub jeśli testy na danych historycznych (backtesting) nie wykażą jego skuteczności. Kluczowe jest też oswojenie się z „brudnymi” danymi – pełnymi braków, błędów i wartości skrajnych, które czystego matematyka przyprawiłyby o zawrót głowy.
+
+Niezwykle ważna jest **komunikacja**. Będziesz na co dzień współpracować z traderami czy menedżerami, którzy świetnie znają rynek, ale mogą nie odróżniać szeregu Taylora od piosenki Taylor Swift. Umiejętność prostego wytłumaczenia zachowania modelu, bez zasypywania rozmówcy greckich liter, to prawdziwy as w rękawie.
+
+Do tego dochodzi **odpowiedzialność i zgodność z regulacjami**. W niektórych zespołach błąd w kodzie może w kilka minut kosztować firmę miliony dolarów. Na innych stanowiskach spędzisz z kolei długie tygodnie na opisywaniu założeń modelu w dokumentacji dla nadzoru finansowego, by dowieść, że Twoje algorytmy nie zachwieją stabilnością rynku. To praca wymagająca żelaznej dyscypliny i odporności na stres.
+
+## Gdzie szukać pracy?
+
+Gdzie szukać zatrudnienia na początku drogi? Opcji jest sporo, również lokalnie.
+
+We **Wrocławiu** mamy zaskakująco silną reprezentację sektora ilościowego z takimi markami jak UBS, BNY Mellon czy Santander. W skali całego kraju (szczególnie w Warszawie) lista ta rozszerza się m.in. o Goldman Sachs, HSBC i Revolut. Oczywiście głównymi światowymi centrami pozostają Londyn, New York i Hongkong, jednak rozwój pracy hybrydowej i zdalnej znacznie ułatwił start w międzynarodowych zespołach bez konieczności relokacji.
+
+## Przemyślenia końcowe
+
+Przejście z murów uczelni do dynamicznego świata finansów potrafi być sporym wyzwaniem, ale daje mnóstwo satysfakcji – zwłaszcza gdy widzisz, jak Twoje teoretyczne modele przekładają się na rzeczywiste procesy i decyzje rynkowe. Jeśli rozważasz tę ścieżkę, zacznij od solidnego opanowania Pythona lub C++, powtórzenia teorii prawdopodobieństwa i sięgnięcia po klasyczną literaturę branżową.
+
+[Moje CV](../../resume/index.qmd)
+
+## Dodatkowa literatura
+
+### Książki popularnonaukowe
+- [The Quants: How a New Breed of Math Whizzes Conquered Wall Street and Nearly Destroyed It -- Scott Patterson](https://www.amazon.com/Quants-Whizzes-Conquered-Street-Destroyed/dp/0307453383)
+- [A Random Walk Down Wall Street -- Burton G. Malkiel](https://www.amazon.com/Random-Walk-Down-Wall-Street/dp/0393358380)
+- [The Money Formula -- Paul Wilmott, David Orrell](https://www.amazon.com/Money-Formula-Finance-Science-Mathematicians/dp/1119358612)
+
+### Biografie
+- [A Man for All Markets -- Edward O. Thorp](https://www.amazon.com/Man-All-Markets-Street-Dealer/dp/0812979907)
+- [The Man Who Solved the Market -- Gregory Zuckerman](https://www.amazon.com/Man-Who-Solved-Market-Revolution/dp/0593086317)
+- [My Life as a Quant -- Emanuel Derman](https://www.amazon.com/My-Life-Quant-Reflections-Physics/dp/0470192739)
+
+### Podstawy techniczne
+- [Financial Calculus: An Introduction to Derivative Pricing -- Martin Baxter, Andrew Rennie](https://www.amazon.com/Financial-Calculus-Introduction-Derivative-Pricing/dp/0521552893)
+- [Paul Wilmott Introduces Quantitative Finance -- Paul Wilmott](https://www.amazon.com/Paul-Wilmott-Introduces-Quantitative-Finance/dp/0470319585)
+- [Stochastic Calculus for Finance I: The Binomial Asset Pricing Model -- Steven Shreve](https://www.amazon.com/Stochastic-Calculus-Finance-Binomial-Pricing/dp/0387401008)
+- [Mathematical Modeling and Computation in Finance -- Cornelis W Oosterlee & Lech A Grzelak](https://www.amazon.com/Mathematical-Modeling-Computation-Finance-Exercises/dp/1786348055)
+
+### Przygotowanie do rozmów kwalifikacyjnych
+- [Frequently Asked Questions in Quantitative Finance -- Paul Wilmott](https://www.amazon.com/Frequently-Asked-Questions-Quantitative-Finance/dp/0470748753)
+- [Quant Job Interview Questions and Answers -- Mark Joshi](https://www.amazon.com/Joshi-Interview-Questions-Answers-Second/dp/B00NBE74RY)
+- [150 Most Frequently Asked Questions on Quant Interviews -- Dan Stefanica et al.](https://www.amazon.com/Frequently-Asked-Questions-Quant-Interviews/dp/173453124X)
+
+### Kanały na YouTube
+- [Computations in Finance](https://www.youtube.com/computationsinfinance)
+- [Dimitri Bianco](https://www.youtube.com/@DimitriBianco)
