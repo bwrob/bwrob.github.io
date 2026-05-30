@@ -20,9 +20,9 @@ format-links: [html]
 
 ![](../../assets/images/posts/25-03-22-mathematician-in-finance/financial_whirlpool.png){width="95%" fig-align="center"}
 
-## Podsumowanie
+## Wprowadzenie
 
-Wpis ten stanowi podsumowanie wykładu, który miałem przyjemność wygłosić na Uniwersytecie Wrocławskim. Mówiłem w nim o tym, jak z perspektywy matematyka wygląda praca w sektorze finansowym. Przyjrzeliśmy się różnym ścieżkom kariery, umiejętnościom kluczowym na rynku (które wykraczają daleko poza umiejętność prowadzenia dowodów matematycznych) oraz realiom odnalezienia się w tej branży.
+W tym wpisie przyjrzymy się temu, jak z perspektywy matematyka wygląda praca w sektorze finansowym. Przeanalizujemy różne ścieżki kariery, kluczowe umiejętności (które wykraczają daleko poza umiejętność prowadzenia dowodów matematycznych) oraz realia odnalezienia się w tej branży.
 
 ## Ekosystem finansowy
 
@@ -182,6 +182,38 @@ for job_title, data in job_skills.items():
 display(Markdown(":::"))
 ```
 
+## Case Study: Od Jupyter Notebooka do produkcji
+
+Aby dobrze zrozumieć, czym w praktyce różnią się poszczególne role analityczne (Quant Analyst) od programistycznych (Quant Developer), przyjrzyjmy się konkretnemu projektowi: **wyznaczaniu implikowanego rozkładu prawdopodobieństwa z cen opcji**.
+
+To klasyczny problem w finansach ilościowych. Analizując ceny opcji dla różnych cen wykonania (strikes) przy danym terminie zapadalności, możemy odczytać, jak rynek szacuje prawdopodobieństwo osiągnięcia przez instrument bazowy określonej ceny w przyszłości. Od strony matematycznej opiera się to na twierdzeniu Breedena-Litzenbergera, które mówi, że funkcja gęstości prawdopodobieństwa (w świecie neutralnym wobec ryzyka) jest proporcjonalna do drugiej pochodnej ceny opcji względem ceny wykonania.
+
+Wyobraź sobie, że masz podstawową wersję tego algorytmu napisaną w Pythonie w Jupyter Notebooku. Kod dopasowuje gładką krzywą (np. spline sześcienny) do cen opcji i liczy drugą pochodną numeryczną. To fajne ćwiczenie matematyczne, ale w warunkach komercyjnych taki skrypt to dopiero początek drogi.
+
+Oto jak w tym miejscu rozchodzą się ścieżki Quanta i Quant Developera:
+
+### Ścieżka Quant Analyst (Analityka)
+
+Quant Analyst (QA) skupia się przede wszystkim na matematyce, modelowaniu oraz finansowych konsekwencjach wyników:
+
+*   **Valuation Quant (Wycena):** Będzie analizować założenia matematyczne. Czy wybrana metoda interpolacji gwarantuje brak arbitrażu statycznego (np. czy gęstość prawdopodobieństwa nie przyjmuje wartości ujemnych i sumuje się do 1)? Jak wykorzystać ten rozkład do wyceny bardziej skomplikowanych, niepłynnych opcji egzotycznych?
+*   **Risk Quant (Zarządzanie ryzykiem):** Spojrzy na model pod kątem zabezpieczeń. Jak na podstawie wyznaczonego rozkładu zidentyfikować ryzyko ogona (tail risk) w naszym portfelu i jak najtaniej zabezpieczyć je za pomocą opcji poza ceną (OTM)?
+*   **Quant Researcher (Badania):** Będzie szukać anomalii rynkowych. Stworzy takie rozkłady dla różnych terminów zapadalności, porówna je z danymi historycznymi i spróbuje znaleźć powtarzalne nieefektywności rynku, na których można zarobić.
+*   **Quant Trader (Handel):** Skupi się na samej egzekucji. Jak przełożyć wnioski z modelu na konkretne transakcje i jak kupić lub sprzedać opcje na rynku przy minimalnych kosztach transakcyjnych?
+
+### Ścieżka Quant Developer (Wdrożenie)
+
+Quant Developer (QD) skupia się z kolei na tym, jak ten matematyczny prototyp przekształcić w stabilny, skalowalny i bezpieczny system działający na produkcji:
+
+*   **Produktywizacja kodu:** QD bierze chaotyczny skrypt z notebooka i przepisuje go zgodnie ze sztuką inżynierii oprogramowania. Wprowadza klasy, statyczne typowanie (`mypy`), lintery, dba o dokumentację oraz pisze testy jednostkowe i regresyjne.
+*   **Integracja danych i wzorce projektowe:** Model musi pobierać dane rynkowe z różnych źródeł (np. Bloomberg, Reuters, bazy danych). QD projektuje architekturę aplikacji przy użyciu wzorców takich jak wstrzykiwanie zależności (Dependency Injection) czy adapter (Adapter Pattern), aby zmiana dostawcy danych nie wymagała modyfikacji samego modelu matematycznego.
+*   **Optymalizacja wydajności:** Obliczenia matematyczne (interpolacja, szukanie parametrów modeli) mocno obciążają procesor. QD analizuje wąskie gardła. Czasem wystarczy użyć biblioteki `scipy`, innym razem trzeba zaimplementować dedykowane, szybkie algorytmy (np. metodę Jaeckela dla zmienności implikowanej). Przy ekstremalnych wymaganiach wydajnościowych QD przepisuje krytyczne obliczenia do C++ lub Rusta i łączy je z Pythonem (np. za pomocą `PyO3`).
+*   **Współbieżność i limity API:** Jeśli wąskim gardłem jest pobieranie danych, QD wdraża programowanie asynchroniczne (`asyncio`). Musi przy tym bezpiecznie obsłużyć blokujące wywołania zewnętrznych bibliotek (`asyncio.to_thread`) oraz zaprojektować mechanizmy ograniczania zapytań (rate limiters, semafory), aby system nie został zablokowany przez API dostawcy danych.
+*   **Przetwarzanie wsadowe (Batch Processing):** Jeśli zespół ryzyka potrzebuje wyników dopiero na koniec dnia (EOD), nie ma sensu liczyć wszystkiego w czasie rzeczywistym. QD konfiguruje orchestrator (np. Airflow), który uruchamia obliczenia w nocy, zapisując gotowe wyniki do bazy danych.
+*   **Interfejs użytkownika i wizualizacja:** Gdy trader potrzebuje podglądu rozkładów na żywo na jednym ze swoich ekranów, QD buduje aplikację webową. Musi zdecydować o architekturze: czy wystarczy prosty dashboard w Streamlicie/Dashu, czy potrzebny jest podział na wydajne API (np. FastAPI) i nowoczesny frontend (np. React).
+
+Choć w mniejszych zespołach lub przy niektórych projektach granice te się zacierają i jeden zaawansowany quant może pisać zarówno model, jak i kod produkcyjny, to te dwa podejścia – matematyczne i inżynieryjne – pozostają fundamentem nowoczesnego quant finance.
+
 ## Rzeczywistość codziennej pracy
 
 Praca jako quant to jednak nie tylko pisanie eleganckich wzorów na tablicy. Większość czasu spędzisz na **kodowaniu i testowaniu**. Nawet najbardziej błyskotliwy pomysł jest bezwartościowy, jeśli nie da się go szybko zaimplementować lub jeśli testy na danych historycznych (backtesting) nie wykażą jego skuteczności. Kluczowe jest też oswojenie się z „brudnymi” danymi – pełnymi braków, błędów i wartości skrajnych, które czystego matematyka przyprawiłyby o zawrót głowy.
@@ -195,6 +227,55 @@ Do tego dochodzi **odpowiedzialność i zgodność z regulacjami**. W niektóryc
 Gdzie szukać zatrudnienia na początku drogi? Opcji jest sporo, również lokalnie.
 
 We **Wrocławiu** mamy zaskakująco silną reprezentację sektora ilościowego z takimi markami jak UBS, BNY Mellon czy Santander. W skali całego kraju (szczególnie w Warszawie) lista ta rozszerza się m.in. o Goldman Sachs, HSBC i Revolut. Oczywiście głównymi światowymi centrami pozostają Londyn, New York i Hongkong, jednak rozwój pracy hybrydowej i zdalnej znacznie ułatwił start w międzynarodowych zespołach bez konieczności relokacji.
+
+## Pytania i odpowiedzi
+
+Podczas mojego wykładu na Uniwersytecie Wrocławskim oraz po nim, studenci zadali kilka bardzo ciekawych pytań. Poniżej przedstawiam te pytania wraz z moimi odpowiedziami – mogą one pomóc lepiej zrozumieć specyfikę tej pracy:
+
+### 1. Jak wygląda typowy dzień w tej pracy?
+
+To zależy od pozycji, jaką się zajmuje. Istnieje wiele różnych „podgatunków” quantów – od takich, którzy pracują głównie z gotowymi danymi z systemów ryzyka i Excelem, po typowych programistów rozumiejących finanse. Ja obecnie pracuję na pozycji bliższej tej drugiej strony spektrum (jako Quant Developer), natomiast mam też doświadczenie bardziej analityczne.
+
+Mój typowy dzień wygląda mniej więcej tak:
+
+* **Rozpoczęcie dnia (ok. 2h):** Zaczynam od recenzji kodu (code review). Jestem odpowiedzialny za jakość techniczną i spójność projektową kodu pisanego przez quantów i mniej doświadczonych programistów.
+* **Daily meeting (15 min):** Krótkie spotkanie statusowe całego zespołu – kto co robił poprzedniego dnia, czy ktoś ma jakieś blokady i czy musi się z kimś skonsultować. Zwykle po tym następują spotkania 1-on-1, aby dogadać szczegóły techniczne lub wymagania biznesowe.
+* **Skupiona praca inżynierska (ok. 4h):** Czas poświęcony na programowanie, choć bywa przerywany różnymi bieżącymi tematami.
+* **Popołudnie (spotkania):** Spotkania z menedżerami lub innymi zespołami z Nowego Jorku (NYC) – raportowanie postępów, ustalenia międzyzespołowe, rozwiązywanie zależności itp.
+
+### 2. Czy ta praca jest stresująca lub wyczerpująca?
+
+Dużo zależy od kultury pracy, zespołu, sposobu zarządzania oraz konkretnego projektu.
+
+Generalnie im bliżej „pieniędzy” (czyli bezpośredniego handlu), tym więcej stresu. Najbardziej wymagająca pod tym względem będzie praca po stronie *buy-side* (fundusze inwestycyjne, hedge fundy, firmy tradingowe) lub w strukturach *front-office* instytucji *sell-side* (banki inwestycyjne). Po stronie zarządzania ryzykiem (risk management) bywa spokojniej, choć tam również zdarzają się napięte terminy związane z regulacjami, które narzucają presję.
+
+Nawet przy dobrej atmosferze jest to praca wyczerpująca, ponieważ wymaga ciągłego wysiłku intelektualnego. Dla mnie osobiście jest to satysfakcjonujące, ale sprawia też, że przestrzeń na prywatne projekty mam głównie w weekendy. Wieczorami po pracy wolę postawić na odpoczynek – gaming, kino czy aktywność fizyczną.
+
+### 3. Jakie są największe wyzwania podczas pracy jako Quant?
+
+Wypowiem się z perspektywy Quant Developera (ponieważ typowym Quantem badawczym nie byłem wybitnym, więc tam wyzwań miałem jeszcze więcej!).
+
+Największym wyzwaniem jest **łączenie trzech światów: matematyki, technologii i finansów**. To ogromna ilość wiedzy do przyswojenia i utrzymania w głowie. Rzadko zdarza się osoba, która jest wybitnym ekspertem we wszystkich tych trzech dziedzinach jednocześnie. Trzeba się specjalizować, dokonywać wyborów i nieustannie się uczyć – co bywa ekscytujące, ale czasem też potwornie męczące.
+
+Drugim wyzwaniem jest **komunikacja**. Ta wspomniana żonglerka dziedzinami nie odbywa się tylko w Twojej głowie. Musisz komunikować się z ludźmi, którzy mogą znajdować się w zupełnie innym miejscu na styku tych trzech obszarów. Wyjaśnienie matematycznych zawiłości programiście lub technicznych ograniczeń traderowi wymaga dużej elastyczności.
+
+### 4. Co daje największą satysfakcję?
+
+To bardzo indywidualna kwestia. W projektach, w których uczestniczę, staram się stosować zasadę: *„Make It Work, Make It Right, Make It Fast”* (podział pracy na trzy etapy).
+
+Dla mnie osobiście najwięcej satysfakcji niesie etap **„Make It Fast”** (optymalizacja). Jest to o tyle ciekawe, że na co dzień specjalizuję się głównie w Pythonie. Python słynie z bogatego ekosystemu bibliotek i szybkości pisania kodu, a niekoniecznie z wydajności wykonania. Wprowadza to jednak pasjonujący element optymalizacji kodu i ciągłego szukania kompromisów wydajnościowych, co niesamowicie mnie napędza.
+
+### 5. Czy da się utrzymać pełne skupienie przez cały dzień pracy? Gdy koduję przez 2 godziny, potem jest mi coraz trudniej.
+
+To zupełnie naturalne. Rzadko kto potrafi programować w pełnym skupieniu przez 8 godzin bez przerwy. W naprawdę dobry, produktywny dzień mam na koncie około 6 godzin czystej pracy inżynierskiej, a często bywają dni, gdy są to tylko 4 godziny.
+
+Ponadto rzadko pracuję nad tylko jednym zadaniem. Proces tworzenia oprogramowania w dużych instytucjach wymaga czasu na recenzję kodu i testy, więc zazwyczaj prowadzę 3–4 wątki równolegle:
+
+* jedno zadanie jest na ukończeniu (w fazie review),
+* nad drugim intensywnie myślę i podejmuję decyzje projektowe,
+* trzecie (bardziej techniczne/rutynowe) wykonuje w tle np. agent LLM.
+
+Taka kontrolowana zmiana kontekstu pomaga mi utrzymać świeżość i skupienie, o ile nie skaczę między tematami zbyt chaotycznie. Na początku drogi (jako junior) naturalny model to raczej praca nad 1–2 tematami jednocześnie.
 
 ## Przemyślenia końcowe
 
