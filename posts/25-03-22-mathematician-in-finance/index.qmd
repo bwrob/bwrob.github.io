@@ -17,27 +17,33 @@ format-links: [html]
 
 ## Introduction
 
-In this post, we'll look at what it's actually like for a mathematician to work in finance. We'll go over the different roles you can land, the skills you actually need (beyond just knowing your way around a proof), and how to navigate the industry.
+In this post, we'll look at what it's actually like for a mathematician to work in financial markets. We'll go over the different roles you can land, the skills you actually need (beyond just knowing your way around a mathematical proof), and how to navigate the industry.
 
 ## The Financial Ecosystem
 
-When you first look at financial markets, they can seem like a chaotic mess of numbers, shouting (well, maybe less shouting now that everything is electronic), and complex jargon. But at their core, markets are just ecosystems where capital and risk are being traded. It’s a place where people who have money but no projects meet people who have projects but no money.
+When you first look at teh financial markets, they can seem like a chaotic mess of numbers, shouting (well, maybe less shouting now that everything is electronic), and complex jargon. But at their core, markets are just ecosystems where capital and risk are being exchanged. It’s a place where people who have money but no projects meet people who have projects but no money.
 
-The characters you meet on the trading floor generally fall into a few buckets. You have the **Speculators**, who are the ones taking on risk because they think they can predict where the price is going. They provide the liquidity that makes the market move. Then you have **Hedgers**—these are the "insurance seekers" who already have a risk (like a farmer worried about wheat prices) and want to get rid of it.
+The characters you meet on the trading floor generally fall into a few buckets.
 
-In between them, you find the **Arbitrageurs**. These are the "market cleaners" who look for tiny inconsistencies in prices between different places. If gold is cheaper in London than in New York, they'll buy in one and sell in the other until the prices align. Finally, you have the **Intermediaries** (like brokers and market makers) who just want to make the trade happen and pocket a small fee for the service.
+You have the **Speculators**, who are the ones taking on risk because they think they can predict where the price is going. They provide the liquidity that makes the market move. Regular people investing their retirement funds into stock exchenge indecies are also speculators. They are making a bet that the long term performance of the ecomomy outperforms inflation until they retire. This is historically a safe assuption, but still burdened with uncertainty.
 
-For a mathematician, this is a playground. Why? Because every single one of these interactions involves uncertainty, and if there's one thing mathematicians are good at, it's quantifying the unknown.
+Then you have **Hedgers**—these are the "insurance seekers" who already have a risk (like a farmer worried about wheat prices) and want to get rid of it.
+
+In between them, you find the **Arbitrageurs**. These are the "market cleaners" who look for tiny inconsistencies in prices between different places. If gold is cheaper in London than in New York, they'll buy in one and sell in the other until the prices align.
+
+Finally, you have the **Intermediaries** (like brokers and market makers) who just want to make the trade happen and pocket a small fee for the service.
+
+For a mathematician, this is a playground. Why? Because every single one of these types interactions with the market  involves uncertainty, and if there's one thing applied mathematicians are good at, it's quantifying the unknown.
 
 ## Why Do They Need Us?
 
-You might wonder why a bank would hire someone who spent four years studying non-local unbounded operators. The reason is that modern finance is built on models that are essentially massive math problems.
+You might wonder why a bank would hire someone who spent five years studying geometric bundles, clopen sets, branching processes or non-local unbounded operators. The reason is that modern finance is built on models that are essentially massive math problems. Catch-phrase here is "quantitative finance" but truly, nowadays all finance is quantitative.
 
-Take **pricing**, for example. If you want to sell someone an option—the right to buy a stock at a certain price in six months—you need to know what that right is worth today. That involves stochastic calculus, partial differential equations, and a lot of numerical methods. It's not just "guessing"; it's solving the Heat Equation in a financial context.
+Take **pricing**, for example. If you want to sell someone an option -- the right to buy a stock at a certain price in six months -- you need to know what that right is worth today. That involves stochastic calculus, partial differential equations, and a lot of numerical methods. It's not just "guessing"; it's solving a more complex Heat Equation in a financial context.
 
 Then there's **Risk Management**. After the 2008 crisis, "winging it" stopped being an option. Banks need to know, with a high degree of mathematical certainty, how much they could lose if the market takes a dive. This requires sophisticated probability theory and statistics to model "fat tails"—those rare but catastrophic events that standard models often miss.
 
-Beyond pricing and risk, we're heavily involved in **Algorithmic Trading**, where we use optimization and signal processing to execute trades in milliseconds, and **Portfolio Optimization**, where we use linear algebra to find the best possible balance between return and risk.
+Beyond pricing and risk, mathematicians heavily involved in **Algorithmic Trading**, where we use optimization and signal processing to execute trades in milliseconds, and **Portfolio Optimization**, where we use linear algebra to find the best possible balance between return and risk.
 
 ## The Many Flavors of Quants
 
@@ -73,10 +79,10 @@ job_skills = {
     ),
     "Market Risk Quant": QuantType(
         skills={
-            "Data Analysis": 1,
+            "Data Analysis": 2,
             "Risk Modeling": 3,
             "Financial Math": 2,
-            "Programming": 2,
+            "Programming": 1,
             "Finance Knowledge": 2,
             "Regulatory Knowledge": 2,
         },
@@ -88,7 +94,9 @@ job_skills = {
             "Risk Modeling": 3,
             "Financial Math": 3,
             "Programming": 2,
+            "Numerical Methods": 1,
             "Software Engineering": 1,
+            "Regulatory Knowledge": 2,
             "Finance Knowledge": 2,
         },
         description="Focuses on the risk of people or companies defaulting on their debts. Heavy on probability and statistical modeling.",
@@ -97,7 +105,7 @@ job_skills = {
         skills={
             "Data Analysis": 1,
             "Financial Math": 3,
-            "Programming": 2,
+            "Programming": 1,
             "Model Validation": 3,
             "Regulatory Knowledge": 3,
         },
@@ -130,7 +138,7 @@ job_skills = {
             "Software Engineering": 3,
             "Financial Math": 1,
             "Programming": 3,
-            "Algorithm Design": 3,
+            "Numerical Methods": 3,
             "Finance Knowledge": 2,
             "Regulatory Knowledge": 1,
             "Data Management": 2,
@@ -181,7 +189,7 @@ display(Markdown(":::"))
 
 To see the difference between the various Quant Analyst and Quant Developer roles in practice, let’s look at a concrete project: **extracting implied probability distributions from option prices**.
 
-This is a fundamental problem in quantitative finance. By looking at option prices across different strikes for a given expiry, we can extract the market’s consensus on the probability of the underlying asset reaching a certain price in the future. Mathematically, this is based on the Breeden-Litzenberger theorem, which states that the risk-neutral probability density function is proportional to the second derivative of the option price with respect to the strike price.
+This is one of the quantitative finance standards. By looking at option prices across different strikes for a given expiry, we can extract the market’s consensus on the probability of the underlying asset reaching a certain price in the future. Mathematically, this is based on the Breeden-Litzenberger theorem, which states that the risk-neutral probability density function is proportional to the second derivative of the option price with respect to the strike price.
 
 Imagine you have a basic implementation of this math in a Python script or Jupyter Notebook. It fits a smooth curve (like a cubic spline) to option prices and takes the numerical second derivative. It’s a neat math exercise, but in a professional setting, this script is just the starting point.
 
@@ -200,9 +208,9 @@ A Quant Analyst (QA) is primarily focused on the math, the models, and the finan
 
 A Quant Developer (QD) is focused on turning this mathematical prototype into a robust, scalable, and production-grade software system:
 
-*   **Productionalizing the Code:** The QD takes the messy Jupyter notebook and refactors it into clean, structured, and reusable code. This means introducing classes, static typing (with `mypy`), proper linting, docstrings, and a comprehensive suite of unit and regression tests.
+*   **Productionalizing the Code:** The QD takes the (possibly messy) Jupyter notebook and refactors it into clean, structured, and reusable code. This means introducing classes, static typing, proper linting, docstrings, and a comprehensive suite of unit and regression tests.
 *   **Data Integration & Design Patterns:** The system needs to work with live market data from various feeds (e.g., Bloomberg, Reuters, or internal databases). The QD uses software design patterns like Dependency Injection and the Adapter Pattern to ensure that swapping data vendors doesn't require rewriting the core mathematical model.
-*   **Performance Optimization:** Solving the math (interpolation, root-finding for implied volatilities) is CPU-heavy. The QD analyzes the performance. Sometimes Python's `scipy` is fast enough; other times, they need to implement highly optimized, domain-specific algorithms (like Jaeckel’s method). For ultra-low latency, they might offload the calculations to a compiled language like C++ or Rust (binding it back to Python using `PyO3`).
+*   **Performance Optimization:** Solving the math (interpolation, root-finding for implied volatilities) is CPU-heavy. The QD analyzes the performance. Sometimes Python's `scipy` is fast enough; other times, they need to implement highly optimized, domain-specific algorithms (like Jaeckel’s method). For ultra-low latency, they might offload the calculations to a compiled language like C++ or Rust (binding it back to Python using `nanobind` or `PyO3`).
 *   **Concurrency & API Limits:** If fetching data is the bottleneck, the QD implements asynchronous programming (`asyncio`). They must handle blocking vendor APIs safely (using `asyncio.to_thread`) and design rate-limiters or semaphores to avoid getting blocked by external data providers.
 *   **Batch Processing & Scheduling:** If the risk team only needs end-of-day (EOD) metrics, there is no need for real-time streaming. The QD sets up an orchestrator (like Airflow) to run the model as a batch job overnight, writing results to a database.
 *   **User Interface & Dashboards:** If a trader needs to monitor these distributions live on one of their six screens, the QD builds a dashboard. They must decide on the architecture: is a lightweight framework like Streamlit or Dash sufficient, or do they need to split it into a robust backend API (e.g., FastAPI) and a modern frontend (e.g., React)?
@@ -233,7 +241,7 @@ It really depends on the role you hold. There are many different "sub-species" o
 
 My typical day looks something like this:
 
-* **Starting the day (approx. 2h):** I begin with code review. I am responsible for the technical quality and design consistency of the code written by quants and less experienced developers.
+* **Starting the day (approx. 1h):** I begin with code reviews. I am responsible for the technical quality and design consistency of the code written by quants and less experienced developers.
 * **Daily meeting (15 min):** A brief status update for the team—what everyone did the day before, if anyone is blocked, and if they need to meet up with anyone. This usually leads to 1-on-1 meetings to sort out technical details or business requirements.
 * **Focused engineering work (approx. 4h):** Time spent coding, which is often interrupted by various ad-hoc requests from the above.
 * **Afternoon (meetings):** Meetings with managers or other teams from New York (NYC). These involve reporting weekly progress, cross-team alignment, resolving dependencies, etc.
@@ -247,8 +255,6 @@ Generally, the closer you are to the "money" (direct trading), the more stress t
 Even when everything goes smoothly, it is still an exhausting job because it is highly intellectual. For me, it is rewarding, but it does mean that I mostly have energy and time for private projects on weekends. Evenings after work are usually reserved for winding down—gaming, movies, or physical activity.
 
 ### 3. What are the biggest challenges when working as a Quant?
-
-I'll answer this from the perspective of a Quant Developer (since I wasn't a particularly great research quant, so I faced even more challenges there!).
 
 The biggest challenge is **combining three worlds: mathematics, technology, and finance**. That is a lot of knowledge to acquire and keep in your head. It is rare to find someone who is a top-tier expert in all three. You have to specialize, make trade-offs, and constantly study—which is sometimes exciting and other times exhausting.
 
