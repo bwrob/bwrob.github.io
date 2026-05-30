@@ -437,7 +437,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="loading-financial-data" class="level2">
 <h2 class="anchored" data-anchor-id="loading-financial-data">1. Loading Financial Data</h2>
 <p>We start by loading OHLCV (Open, High, Low, Close, Volume) data for S&amp;P 500 constituents. Using the Arrow IPC (Feather) format is preferred in finance because it provides near-instantaneous loading via memory-mapping, preserving the data types and structure without the parsing overhead of CSV or Parquet.</p>
-<div id="06522e7e" class="cell" data-execution_count="1">
+<div id="68dc9463" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
@@ -557,7 +557,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="expressions-the-atomic-units-of-logic">2. Expressions: The Atomic Units of Logic</h2>
 <p>Expressions are the building blocks of Polars logic. They are lazily evaluated and represent a tree of operations. In a financial context, we can define modular expressions for standard metrics like log returns or volatility and reuse them across different DataFrames or pipelines.</p>
 <p>One major advantage here is <strong>composability</strong>. You can define an expression once and apply it to any column that fits the required data type.</p>
-<div id="f93e5957" class="cell" data-execution_count="2">
+<div id="a23f00f0" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1"></a>log_return <span class="op">=</span> (pl.col(<span class="st">"close"</span>) <span class="op">/</span> pl.col(<span class="st">"close"</span>).shift(<span class="dv">1</span>)).log().over(<span class="st">"ticker"</span>)</span>
@@ -593,7 +593,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="context-selection-feature-engineering">3. Context: Selection &amp; Feature Engineering</h2>
 <p>Contexts are the environments where expressions are executed. The two most common are <code>select</code> (creating a new DataFrame from expressions) and <code>with_columns</code> (adding or updating columns in an existing DataFrame).</p>
 <p>For financial feature engineering, <code>with_columns</code> is the workhorse. It allows for the parallel creation of multiple technical indicators in a single pass over the data.</p>
-<div id="6536ddd7" class="cell" data-execution_count="3">
+<div id="babce059" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a>df <span class="op">=</span> df.with_columns(</span>
@@ -723,7 +723,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="context-aggregation-group_by">4. Context: Aggregation (<code>group_by</code>)</h2>
 <p>The <code>group_by</code> context allows for powerful split-apply-combine operations. In Polars, these aggregations are “push-down” optimized. When you run a risk summary, Polars doesn’t just group the data; it uses vectorized SIMD instructions to calculate sums and means across the groups simultaneously.</p>
 <p>This is where we calculate portfolio-level or ticker-level risk metrics like Maximum Drawdown or the Sharpe Ratio.</p>
-<div id="ee6ef442" class="cell" data-execution_count="4">
+<div id="70d33656" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>risk_summary <span class="op">=</span> df.group_by(<span class="st">"ticker"</span>).agg(</span>
@@ -818,7 +818,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="power-selectors-polars.selectors" class="level2">
 <h2 class="anchored" data-anchor-id="power-selectors-polars.selectors">5. Power Selectors (<code>polars.selectors</code>)</h2>
 <p>Selectors are a recent addition to Polars that allow you to target columns based on their properties (name, dtype, etc.) rather than hardcoding names. This is incredibly useful for stress testing or “what-if” analysis where you might want to apply a shock to all price-related columns simultaneously.</p>
-<div id="68de150d" class="cell" data-execution_count="5">
+<div id="516ce97c" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-1" class="code-annotation-target"><a href="#annotated-cell-5-1"></a>price_shock <span class="op">=</span> cs.starts_with(<span class="st">"open"</span>, <span class="st">"high"</span>, <span class="st">"low"</span>, <span class="st">"close"</span>) <span class="op">*</span> <span class="fl">1.01</span></span>
@@ -904,7 +904,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="window-functions-over">6. Window Functions (<code>over</code>)</h2>
 <p>Window functions (<code>over</code>) are perhaps the most powerful tool for cross-sectional analysis. They allow you to compute group-level statistics (like a sector average or a market-cap weight) and project them back onto the original rows without performing a merge/join.</p>
 <p>In quantitative research, this is used for z-scoring features across the universe or calculating relative strength.</p>
-<div id="d845db46" class="cell" data-execution_count="6">
+<div id="b69da2b0" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1"></a>df.with_columns(</span>
@@ -1045,7 +1045,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="time-series-rolling-metrics-asof-joins" class="level2">
 <h2 class="anchored" data-anchor-id="time-series-rolling-metrics-asof-joins">7. Time Series: Rolling Metrics &amp; Asof Joins</h2>
 <p>Polars was built with time-series as a first-class citizen. Its rolling expressions are highly optimized for windowed calculations. Furthermore, the <code>join_asof</code> function solves the “as-of” join problem (matching a trade to the most recent quote) with performance that far exceeds Pandas.</p>
-<div id="e93585df" class="cell" data-execution_count="7">
+<div id="ec5358e4" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>df.with_columns(</span>
@@ -1174,7 +1174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reshaping-for-correlation-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="reshaping-for-correlation-analysis">8. Reshaping for Correlation Analysis</h2>
 <p>Quant analysts often need to compute correlation matrices or covariance matrices for portfolio optimization. This requires pivoting “long” ticker data into a “wide” format where each column represents a different asset’s returns.</p>
-<div id="cc147a0c" class="cell" data-execution_count="8">
+<div id="f79a517a" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1"></a>wide_returns <span class="op">=</span> df.pivot(</span>
