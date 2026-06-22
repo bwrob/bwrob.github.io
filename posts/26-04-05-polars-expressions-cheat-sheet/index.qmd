@@ -1,6 +1,6 @@
 ---
-title: "Polars in Finance  Cheetsheet"
-description: "Guide to Polars' high-performance expression engine for finance."
+title: "Polars in Finance Cheat Sheet"
+description: "Polars expressions and contexts applied to S&P 500 OHLCV data."
 date: "2026-04-05"
 date-modified: "2026-04-05"
 categories: [Data Science, Programming]
@@ -9,13 +9,9 @@ format-links: [html]
 toc-depth: 3
 ---
 
-In quantitative finance, the ability to process massive tick-level or daily datasets quickly is a competitive advantage. While Python has long relied on Pandas, its single-threaded nature and memory overhead often become bottlenecks during heavy backtesting or risk simulations. Polars has emerged as a high-performance alternative, written in Rust and built on the Apache Arrow memory model.
-
-The core of Polars' efficiency lies in its **Expression Engine**. Unlike Pandas, where operations are often executed eagerly and sequentially, Polars separates the logic of *what* to calculate (**Expressions**) from *where* and *how* to calculate it (**Contexts**). This allows the query optimizer to look at your entire chain of operations, prune unnecessary columns, and parallelize the computation across all available CPU cores without being hindered by Python's Global Interpreter Lock (GIL).
+Polars expressions and contexts applied to S&P 500 OHLCV data. If you know Pandas, the patterns here should click fast.
 
 ## 1. Loading Financial Data
-
-We start by loading OHLCV (Open, High, Low, Close, Volume) data for S&P 500 constituents. Using the Arrow IPC (Feather) format is preferred in finance because it provides near-instantaneous loading via memory-mapping, preserving the data types and structure without the parsing overhead of CSV or Parquet.
 
 ```{python}
 import polars as pl
@@ -32,14 +28,12 @@ df.head(5)
 ```
 
 1. Set root path to project directory.
-2. Load ticker data from an Arrow file. Polars' `read_ipc` is significantly faster than Pandas' `read_feather`.
-3. Sorting is critical for time-series operations like shifts and rolling windows.
+2. Load ticker data from an Arrow file.
+3. Sort by ticker and date — required for shifts and rolling windows.
 
 ## 2. Expressions: The Atomic Units of Logic
 
-Expressions are the building blocks of Polars logic. They are lazily evaluated and represent a tree of operations. In a financial context, we can define modular expressions for standard metrics like log returns or volatility and reuse them across different DataFrames or pipelines.
-
-One major advantage here is **composability**. You can define an expression once and apply it to any column that fits the required data type.
+Expressions are reusable, composable chunks of logic. Define once, apply anywhere.
 
 ```{python}
 log_return = (pl.col("close") / pl.col("close").shift(1)).log().over("ticker")  # <1>
@@ -54,15 +48,13 @@ def min_max_scale(name: str) -> pl.Expr:
     return (col - col.min()) / (col.max() - col.min())  # <3>
 ```
 
-1. Log Returns: ln(P_t / P_{t-1}). We use `.over("ticker")` to ensure returns are calculated within each instrument.
-2. Realized Volatility: Annualized standard deviation of log returns. window_size=21 represents a typical trading month.
-3. Min-Max Scaling: A common normalization for machine learning features.
+1. Log returns: ln(P_t / P_{t-1}), calculated within each ticker via `.over()`.
+2. Realized volatility: annualized rolling std (21-day window ≈ 1 trading month).
+3. Min-max scaling for ML features.
 
 ## 3. Context: Selection & Feature Engineering
 
-Contexts are the environments where expressions are executed. The two most common are `select` (creating a new DataFrame from expressions) and `with_columns` (adding or updating columns in an existing DataFrame).
-
-For financial feature engineering, `with_columns` is the workhorse. It allows for the parallel creation of multiple technical indicators in a single pass over the data.
+`with_columns` adds multiple indicators in a single pass.
 
 ```{python}
 df = df.with_columns(
@@ -74,14 +66,10 @@ df = df.with_columns(
 df.tail(5)
 ```
 
-1. Append log returns and realized volatility to the DataFrame.
-2. Typical price is a common input for indicators like Money Flow Index.
+1. Append log returns and realized volatility.
+2. Typical price — common input for Money Flow Index.
 
 ## 4. Context: Aggregation (`group_by`)
-
-The `group_by` context allows for powerful split-apply-combine operations. In Polars, these aggregations are "push-down" optimized. When you run a risk summary, Polars doesn't just group the data; it uses vectorized SIMD instructions to calculate sums and means across the groups simultaneously.
-
-This is where we calculate portfolio-level or ticker-level risk metrics like Maximum Drawdown or the Sharpe Ratio.
 
 ```{python}
 risk_summary = df.group_by("ticker").agg(
@@ -94,12 +82,12 @@ risk_summary = df.group_by("ticker").agg(
 risk_summary.sort("sharpe_ratio", descending=True).head(5)
 ```
 
-1. Max Drawdown calculation using cumulative maximum.
-2. Risk-adjusted return (assuming 0% risk-free rate for simplicity).
+1. Max drawdown via cumulative maximum.
+2. Sharpe ratio (assuming 0% risk-free rate).
 
 ## 5. Power Selectors (`polars.selectors`)
 
-Selectors are a recent addition to Polars that allow you to target columns based on their properties (name, dtype, etc.) rather than hardcoding names. This is incredibly useful for stress testing or "what-if" analysis where you might want to apply a shock to all price-related columns simultaneously.
+Target columns by properties instead of hardcoding names — handy for scenario shocks.
 
 ```{python}
 price_shock = cs.starts_with("open", "high", "low", "close") * 1.01  # <1>
@@ -111,14 +99,12 @@ df.select(
 ).head(3)
 ```
 
-1. Scenario Analysis: Apply a 1% upward shock to all OHLC columns.
-2. Apply the shock expression and append a suffix to the column names.
+1. Apply a 1% upward shock to all OHLC columns at once.
+2. Suffix the new column names to keep originals intact.
 
 ## 6. Window Functions (`over`)
 
-Window functions (`over`) are perhaps the most powerful tool for cross-sectional analysis. They allow you to compute group-level statistics (like a sector average or a market-cap weight) and project them back onto the original rows without performing a merge/join.
-
-In quantitative research, this is used for z-scoring features across the universe or calculating relative strength.
+Compute group-level stats and project them back onto individual rows — no merge needed.
 
 ```{python}
 df.with_columns(
@@ -128,12 +114,10 @@ df.with_columns(
 ).head(5)
 ```
 
-1. Z-score of volume: identifying unusual trading activity relative to the ticker's history.
-2. Cross-sectional Relative Strength: Price relative to the market average for that specific day.
+1. Volume z-score per ticker — flags unusual trading activity.
+2. Cross-sectional relative strength: price vs. market average that day.
 
 ## 7. Time Series: Rolling Metrics & Asof Joins
-
-Polars was built with time-series as a first-class citizen. Its rolling expressions are highly optimized for windowed calculations. Furthermore, the `join_asof` function solves the "as-of" join problem (matching a trade to the most recent quote) with performance that far exceeds Pandas.
 
 ```{python}
 df.with_columns(
@@ -142,11 +126,11 @@ df.with_columns(
 ).head(5)
 ```
 
-1. Volume-Weighted Average Price (VWAP) over a rolling 20-day window.
+1. 20-day rolling VWAP.
 
 ## 8. Reshaping for Correlation Analysis
 
-Quant analysts often need to compute correlation matrices or covariance matrices for portfolio optimization. This requires pivoting "long" ticker data into a "wide" format where each column represents a different asset's returns.
+Pivot from long to wide for correlation / covariance matrices.
 
 ```{python}
 wide_returns = df.pivot(
@@ -159,41 +143,29 @@ corr_matrix = wide_returns.select(cs.numeric()).corr()  # <2>
 corr_matrix.head(5)
 ```
 
-1. Transforming data from Long format (tidy) to Wide format for multivariate analysis.
-2. Efficient correlation matrix calculation. Polars handles the underlying matrix math in parallel.
+1. One column per ticker's returns.
+2. Correlation matrix across all assets.
 
-## 9. Performance Optimization: Categoricals & Streaming
+## 9. Performance: Categoricals & Streaming
 
-When working with millions of rows, string columns (like tickers) can consume massive amounts of memory. Polars provides a `Categorical` type (similar to Pandas) and an `Enum` type (for fixed sets) that represent strings as integers under the hood.
-
-For datasets that exceed RAM, Polars supports **LazyFrames** and **Streaming**. Instead of loading the whole file, Polars builds a query plan and executes it in batches (sinks).
+Cast string columns to `Categorical` for memory savings. For datasets that exceed RAM, use `LazyFrame` + streaming to process in batches.
 
 ```{python}
 #| eval: false
-#| echo: false
 
 df = pl.scan_ipc("large_dataset.arrow")
 .filter(pl.col("vol") > 0.3)
 .group_by("ticker")
 .agg(pl.col("ret").mean())
-.with_columns(pl.col("ticker").cast(pl.Categorical))
+.with_columns(pl.col("ticker").cast(pl.Categorical))  # <1>
 .collect(streaming=True)  # <2>
 ```
 
-1. Memory Optimization: Tickers should almost always be Categorical or Enum.
-2. Trigger execution in a memory-efficient, batched manner using streaming.
-
-
-### Summary
-
-Polars is not just a faster Pandas; it's a fundamentally different execution model. By leveraging Rust's safety and speed, Apache Arrow's memory efficiency, and a sophisticated query optimizer, Polars allows you to perform complex financial engineering tasks on your laptop that previously required distributed clusters.
-
-- **Speed**: Often 10x-50x faster than Pandas for grouping and joins.
-- **Memory**: Drastically lower footprint due to Arrow and zero-copy operations.
-- **Syntax**: A consistent, functional DSL that reduces the "copy-paste" bugs common in Pandas.
+1. Tickers as `Categorical` — integers under the hood, much less memory.
+2. Streaming execution — processes in batches instead of loading everything at once.
 
 ::: callout-note
 
-Download the updated companion script [here](../../assets/python/polars_expressions_and_data_transformations_cheat_sheet.py).
+Download the companion script [here](../../assets/python/polars_expressions_and_data_transformations_cheat_sheet.py).
 
 :::
