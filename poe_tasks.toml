@@ -1,0 +1,47 @@
+[tasks._check]
+help = "Run ruff code quality checks"
+cmd  = "ruff check ."
+
+[tasks._fix_lint]
+help = "Fix auto-fixable ruff linter issues"
+cmd  = "ruff check --fix --unsafe-fixes ."
+
+[tasks._format]
+help = "Format code using ruff format"
+cmd  = "ruff format ."
+
+[tasks._hap_preview]
+help = "Run quarto preview on port 3333 via hap"
+cmd  = "hap run quarto preview ./index.qmd --port 3333"
+
+[tasks._hap_publish]
+help = "Publish index to gh-pages via hap and quarto"
+cmd  = "hap run quarto publish --no-prompt --no-browser gh-pages"
+
+[tasks._pre_commit]
+help = "Run pre-commit checks on all files"
+cmd  = "pre-commit run --all-files"
+
+[tasks._report_host]
+help = "Print the local preview URL"
+cmd  = "echo 'http://localhost:3333/'"
+
+[tasks._type_check]
+help = "Run static type checking with basedpyright"
+cmd  = "basedpyright ."
+
+[tasks.clean_tree]
+help = "Clean up active git worktrees (except quarto-main)"
+cmd  = "git worktree list | grep -v quarto-main | awk '{print $1}' | xargs git worktree remove"
+
+[tasks.code-quality]
+help     = "Run formatters, linters, and type checkers"
+sequence = ["_format", "_fix_lint", "_check", "_type_check"]
+
+[tasks.preview]
+help     = "Preview quarto site locally and report local host URL"
+sequence = ["_hap_preview", "_report_host"]
+
+[tasks.publish]
+help     = "Run pre-commit checks and publish to gh-pages"
+sequence = ["_pre_commit", "_hap_publish"]
