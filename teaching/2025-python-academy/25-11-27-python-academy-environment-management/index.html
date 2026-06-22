@@ -419,7 +419,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>In this installment of <a href="https://bwrob.github.io/#category=Python%20Academy">Python Academy</a>, we’re tackling something that trips up almost everyone starting with Python: <strong>Environment Management</strong>.</p>
-<p>We’ll kick things off with the bread-and-butter tools—<code>venv</code> and <code>pip</code>—and then look at <code>uv</code>, the new kid on the block that’s rewriting the rules (and doing it incredibly fast).</p>
+<p>We’ll kick things off with the bread-and-butter tools—<code>venv</code> and <code>pip</code>—and then look at <code>uv</code>, a modern alternative that’s rewriting the rules (and it’s fast).</p>
 <section id="the-classics-venv-and-pip" class="level2">
 <h2 class="anchored" data-anchor-id="the-classics-venv-and-pip">The Classics: venv and pip</h2>
 <section id="why-bother-with-virtual-environments" class="level3">
@@ -478,7 +478,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="the-modern-era-uv" class="level2">
 <h2 class="anchored" data-anchor-id="the-modern-era-uv">The Modern Era: uv</h2>
-<p><code>venv</code> and <code>pip</code> are reliable, but let’s be honest—they can be a bit clunky and slow. Enter <code>uv</code>. It’s a Python package and project manager written in Rust, and it is <em>blazing</em> fast. It aims to replace <code>pip</code>, <code>pip-tools</code>, and <code>virtualenv</code> with one single binary.</p>
+<p><code>venv</code> and <code>pip</code> are reliable, but let’s be honest—they can be a bit clunky and slow. Enter <code>uv</code>. It’s a Python package and project manager written in Rust, and it is fast. It aims to replace <code>pip</code>, <code>pip-tools</code>, and <code>virtualenv</code> with one single binary.</p>
 <section id="setting-up-with-uv" class="level3">
 <h3 class="anchored" data-anchor-id="setting-up-with-uv">Setting up with uv</h3>
 <p>Instead of manually creating folders and files, <code>uv</code> creates the project skeleton for you:</p>
@@ -496,7 +496,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="development-dependencies">Development Dependencies</h3>
 <p>Sometimes you need tools just for development—like testing frameworks or linters—that shouldn’t be shipped with your actual app. <code>uv</code> handles this cleanly:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1"></a><span class="ex">uv</span> add <span class="at">--dev</span> pytest ruff</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Take <code>ruff</code> for example. It’s an incredibly fast linter and formatter. You want it while you’re coding to keep things tidy, but your users don’t need it to run your app. Adding it with <code>--dev</code> puts it in a special <code>[tool.uv.dev-dependencies]</code> section, keeping your production environment lean.</p>
+<p>Take <code>ruff</code> for example. It’s a fast linter and formatter. You want it while you’re coding to keep things tidy, but your users don’t need it to run your app. Adding it with <code>--dev</code> puts it in a special <code>[tool.uv.dev-dependencies]</code> section, keeping your production environment lean.</p>
 </section>
 <section id="managing-python-versions" class="level3">
 <h3 class="anchored" data-anchor-id="managing-python-versions">Managing Python Versions</h3>
@@ -508,7 +508,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="packaging-sharing-your-code" class="level3">
 <h3 class="anchored" data-anchor-id="packaging-sharing-your-code">Packaging: Sharing Your Code</h3>
-<p>So you’ve written a masterpiece and you want to share it with the world (or just your colleagues). How do you box it up? You build a <strong>Wheel</strong>.</p>
+<p>So you’ve got a project and you want to share it with your colleagues (or the world). How do you box it up? You build a <strong>Wheel</strong>.</p>
 <section id="whats-a-wheel" class="level4">
 <h4 class="anchored" data-anchor-id="whats-a-wheel">What’s a Wheel?</h4>
 <p>A “Wheel” (file extension <code>.whl</code>) is the standard way to distribute Python packages. Think of it as a zip file that’s ready to go.</p>
@@ -518,7 +518,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="the-old-guard-setuptools" class="level4">
 <h4 class="anchored" data-anchor-id="the-old-guard-setuptools">The Old Guard: <code>setuptools</code></h4>
 <p>Traditionally, building a package meant wrestling with a file called <code>setup.py</code> using a library called <code>setuptools</code>. This little Python script was where you’d declare everything about your package: its name, version, author, a brief description, and most importantly, its dependencies. You’d define which modules to include, any data files, and even entry points for command-line tools.</p>
-<p>It was powerful, for sure, but also notoriously tricky to get right. Debugging <code>setup.py</code> could feel like trying to solve a puzzle with missing pieces. You’d write code to describe your package, manage included files, and handle dependencies. It worked, but it felt a bit like alchemy, and slight changes in Python’s packaging standards would often mean revisiting this complex script.</p>
+<p>It was powerful, for sure, but also notoriously tricky to get right. Debugging <code>setup.py</code> was tedious — you’d write code to describe your package, manage included files, and handle dependencies. It worked, but slight changes in Python’s packaging standards would often mean revisiting this script.</p>
 <p>Here’s a super basic <code>setup.py</code> example for a package named <code>my_package</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-13"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1"></a><span class="co"># setup.py</span></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-13-2" class="code-annotation-target"><a href="#annotated-cell-13-2"></a><span class="im">from</span> setuptools <span class="im">import</span> setup, find_packages</span>
@@ -608,7 +608,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>Understanding how <code>venv</code> and <code>pip</code> work is useful background info—it’s how we did things for a long time. But honestly, once you start using <code>uv</code>, there’s no going back. It’s faster, smarter, and it just works. It’s one of those tools that makes you wonder how we ever lived without it.</p>
+<p>Understanding <code>venv</code> and <code>pip</code> is useful background — it’s how we did things for a long time. But once you try <code>uv</code>, you won’t want to go back.</p>
 
 
 </section>
