@@ -11,9 +11,9 @@ draft: false
 
 ## Introduction
 
-Ever wonder why Python's built-in types just... work? You use `len()` to get the size of a list, square brackets `[]` to grab an item from a dictionary, and a `for` loop to go through a set. It's consistent, intuitive, and frankly, a joy to use.
+Python's built-in types just... work. `len()` for sizes, `[]` for lookups, `for` loops for iteration. It all feels consistent because it is.
 
-This isn't magic; it's the **Python Data Model**. By implementing a few "special methods" (you might know them as *dunder* methods, short for **d**ouble **under**score), you can make your own custom classes behave exactly like the built-ins.
+That consistency comes from the **Python Data Model**. By implementing a few "special methods" (you might know them as *dunder* methods, short for **d**ouble **under**score), you can make your own custom classes behave exactly like the built-ins.
 
 In this post, we're going to build a `Portfolio` class that feels like a native part of the language. Instead of clunky custom methods, we'll use the patterns Python already knows and loves.
 
@@ -88,11 +88,11 @@ p = Portfolio("Tech Fund", ("Alice", "Bob"), [pos1, pos2])
 print(f"Portfolio size: {len(p)}")
 ```
 
-Now `len(p)` delegates to the underlying `self._contents` dictionary. It's a classic delegation strategy.
+Now `len(p)` delegates to the underlying `self._contents` dictionary.
 
 ### `__getitem__`
 
-We don't want to scan through a list to find a stock; that's O(N) efficiency, and in performance-critical applications, speed is crucial. The `__getitem__` method allows us to use the square bracket notation `[]` to access items directly.
+We don't want to scan through a list to find a stock — that's O(N). The `__getitem__` method allows us to use the square bracket notation `[]` to access items directly.
 
 ```{python}
 class Portfolio(Portfolio):
@@ -127,7 +127,7 @@ Now, `for pos in p` yields the positions directly. We have full control over the
 
 ## Membership and Truthiness: `__contains__` and `__bool__`
 
-We can already check for membership because we implemented `__iter__`, but that's like manually auditing every file to find one document—it's O(N). Since we have a hash map (dictionary) underneath, we can do an O(1) check using `__contains__`.
+We can already check membership via `__iter__`, but that's O(N). Since we have a dictionary underneath, `__contains__` gives us O(1) lookup.
 
 We also want to know if our portfolio is empty. By default, Python checks `len()`, but implementing `__bool__` allows us to be explicit about what constitutes a "truthy" portfolio.
 
@@ -242,7 +242,7 @@ The Python Data Model is what makes Python feel like Python. It lets your custom
 *   `__bool__`: To define what "empty" means for your object.
 *   `__add__`: So you can literally `+` your objects together.
 
-When you use these patterns, you're not just writing code; you're writing *Pythonic* code. It's cleaner, easier to read, and much more fun to work with.
+These patterns are what make Python code feel like Python. In the [next post](../25-12-18-python-academy-oop-basics/), we'll use inheritance and protocols to build a yield curve hierarchy.
 
 ::: callout-note
 

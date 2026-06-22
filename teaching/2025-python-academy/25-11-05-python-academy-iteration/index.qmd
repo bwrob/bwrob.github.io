@@ -13,7 +13,7 @@ image: "../../../assets/images/posts/python_academy.png"
 
 In the quant world, we're always neck-deep in data. It's not just about how fast you can process it, but whether your code is going to crash your server by eating up all the memory.
 
-Python has some incredible tools for handling data streams efficiently. This post is all about iterators and generators—the "lazy" way to handle data that can save you a ton of memory and a lot of headaches.
+This post is about iterators and generators — the "lazy" way to handle data that saves memory and avoids headaches.
 
 ## Lists vs. Tuples: The Eager Iterables
 
@@ -38,7 +38,7 @@ From a quant's perspective, you can think of a tuple as a "frozen" or "read-only
 
 ## Iterators: The Lazy Approach
 
-An iterator is an object that represents a stream of data. It produces one item at a time, only when requested. This "lazy" evaluation is incredibly memory-efficient. The iterator protocol in Python consists of two methods:
+An iterator is an object that represents a stream of data. It produces one item at a time, only when requested. The iterator protocol consists of two methods:
 
 -   `__iter__()`: Returns the iterator object itself.
 -   `__next__()`: Returns the next item from the stream. When there are no more items, it raises a `StopIteration` exception.
@@ -57,7 +57,7 @@ print(next(my_iterator))  # Output: 3
 
 ## Generators: Simplified Iterators
 
-Writing a class with `__iter__` and `__next__` can be cumbersome. Generators provide a much simpler way to create iterators. A generator is a function that uses the `yield` keyword to return an item. When a generator function is called, it returns a generator object, which is a type of iterator.
+Generators are a simpler way to create iterators. Instead of writing a class with `__iter__` and `__next__`, you write a function that uses `yield`.
 
 Here's a simple generator that produces a sequence of numbers:
 
@@ -105,7 +105,7 @@ for cf in all_cashflows_generator:
 # Output: 10 20 30 15 25 100 -10 5 110
 ```
 
-This `flatten` generator is memory-efficient. It only needs to store one cashflow at a time, regardless of the total number of cashflows.
+The generator only holds one cashflow at a time, regardless of total count.
 
 ## Memory Efficiency in Action
 
@@ -166,13 +166,13 @@ print("Profiling memory for generator consumption...")
 consumed_list = consume_generator(my_generator)
 ```
 
-When you run this script, the decorator will handle the memory profiling for each function call. You will see that creating the list consumes a significant amount of memory, while creating the generator uses a negligible amount. The final step shows that consuming the generator into a list uses a similar amount of memory as creating the list in the first place, proving that the memory is only used when the values are actually needed.
+The output speaks for itself: creating the generator uses almost no memory. The cost only shows up when you actually consume it into a list.
 
 
 
 ## Essential Iteration Tools: `zip`, `sorted`, `enumerate`
 
-Python's standard library offers several built-in functions that are indispensable for iteration tasks in finance.
+A few built-in functions that come up constantly:
 
 *   **`enumerate(iterable, start=0)`**:  When processing a series of cashflows, you might need to know the period number for each payment. `enumerate` is perfect for this.
 
@@ -217,7 +217,7 @@ Python's standard library offers several built-in functions that are indispensab
 
 ## The `itertools` Module: A Treasure Trove for Financial Iteration
 
-The `itertools` module is a gem in the Python standard library, providing a collection of fast, memory-efficient tools for working with iterators. For financial applications, where we often deal with time series, cashflow streams, and simulations, these tools are particularly powerful.
+The `itertools` module is worth knowing well. Here are the ones I reach for most in financial work.
 
 *   **`itertools.chain(*iterables)` and `itertools.chain.from_iterable(iterable)`**: Often you need to process items from several sequences in a row. `chain` lets you treat them as a single, continuous stream without merging them in memory. A great example is pricing a fixed-to-float swap leg, where initial coupon payments are fixed, and later ones are floating.
 
@@ -317,6 +317,8 @@ The `itertools` module is a gem in the Python standard library, providing a coll
 ## Conclusion
 
 Understanding the difference between being "eager" (grabbing everything at once) and "lazy" (grabbing only what you need) is one of those leveling-up moments in Python. By leaning on iterators, generators, and the `itertools` library, you can write code that's not just more efficient, but also much cleaner and easier to reason about.
+
+The iterator protocol (`__iter__` and `__next__`) we covered here is actually our first taste of Python's data model — a topic we'll dig into after covering [class anatomy](../25-12-04-python-academy-class-anatomy/).
 
 ::: {.callout-note}
 The complete Python script with all the examples from this post is available for download and experimentation. You can get it here: [efficient_iteration_and_generators_patterns.py](../../../assets/python/efficient_iteration_and_generators_patterns.py).

@@ -37,7 +37,7 @@ my_option.type = "Call"
 print(f"Option strike: {my_option.strike}")
 ```
 
-While flexible, this approach is risky for production systems, especially in finance where data integrity is critical. It offers no guarantee of structure—one `Option` might have a `strike`, while another has a `strike_price`. It also makes debugging difficult, as typos like `my_option.stike = 100` pass silently until the code crashes later. Furthermore, IDEs and static analysis tools struggle to help you since they don't know what attributes to expect.
+While flexible, this approach is risky for production systems, especially in finance where data integrity is critical. It offers no guarantee of structure—one `Option` might have a `strike`, while another has a `strike_price`. It also makes debugging difficult, as typos like `my_option.stike = 100` pass silently until the code crashes later. IDEs and static analysis tools struggle to help you since they don't know what attributes to expect.
 
 ## Enforcing Structure: `__init__`
 
@@ -95,7 +95,7 @@ Changing `EuropeanOption.CONTRACT_SIZE` updates the value for all instances that
 
 ## The Three Method Types: An Overview
 
-Having explored `self` and class attributes, let's map out the different types of methods Python classes can have. This fundamental distinction dictates how methods interact with class instances and the class itself.
+With `self` and class attributes covered, here are the three types of methods a class can have.
 
 | Type     | Decorator       | First Argument | Purpose                                   |
 | :------- | :-------------- | :------------- | :---------------------------------------- |
@@ -107,7 +107,7 @@ Having explored `self` and class attributes, let's map out the different types o
 
 ### Instance Methods
 
-Objects usually need to do more than just hold data. As introduced in the table above, **instance methods** are functions defined inside a class that operate on its instances. As we saw with `__init__`, the first parameter is always `self`, referring to the specific object calling the method.
+**Instance methods** are the default — functions defined inside a class that operate on a specific instance via `self`.
 
 
 ```{python}
@@ -297,7 +297,7 @@ The `SlottedOption` instance is more rigid—you cannot add new attributes like 
 
 ## Modern Python: Data Classes
 
-Since Python 3.7, there is an even easier way to create classes that primarily store data. The `@dataclass` decorator automatically generates `__init__`, `__repr__`, `__eq__`, and other special methods for you, reducing boilerplate code significantly.
+Since Python 3.7, there is an even easier way to create classes that primarily store data. The `@dataclass` decorator automatically generates `__init__`, `__repr__`, `__eq__`, and other special methods for you, reducing boilerplate.
 
 ```{python}
 from dataclasses import dataclass
@@ -327,7 +327,7 @@ We've gone from a chaotic, empty class to a structured, efficient unit that's re
 *   **`__slots__`** is a great "break in case of emergency" tool for saving memory in massive simulations.
 *   **Data Classes** are the modern, low-boilerplate way to build classes that just store info.
 
-Mastering these basics is the first step toward building libraries that actually make sense. Next up, we'll dive into inheritance and polymorphism to see how different financial instruments can play together.
+With these building blocks in place, the [next post](../25-12-12-python-academy-data-model/) dives into Python's data model — the dunder methods that make your classes feel like built-in types.
 
 ::: {.callout-note}
 The complete Python script with all the examples from this post is available for download and experimentation. You can get it here: [python_class_mechanics_and_anatomy_deep_dive.py](../../../assets/python/python_class_mechanics_and_anatomy_deep_dive.py).

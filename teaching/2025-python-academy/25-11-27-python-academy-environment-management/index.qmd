@@ -12,7 +12,7 @@ toc-depth: 2
 
 In this installment of [Python Academy](https://bwrob.github.io/#category=Python%20Academy), we're tackling something that trips up almost everyone starting with Python: **Environment Management**.
 
-We'll kick things off with the bread-and-butter tools—`venv` and `pip`—and then look at `uv`, the new kid on the block that's rewriting the rules (and doing it incredibly fast).
+We'll kick things off with the bread-and-butter tools—`venv` and `pip`—and then look at `uv`, a modern alternative that's rewriting the rules (and it's fast).
 
 ## The Classics: venv and pip
 
@@ -106,7 +106,7 @@ This scans your `.py` files and generates a clean, minimal `requirements.txt` ba
 
 ## The Modern Era: uv
 
-`venv` and `pip` are reliable, but let's be honest—they can be a bit clunky and slow. Enter `uv`. It's a Python package and project manager written in Rust, and it is *blazing* fast. It aims to replace `pip`, `pip-tools`, and `virtualenv` with one single binary.
+`venv` and `pip` are reliable, but let's be honest—they can be a bit clunky and slow. Enter `uv`. It's a Python package and project manager written in Rust, and it is fast. It aims to replace `pip`, `pip-tools`, and `virtualenv` with one single binary.
 
 ### Setting up with uv
 
@@ -141,7 +141,7 @@ Sometimes you need tools just for development—like testing frameworks or linte
 uv add --dev pytest ruff
 ```
 
-Take `ruff` for example. It's an incredibly fast linter and formatter. You want it while you're coding to keep things tidy, but your users don't need it to run your app. Adding it with `--dev` puts it in a special `[tool.uv.dev-dependencies]` section, keeping your production environment lean.
+Take `ruff` for example. It's a fast linter and formatter. You want it while you're coding to keep things tidy, but your users don't need it to run your app. Adding it with `--dev` puts it in a special `[tool.uv.dev-dependencies]` section, keeping your production environment lean.
 
 ### Managing Python Versions
 
@@ -160,7 +160,7 @@ uv python pin 3.12
 
 ### Packaging: Sharing Your Code
 
-So you've written a masterpiece and you want to share it with the world (or just your colleagues). How do you box it up? You build a **Wheel**.
+So you've got a project and you want to share it with your colleagues (or the world). How do you box it up? You build a **Wheel**.
 
 #### What's a Wheel?
 
@@ -174,7 +174,7 @@ Wheels are **built distributions**. They are pre-compiled and ready to unpack. W
 
 Traditionally, building a package meant wrestling with a file called `setup.py` using a library called `setuptools`. This little Python script was where you'd declare everything about your package: its name, version, author, a brief description, and most importantly, its dependencies. You'd define which modules to include, any data files, and even entry points for command-line tools.
 
-It was powerful, for sure, but also notoriously tricky to get right. Debugging `setup.py` could feel like trying to solve a puzzle with missing pieces. You'd write code to describe your package, manage included files, and handle dependencies. It worked, but it felt a bit like alchemy, and slight changes in Python's packaging standards would often mean revisiting this complex script.
+It was powerful, for sure, but also notoriously tricky to get right. Debugging `setup.py` was tedious — you'd write code to describe your package, manage included files, and handle dependencies. It worked, but slight changes in Python's packaging standards would often mean revisiting this script.
 
 Here's a super basic `setup.py` example for a package named `my_package`:
 
@@ -235,4 +235,4 @@ That's it. `uv` will look at your `pyproject.toml`, gather your code, and spit o
 | **Dev Deps** | Manual separation | `uv add --dev pkg` |
 | **Speed** | Standard | Blazing Fast 🚀 |
 
-Understanding how `venv` and `pip` work is useful background info—it's how we did things for a long time. But honestly, once you start using `uv`, there's no going back. It's faster, smarter, and it just works. It's one of those tools that makes you wonder how we ever lived without it.
+Understanding `venv` and `pip` is useful background — it's how we did things for a long time. But once you try `uv`, you won't want to go back.

@@ -57,7 +57,7 @@ class YieldCurve(ABC):
         return -math.log(df) / t
 ```
 
-Inheriting from `ABC` prevents anyone from creating a "plain" `YieldCurve`—it's just a template. The `@abstractmethod` decorator is the enforcer: if a subclass doesn't implement `discount_factor`, Python literally won't let you instantiate it.
+Inheriting from `ABC` prevents anyone from creating a "plain" `YieldCurve`—it's just a template. The `@abstractmethod` decorator is the enforcer: if a subclass doesn't implement `discount_factor`, Python won't let you instantiate it.
 
 Notice we included `zero_rate`. Since the math linking zero rates and discount factors is universal ($Z(t) = -\frac{\ln D(t)}{t}$), we write it once here, and every single subclass gets it for free.
 
@@ -162,7 +162,7 @@ class InterpolatedZeroCurve(YieldCurve):
         return math.exp(-r * t)
 ```
 
-This is incredibly flexible. Want to switch to Cubic Splines? Just pass a different interpolator. The curve class itself doesn't need to change.
+This is flexible. Want to switch to Cubic Splines? Just pass a different interpolator. The curve class itself doesn't need to change.
 
 ### Approach B: Inheritance (Mixins)
 
@@ -200,7 +200,7 @@ This feels more integrated, but it's static. You can't change the interpolation 
 
 ## The Payoff: Polymorphism
 
-Here is where the magic happens. Because we adhered to our `YieldCurve` contract, our pricing function can be completely ignorant of the complexity we just built.
+Because we stuck to the `YieldCurve` contract, the pricing function doesn't need to know about any of the complexity above.
 
 ```{python}
 from dataclasses import dataclass
@@ -245,7 +245,7 @@ We swapped the entire mathematical engine underneath the hood—from flat rates 
 
 Inheritance is a commitment. Sometimes you want to use a class from a third-party library that *looks* like a yield curve but doesn't inherit from your specific `YieldCurve` ABC.
 
-Python has a solution for this: **Protocols** (often called "Structural Subtyping" or "Duck Typing"). A Protocol defines a shape. It says, "I don't care who your parents are, as long as you have a `discount_factor` method."
+**Protocols** (structural subtyping) solve this. A Protocol defines a shape: "I don't care who your parents are, as long as you have a `discount_factor` method."
 
 ```{python}
 from typing import runtime_checkable
@@ -281,7 +281,7 @@ OOP gives us some powerful ways to keep our code organized and flexible.
 *   **Polymorphism** lets our models swap in and out seamlessly.
 *   **Protocols** let us stay flexible without forcing a rigid hierarchy.
 
-Understanding these patterns is what turns a few scripts into a proper, extensible library. Next up, we'll keep building on this foundation and look at the **Factory Pattern** to handle object creation elegantly.
+These patterns are what turn a collection of scripts into a proper library.
 
 ::: {.callout-note}
 You can find the complete code for this post here: [inheritance_polymorphism_and_protocols_in_python_oop.py](../../../assets/python/inheritance_polymorphism_and_protocols_in_python_oop.py).
