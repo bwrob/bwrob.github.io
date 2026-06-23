@@ -18,45 +18,49 @@ Celem tego zadania jest zaimplementowanie klasy `DualNumber` w Pythonie. Liczby 
 
 **Instrukcje:**
 
-1.  **Definicja klasy:**
-    * Utwórz klasę o nazwie `DualNumber`.
-    * Konstruktor `__init__` powinien przyjmować dwa argumenty, `real` i `dual`, reprezentujące odpowiednio 'a' i 'b' w a + bε. Oba powinny domyślnie wynosić 0.
-    * Zapisz te wartości jako atrybuty `self.real` i `self.dual`.
+1. **Definicja klasy:**
 
-2.  **Reprezentacja jako napis:**
-    * Zaimplementuj metody `__str__` i `__repr__`, aby zapewnić przyjazną dla użytkownika reprezentację napisową liczby dualnej. Powinna ona wyglądać odpowiednio jak "a + bε" lub "a - bε" dla `__str__` i "DualNumber(a,b)" dla `__repr__`.
+   - Utwórz klasę o nazwie `DualNumber`.
+   - Konstruktor `__init__` powinien przyjmować dwa argumenty, `real` i `dual`, reprezentujące odpowiednio 'a' i 'b' w a + bε. Oba powinny domyślnie wynosić 0.
+   - Zapisz te wartości jako atrybuty `self.real` i `self.dual`.
 
-3.  **Operacje arytmetyczne:**
+1. **Reprezentacja jako napis:**
 
-    * Zaimplementuj następujące operacje arytmetyczne, aby umożliwić obliczenia na liczbach dualnych:
-        * `__add__` (+): (a + bε) + (c + dε) = (a + c) + (b + d)ε
-        * `__sub__` (-): (a + bε) - (c + dε) = (a - c) + (b - d)ε
-        * `__mul__` (*): (a + bε) * (c + dε) = ac + (ad + bc)ε
-        * `__truediv__` (/): (a + bε) / (c + dε) = (a/c) + ((bc - ad)/c²)ε  (Załóż, że c != 0)
-        * `__pow__` (**): (a + bε)^n = a^n + n*a^(n-1)*bε
-        * `__neg__` (-): -(a + bε) = -a - bε
-    * Zaimplementuj prawostronne wersje tych operacji, aby obsługiwać przypadki takie jak 2 + (a + bε):
-        * `__radd__`
-        * `__rsub__`
-        * `__rmul__`
-        * `__rtruediv__`
-        * `__rpow__`
+   - Zaimplementuj metody `__str__` i `__repr__`, aby zapewnić przyjazną dla użytkownika reprezentację napisową liczby dualnej. Powinna ona wyglądać odpowiednio jak "a + bε" lub "a - bε" dla `__str__` i "DualNumber(a,b)" dla `__repr__`.
 
-4.  **Operacje porównania:**
-    * Zaimplementuj następujące operacje porównania:
-        * `__eq__` (==): (a + bε) == (c + dε) jeśli a == c i b == d
-        * `__ne__` (!=): (a + bε) != (c + dε) jeśli a != c lub b != d
+1. **Operacje arytmetyczne:**
 
-5.  **Konwersja na int i float:**
-    * Zaimplementuj metody `__int__` i `__float__`, aby umożliwić konwersję liczby dualnej na typy `int` i `float`.  Konwersja powinna zwracać tylko część rzeczywistą liczby dualnej.
+   - Zaimplementuj następujące operacje arytmetyczne, aby umożliwić obliczenia na liczbach dualnych:
+     - `__add__` (+): (a + bε) + (c + dε) = (a + c) + (b + d)ε
+     - `__sub__` (-): (a + bε) - (c + dε) = (a - c) + (b - d)ε
+     - `__mul__` (\*): (a + bε) * (c + dε) = ac + (ad + bc)ε
+     - `__truediv__` (/): (a + bε) / (c + dε) = (a/c) + ((bc - ad)/c²)ε (Załóż, że c != 0)
+     - `__pow__` (\*\*): (a + bε)^n = a^n + n\*a^(n-1)\*bε
+     - `__neg__` (-): -(a + bε) = -a - bε
+   - Zaimplementuj prawostronne wersje tych operacji, aby obsługiwać przypadki takie jak 2 + (a + bε):
+     - `__radd__`
+     - `__rsub__`
+     - `__rmul__`
+     - `__rtruediv__`
+     - `__rpow__`
 
-6.  **Dodatkowe funkcje matematyczne (opcjonalne):**
-    * Zaimplementuj inne funkcje matematyczne jako metody klasy:
-        * `sqrt(z)`: Pierwiastek kwadratowy liczby dualnej.
-        * `exp(z)`: Funkcja wykładnicza liczby dualnej.
-        * `sin(z)`: Sinus liczby dualnej.
-        * `cos(z)`: Cosinus liczby dualnej.
+1. **Operacje porównania:**
 
+   - Zaimplementuj następujące operacje porównania:
+     - `__eq__` (==): (a + bε) == (c + dε) jeśli a == c i b == d
+     - `__ne__` (!=): (a + bε) != (c + dε) jeśli a != c lub b != d
+
+1. **Konwersja na int i float:**
+
+   - Zaimplementuj metody `__int__` i `__float__`, aby umożliwić konwersję liczby dualnej na typy `int` i `float`. Konwersja powinna zwracać tylko część rzeczywistą liczby dualnej.
+
+1. **Dodatkowe funkcje matematyczne (opcjonalne):**
+
+   - Zaimplementuj inne funkcje matematyczne jako metody klasy:
+     - `sqrt(z)`: Pierwiastek kwadratowy liczby dualnej.
+     - `exp(z)`: Funkcja wykładnicza liczby dualnej.
+     - `sin(z)`: Sinus liczby dualnej.
+     - `cos(z)`: Cosinus liczby dualnej.
 
 Poniżej znajduje się przykład użycia klasy `DualNumber`, (kod kliencki). Twoja implementacja powinna umożliwić poprawne działanie tego kodu.
 

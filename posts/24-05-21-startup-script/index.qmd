@@ -30,8 +30,8 @@ To spice things up, we will overengineer the hell out of it and use generic typi
 
 Let's first think about the design and what we want to achieve. Imagine the code being split into two parts:
 
--   the hidden logic layer, **the worker** that does stuff and
--   the public interface that integrates with the rest of the codebase or is called at the top level, **the manager**.
+- the hidden logic layer, **the worker** that does stuff and
+- the public interface that integrates with the rest of the codebase or is called at the top level, **the manager**.
 
 We can start by creating the public interface, see what we want to achieve and later deal with filling in a working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:
 
@@ -104,11 +104,12 @@ def with_optional_delay( # <5>
 
     return task_defaulted_worker
 ```
+
 1. The generic variable type is conventionally denoted by `T`.
-2. A `Task` is a tuple of a generic task `T` and an `int` delay.
-3. A `TaskList` is a list of `Task`s. Simple.
-4. A `TaskListOptionalDelay` is a list of `Task`s or `T`s. Those are the guys we are going to turn into `TaskLists`.
-5. The decorator `with_optional_delay` adds a default delay of 4 seconds to all non-tuple items. Its input is a worker function that already expects a `TaskList`. It fills in the missing delay with the default value and passes it to the decorated function.
+1. A `Task` is a tuple of a generic task `T` and an `int` delay.
+1. A `TaskList` is a list of `Task`s. Simple.
+1. A `TaskListOptionalDelay` is a list of `Task`s or `T`s. Those are the guys we are going to turn into `TaskLists`.
+1. The decorator `with_optional_delay` adds a default delay of 4 seconds to all non-tuple items. Its input is a worker function that already expects a `TaskList`. It fills in the missing delay with the default value and passes it to the decorated function.
 
 ### Main workers
 
@@ -196,9 +197,9 @@ def run_commands(
 
 Notice the use of `path_files` generator above. When working with complex iterations, it's a good practice to create a generator that wraps the iteration details. It is beneficial for readability and maintainability, especially in cases where you need to:
 
--   yield multiple values at once (ex. *yield path, delay for path in directory*),
--   have nested iterators (ex. *for directory in list for path in directory*),
--   filter the iteration (ex. *for path in directory if filter(path)*).
+- yield multiple values at once (ex. *yield path, delay for path in directory*),
+- have nested iterators (ex. *for directory in list for path in directory*),
+- filter the iteration (ex. *for path in directory if filter(path)*).
 
 Here we'll have all three of them combined!
 
@@ -321,10 +322,10 @@ We got it, friends, the script works and the job is done. But... do you recall t
 
 In Windows OS the best way for me would be to have a shortcut that would run it with one click. We could pin it to the taskbar and start menu. To create one:
 
--   Go to any folder, right-click and select `New > Shortcut`.
--   In the guide that pops up paste in `%systemroot%\System32\cmd.exe /c "python.exe $1"` where `$1` should be replaced by the path to your script. You can also replace `python.exe` with interpreter path of any venv you wish.
--   Optionally, you can later change the icon for the shortcut (needs to be `.ico` file). I like to roll with Win-98 style 'My Computer' icon.
--   Copy the shortcut to start menu directory. For Win11 it's `C:\ProgramData\Microsoft\Windows\Start Menu\Programs`. You should be able to see it in start menu already. Now you can pin it to the taskbar.
+- Go to any folder, right-click and select `New > Shortcut`.
+- In the guide that pops up paste in `%systemroot%\System32\cmd.exe /c "python.exe $1"` where `$1` should be replaced by the path to your script. You can also replace `python.exe` with interpreter path of any venv you wish.
+- Optionally, you can later change the icon for the shortcut (needs to be `.ico` file). I like to roll with Win-98 style 'My Computer' icon.
+- Copy the shortcut to start menu directory. For Win11 it's `C:\ProgramData\Microsoft\Windows\Start Menu\Programs`. You should be able to see it in start menu already. Now you can pin it to the taskbar.
 
 ![](../../assets/images/posts/24-05-21-startup-script/startup_shortcut.png){width="90%" fig-align="center"}
 
@@ -334,8 +335,8 @@ That's a good enough reminder and convenience tool for me. You might need some d
 
 There are a couple more things I wish this guy could do for me still:
 
--   **Changing Teams status to green** - there's a MS Graph API that could do this but we would need to manage Azure authorizations through the script. I am not up to that, especially on a work account. Might experiment on personal one in the future.
--   **Display placement of opened processes** --- I have 2 displays (which you could count as 4, due to the size format) and I am very particular about where each app should go. I would love the apps to open where they should. This is however OS specific, for Win it require to mingle with win32api. Yet another project for the future.
+- **Changing Teams status to green** - there's a MS Graph API that could do this but we would need to manage Azure authorizations through the script. I am not up to that, especially on a work account. Might experiment on personal one in the future.
+- **Display placement of opened processes** --- I have 2 displays (which you could count as 4, due to the size format) and I am very particular about where each app should go. I would love the apps to open where they should. This is however OS specific, for Win it require to mingle with win32api. Yet another project for the future.
 
 ::: callout-note
 

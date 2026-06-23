@@ -33,7 +33,7 @@ In between them, you find the **Arbitrageurs**. These are the "market cleaners" 
 
 Finally, you have the **Intermediaries** (like brokers and market makers) who just want to make the trade happen and pocket a small fee for the service.
 
-For a mathematician, this is a playground. Why? Because every single one of these types interactions with the market  involves uncertainty, and if there's one thing applied mathematicians are good at, it's quantifying the unknown.
+For a mathematician, this is a playground. Why? Because every single one of these types interactions with the market involves uncertainty, and if there's one thing applied mathematicians are good at, it's quantifying the unknown.
 
 ## Why Do They Need Us?
 
@@ -199,21 +199,21 @@ Here is how the paths of the Quant Analyst and the Quant Developer diverge:
 
 A Quant Analyst (QA) is primarily focused on the math, the models, and the financial implications of the output:
 
-*   **Valuation Quant:** Will worry about the mathematical assumptions. Does the interpolation scheme guarantee that there is no static arbitrage (e.g., ensuring the probability density is never negative and integrates to 1)? How can we use this constructed distribution to price more complex, illiquid, or exotic derivatives?
-*   **Risk Quant:** Will look at the output from a risk mitigation perspective. Can we use this implied distribution to identify tail risks in our portfolio and find the cheapest way to hedge them using out-of-the-money (OTM) options?
-*   **Quant Researcher:** Will look for trading signals. They might generate these distributions across different expiries, compare them against historical data, and search for statistical inefficiencies or mispricings to exploit.
-*   **Quant Trader:** Will focus on the execution. How can we use the distribution's insights to buy or sell the required options in the market at the best possible price with minimal transaction costs?
+- **Valuation Quant:** Will worry about the mathematical assumptions. Does the interpolation scheme guarantee that there is no static arbitrage (e.g., ensuring the probability density is never negative and integrates to 1)? How can we use this constructed distribution to price more complex, illiquid, or exotic derivatives?
+- **Risk Quant:** Will look at the output from a risk mitigation perspective. Can we use this implied distribution to identify tail risks in our portfolio and find the cheapest way to hedge them using out-of-the-money (OTM) options?
+- **Quant Researcher:** Will look for trading signals. They might generate these distributions across different expiries, compare them against historical data, and search for statistical inefficiencies or mispricings to exploit.
+- **Quant Trader:** Will focus on the execution. How can we use the distribution's insights to buy or sell the required options in the market at the best possible price with minimal transaction costs?
 
 ### The Quant Developer’s Path
 
 A Quant Developer (QD) is focused on turning this mathematical prototype into a robust, scalable, and production-grade software system:
 
-*   **Productionalizing the Code:** The QD takes the (possibly messy) Jupyter notebook and refactors it into clean, structured, and reusable code. This means introducing classes, static typing, proper linting, docstrings, and a comprehensive suite of unit and regression tests.
-*   **Data Integration & Design Patterns:** The system needs to work with live market data from various feeds (e.g., Bloomberg, Reuters, or internal databases). The QD uses software design patterns like Dependency Injection and the Adapter Pattern to ensure that swapping data vendors doesn't require rewriting the core mathematical model.
-*   **Performance Optimization:** Solving the math (interpolation, root-finding for implied volatilities) is CPU-heavy. The QD analyzes the performance. Sometimes Python's `scipy` is fast enough; other times, they need to implement highly optimized, domain-specific algorithms (like Jaeckel’s method). For ultra-low latency, they might offload the calculations to a compiled language like C++ or Rust (binding it back to Python using `nanobind` or `PyO3`).
-*   **Concurrency & API Limits:** If fetching data is the bottleneck, the QD implements asynchronous programming (`asyncio`). They must handle blocking vendor APIs safely (using `asyncio.to_thread`) and design rate-limiters or semaphores to avoid getting blocked by external data providers.
-*   **Batch Processing & Scheduling:** If the risk team only needs end-of-day (EOD) metrics, there is no need for real-time streaming. The QD sets up an orchestrator (like Airflow) to run the model as a batch job overnight, writing results to a database.
-*   **User Interface & Dashboards:** If a trader needs to monitor these distributions live on one of their six screens, the QD builds a dashboard. They must decide on the architecture: is a lightweight framework like Streamlit or Dash sufficient, or do they need to split it into a robust backend API (e.g., FastAPI) and a modern frontend (e.g., React)?
+- **Productionalizing the Code:** The QD takes the (possibly messy) Jupyter notebook and refactors it into clean, structured, and reusable code. This means introducing classes, static typing, proper linting, docstrings, and a comprehensive suite of unit and regression tests.
+- **Data Integration & Design Patterns:** The system needs to work with live market data from various feeds (e.g., Bloomberg, Reuters, or internal databases). The QD uses software design patterns like Dependency Injection and the Adapter Pattern to ensure that swapping data vendors doesn't require rewriting the core mathematical model.
+- **Performance Optimization:** Solving the math (interpolation, root-finding for implied volatilities) is CPU-heavy. The QD analyzes the performance. Sometimes Python's `scipy` is fast enough; other times, they need to implement highly optimized, domain-specific algorithms (like Jaeckel’s method). For ultra-low latency, they might offload the calculations to a compiled language like C++ or Rust (binding it back to Python using `nanobind` or `PyO3`).
+- **Concurrency & API Limits:** If fetching data is the bottleneck, the QD implements asynchronous programming (`asyncio`). They must handle blocking vendor APIs safely (using `asyncio.to_thread`) and design rate-limiters or semaphores to avoid getting blocked by external data providers.
+- **Batch Processing & Scheduling:** If the risk team only needs end-of-day (EOD) metrics, there is no need for real-time streaming. The QD sets up an orchestrator (like Airflow) to run the model as a batch job overnight, writing results to a database.
+- **User Interface & Dashboards:** If a trader needs to monitor these distributions live on one of their six screens, the QD builds a dashboard. They must decide on the architecture: is a lightweight framework like Streamlit or Dash sufficient, or do they need to split it into a robust backend API (e.g., FastAPI) and a modern frontend (e.g., React)?
 
 While in smaller teams or specific projects, a senior quant might write both the model and the production code themselves, these distinct areas of concern—the math and the engineering—remain the core pillars of quant finance.
 
@@ -241,10 +241,10 @@ It really depends on the role you hold. There are many different "sub-species" o
 
 My typical day looks something like this:
 
-* **Starting the day (approx. 1h):** I begin with code reviews. I am responsible for the technical quality and design consistency of the code written by quants and less experienced developers.
-* **Daily meeting (15 min):** A brief status update for the team—what everyone did the day before, if anyone is blocked, and if they need to meet up with anyone. This usually leads to 1-on-1 meetings to sort out technical details or business requirements.
-* **Focused engineering work (approx. 4h):** Time spent coding, which is often interrupted by various ad-hoc requests from the above.
-* **Afternoon (meetings):** Meetings with managers or other teams from New York (NYC). These involve reporting weekly progress, cross-team alignment, resolving dependencies, etc.
+- **Starting the day (approx. 1h):** I begin with code reviews. I am responsible for the technical quality and design consistency of the code written by quants and less experienced developers.
+- **Daily meeting (15 min):** A brief status update for the team—what everyone did the day before, if anyone is blocked, and if they need to meet up with anyone. This usually leads to 1-on-1 meetings to sort out technical details or business requirements.
+- **Focused engineering work (approx. 4h):** Time spent coding, which is often interrupted by various ad-hoc requests from the above.
+- **Afternoon (meetings):** Meetings with managers or other teams from New York (NYC). These involve reporting weekly progress, cross-team alignment, resolving dependencies, etc.
 
 ### 2. Is this job stressful or exhausting?
 
@@ -272,9 +272,9 @@ This is completely normal. I don't think anyone can stay fully focused for 8 hou
 
 Furthermore, I never work on just a single task. Changes have to be reviewed by others from a technical and business perspective, so I usually juggle 3–4 tasks at once:
 
-* one task is at the very end of the lifecycle (in code review),
-* one requires deeper design decisions and active coding,
-* one (more routine/technical) is running in the background, handled by an LLM agent.
+- one task is at the very end of the lifecycle (in code review),
+- one requires deeper design decisions and active coding,
+- one (more routine/technical) is running in the background, handled by an LLM agent.
 
 This kind of context switching actually helps me maintain focus, as long as the frequency of jumps is not too high. For someone in a more junior position, it's typically 1–2 tasks at a time.
 
@@ -287,26 +287,31 @@ The transition from academia to finance can be jarring, but it's incredibly rewa
 ## Further Reading
 
 ### Popular Books
+
 - [The Quants: How a New Breed of Math Whizzes Conquered Wall Street and Nearly Destroyed It -- Scott Patterson](https://www.amazon.com/Quants-Whizzes-Conquered-Street-Destroyed/dp/0307453383)
 - [A Random Walk Down Wall Street -- Burton G. Malkiel](https://www.amazon.com/Random-Walk-Down-Wall-Street/dp/0393358380)
 - [The Money Formula -- Paul Wilmott, David Orrell](https://www.amazon.com/Money-Formula-Finance-Science-Mathematicians/dp/1119358612)
 
 ### Biographies
+
 - [A Man for All Markets -- Edward O. Thorp](https://www.amazon.com/Man-All-Markets-Street-Dealer/dp/0812979907)
 - [The Man Who Solved the Market -- Gregory Zuckerman](https://www.amazon.com/Man-Who-Solved-Market-Revolution/dp/0593086317)
 - [My Life as a Quant -- Emanuel Derman](https://www.amazon.com/My-Life-Quant-Reflections-Physics/dp/0470192739)
 
 ### Technical Foundations
+
 - [Financial Calculus: An Introduction to Derivative Pricing -- Martin Baxter, Andrew Rennie](https://www.amazon.com/Financial-Calculus-Introduction-Derivative-Pricing/dp/0521552893)
 - [Paul Wilmott Introduces Quantitative Finance -- Paul Wilmott](https://www.amazon.com/Paul-Wilmott-Introduces-Quantitative-Finance/dp/0470319585)
 - [Stochastic Calculus for Finance I: The Binomial Asset Pricing Model -- Steven Shreve](https://www.amazon.com/Stochastic-Calculus-Finance-Binomial-Pricing/dp/0387401008)
 - [Mathematical Modeling and Computation in Finance -- Cornelis W Oosterlee & Lech A Grzelak](https://www.amazon.com/Mathematical-Modeling-Computation-Finance-Exercises/dp/1786348055)
 
 ### Interview Prep
+
 - [Frequently Asked Questions in Quantitative Finance -- Paul Wilmott](https://www.amazon.com/Frequently-Asked-Questions-Quantitative-Finance/dp/0470748753)
 - [Quant Job Interview Questions and Answers -- Mark Joshi](https://www.amazon.com/Joshi-Interview-Questions-Answers-Second/dp/B00NBE74RY)
 - [150 Most Frequently Asked Questions on Quant Interviews -- Dan Stefanica et al.](https://www.amazon.com/Frequently-Asked-Questions-Quant-Interviews/dp/173453124X)
 
 ### YouTube Channels
+
 - [Computations in Finance](https://www.youtube.com/computationsinfinance)
 - [Dimitri Bianco](https://www.youtube.com/@DimitriBianco)

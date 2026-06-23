@@ -204,21 +204,21 @@ Oto jak w tym miejscu rozchodzą się ścieżki Quanta i Quant Developera:
 
 Quant Analyst (QA) skupia się przede wszystkim na matematyce, modelowaniu oraz finansowych konsekwencjach wyników:
 
-*   **Valuation Quant (Wycena):** Będzie analizować założenia matematyczne. Czy wybrana metoda interpolacji gwarantuje brak arbitrażu statycznego (np. czy gęstość prawdopodobieństwa nie przyjmuje wartości ujemnych i sumuje się do 1)? Jak wykorzystać ten rozkład do wyceny bardziej skomplikowanych, niepłynnych opcji egzotycznych?
-*   **Risk Quant (Zarządzanie ryzykiem):** Spojrzy na model pod kątem zabezpieczeń. Jak na podstawie wyznaczonego rozkładu zidentyfikować ryzyko ogona (tail risk) w naszym portfelu i jak najtaniej zabezpieczyć je za pomocą opcji poza ceną (OTM)?
-*   **Quant Researcher (Badania):** Będzie szukać anomalii rynkowych. Stworzy takie rozkłady dla różnych terminów zapadalności, porówna je z danymi historycznymi i spróbuje znaleźć powtarzalne nieefektywności rynku, na których można zarobić.
-*   **Quant Trader (Handel):** Skupi się na samej egzekucji. Jak przełożyć wnioski z modelu na konkretne transakcje i jak kupić lub sprzedać opcje na rynku przy minimalnych kosztach transakcyjnych?
+- **Valuation Quant (Wycena):** Będzie analizować założenia matematyczne. Czy wybrana metoda interpolacji gwarantuje brak arbitrażu statycznego (np. czy gęstość prawdopodobieństwa nie przyjmuje wartości ujemnych i sumuje się do 1)? Jak wykorzystać ten rozkład do wyceny bardziej skomplikowanych, niepłynnych opcji egzotycznych?
+- **Risk Quant (Zarządzanie ryzykiem):** Spojrzy na model pod kątem zabezpieczeń. Jak na podstawie wyznaczonego rozkładu zidentyfikować ryzyko ogona (tail risk) w naszym portfelu i jak najtaniej zabezpieczyć je za pomocą opcji poza ceną (OTM)?
+- **Quant Researcher (Badania):** Będzie szukać anomalii rynkowych. Stworzy takie rozkłady dla różnych terminów zapadalności, porówna je z danymi historycznymi i spróbuje znaleźć powtarzalne nieefektywności rynku, na których można zarobić.
+- **Quant Trader (Handel):** Skupi się na samej egzekucji. Jak przełożyć wnioski z modelu na konkretne transakcje i jak kupić lub sprzedać opcje na rynku przy minimalnych kosztach transakcyjnych?
 
 ### Ścieżka Quant Developer (Wdrożenie)
 
 Quant Developer (QD) skupia się z kolei na tym, jak ten matematyczny prototyp przekształcić w stabilny, skalowalny i bezpieczny system działający na produkcji:
 
-*   **Produktywizacja kodu:** QD bierze (potencjalnie chaotyczny) skrypt z notebooka i przepisuje go zgodnie ze sztuką inżynierii oprogramowania. Wprowadza klasy, statyczne typowanie, lintery, dba o dokumentację oraz pisze testy jednostkowe i regresyjne.
-*   **Integracja danych i wzorce projektowe:** Model musi pobierać dane rynkowe z różnych źródeł (np. Bloomberg, Reuters, bazy danych). QD projektuje architekturę aplikacji przy użyciu wzorców takich jak wstrzykiwanie zależności (Dependency Injection) czy adapter (Adapter Pattern), aby zmiana dostawcy danych nie wymagała modyfikacji samego modelu matematycznego.
-*   **Optymalizacja wydajności:** Obliczenia matematyczne (interpolacja, szukanie parametrów modeli) mocno obciążają procesor. QD analizuje wąskie gardła. Czasem wystarczy użyć biblioteki `scipy`, innym razem trzeba zaimplementować dedykowane, szybkie algorytmy (np. metodę Jaeckela dla zmienności implikowanej). Przy ekstremalnych wymaganiach wydajnościowych QD przepisuje krytyczne obliczenia do C++ lub Rusta i łączy je z Pythonem (np. za pomocą `nanobind` lub `PyO3`).
-*   **Współbieżność i limity API:** Jeśli wąskim gardłem jest pobieranie danych, QD wdraża programowanie asynchroniczne (`asyncio`). Musi przy tym bezpiecznie obsłużyć blokujące wywołania zewnętrznych bibliotek (`asyncio.to_thread`) oraz zaprojektować mechanizmy ograniczania zapytań (rate limiters, semafory), aby system nie został zablokowany przez API dostawcy danych.
-*   **Przetwarzanie wsadowe (Batch Processing):** Jeśli zespół ryzyka potrzebuje wyników dopiero na koniec dnia (EOD), nie ma sensu liczyć wszystkiego w czasie rzeczywistym. QD konfiguruje orchestrator (np. Airflow), który uruchamia obliczenia w nocy, zapisując gotowe wyniki do bazy danych.
-*   **Interfejs użytkownika i wizualizacja:** Gdy trader potrzebuje podglądu rozkładów na żywo na jednym ze swoich ekranów, QD buduje aplikację webową. Musi zdecydować o architekturze: czy wystarczy prosty dashboard w Streamlicie/Dashu, czy potrzebny jest podział na wydajne API (np. FastAPI) i nowoczesny frontend (np. React).
+- **Produktywizacja kodu:** QD bierze (potencjalnie chaotyczny) skrypt z notebooka i przepisuje go zgodnie ze sztuką inżynierii oprogramowania. Wprowadza klasy, statyczne typowanie, lintery, dba o dokumentację oraz pisze testy jednostkowe i regresyjne.
+- **Integracja danych i wzorce projektowe:** Model musi pobierać dane rynkowe z różnych źródeł (np. Bloomberg, Reuters, bazy danych). QD projektuje architekturę aplikacji przy użyciu wzorców takich jak wstrzykiwanie zależności (Dependency Injection) czy adapter (Adapter Pattern), aby zmiana dostawcy danych nie wymagała modyfikacji samego modelu matematycznego.
+- **Optymalizacja wydajności:** Obliczenia matematyczne (interpolacja, szukanie parametrów modeli) mocno obciążają procesor. QD analizuje wąskie gardła. Czasem wystarczy użyć biblioteki `scipy`, innym razem trzeba zaimplementować dedykowane, szybkie algorytmy (np. metodę Jaeckela dla zmienności implikowanej). Przy ekstremalnych wymaganiach wydajnościowych QD przepisuje krytyczne obliczenia do C++ lub Rusta i łączy je z Pythonem (np. za pomocą `nanobind` lub `PyO3`).
+- **Współbieżność i limity API:** Jeśli wąskim gardłem jest pobieranie danych, QD wdraża programowanie asynchroniczne (`asyncio`). Musi przy tym bezpiecznie obsłużyć blokujące wywołania zewnętrznych bibliotek (`asyncio.to_thread`) oraz zaprojektować mechanizmy ograniczania zapytań (rate limiters, semafory), aby system nie został zablokowany przez API dostawcy danych.
+- **Przetwarzanie wsadowe (Batch Processing):** Jeśli zespół ryzyka potrzebuje wyników dopiero na koniec dnia (EOD), nie ma sensu liczyć wszystkiego w czasie rzeczywistym. QD konfiguruje orchestrator (np. Airflow), który uruchamia obliczenia w nocy, zapisując gotowe wyniki do bazy danych.
+- **Interfejs użytkownika i wizualizacja:** Gdy trader potrzebuje podglądu rozkładów na żywo na jednym ze swoich ekranów, QD buduje aplikację webową. Musi zdecydować o architekturze: czy wystarczy prosty dashboard w Streamlicie/Dashu, czy potrzebny jest podział na wydajne API (np. FastAPI) i nowoczesny frontend (np. React).
 
 Choć w mniejszych zespołach lub przy niektórych projektach granice te się zacierają i jeden zaawansowany quant może pisać zarówno model, jak i kod produkcyjny, to te dwa podejścia – matematyczne i inżynieryjne – pozostają fundamentem nowoczesnego quant finance.
 
@@ -246,10 +246,10 @@ To zależy od pozycji, jaką się zajmuje. Istnieje wiele różnych „podgatunk
 
 Mój typowy dzień wygląda mniej więcej tak:
 
-* **Rozpoczęcie dnia (ok. 1h):** Zaczynam od recenzji kodu (code review). Jestem odpowiedzialny za jakość techniczną i spójność projektową kodu pisanego przez quantów i mniej doświadczonych programistów.
-* **Daily meeting (15 min):** Krótkie spotkanie statusowe całego zespołu – kto co robił poprzedniego dnia, czy ktoś ma jakieś blokady i czy musi się z kimś skonsultować. Zwykle po tym następują spotkania 1-on-1, aby dogadać szczegóły techniczne lub wymagania biznesowe.
-* **Skupiona praca inżynierska (ok. 4h):** Czas poświęcony na programowanie, choć bywa przerywany różnymi bieżącymi tematami.
-* **Popołudnie (spotkania):** Spotkania z menedżerami lub innymi zespołami z Nowego Jorku (NYC) – raportowanie postępów, ustalenia międzyzespołowe, rozwiązywanie zależności itp.
+- **Rozpoczęcie dnia (ok. 1h):** Zaczynam od recenzji kodu (code review). Jestem odpowiedzialny za jakość techniczną i spójność projektową kodu pisanego przez quantów i mniej doświadczonych programistów.
+- **Daily meeting (15 min):** Krótkie spotkanie statusowe całego zespołu – kto co robił poprzedniego dnia, czy ktoś ma jakieś blokady i czy musi się z kimś skonsultować. Zwykle po tym następują spotkania 1-on-1, aby dogadać szczegóły techniczne lub wymagania biznesowe.
+- **Skupiona praca inżynierska (ok. 4h):** Czas poświęcony na programowanie, choć bywa przerywany różnymi bieżącymi tematami.
+- **Popołudnie (spotkania):** Spotkania z menedżerami lub innymi zespołami z Nowego Jorku (NYC) – raportowanie postępów, ustalenia międzyzespołowe, rozwiązywanie zależności itp.
 
 ### 2. Czy ta praca jest stresująca lub wyczerpująca?
 
@@ -277,9 +277,9 @@ To zupełnie naturalne. Rzadko kto potrafi programować w pełnym skupieniu prze
 
 Ponadto rzadko pracuję nad tylko jednym zadaniem. Proces tworzenia oprogramowania w dużych instytucjach wymaga czasu na recenzję kodu i testy, więc zazwyczaj prowadzę 3–4 wątki równolegle:
 
-* jedno zadanie jest na ukończeniu (w fazie review),
-* nad drugim intensywnie myślę i podejmuję decyzje projektowe,
-* trzecie (bardziej techniczne/rutynowe) wykonuje w tle np. agent LLM.
+- jedno zadanie jest na ukończeniu (w fazie review),
+- nad drugim intensywnie myślę i podejmuję decyzje projektowe,
+- trzecie (bardziej techniczne/rutynowe) wykonuje w tle np. agent LLM.
 
 Taka kontrolowana zmiana kontekstu pomaga mi utrzymać świeżość i skupienie, o ile nie skaczę między tematami zbyt chaotycznie. Na początku drogi (jako junior) naturalny model to raczej praca nad 1–2 tematami jednocześnie.
 
@@ -292,26 +292,31 @@ Przejście z murów uczelni do dynamicznego świata finansów potrafi być spory
 ## Dodatkowa literatura
 
 ### Książki popularnonaukowe
+
 - [The Quants: How a New Breed of Math Whizzes Conquered Wall Street and Nearly Destroyed It -- Scott Patterson](https://www.amazon.com/Quants-Whizzes-Conquered-Street-Destroyed/dp/0307453383)
 - [A Random Walk Down Wall Street -- Burton G. Malkiel](https://www.amazon.com/Random-Walk-Down-Wall-Street/dp/0393358380)
 - [The Money Formula -- Paul Wilmott, David Orrell](https://www.amazon.com/Money-Formula-Finance-Science-Mathematicians/dp/1119358612)
 
 ### Biografie
+
 - [A Man for All Markets -- Edward O. Thorp](https://www.amazon.com/Man-All-Markets-Street-Dealer/dp/0812979907)
 - [The Man Who Solved the Market -- Gregory Zuckerman](https://www.amazon.com/Man-Who-Solved-Market-Revolution/dp/0593086317)
 - [My Life as a Quant -- Emanuel Derman](https://www.amazon.com/My-Life-Quant-Reflections-Physics/dp/0470192739)
 
 ### Podstawy techniczne
+
 - [Financial Calculus: An Introduction to Derivative Pricing -- Martin Baxter, Andrew Rennie](https://www.amazon.com/Financial-Calculus-Introduction-Derivative-Pricing/dp/0521552893)
 - [Paul Wilmott Introduces Quantitative Finance -- Paul Wilmott](https://www.amazon.com/Paul-Wilmott-Introduces-Quantitative-Finance/dp/0470319585)
 - [Stochastic Calculus for Finance I: The Binomial Asset Pricing Model -- Steven Shreve](https://www.amazon.com/Stochastic-Calculus-Finance-Binomial-Pricing/dp/0387401008)
 - [Mathematical Modeling and Computation in Finance -- Cornelis W Oosterlee & Lech A Grzelak](https://www.amazon.com/Mathematical-Modeling-Computation-Finance-Exercises/dp/1786348055)
 
 ### Przygotowanie do rozmów kwalifikacyjnych
+
 - [Frequently Asked Questions in Quantitative Finance -- Paul Wilmott](https://www.amazon.com/Frequently-Asked-Questions-Quantitative-Finance/dp/0470748753)
 - [Quant Job Interview Questions and Answers -- Mark Joshi](https://www.amazon.com/Joshi-Interview-Questions-Answers-Second/dp/B00NBE74RY)
 - [150 Most Frequently Asked Questions on Quant Interviews -- Dan Stefanica et al.](https://www.amazon.com/Frequently-Asked-Questions-Quant-Interviews/dp/173453124X)
 
 ### Kanały na YouTube
+
 - [Computations in Finance](https://www.youtube.com/computationsinfinance)
 - [Dimitri Bianco](https://www.youtube.com/@DimitriBianco)

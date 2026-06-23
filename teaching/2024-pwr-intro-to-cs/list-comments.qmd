@@ -17,18 +17,23 @@ Python lista 1 - wyrażenia matematyczne
 [Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_1.ipynb)
 
 - Zamiast
+
   ```{python}
   import math
   pole = math.pi * 10**2
   ```
+
   warto użyć
+
   ```{python}
   from math import pi
   pole = pi * 10**2
   ```
+
   Zmniejszamy ilość pisania przy wielokrotnym użyciu, a sam import jest wydajniejszy co może mieć znaczenie przy bardziej zaawansowanych zadaniach.
 
 - Funkcje pierwiastka kwadratowego i podnoszenia do potęgi $1/2$ są oczywiście równoważne, natomiast polecana jest `math.sqrt`. Mniej ogólne algorytmy są zazwyczaj lepiej zoptymalizowane (przy naszych zastosowaniach nie ma to jednak znaczenia).
+
   ```{python}
   from math import sqrt
   x = 2
@@ -37,7 +42,8 @@ Python lista 1 - wyrażenia matematyczne
   print(y, z, y == z)
   ```
 
-- W *zadaniu 4* występuje funkcja podłoga $ \lfloor x \rfloor $.  Jest to największa liczba całkowita mniejsza niż $x$. W Pythonie można używać funkcji `math.floor`.
+- W *zadaniu 4* występuje funkcja podłoga $ \\lfloor x \\rfloor $. Jest to największa liczba całkowita mniejsza niż $x$. W Pythonie można używać funkcji `math.floor`.
+
   ```{python}
   from math import floor
   x = 2.5
@@ -47,6 +53,7 @@ Python lista 1 - wyrażenia matematyczne
   ```
 
 - *Zadanie 5* pokazuje, jak ważne jest umiejętne korzystanie ze zmiennych pomocniczych.
+
   ```{python}
   from math import sqrt, pi
 
@@ -59,6 +66,7 @@ Python lista 1 - wyrażenia matematyczne
   print(round(pi_przyblizenie, 10))
   print(round(pi_przyblizenie, 10) == round(pi, 10))
   ```
+
   W powyższym kodzie dużo łatwiej wyłapać błąd niż w jednolinijkowym gigancie.
 
 - Do *zadania 6* wrócimy jeszcze raz po funkcjach i pętlach aby zaimplementować dużo czytelniejsze rozwiązanie.
@@ -75,13 +83,11 @@ Python lista 2 - napisy
   print(os.getcwd())
   ```
 
-
 ### Lista 3
 
 Python lista 3 - listy i słowniki
 
 [Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_3.ipynb)
-
 
 Komentarze dla zaawansowanych:
 
@@ -102,10 +108,11 @@ L = list( # <4>
 )
 print(L)
 ```
+
 1. `range(1, 101)` tworzy generator liczb od 1 do 100, nie trzyma tych liczb od razu w pamięci, tylko wie która jest następna.
-2. `(func(n) for n in range(1, 101))` tworzy generator liczb od 1 do 100, a potem wykona operacje na nich.
-3. `accumulate` bierze coś po czym można iterować i operator binarny (domyślnie `+`) i zwraca generator częściowych wartości używania tego operatora na wszystkich elementach generatora.
-4. `list` tworzy listę zawierająca elementy złożonego generatora, zmusza do materializacji wyników. Wszystko powyżej było tworzone leniwie.
+1. `(func(n) for n in range(1, 101))` tworzy generator liczb od 1 do 100, a potem wykona operacje na nich.
+1. `accumulate` bierze coś po czym można iterować i operator binarny (domyślnie `+`) i zwraca generator częściowych wartości używania tego operatora na wszystkich elementach generatora.
+1. `list` tworzy listę zawierająca elementy złożonego generatora, zmusza do materializacji wyników. Wszystko powyżej było tworzone leniwie.
 
 **Zadanie 5**
 
@@ -151,7 +158,10 @@ punkty = {
 }
 print(punkty)
 ```
-    Inna metoda jest użycie generatora wewnątrz listy składanej.
+
+```
+Inna metoda jest użycie generatora wewnątrz listy składanej.
+```
 
 ```{python}
 punkty = {
@@ -169,7 +179,7 @@ Python lista 4 - funkcje.
 
 [Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_4.ipynb)
 
-* Na zajęciach zobaczyliśmy jak zapisać zadanie Fizz Buzz bez porównania modulo 15:
+- Na zajęciach zobaczyliśmy jak zapisać zadanie Fizz Buzz bez porównania modulo 15:
 
   ```{python}
   def fizz_buzz(

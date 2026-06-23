@@ -94,6 +94,7 @@ def mock_clean_up(object_uuid: str) -> None:
     """
     print(f"Cleaning up after {object_uuid}.")  # <1>
 ```
+
 1. Mocking the preparation process for logging purposes.
 
 For each of the four types of resources we mock the preparation, object (ex. API response, some id of definition on server) and the clean up process.
@@ -126,6 +127,7 @@ def analysis(
     yield analysis_uuid
     mock_clean_up(analysis_uuid) # <1>
 ```
+
 1. Clean up after the analysis is complete.
 
 Modern approach to Python development leans heavily towards type annotations. Dynamical typing is powerful but can lead to unwieldy code. To properly annotate the `analysis` function we need to import `Generator` from `typing` module. Remember, the `@contextmanager` decorator takes the function and turns it into CM --- a class with `__enter__` and `__exit__` methods. The `Generator` needs three inputs but in our case only the first one is important --- `YieldType`, here `str` ([see](https://docs.python.org/3/library/typing.html#typing.Generator) for more).
@@ -181,9 +183,10 @@ def portfolio(
     yield portfolio_uuid
     mock_clean_up(portfolio_uuid) # <3>
 ```
+
 1. Clean up after the benchmark is complete.
-2. Clean up after the OTC products definition is complete.
-3. Clean up after the portfolio definition is complśete.
+1. Clean up after the OTC products definition is complete.
+1. Clean up after the portfolio definition is complśete.
 
 ### Analysis results
 

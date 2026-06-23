@@ -1,5 +1,3 @@
-
-
 Dzień dobry,
 
 bardzo podoba mi się Pani inicjatywa, wartościowa i bardzo potrzebna. Nadal pamiętam, jak zagubiony byłem na starcie pracy komercyjnej. Chętnie pomogę, czy to jako gość, czy w innym zakresie.
@@ -12,8 +10,8 @@ Pozdrawiam serdecznie,
 BW
 
 Wyświetl użytkownika Ewa Damek link do grafiki
-Ewa DamekEwa Damek  • 1.1. profesor zwyczajny w Uniwersytet Wrocławskiprofesor zwyczajny w Uniwersytet Wrocławski 1 r/l •
- 1 rok temu • Widoczne dla każdego na i spoza LinkedIn
+Ewa DamekEwa Damek • 1.1. profesor zwyczajny w Uniwersytet Wrocławskiprofesor zwyczajny w Uniwersytet Wrocławski 1 r/l •
+1 rok temu • Widoczne dla każdego na i spoza LinkedIn
 Od jakiegoś czasu prowadzę w Instytucie Matematycznym Uniwersytetu zajęcia dla studentów zatytułowane Projektowanie Kariery Matematyka. Częścią tych zajęć są rozmowy z osobami, które mogą coś opowiedzieć o swoich karierach. Mogą to być pracownicy uczelni, doktoranci i pracownicy różnych firm. To ostatnie dotyczy banków, instytucji finansowych, korporacji, gdzie zatrudnia się quantów, analizuje dane, rozwija software, używa narzędzi statystycznych lub komputerowych. Jako prelegenci przychodzą też studenci, którzy mają już jakieś doświadczenia zawodowe. Te spotkania bardzo się udają. Zaproszone osoby są dobrze przygotowane, opowiadają ciekawe rzeczy, a studenci zadają dużo pytań.
 
 Następne zajęcia odbędą się wiosną 2025. Zapraszam wszystkich, którzy chcieliby do nas przyjść. Także pracowników HR - nasi studenci szukają staży i posad. Proszę o kontakt. Zajęcia online też są możliwe.
@@ -21,7 +19,7 @@ Ewa Damek wysłał(a) następującą wiadomość o 15:43
 Wyświetl profil użytkownika Ewa Damek Ewa Damek
 Ewa Damek 15:43
 
-Oczywiście Pana pamiętam. Jestem bardzo zainteresowana. Będę planować zajęcia pewnie najwcześniej jesienią.  Czy Pan już jest w mojej sieci na linkedin? To wszystko jest dla mnie nowe
+Oczywiście Pana pamiętam. Jestem bardzo zainteresowana. Będę planować zajęcia pewnie najwcześniej jesienią. Czy Pan już jest w mojej sieci na linkedin? To wszystko jest dla mnie nowe
 Bartosz Wróblewski wysłał(a) następującą wiadomość o 15:56
 Wyświetl profil użytkownika Bartosz Wróblewski Bartosz Wróblewski
 Bartosz Wróblewski 15:56
@@ -112,15 +110,15 @@ Dzień dobry,
 dzięki za wszystkie informacje. Potwierdzam jeszcze raz, że jestem chętny przyjść. Myślę że możemy wstępnie umówić na pełne zajęcia. Będzie wtedy czas także na luźną dyskusję.
 Mój ogólny plan na taki talk byłby:
 
-1) przedstawić różne role, jakie osoba matematyczna może przyjąć w sektorze bankowości inwestycyjnej/rynków kapitałowych. Pomyślę o jakiejś formie prezentacji.
+1. przedstawić różne role, jakie osoba matematyczna może przyjąć w sektorze bankowości inwestycyjnej/rynków kapitałowych. Pomyślę o jakiejś formie prezentacji.
 
-2) opowiedzieć trochę o swoich doświadczeniach. moja dotychczasowa ścieżka była dość kręta. może komuś pomoże, tym bardziej że konkluzja jest taka, że kariera może być płynna i nie ma co się stresować początkiem.
+1. opowiedzieć trochę o swoich doświadczeniach. moja dotychczasowa ścieżka była dość kręta. może komuś pomoże, tym bardziej że konkluzja jest taka, że kariera może być płynna i nie ma co się stresować początkiem.
 
-3) luźna dyskusja, wnioskuję z tego co piszesz że studenci mają dość dużo pytań. A jak nie to będziemy się kotwiczyć na podstawie zagadnień, które podesłałaś. Można dać znać, że tego dnia będzie bardziej o ścieżce finansowo/quantowo/programistycznej i czy mają z góry pytania o te tematy.
-4 lis 2024
-Ewa Damek wysłał(a) następujące wiadomości o 08:02
-Wyświetl profil użytkownika Ewa Damek Ewa Damek
-Ewa Damek 08:02
+1. luźna dyskusja, wnioskuję z tego co piszesz że studenci mają dość dużo pytań. A jak nie to będziemy się kotwiczyć na podstawie zagadnień, które podesłałaś. Można dać znać, że tego dnia będzie bardziej o ścieżce finansowo/quantowo/programistycznej i czy mają z góry pytania o te tematy.
+   4 lis 2024
+   Ewa Damek wysłał(a) następujące wiadomości o 08:02
+   Wyświetl profil użytkownika Ewa Damek Ewa Damek
+   Ewa Damek 08:02
 
 Dzięki. Dam im znać tematykę ścieżki.
 25 gru 2024
@@ -143,21 +141,21 @@ Ewa Damek 16:12
 Zajęcia Projektowanie kariery będą się odbywały w najbliższym semestrze
 w czwartki 16-18, pierwsze zajęcia czwartek 27 luty. Czy te godziny są ok?
 
-Uprzejmie proszę byś wybrał  sobie czwartek lub przynajmniej miesiąc jeśli to będzie kwiecień i dalej. Jest 8 speakerów i muszę Was dobrze rozplanować.
+Uprzejmie proszę byś wybrał sobie czwartek lub przynajmniej miesiąc jeśli to będzie kwiecień i dalej. Jest 8 speakerów i muszę Was dobrze rozplanować.
 
 Proszę o odpowiedź w ciągu kilku dni.
 Bartosz Wróblewski wysłał(a) następujące wiadomości o 17:10
 Wyświetl profil użytkownika Bartosz Wróblewski Bartosz Wróblewski
 Bartosz Wróblewski 17:10
 
-Tak, godziny pasują. Co dnia to preferowałbym przed Wielkanocą czwartki  [13 marca - 10 kwietnia] włącznie.
+Tak, godziny pasują. Co dnia to preferowałbym przed Wielkanocą czwartki [13 marca - 10 kwietnia] włącznie.
 
 Jak się rozpoczną zajęcia to prosiłbym informacje o studentach.
- Lic/mgr? Jakie specjalności? Język polski czy angielski? Jakie tematy już będą poruszone przede mną (żeby się nie powtarzać)?
+Lic/mgr? Jakie specjalności? Język polski czy angielski? Jakie tematy już będą poruszone przede mną (żeby się nie powtarzać)?
 Wyświetl profil użytkownika Bartosz Wróblewski Bartosz Wróblewski
 Bartosz Wróblewski 17:12
 
-W razie tłoku mogę się ograniczyć  też do jednej godziny, jak pasuje. Ale wtedy na luźna dyskusję czasu pewnie nie wystarczy.
+W razie tłoku mogę się ograniczyć też do jednej godziny, jak pasuje. Ale wtedy na luźna dyskusję czasu pewnie nie wystarczy.
 Ewa Damek wysłał(a) następujące wiadomości o 19:19
 Wyświetl profil użytkownika Ewa Damek Ewa Damek
 Ewa Damek 19:19
@@ -228,7 +226,7 @@ Bartosz Wróblewski 11:46
 
 Dzięki bardzo pomagają takie pytania. Przygotowałem sobie bardzo zgrubne materiały żeby się zakotwiczyć na początek i przedstawić ogólną charaktertystykę pracy. Pytania też sobie spisałem w razie czego. Mogę podesłać przed.
 
-Będę na IM koło 16.  Materiały wrzucę na swoją stronę, więc dowolony sprzęt z przeglądarką wystarczy (nawet e tablica). Ale wezmę też swój laptop. Jeżeli studenci będą chętni to możemy ponurkować po ofertach pracy na LI.
+Będę na IM koło 16. Materiały wrzucę na swoją stronę, więc dowolony sprzęt z przeglądarką wystarczy (nawet e tablica). Ale wezmę też swój laptop. Jeżeli studenci będą chętni to możemy ponurkować po ofertach pracy na LI.
 Ewa Damek wysłał(a) następujące wiadomości o 18:35
 Wyświetl profil użytkownika Ewa Damek Ewa Damek
 Ewa Damek 18:35
@@ -264,8 +262,10 @@ Na pewno skorzystam za dwa lata (robię to co drugi rok)
 Wyświetl profil użytkownika Ewa Damek Ewa Damek
 Ewa Damek 10:08
 
-    👏
-    👍
-    😊
+```
+👏
+👍
+😊
+```
 
 Z projektorem to zawalił IM, a trochę ja, bo nie sprawdziłam

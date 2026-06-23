@@ -27,7 +27,7 @@ Ultimately, the decision of whether or not to use design patterns in Python depe
 
 ## Strategy pattern
 
-We know the stage now --- one problem statement, multiple strategies to tackle. Important observation here is that we don't actually care which one is used. When you substitute the integral value to client code --- a formula or further algorithm --- it's irrelevant how it was computed, as long its correct to required level of accuracy. This means that the problem should be decoupled from algorithms to solve it. We should target a implementation where you can state a problem *Calculate the integral of* $\sin(x)$ *from* $0$ *to* $\pi$ and then just throw different algorithms at it to obtain a solution. So let's get coding!
+We know the stage now --- one problem statement, multiple strategies to tackle. Important observation here is that we don't actually care which one is used. When you substitute the integral value to client code --- a formula or further algorithm --- it's irrelevant how it was computed, as long its correct to required level of accuracy. This means that the problem should be decoupled from algorithms to solve it. We should target a implementation where you can state a problem *Calculate the integral of* $\\sin(x)$ *from* $0$ *to* $\\pi$ and then just throw different algorithms at it to obtain a solution. So let's get coding!
 
 ::: callout-note
 I will show you this pattern through an example. If you prefer more generic setup see Refactoring Guru's [implementation](https://refactoring.guru/design-patterns/strategy/python/example). The customary 'software engineering' example used to present the SDP is sorting a list of integers using different sorting algorithms.
@@ -54,10 +54,11 @@ class IntegrationScheme(ABC): # <1>
     ) -> float:
         """Abstract method for integrating a function."""
 ```
+
 1. `ABC` defines abstract classes, serving as a template. Concrete subclasses inherit from it; abstract classes cannot be instantiated.
-2. The `@abstractmethod` decorator signifies this method must be overridden by all concrete subclasses.
-3. `Callable` annotations define function-like objects that can be executed.
-4. Type annotations improve readability and can be used by static type checkers like `mypy` to detect errors early.
+1. The `@abstractmethod` decorator signifies this method must be overridden by all concrete subclasses.
+1. `Callable` annotations define function-like objects that can be executed.
+1. Type annotations improve readability and can be used by static type checkers like `mypy` to detect errors early.
 
 ## Concrete schema implementations
 
@@ -101,10 +102,11 @@ class RectangleScheme(IntegrationScheme): # <1>
         dx = (end - start) / np.float64(self._steps)
         return np.sum(values) * dx
 ```
+
 1. `RectangleScheme` inherits from `IntegrationScheme`, requiring implementation of `integrate`.
-2. `__init__` sets up the rectangle count, including validation for positive values.
-3. `__str__` customizes the string representation of the class instance.
-4. `integrate` performs the calculation: linear spacing, function evaluation, and summing area elements.
+1. `__init__` sets up the rectangle count, including validation for positive values.
+1. `__str__` customizes the string representation of the class instance.
+1. `integrate` performs the calculation: linear spacing, function evaluation, and summing area elements.
 
 ### Simple Monte Carlo
 
@@ -198,7 +200,7 @@ class Integrator:
 ```
 
 1. The `__init__` takes in the obvious parameters --- function to integrate, start and end of the interval. It also checks if it's a proper integral.
-2. We get to implement our own `__call__` method now. It's clear what `Integrator` class does. No need to have a method with a descriptive name like `Integrator.integrate`. To use it you pass through the integration scheme into the integrator --- notice annotation of the abstract `IntegrationScheme`. It prints the info on strategy used (using the `__str__` methods) and calls `integrate` method of the scheme. No care in the world on how the value is actually calculated.
+1. We get to implement our own `__call__` method now. It's clear what `Integrator` class does. No need to have a method with a descriptive name like `Integrator.integrate`. To use it you pass through the integration scheme into the integrator --- notice annotation of the abstract `IntegrationScheme`. It prints the info on strategy used (using the `__str__` methods) and calls `integrate` method of the scheme. No care in the world on how the value is actually calculated.
 
 ## Let's integrate!
 

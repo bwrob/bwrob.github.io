@@ -20,10 +20,9 @@ Wypowiem się jako Quant Dev. Quantem nie byłem za dobrym, więc wyzwań było 
 Łączenie ze sobą 3 światów - matematyki, technologi i finansów. To dość sporo do nauczenia się i utrzymania w głowie. Nie ma osoby która była by w stanie być wybitnym ekspertem we wszystkich 3. Trzeba się specjalizować, wybierać, walczyć poznawczo. Nauka się nie kończy, co czasem jest dobre a czasem potwornie męczące.
 Drugim wyzwaniem jest to, że ta żonglerka nie odbywa się tylko mentalnie, ale też zewnętrznie w zakresie komunikacji z innymi osobami. Które mogą być w zupełnie innym punkcie diagramu Venna tych trzech dziedzin niż ty.
 
-
 4. Co daje największą satysfakcję
 
-Bardzo personalne pytanie. W projektach w których uczestniczę próbuję narzucać filozofię  "Make It Work Make It Right Make It Fast" - dzielenia pracy na 3 etapy. Dla mnie osobiście najbardziej satysfakcjonujący jest etap "Make It Fast". Jest to trochę paradoksalne, specjalizując się obecnie głównie w Pythonie. Mocne strony tego języka to bogate środowisko bibliotek i szybkość deweloperki, nie wydajność egzekucji. Ale wprowadza to ciekawy element optymalizacji i balansowania kompromisów który dla mnie jest bardzo satysfakcjonujący.
+Bardzo personalne pytanie. W projektach w których uczestniczę próbuję narzucać filozofię "Make It Work Make It Right Make It Fast" - dzielenia pracy na 3 etapy. Dla mnie osobiście najbardziej satysfakcjonujący jest etap "Make It Fast". Jest to trochę paradoksalne, specjalizując się obecnie głównie w Pythonie. Mocne strony tego języka to bogate środowisko bibliotek i szybkość deweloperki, nie wydajność egzekucji. Ale wprowadza to ciekawy element optymalizacji i balansowania kompromisów który dla mnie jest bardzo satysfakcjonujący.
 
 5. Czy możliwe jest i jak utrzymać skupienie przez cały dzień pracy - pytam bo ja, gdy koduje to jestem w stanie skupić się przez 2h, a potem mi co raz ciężej
 

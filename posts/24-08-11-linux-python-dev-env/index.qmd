@@ -17,7 +17,6 @@ brew install python@3.12 python@3.13
 Dev tools should be accessable globally, but should't be in the defualt global python env.
 Solution - `pipx`
 
-
 ```{bash}
 brew install pipx
 pipx ensurepath
@@ -32,17 +31,21 @@ nano  .zshrc
 autoload -U compinit && compinit
 eval "$(register-python-argcomplete pipx)"
 ```
+
 ![](../../assets/images/posts/24-08-11-linux-python-dev-env/1.png){width="90%" fig-align="center"}
 
 Install dev tools
+
 ```{bash}
 pipx install --force ruff hapless poethepoet poetry pre-commit uv pytest basedpyright
 ```
+
 ![](../../assets/images/posts/24-08-11-linux-python-dev-env/2.png){width="90%" fig-align="center"}
 
 ```{bash}
 nano $(which poetry)
 ```
+
 ![](../../assets/images/posts/24-08-11-linux-python-dev-env/3.png){width="90%" fig-align="center"}
 
 Shebang Line (#!):
@@ -51,12 +54,15 @@ Shebang Line (#!):
 This script acts as a launcher for the poetry command. It sets up the environment and handles potential script extensions before delegating the actual command execution to the poetry library.
 
 We can see that each of the toolos install with pipx is installed in its own venv, but is available globally
+
 ```{bash}
 ls /home/bwrob/.local/share/pipx/venvs/ -la
 ```
+
 ![](../../assets/images/posts/24-08-11-linux-python-dev-env/4.png){width="90%" fig-align="center"}
 
 Copy your
+
 ```{bash}
 # Instal dependencies
 poetry install

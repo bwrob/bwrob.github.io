@@ -3,7 +3,7 @@ title: "Polars in Finance Cheat Sheet"
 description: "Polars expressions and contexts applied to S&P 500 OHLCV data."
 date: "2026-04-05"
 date-modified: "2026-04-05"
-categories: [Data Science, Programming]
+categories: [Data Science]
 image: ../../assets/images/posts/26-04-05-polars-expressions-cheat-sheet/polars_art.png
 format-links: [html]
 toc-depth: 3
@@ -28,8 +28,8 @@ df.head(5)
 ```
 
 1. Set root path to project directory.
-2. Load ticker data from an Arrow file.
-3. Sort by ticker and date — required for shifts and rolling windows.
+1. Load ticker data from an Arrow file.
+1. Sort by ticker and date — required for shifts and rolling windows.
 
 ## 2. Expressions: The Atomic Units of Logic
 
@@ -48,9 +48,9 @@ def min_max_scale(name: str) -> pl.Expr:
     return (col - col.min()) / (col.max() - col.min())  # <3>
 ```
 
-1. Log returns: ln(P_t / P_{t-1}), calculated within each ticker via `.over()`.
-2. Realized volatility: annualized rolling std (21-day window ≈ 1 trading month).
-3. Min-max scaling for ML features.
+1. Log returns: ln(P_t / P\_{t-1}), calculated within each ticker via `.over()`.
+1. Realized volatility: annualized rolling std (21-day window ≈ 1 trading month).
+1. Min-max scaling for ML features.
 
 ## 3. Context: Selection & Feature Engineering
 
@@ -67,7 +67,7 @@ df.tail(5)
 ```
 
 1. Append log returns and realized volatility.
-2. Typical price — common input for Money Flow Index.
+1. Typical price — common input for Money Flow Index.
 
 ## 4. Context: Aggregation (`group_by`)
 
@@ -83,7 +83,7 @@ risk_summary.sort("sharpe_ratio", descending=True).head(5)
 ```
 
 1. Max drawdown via cumulative maximum.
-2. Sharpe ratio (assuming 0% risk-free rate).
+1. Sharpe ratio (assuming 0% risk-free rate).
 
 ## 5. Power Selectors (`polars.selectors`)
 
@@ -100,7 +100,7 @@ df.select(
 ```
 
 1. Apply a 1% upward shock to all OHLC columns at once.
-2. Suffix the new column names to keep originals intact.
+1. Suffix the new column names to keep originals intact.
 
 ## 6. Window Functions (`over`)
 
@@ -115,7 +115,7 @@ df.with_columns(
 ```
 
 1. Volume z-score per ticker — flags unusual trading activity.
-2. Cross-sectional relative strength: price vs. market average that day.
+1. Cross-sectional relative strength: price vs. market average that day.
 
 ## 7. Time Series: Rolling Metrics & Asof Joins
 
@@ -144,7 +144,7 @@ corr_matrix.head(5)
 ```
 
 1. One column per ticker's returns.
-2. Correlation matrix across all assets.
+1. Correlation matrix across all assets.
 
 ## 9. Performance: Categoricals & Streaming
 
@@ -162,7 +162,7 @@ df = pl.scan_ipc("large_dataset.arrow")
 ```
 
 1. Tickers as `Categorical` — integers under the hood, much less memory.
-2. Streaming execution — processes in batches instead of loading everything at once.
+1. Streaming execution — processes in batches instead of loading everything at once.
 
 ::: callout-note
 

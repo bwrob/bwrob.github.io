@@ -16,50 +16,51 @@ execute:
 
 Gra toczy się na dwuwymiarowej siatce komórek, z których każda może być w jednym z dwóch stanów:
 
-* Żywa (oznaczona kolorem zielonym w implementacji)
-* Martwa (oznaczona kolorem czarnym w implementacji)
+- Żywa (oznaczona kolorem zielonym w implementacji)
+- Martwa (oznaczona kolorem czarnym w implementacji)
 
 Stan komórki w następnej generacji zależy od stanu jej ośmiu sąsiadów w obecnej generacji, zgodnie z następującymi regułami:
 
-* Martwa komórka z dokładnie trzema żywymi sąsiadami staje się żywa (**narodziny**).
-* Żywa komórka z mniej niż dwoma żywymi sąsiadami umiera z powodu **niedoludnienia**.
-* Żywa komórka z dwoma lub trzema żywymi sąsiadami **pozostaje żywa**.
-* Żywa komórka z więcej niż trzema żywymi sąsiadami umiera z powodu **przeludnienia**.
+- Martwa komórka z dokładnie trzema żywymi sąsiadami staje się żywa (**narodziny**).
+- Żywa komórka z mniej niż dwoma żywymi sąsiadami umiera z powodu **niedoludnienia**.
+- Żywa komórka z dwoma lub trzema żywymi sąsiadami **pozostaje żywa**.
+- Żywa komórka z więcej niż trzema żywymi sąsiadami umiera z powodu **przeludnienia**.
 
 ## Zadanie
 
 Twoim zadaniem jest uzupełnienie kodu symulacji Game of Life. Poniżej znajduje się szkielet kodu, który musisz wypełnić.
 
-* Uzupełnij funkcję `draw_grid`, rysując na ekranie siatkę komórek z odpowiednimi kolorami (zielony dla komórek żywych, czarny dla martwych).
-* Uzupełnij brakującą część pętli `while` w `game_event_loop` tak aby gra wyświetlała kolejne generacje oraz reagowała na zdarzenia użytkownika.
-* **Dodatkowe wyzwanie:** Zaimplementuj różne początkowe wzory (np. Glider, Gosper glider gun).
-* **Dodatkowe wyzwanie:** Dodaj kontrolę prędkości symulacji. Zaimplementuj możliwość przewijania generacji.
+- Uzupełnij funkcję `draw_grid`, rysując na ekranie siatkę komórek z odpowiednimi kolorami (zielony dla komórek żywych, czarny dla martwych).
+- Uzupełnij brakującą część pętli `while` w `game_event_loop` tak aby gra wyświetlała kolejne generacje oraz reagowała na zdarzenia użytkownika.
+- **Dodatkowe wyzwanie:** Zaimplementuj różne początkowe wzory (np. Glider, Gosper glider gun).
+- **Dodatkowe wyzwanie:** Dodaj kontrolę prędkości symulacji. Zaimplementuj możliwość przewijania generacji.
 
 ### Przykładowe sterowanie
 
-* `Spacja`: Wznawia/wstrzymuje symulację.
-* `R`: Resetuje siatkę do losowego układu.
-* `C`: Czyści siatkę (wszystkie komórki martwe).
-* `Lewy Przycisk Myszy`: Kliknięcie komórki przełącza jej stan (żywa/martwa), ale tylko gdy symulacja jest wstrzymana.
+- `Spacja`: Wznawia/wstrzymuje symulację.
+- `R`: Resetuje siatkę do losowego układu.
+- `C`: Czyści siatkę (wszystkie komórki martwe).
+- `Lewy Przycisk Myszy`: Kliknięcie komórki przełącza jej stan (żywa/martwa), ale tylko gdy symulacja jest wstrzymana.
 
 ### Przydatne zasoby:
 
-* [`pygame.init()`](https://www.pygame.org/docs/ref/pygame.html#pygame.init)
-* [`pygame.display.set_mode()`](https://www.pygame.org/docs/ref/pygame.html#pygame.display.set_mode)
-* [`pygame.display.set_caption()`](https://www.pygame.org/docs/ref/pygame.html#pygame.display.set_caption)
-* [`pygame.event.get()`](https://www.pygame.org/docs/ref/pygame.html#pygame.event.get)
-* [`pygame.event.EventType` (np. `pygame.MOUSEBUTTONDOWN`)](https://www.pygame.org/docs/ref/event.html#pygame.MOUSEBUTTONDOWN)
-* [`pygame.key.get_pressed()`](https://www.pygame.org/docs/ref/key.html#pygame.key.get_pressed)
-* [`pygame.draw.rect()`](https://www.pygame.org/docs/ref/draw.html#pygame.draw.rect)
-* [`pygame.display.flip()`](https://www.pygame.org/docs/ref/pygame.html#pygame.display.flip)
-* [`pygame.time.Clock()`](https://www.pygame.org/docs/ref/time.html#pygame.time.Clock)
-* [`pygame.time.Clock.tick()`](https://www.pygame.org/docs/ref/time.html#pygame.time.Clock.tick)
-* [`pygame.mouse.get_pos()`](https://www.pygame.org/docs/ref/mouse.html#pygame.mouse.get_pos)
-* [`pygame.quit()`](https://www.pygame.org/docs/ref/pygame.html#pygame.quit)
+- [`pygame.init()`](https://www.pygame.org/docs/ref/pygame.html#pygame.init)
+- [`pygame.display.set_mode()`](https://www.pygame.org/docs/ref/pygame.html#pygame.display.set_mode)
+- [`pygame.display.set_caption()`](https://www.pygame.org/docs/ref/pygame.html#pygame.display.set_caption)
+- [`pygame.event.get()`](https://www.pygame.org/docs/ref/pygame.html#pygame.event.get)
+- [`pygame.event.EventType` (np. `pygame.MOUSEBUTTONDOWN`)](https://www.pygame.org/docs/ref/event.html#pygame.MOUSEBUTTONDOWN)
+- [`pygame.key.get_pressed()`](https://www.pygame.org/docs/ref/key.html#pygame.key.get_pressed)
+- [`pygame.draw.rect()`](https://www.pygame.org/docs/ref/draw.html#pygame.draw.rect)
+- [`pygame.display.flip()`](https://www.pygame.org/docs/ref/pygame.html#pygame.display.flip)
+- [`pygame.time.Clock()`](https://www.pygame.org/docs/ref/time.html#pygame.time.Clock)
+- [`pygame.time.Clock.tick()`](https://www.pygame.org/docs/ref/time.html#pygame.time.Clock.tick)
+- [`pygame.mouse.get_pos()`](https://www.pygame.org/docs/ref/mouse.html#pygame.mouse.get_pos)
+- [`pygame.quit()`](https://www.pygame.org/docs/ref/pygame.html#pygame.quit)
 
 ### Przygotowanie środowiska
 
 Dla tego zadania będziesz potrzebować zainstalować Pygame i NumPy. Możesz to zrobić za pomocą poleceń:
+
 ```{powershell}
 conda create -n pygame-env python=3.12
 conda activate ppygame-env

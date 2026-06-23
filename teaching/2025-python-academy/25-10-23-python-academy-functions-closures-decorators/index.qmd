@@ -20,7 +20,9 @@ In Python, functions are "first-class citizens". This just means you can treat t
 - pass them as arguments to other functions,
 - return them from functions.
 
-This is a core concept in Python that allows for some powerful patterns. Let's use a function from our previous post on Fibonacci numbers to see this in action.
+This "functional programming" trait of Python is a core for some powerful patterns that wouldn't work in some other (purely OOP) languages.
+
+Let's use a function from our previous post on Fibonacci numbers to see this in action.
 
 ```{python}
 def fibonacci_iterative(n: int) -> int:
@@ -109,7 +111,10 @@ import time
 from typing import Callable
 
 
-def benchmark(functions: list[Callable[[int], int]], n: int):
+def benchmark(
+    functions: list[Callable[[int], int]],
+    n: int
+) -> None:
     """Benchmarks a list of functions."""
     for func in functions:
         start = time.perf_counter()
@@ -127,7 +132,7 @@ benchmark(fib_functions, 30)
 A closure is basically a function that remembers the environment in which it was created. Let's use our `get_greeter` function to see what that means.
 
 ```{python}
-def get_greeter(greeting: str) -> Callable:
+def get_greeter(greeting: str) -> Callable[[str],str]:
     """Returns a greeter function."""
 
     def greeter(name: str) -> str:
@@ -152,16 +157,18 @@ good_morning_greeter.__closure__[0].cell_contents
 
 This shows that the value `"Good morning"` is tucked away in our `good_morning_greeter` function's closure.
 
-Closures are a key ingredient for decorators, which we'll get to next. They also let us create "function factories" that can produce specialized functions.
+Closures are a key ingredient for decorators, which we'll get to next.
+They also let us create "function factories" that can produce specialized functions.
 
 For a more mathematical example, let's create a function factory that builds a polynomial function from a tuple of coefficients.
 
-A polynomial is defined as $P(x) = \sum_{i=0}^{n} a_i x^i = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0$.
+A polynomial is defined as
+$P(x) = \sum_{i=0}^{n} a_i x^i = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0$.
 
 ```{python}
-from typing import Tuple
+from typing import tuple
 
-def polynomial_factory(coefficients: Tuple[float, ...]) -> Callable:
+def polynomial_factory(coefficients: tuple[float, ...]) -> Callable:
     """
     A factory that creates a polynomial function from a tuple of coefficients.
     The coefficients are ordered from the highest power to the lowest.
@@ -198,12 +205,15 @@ In the last post, we used the `@cache` decorator to speed up our recursive Fibon
 def my_cache(func: Callable) -> Callable: # <1>
     """A simple cache decorator."""
     _cache = {}
+
     def wrapper(*args):
         if args in _cache:
             return _cache[args]
+
         result = func(*args)
         _cache[args] = result
         return result
+
     return wrapper
 
 @my_cache

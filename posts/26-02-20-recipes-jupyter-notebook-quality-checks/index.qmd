@@ -1,17 +1,26 @@
 ---
 title: "Keeping Your Jupyter Notebooks Clean"
 description: "Automated quality checks for Jupyter notebooks."
+
 date: "2026-02-20"
 date-modified: "2026-02-20"
+
 categories: [Python Recipes, Dev Env]
 image: ../../assets/images/posts/python_recipes.png
 format-links: [html]
 toc-depth: 2
 ---
 
-We've all been there: you're about to commit a Jupyter notebook, but it's full of massive dataframes, messy plots, or maybe it doesn't even have a proper title. It's just good hygiene to keep things tidy, especially if you're sharing your work or putting it in version control.
+Jupyter notebooks, can be a real mess for version control systems. They are often full of massive dataframes, messy plots, or printouts.
+Including outputs in the notebook commited to shared git repo makes the diff and peer reviews quite cumbersome.
 
-Since notebooks are just JSON under the hood, we can easily whip up a zero-dependency Python script to do the "chores" for us. Let's define a helper class to represent the structure of a notebook cell, and then write some functions to check for common quality issues.
+There might be some other conventions your team is following (or at least trying to).
+Nice titles, descriptive expelnations, sectioning etc.
+Without a cerberus checking those commit after commit it's hard to muster the discipline ourselves.
+
+Since notebooks are just JSON files under the hood, we can easily prepare a zero-dependency Python script to be our watchdog.
+
+Let's define a helper class to represent the structure of a notebook cell, and then write some functions to check for common quality issues.
 
 ```{python}
 # | eval: false
@@ -39,6 +48,7 @@ This script will perform a couple of simple checks on each notebook:
 
 ```{python}
 # | eval: false
+
 def first_cell_is_markdown(cells: list[Cell]) -> bool:  # <1>
     """Check if the first cell in the notebook is a markdown cell."""
     first = cells[0]
@@ -55,8 +65,8 @@ def outputs_are_empty(cells: list[Cell]) -> bool:  # <2>
     return True
 ```
 
-1.  Ensures the first cell of the notebook is a Markdown cell. This is useful for making sure every notebook starts with a title or introduction.
-2.  Iterates through all cells and checks if any have outputs. This helps prevent committing large dataframes, plots, or potentially sensitive information that might be stored in the notebook's execution results.
+1. Ensures the first cell of the notebook is a Markdown cell. This is useful for making sure every notebook starts with a title or introduction.
+1. Iterates through all cells and checks if any have outputs. This helps prevent committing large dataframes, plots, or potentially sensitive information that might be stored in the notebook's execution results.
 
 Then we need some logic to run these checks on all notebooks in a directory:
 
@@ -70,9 +80,10 @@ def check_notebook(path: Path) -> bool:  # <2>
 
     cells = data.get("cells")
     if not cells:
-        return True
-    cells = cast("list[Cell]", cells)
+        # We shouldn't have empty notebooks in our repo
+        return False
 
+    cells = cast("list[Cell]", cells)
     return all(
         (
             first_cell_is_markdown(cells),
@@ -100,7 +111,7 @@ if __name__ == "__main__":
 ```
 
 1. Uses `Path.glob("**/*.ipynb")` to find all Jupyter notebooks in the current directory and all subdirectories. It then runs the `check_notebook` function on each one. Using the `pathlib` library makes it easy to handle file paths in a cross-platform way.
-2. Iterates through all found notebooks and collects those that fail the checks. If any notebooks fail, it prints their paths and exits with a non-zero status code to indicate failure.
+1. Iterates through all found notebooks and collects those that fail the checks. If any notebooks fail, it prints their paths and exits with a non-zero status code to indicate failure.
 
 Automating these little chores saves a lot of headache in the long run. It's a simple base that you can easily tweak or add more rules to as you go.
 
