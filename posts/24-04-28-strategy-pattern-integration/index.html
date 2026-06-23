@@ -469,7 +469,7 @@ window.Quarto = {
 </section>
 <section id="strategy-pattern" class="level2">
 <h2 class="anchored" data-anchor-id="strategy-pattern">Strategy pattern</h2>
-<p>We know the stage now — one problem statement, multiple strategies to tackle. Important observation here is that we don’t actually care which one is used. When you substitute the integral value to client code — a formula or further algorithm — it’s irrelevant how it was computed, as long its correct to required level of accuracy. This means that the problem should be decoupled from algorithms to solve it. We should target a implementation where you can state a problem <em>Calculate the integral of</em> <span class="math inline">\(\sin(x)\)</span> <em>from</em> <span class="math inline">\(0\)</span> <em>to</em> <span class="math inline">\(\pi\)</span> and then just throw different algorithms at it to obtain a solution. So let’s get coding!</p>
+<p>We know the stage now — one problem statement, multiple strategies to tackle. Important observation here is that we don’t actually care which one is used. When you substitute the integral value to client code — a formula or further algorithm — it’s irrelevant how it was computed, as long its correct to required level of accuracy. This means that the problem should be decoupled from algorithms to solve it. We should target a implementation where you can state a problem <em>Calculate the integral of</em> <span class="math inline">\(\\sin(x)\)</span> <em>from</em> <span class="math inline">\(0\)</span> <em>to</em> <span class="math inline">\(\\pi\)</span> and then just throw different algorithms at it to obtain a solution. So let’s get coding!</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -487,7 +487,7 @@ Note
 <section id="abstract-schema" class="level2">
 <h2 class="anchored" data-anchor-id="abstract-schema">Abstract schema</h2>
 <p>Each scheme that we’d come up with, even the most complex ones, would have the same main purpose — ‘integrate’. To make the implementation for it, we create a template class that all concrete schemes will inherit from.</p>
-<div id="fba1c133" class="cell" data-execution_count="1">
+<div id="00c9364d" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
@@ -535,7 +535,7 @@ Note
 <p>It’s the simplest way of estimating the area under a curve you can think of — cover it with smaller and smaller rectangles with the value of a function at the leftmost point as height constant width.</p>
 <p><a href="https://en.wikipedia.org/wiki/File:Rectangle_rule.gif"><img src="../../assets/images/posts/24-04-28-strategy-pattern-integration/Rectangle_rule.gif" class="img-fluid" style="width:100.0%"></a></p>
 <p>Implementing this idea is trivial when using <a href="https://numpy.org/">numpy</a>, but let’s add some syntactic sugar so the class is sweeter to work with.</p>
-<div id="d1e3c787" class="cell" data-execution_count="2">
+<div id="3377e731" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -594,7 +594,7 @@ Note
 <section id="simple-monte-carlo" class="level3">
 <h3 class="anchored" data-anchor-id="simple-monte-carlo">Simple Monte Carlo</h3>
 <p>This guy sounds fancy with its luxurious Monaco vibes, but it’s just a peasant in a nice suit. Instead of looking at equaly-spaced points, we shuffle them from uniform distribution on the interval of integration. We calculate the integrand function values at those points and sum them up. Then multiply the sum by the average distance between points and through the magic of probability theory (and not opening actual probability textbook in 10 years) you get a good probabilistic estimator of the integral value. The implementation is analogous to the <code>RectangleScheme</code>.</p>
-<div id="09a8db46" class="cell" data-execution_count="3">
+<div id="e5825480" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a><span class="im">from</span> typing <span class="im">import</span> Optional</span>
@@ -660,7 +660,7 @@ Note
 <section id="integrator" class="level2">
 <h2 class="anchored" data-anchor-id="integrator">Integrator</h2>
 <p>What’s left is to have a way of defining the problem to solve and define how our schemes (strategies) interact with it.</p>
-<div id="53ce04e8" class="cell" data-execution_count="4">
+<div id="f615b0e0" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a><span class="co">"""An integrator class that allows to perform integration using different schemas."""</span></span>
@@ -717,7 +717,7 @@ Note
 <section id="lets-integrate" class="level2">
 <h2 class="anchored" data-anchor-id="lets-integrate">Let’s integrate!</h2>
 <p>Ok, now to the integrating! Let’s set up the stage:</p>
-<div id="4124d268" class="cell" data-execution_count="5">
+<div id="e5c3cec6" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>start, end <span class="op">=</span> <span class="dv">0</span>, np.pi <span class="op">/</span> <span class="fl">2.0</span></span>
@@ -728,7 +728,7 @@ Note
 </div>
 <p>Excited? Don’t be… yet.</p>
 <p>We should get some benchmark value first. As none of us would bother to integrate this by hand, we’ll use SciPy. Unexpectedly (SciPy uses C and Fortran underneath), we get the result in a breeze and it is very close to <a href="https://www.wolframalpha.com/input?i=integrate+sin%28x%29+%2B+cos%28x%29+over+0+to+pi%2F2">actual value of 2.0</a>.</p>
-<div id="8aed1b57" class="cell" data-execution_count="6">
+<div id="37c8b758" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> scipy.integrate <span class="im">import</span> quad</span>
@@ -741,7 +741,7 @@ Note
 </div>
 </div>
 <p>Now let’s use our <code>Integrator</code> class and see.</p>
-<div id="db327bbf" class="cell" data-execution_count="7">
+<div id="46e4e7f2" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>integrator <span class="op">=</span> Integrator(</span>
@@ -771,7 +771,7 @@ Using Monte Carlo schema with 1048576 random points.
 Rectangle schema results:
 [np.float64(1.5707963267948966), np.float64(1.986172817555692), np.float64(1.9995804632216618), np.float64(1.9999869013603688), np.float64(1.9999995906791064)].
 Monte Carlo schema results:
-[np.float64(2.2205711474601255), np.float64(1.9132701665388154), np.float64(1.997332206506693), np.float64(2.0000614870370947), np.float64(2.000269479507933)].</code></pre>
+[np.float64(1.877221317686935), np.float64(2.0021342299950926), np.float64(2.0000564858849192), np.float64(2.001668964695795), np.float64(2.000069703913651)].</code></pre>
 </div>
 </div>
 <p>The performance and convergence of those schemes is terrible. Like anything in Python, if you want robust and performing code, you need to implement it with C or use any/all of the enhancement frameworks that Python provides (see Numba). Additionally, the simple methods we implemented are very naive. The standard numerical packages use sophisticated algorithms honed for many decades.</p>

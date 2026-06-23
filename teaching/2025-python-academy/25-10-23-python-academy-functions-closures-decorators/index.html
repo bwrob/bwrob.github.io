@@ -458,8 +458,9 @@ window.Quarto = {
 <li>pass them as arguments to other functions,</li>
 <li>return them from functions.</li>
 </ul>
-<p>This is a core concept in Python that allows for some powerful patterns. Let’s use a function from our previous post on Fibonacci numbers to see this in action.</p>
-<div id="bede69a6" class="cell" data-execution_count="1">
+<p>This “functional programming” trait of Python is a core for some powerful patterns that wouldn’t work in some other (purely OOP) languages.</p>
+<p>Let’s use a function from our previous post on Fibonacci numbers to see this in action.</p>
+<div id="2770f1c6" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">def</span> fibonacci_iterative(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
@@ -476,7 +477,7 @@ window.Quarto = {
 </details>
 </div>
 <p>Because functions are objects, they come with some handy attributes. For instance, you can get the docstring with <code>__doc__</code> and the function’s name with <code>__name__</code>.</p>
-<div id="75fc24c1" class="cell" data-execution_count="2">
+<div id="a5d98ebd" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="bu">print</span>(fibonacci_iterative.__doc__)</span>
@@ -488,7 +489,7 @@ fibonacci_iterative</code></pre>
 </div>
 </div>
 <p>And just like other objects, functions inherit from the <code>object</code> base class.</p>
-<div id="59e120c0" class="cell" data-execution_count="3">
+<div id="0c48c01d" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="bu">isinstance</span>(fibonacci_iterative, <span class="bu">object</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -502,7 +503,7 @@ fibonacci_iterative</code></pre>
 <section id="benchmarking-fibonacci-implementations" class="level2">
 <h2 class="anchored" data-anchor-id="benchmarking-fibonacci-implementations">Benchmarking Fibonacci Implementations</h2>
 <p>To really drive home the point that functions are first-class citizens, let’s put a few of our Fibonacci functions into a list and pass them to a benchmarking function. This function will test each one and see how they perform.</p>
-<div id="891c368b" class="cell" data-execution_count="4">
+<div id="875d05ef" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">def</span> fibonacci_iterative(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
@@ -546,39 +547,42 @@ fibonacci_iterative</code></pre>
 <span id="cb6-39"><a href="#cb6-39"></a>    <span class="cf">return</span> result</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="2a5e8d54" class="cell" data-execution_count="5">
+<div id="81c80472" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="im">import</span> time</span>
 <span id="cb7-2"><a href="#cb7-2"></a><span class="im">from</span> typing <span class="im">import</span> Callable</span>
 <span id="cb7-3"><a href="#cb7-3"></a></span>
 <span id="cb7-4"><a href="#cb7-4"></a></span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="kw">def</span> benchmark(functions: <span class="bu">list</span>[Callable[[<span class="bu">int</span>], <span class="bu">int</span>]], n: <span class="bu">int</span>):</span>
-<span id="cb7-6"><a href="#cb7-6"></a>    <span class="co">"""Benchmarks a list of functions."""</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a>    <span class="cf">for</span> func <span class="kw">in</span> functions:</span>
-<span id="cb7-8"><a href="#cb7-8"></a>        start <span class="op">=</span> time.perf_counter()</span>
-<span id="cb7-9"><a href="#cb7-9"></a>        func(n)</span>
-<span id="cb7-10"><a href="#cb7-10"></a>        end <span class="op">=</span> time.perf_counter()</span>
-<span id="cb7-11"><a href="#cb7-11"></a>        <span class="bu">print</span>(<span class="ss">f"Function </span><span class="sc">{</span>func<span class="sc">.</span><span class="va">__name__</span><span class="sc">}</span><span class="ss"> took </span><span class="sc">{</span>end <span class="op">-</span> start<span class="sc">:.6f}</span><span class="ss"> seconds."</span>)</span>
-<span id="cb7-12"><a href="#cb7-12"></a></span>
-<span id="cb7-13"><a href="#cb7-13"></a></span>
-<span id="cb7-14"><a href="#cb7-14"></a>fib_functions <span class="op">=</span> [fibonacci_recursive, fibonacci_recursive_cached, fibonacci_iterative]</span>
-<span id="cb7-15"><a href="#cb7-15"></a>benchmark(fib_functions, <span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="kw">def</span> benchmark(</span>
+<span id="cb7-6"><a href="#cb7-6"></a>    functions: <span class="bu">list</span>[Callable[[<span class="bu">int</span>], <span class="bu">int</span>]],</span>
+<span id="cb7-7"><a href="#cb7-7"></a>    n: <span class="bu">int</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb7-9"><a href="#cb7-9"></a>    <span class="co">"""Benchmarks a list of functions."""</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a>    <span class="cf">for</span> func <span class="kw">in</span> functions:</span>
+<span id="cb7-11"><a href="#cb7-11"></a>        start <span class="op">=</span> time.perf_counter()</span>
+<span id="cb7-12"><a href="#cb7-12"></a>        func(n)</span>
+<span id="cb7-13"><a href="#cb7-13"></a>        end <span class="op">=</span> time.perf_counter()</span>
+<span id="cb7-14"><a href="#cb7-14"></a>        <span class="bu">print</span>(<span class="ss">f"Function </span><span class="sc">{</span>func<span class="sc">.</span><span class="va">__name__</span><span class="sc">}</span><span class="ss"> took </span><span class="sc">{</span>end <span class="op">-</span> start<span class="sc">:.6f}</span><span class="ss"> seconds."</span>)</span>
+<span id="cb7-15"><a href="#cb7-15"></a></span>
+<span id="cb7-16"><a href="#cb7-16"></a></span>
+<span id="cb7-17"><a href="#cb7-17"></a>fib_functions <span class="op">=</span> [fibonacci_recursive, fibonacci_recursive_cached, fibonacci_iterative]</span>
+<span id="cb7-18"><a href="#cb7-18"></a>benchmark(fib_functions, <span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Function fibonacci_recursive took 0.131230 seconds.
+<pre><code>Function fibonacci_recursive took 0.134396 seconds.
 Function fibonacci_recursive_cached took 0.000016 seconds.
-Function fibonacci_iterative took 0.000003 seconds.</code></pre>
+Function fibonacci_iterative took 0.000005 seconds.</code></pre>
 </div>
 </div>
 </section>
 <section id="closures" class="level2">
 <h2 class="anchored" data-anchor-id="closures">Closures</h2>
 <p>A closure is basically a function that remembers the environment in which it was created. Let’s use our <code>get_greeter</code> function to see what that means.</p>
-<div id="dd88a28c" class="cell" data-execution_count="6">
+<div id="272b1d61" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">def</span> get_greeter(greeting: <span class="bu">str</span>) <span class="op">-&gt;</span> Callable:</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">def</span> get_greeter(greeting: <span class="bu">str</span>) <span class="op">-&gt;</span> Callable[[<span class="bu">str</span>],<span class="bu">str</span>]:</span>
 <span id="cb9-2"><a href="#cb9-2"></a>    <span class="co">"""Returns a greeter function."""</span></span>
 <span id="cb9-3"><a href="#cb9-3"></a></span>
 <span id="cb9-4"><a href="#cb9-4"></a>    <span class="kw">def</span> greeter(name: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
@@ -597,7 +601,7 @@ Function fibonacci_iterative took 0.000003 seconds.</code></pre>
 <p>When we call <code>get_greeter("Good morning")</code>, we get a new <code>greeter</code> function back. This new function, which we’ve assigned to <code>good_morning_greeter</code>, “remembers” that the <code>greeting</code> variable was “Good morning”.</p>
 <p>This is what a closure does: it “closes over” the variables from the scope where it was created. So even though the <code>get_greeter</code> function has finished running, <code>good_morning_greeter</code> still has access to the <code>greeting</code> variable.</p>
 <p>We can even peek inside the closure with the <code>__closure__</code> attribute, which shows us the variables it has captured.</p>
-<div id="c6bc4315" class="cell" data-execution_count="7">
+<div id="f6613f26" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>good_morning_greeter.__closure__[<span class="dv">0</span>].cell_contents</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -610,40 +614,38 @@ Function fibonacci_iterative took 0.000003 seconds.</code></pre>
 <p>Closures are a key ingredient for decorators, which we’ll get to next. They also let us create “function factories” that can produce specialized functions.</p>
 <p>For a more mathematical example, let’s create a function factory that builds a polynomial function from a tuple of coefficients.</p>
 <p>A polynomial is defined as <span class="math inline">\(P(x) = \sum_{i=0}^{n} a_i x^i = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0\)</span>.</p>
-<div id="cfd41276" class="cell" data-execution_count="8">
+<div id="1539e2da" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1"></a><span class="im">from</span> typing <span class="im">import</span> Tuple</span>
-<span id="annotated-cell-8-2"><a href="#annotated-cell-8-2"></a></span>
-<span id="annotated-cell-8-3"><a href="#annotated-cell-8-3"></a><span class="kw">def</span> polynomial_factory(coefficients: Tuple[<span class="bu">float</span>, ...]) <span class="op">-&gt;</span> Callable:</span>
-<span id="annotated-cell-8-4"><a href="#annotated-cell-8-4"></a>    <span class="co">"""</span></span>
-<span id="annotated-cell-8-5"><a href="#annotated-cell-8-5"></a><span class="co">    A factory that creates a polynomial function from a tuple of coefficients.</span></span>
-<span id="annotated-cell-8-6"><a href="#annotated-cell-8-6"></a><span class="co">    The coefficients are ordered from the highest power to the lowest.</span></span>
-<span id="annotated-cell-8-7"><a href="#annotated-cell-8-7"></a><span class="co">    """</span></span>
-<span id="annotated-cell-8-8"><a href="#annotated-cell-8-8"></a>    <span class="kw">def</span> polynomial(x: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="annotated-cell-8-9"><a href="#annotated-cell-8-9"></a>        <span class="co">"""</span></span>
-<span id="annotated-cell-8-10"><a href="#annotated-cell-8-10"></a><span class="co">        Evaluates the polynomial for a given x.</span></span>
-<span id="annotated-cell-8-11"><a href="#annotated-cell-8-11"></a><span class="co">        """</span></span>
-<span id="annotated-cell-8-12"><a href="#annotated-cell-8-12"></a>        <span class="cf">return</span> <span class="bu">sum</span>(c <span class="op">*</span> (x <span class="op">**</span> i) <span class="cf">for</span> i, c <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">reversed</span>(coefficients)))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1"></a><span class="kw">def</span> polynomial_factory(coefficients: <span class="bu">tuple</span>[<span class="bu">float</span>, ...]) <span class="op">-&gt;</span> Callable:</span>
+<span id="annotated-cell-8-2"><a href="#annotated-cell-8-2"></a>    <span class="co">"""</span></span>
+<span id="annotated-cell-8-3"><a href="#annotated-cell-8-3"></a><span class="co">    A factory that creates a polynomial function from a tuple of coefficients.</span></span>
+<span id="annotated-cell-8-4"><a href="#annotated-cell-8-4"></a><span class="co">    The coefficients are ordered from the highest power to the lowest.</span></span>
+<span id="annotated-cell-8-5"><a href="#annotated-cell-8-5"></a><span class="co">    """</span></span>
+<span id="annotated-cell-8-6"><a href="#annotated-cell-8-6"></a>    <span class="kw">def</span> polynomial(x: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="annotated-cell-8-7"><a href="#annotated-cell-8-7"></a>        <span class="co">"""</span></span>
+<span id="annotated-cell-8-8"><a href="#annotated-cell-8-8"></a><span class="co">        Evaluates the polynomial for a given x.</span></span>
+<span id="annotated-cell-8-9"><a href="#annotated-cell-8-9"></a><span class="co">        """</span></span>
+<span id="annotated-cell-8-10"><a href="#annotated-cell-8-10"></a>        <span class="cf">return</span> <span class="bu">sum</span>(c <span class="op">*</span> (x <span class="op">**</span> i) <span class="cf">for</span> i, c <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">reversed</span>(coefficients)))</span>
+<span id="annotated-cell-8-11"><a href="#annotated-cell-8-11"></a></span>
+<span id="annotated-cell-8-12"><a href="#annotated-cell-8-12"></a>    <span class="cf">return</span> polynomial</span>
 <span id="annotated-cell-8-13"><a href="#annotated-cell-8-13"></a></span>
-<span id="annotated-cell-8-14"><a href="#annotated-cell-8-14"></a>    <span class="cf">return</span> polynomial</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-8-14" class="code-annotation-target"><a href="#annotated-cell-8-14"></a>p1 <span class="op">=</span> polynomial_factory((<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>))</span>
 <span id="annotated-cell-8-15"><a href="#annotated-cell-8-15"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-8-16" class="code-annotation-target"><a href="#annotated-cell-8-16"></a>p1 <span class="op">=</span> polynomial_factory((<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>))</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-8-16" class="code-annotation-target"><a href="#annotated-cell-8-16"></a>p2 <span class="op">=</span> polynomial_factory((<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">8</span>))</span>
 <span id="annotated-cell-8-17"><a href="#annotated-cell-8-17"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-8-18" class="code-annotation-target"><a href="#annotated-cell-8-18"></a>p2 <span class="op">=</span> polynomial_factory((<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">8</span>))</span>
-<span id="annotated-cell-8-19"><a href="#annotated-cell-8-19"></a></span>
-<span id="annotated-cell-8-20"><a href="#annotated-cell-8-20"></a><span class="bu">print</span>(p1(<span class="dv">5</span>))</span>
-<span id="annotated-cell-8-21"><a href="#annotated-cell-8-21"></a><span class="bu">print</span>(p2(<span class="dv">5</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-8-18"><a href="#annotated-cell-8-18"></a><span class="bu">print</span>(p1(<span class="dv">5</span>))</span>
+<span id="annotated-cell-8-19"><a href="#annotated-cell-8-19"></a><span class="bu">print</span>(p2(<span class="dv">5</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-8" data-code-lines="16" data-code-annotation="1"><span class="math inline">\(P(x) = 2x^2 + 3x + 5\)</span></span>
+<span data-code-cell="annotated-cell-8" data-code-lines="14" data-code-annotation="1"><span class="math inline">\(P(x) = 2x^2 + 3x + 5\)</span></span>
 </dd>
 <dt data-target-cell="annotated-cell-8" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-8" data-code-lines="18" data-code-annotation="2"><span class="math inline">\(Q(x) = x^3 - 8\)</span></span>
+<span data-code-cell="annotated-cell-8" data-code-lines="16" data-code-annotation="2"><span class="math inline">\(Q(x) = x^3 - 8\)</span></span>
 </dd>
 </dl>
 </div>
@@ -658,30 +660,33 @@ Function fibonacci_iterative took 0.000003 seconds.</code></pre>
 <h2 class="anchored" data-anchor-id="decorators">Decorators</h2>
 <p>Decorators are a neat way to add functionality to functions or classes without changing their code. Think of it as wrapping a function in another function to give it extra abilities.</p>
 <p>In the last post, we used the <code>@cache</code> decorator to speed up our recursive Fibonacci function. Let’s try to build a simple version of that decorator ourselves.</p>
-<div id="8d4b1430" class="cell" data-execution_count="9">
+<div id="a43dc110" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-9-1" class="code-annotation-target"><a href="#annotated-cell-9-1"></a><span class="kw">def</span> my_cache(func: Callable) <span class="op">-&gt;</span> Callable:</span>
 <span id="annotated-cell-9-2"><a href="#annotated-cell-9-2"></a>    <span class="co">"""A simple cache decorator."""</span></span>
 <span id="annotated-cell-9-3"><a href="#annotated-cell-9-3"></a>    _cache <span class="op">=</span> {}</span>
-<span id="annotated-cell-9-4"><a href="#annotated-cell-9-4"></a>    <span class="kw">def</span> wrapper(<span class="op">*</span>args):</span>
-<span id="annotated-cell-9-5"><a href="#annotated-cell-9-5"></a>        <span class="cf">if</span> args <span class="kw">in</span> _cache:</span>
-<span id="annotated-cell-9-6"><a href="#annotated-cell-9-6"></a>            <span class="cf">return</span> _cache[args]</span>
-<span id="annotated-cell-9-7"><a href="#annotated-cell-9-7"></a>        result <span class="op">=</span> func(<span class="op">*</span>args)</span>
-<span id="annotated-cell-9-8"><a href="#annotated-cell-9-8"></a>        _cache[args] <span class="op">=</span> result</span>
-<span id="annotated-cell-9-9"><a href="#annotated-cell-9-9"></a>        <span class="cf">return</span> result</span>
-<span id="annotated-cell-9-10"><a href="#annotated-cell-9-10"></a>    <span class="cf">return</span> wrapper</span>
-<span id="annotated-cell-9-11"><a href="#annotated-cell-9-11"></a></span>
-<span id="annotated-cell-9-12"><a href="#annotated-cell-9-12"></a><span class="at">@my_cache</span></span>
-<span id="annotated-cell-9-13"><a href="#annotated-cell-9-13"></a><span class="kw">def</span> fibonacci_cached_by_me(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
-<span id="annotated-cell-9-14"><a href="#annotated-cell-9-14"></a>    <span class="co">"""Calculate the nth Fibonacci number using recursion with our own cache decorator."""</span></span>
-<span id="annotated-cell-9-15"><a href="#annotated-cell-9-15"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
-<span id="annotated-cell-9-16"><a href="#annotated-cell-9-16"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
-<span id="annotated-cell-9-17"><a href="#annotated-cell-9-17"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
-<span id="annotated-cell-9-18"><a href="#annotated-cell-9-18"></a>        <span class="cf">return</span> n</span>
-<span id="annotated-cell-9-19"><a href="#annotated-cell-9-19"></a>    <span class="cf">return</span> fibonacci_cached_by_me(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">+</span> fibonacci_cached_by_me(n <span class="op">-</span> <span class="dv">2</span>)</span>
-<span id="annotated-cell-9-20"><a href="#annotated-cell-9-20"></a></span>
-<span id="annotated-cell-9-21"><a href="#annotated-cell-9-21"></a>fibonacci_cached_by_me(<span class="dv">30</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-9-4"><a href="#annotated-cell-9-4"></a></span>
+<span id="annotated-cell-9-5"><a href="#annotated-cell-9-5"></a>    <span class="kw">def</span> wrapper(<span class="op">*</span>args):</span>
+<span id="annotated-cell-9-6"><a href="#annotated-cell-9-6"></a>        <span class="cf">if</span> args <span class="kw">in</span> _cache:</span>
+<span id="annotated-cell-9-7"><a href="#annotated-cell-9-7"></a>            <span class="cf">return</span> _cache[args]</span>
+<span id="annotated-cell-9-8"><a href="#annotated-cell-9-8"></a></span>
+<span id="annotated-cell-9-9"><a href="#annotated-cell-9-9"></a>        result <span class="op">=</span> func(<span class="op">*</span>args)</span>
+<span id="annotated-cell-9-10"><a href="#annotated-cell-9-10"></a>        _cache[args] <span class="op">=</span> result</span>
+<span id="annotated-cell-9-11"><a href="#annotated-cell-9-11"></a>        <span class="cf">return</span> result</span>
+<span id="annotated-cell-9-12"><a href="#annotated-cell-9-12"></a></span>
+<span id="annotated-cell-9-13"><a href="#annotated-cell-9-13"></a>    <span class="cf">return</span> wrapper</span>
+<span id="annotated-cell-9-14"><a href="#annotated-cell-9-14"></a></span>
+<span id="annotated-cell-9-15"><a href="#annotated-cell-9-15"></a><span class="at">@my_cache</span></span>
+<span id="annotated-cell-9-16"><a href="#annotated-cell-9-16"></a><span class="kw">def</span> fibonacci_cached_by_me(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="annotated-cell-9-17"><a href="#annotated-cell-9-17"></a>    <span class="co">"""Calculate the nth Fibonacci number using recursion with our own cache decorator."""</span></span>
+<span id="annotated-cell-9-18"><a href="#annotated-cell-9-18"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="annotated-cell-9-19"><a href="#annotated-cell-9-19"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Fibonacci is not defined for negative numbers."</span>)</span>
+<span id="annotated-cell-9-20"><a href="#annotated-cell-9-20"></a>    <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="annotated-cell-9-21"><a href="#annotated-cell-9-21"></a>        <span class="cf">return</span> n</span>
+<span id="annotated-cell-9-22"><a href="#annotated-cell-9-22"></a>    <span class="cf">return</span> fibonacci_cached_by_me(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">+</span> fibonacci_cached_by_me(n <span class="op">-</span> <span class="dv">2</span>)</span>
+<span id="annotated-cell-9-23"><a href="#annotated-cell-9-23"></a></span>
+<span id="annotated-cell-9-24"><a href="#annotated-cell-9-24"></a>fibonacci_cached_by_me(<span class="dv">30</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -696,7 +701,7 @@ Function fibonacci_iterative took 0.000003 seconds.</code></pre>
 </div>
 </div>
 <p>Decorators can also take arguments. To do this, we create a “decorator factory” - a function that returns a decorator. Here’s one that repeats a function call a few times.</p>
-<div id="9b3b31b7" class="cell" data-execution_count="10">
+<div id="fc87d518" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1"></a><span class="kw">def</span> repeat(times: <span class="bu">int</span>) <span class="op">-&gt;</span> Callable:</span>
