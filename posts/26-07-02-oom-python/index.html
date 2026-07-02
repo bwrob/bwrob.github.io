@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2026-07-02">
+<meta name="description" content="Using Memray and resource limits to profile memory leaks and Out of Memory (OOM) errors in Python and compiled extensions.">
 
-<title>Python Academy – bwrob blog</title>
+<title>Profiling Python OOMs – bwrob blog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +24,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -80,11 +117,11 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="../../css/styles.css">
 <meta property="og:title" content="bwrob blog">
 <meta property="og:description" content="bwrob personal and professional blog">
-<meta property="og:image" content="https://bwrob.github.io/teaching/2025-python-academy/assets/logo/logo_full.png">
+<meta property="og:image" content="https://bwrob.github.io/assets/images/posts/26-07-02-oom-python/image.jpg">
 <meta property="og:site_name" content="bwrob blog">
 <meta name="twitter:title" content="bwrob blog">
 <meta name="twitter:description" content="bwrob personal and professional blog">
-<meta name="twitter:image" content="https://bwrob.github.io/teaching/2025-python-academy/assets/logo/logo_full.png">
+<meta name="twitter:image" content="https://bwrob.github.io/assets/images/posts/26-07-02-oom-python/image.jpg">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -326,14 +363,28 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Python Academy</h1>
-                      </div>
+      <h1 class="title">Profiling Python OOMs</h1>
+                  <div>
+        <div class="description">
+          Using Memray and resource limits to profile memory leaks and Out of Memory (OOM) errors in Python and compiled extensions.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Performance</div>
+              </div>
+                  </div>
   </div>
     
   
   <div class="quarto-title-meta">
 
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 2, 2026</p>
+      </div>
+    </div>
     
       
     </div>
@@ -343,11 +394,26 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#course-modules" id="toc-course-modules" class="nav-link active" data-scroll-target="#course-modules">Course Modules</a></li>
+  <li><a href="#setting-memory-limits" id="toc-setting-memory-limits" class="nav-link active" data-scroll-target="#setting-memory-limits">Setting Memory Limits</a></li>
+  <li><a href="#a-memory-leak-example" id="toc-a-memory-leak-example" class="nav-link" data-scroll-target="#a-memory-leak-example">A Memory Leak Example</a>
+  <ul class="collapse">
+  <li><a href="#setting-the-limit" id="toc-setting-the-limit" class="nav-link" data-scroll-target="#setting-the-limit">Setting the Limit</a></li>
+  <li><a href="#pure-python-allocation" id="toc-pure-python-allocation" class="nav-link" data-scroll-target="#pure-python-allocation">Pure Python Allocation</a></li>
+  <li><a href="#numpy-allocation" id="toc-numpy-allocation" class="nav-link" data-scroll-target="#numpy-allocation">NumPy Allocation</a></li>
+  <li><a href="#running-the-simulator" id="toc-running-the-simulator" class="nav-link" data-scroll-target="#running-the-simulator">Running the Simulator</a></li>
+  </ul></li>
+  <li><a href="#running-the-profiler" id="toc-running-the-profiler" class="nav-link" data-scroll-target="#running-the-profiler">Running the Profiler</a></li>
+  <li><a href="#analyzing-the-results" id="toc-analyzing-the-results" class="nav-link" data-scroll-target="#analyzing-the-results">Analyzing the Results</a>
+  <ul class="collapse">
+  <li><a href="#html-flamegraph" id="toc-html-flamegraph" class="nav-link" data-scroll-target="#html-flamegraph">HTML Flamegraph</a></li>
+  <li><a href="#live-terminal-ui" id="toc-live-terminal-ui" class="nav-link" data-scroll-target="#live-terminal-ui">Live Terminal UI</a></li>
+  <li><a href="#statistics-summary" id="toc-statistics-summary" class="nav-link" data-scroll-target="#statistics-summary">Statistics Summary</a></li>
+  <li><a href="#terminal-tree-view" id="toc-terminal-tree-view" class="nav-link" data-scroll-target="#terminal-tree-view">Terminal Tree View</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -359,54 +425,249 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<div class="course-info-card">
-<div class="course-info-grid">
-<div class="course-info-item">
-<div class="label">
-<p>Institution</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../../assets/images/posts/26-07-02-oom-python/image.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="../../assets/images/posts/26-07-02-oom-python/image.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%"></a></p>
+</figure>
 </div>
-<div class="value">
-<p>Client internal training</p>
+<p>Finding memory leaks in Python gets complicated when using compiled extensions like NumPy, PyO3, or pybind11. When the system Out of Memory (OOM) killer runs, it terminates the process with a <code>SIGKILL</code> without leaving a stack trace.</p>
+<p>To debug an OOM, you need to find where the allocation occurred: in a Python object or inside a C/C++ backend.</p>
+<p><strong>Memray</strong> is a Python memory profiler that can track allocations down to the native level. Note that it only works on UNIX-based operating systems.</p>
+<section id="setting-memory-limits" class="level2">
+<h2 class="anchored" data-anchor-id="setting-memory-limits">Setting Memory Limits</h2>
+<p>If the Linux OOM killer terminates the process, Memray cannot write its profile data to disk, and the capture is lost.</p>
+<p>We can avoid this by setting a soft memory limit using Python’s built-in <code>resource</code> module. This forces the interpreter to raise a <code>MemoryError</code> before the OS terminates the process, allowing Memray to save the profile data.</p>
+</section>
+<section id="a-memory-leak-example" class="level2">
+<h2 class="anchored" data-anchor-id="a-memory-leak-example">A Memory Leak Example</h2>
+<p>Below is an example script that triggers an OOM using either a Python bytes object or a NumPy array.</p>
+<section id="setting-the-limit" class="level3">
+<h3 class="anchored" data-anchor-id="setting-the-limit">Setting the Limit</h3>
+<p>First, we define a utility function to set the virtual memory limit.</p>
+<div id="4437411b" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="im">import</span> os</span>
+<span id="annotated-cell-1-2"><a href="#annotated-cell-1-2"></a><span class="im">import</span> resource</span>
+<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3"></a><span class="im">import</span> secrets</span>
+<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5"></a></span>
+<span id="annotated-cell-1-6"><a href="#annotated-cell-1-6"></a><span class="kw">def</span> limit_memory(max_bytes: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7"></a>    <span class="co">"""Set a virtual memory limit to trigger a Python MemoryError before OS SIGKILL."""</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-8" class="code-annotation-target"><a href="#annotated-cell-1-8"></a>    resource.setrlimit(resource.RLIMIT_AS, (max_bytes, max_bytes))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="8" data-code-annotation="1">The <code>resource.setrlimit</code> function caps the virtual memory (<code>RLIMIT_AS</code>) available to the process. When memory usage exceeds this limit, the OS denies further allocations, raising a <code>MemoryError</code> instead of terminating the process.</span>
+</dd>
+</dl>
 </div>
 </div>
-<div class="course-info-item">
-<div class="label">
-<p>Semester</p>
+</section>
+<section id="pure-python-allocation" class="level3">
+<h3 class="anchored" data-anchor-id="pure-python-allocation">Pure Python Allocation</h3>
+<p>Next, we define a function that allocates memory using Python bytes.</p>
+<div id="79a92208" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a><span class="kw">def</span> leak_python() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>    <span class="co">"""Trigger an OOM error by allocating progressively larger Python bytes objects."""</span></span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3"></a>    <span class="bu">print</span>(<span class="st">"Triggering OOM with a single pure Python bytes object..."</span>)</span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4"></a>    current_size <span class="op">=</span> <span class="dv">10</span> <span class="op">*</span> <span class="dv">1024</span> <span class="op">*</span> <span class="dv">1024</span>  <span class="co"># Start at 10 MB</span></span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a>    data <span class="op">=</span> <span class="va">None</span></span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6"></a></span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8"></a>        <span class="cf">if</span> data <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-9" class="code-annotation-target"><a href="#annotated-cell-2-9"></a>            <span class="kw">del</span> data  <span class="co"># Explicitly free memory before the next allocation</span></span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10"></a></span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11"></a>        <span class="bu">print</span>(<span class="ss">f"Attempting to allocate </span><span class="sc">{</span>current_size <span class="op">//</span> (<span class="dv">1024</span><span class="op">**</span><span class="dv">2</span>)<span class="sc">}</span><span class="ss"> MB bytes object..."</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-12" class="code-annotation-target"><a href="#annotated-cell-2-12"></a>        data <span class="op">=</span> os.urandom(current_size)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-13" class="code-annotation-target"><a href="#annotated-cell-2-13"></a>        current_size <span class="op">=</span> <span class="bu">int</span>(current_size <span class="op">*</span> <span class="fl">1.5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="9" data-code-annotation="1">Freeing the previous allocation ensures the OOM is triggered by a single large allocation failing, rather than gradual accumulation.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="12" data-code-annotation="2"><code>os.urandom</code> generates uncompressible bytes, preventing OS memory compression from masking the size of the allocation.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="13" data-code-annotation="3">Grow by 50% each iteration.</span>
+</dd>
+</dl>
 </div>
-<div class="value">
-<p>Autumn/Winter 2025</p>
+</div>
+</section>
+<section id="numpy-allocation" class="level3">
+<h3 class="anchored" data-anchor-id="numpy-allocation">NumPy Allocation</h3>
+<p>We also define a function that allocates memory via NumPy.</p>
+<div id="b23b5f98" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a><span class="kw">def</span> leak_numpy() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2"></a>    <span class="co">"""Trigger an OOM error by allocating progressively larger NumPy float64 arrays."""</span></span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3"></a>    <span class="bu">print</span>(<span class="st">"Triggering OOM with a single native NumPy array..."</span>)</span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4"></a>    current_elements <span class="op">=</span> (<span class="dv">10</span> <span class="op">*</span> <span class="dv">1024</span> <span class="op">*</span> <span class="dv">1024</span>) <span class="op">//</span> <span class="dv">8</span>  <span class="co"># 8 bytes per float64</span></span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5"></a>    arr <span class="op">=</span> <span class="va">None</span></span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6"></a></span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8"></a>        <span class="cf">if</span> arr <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9"></a>            <span class="kw">del</span> arr  <span class="co"># Explicitly free memory before the next allocation</span></span>
+<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10"></a></span>
+<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11"></a>        mb_size <span class="op">=</span> (current_elements <span class="op">*</span> <span class="dv">8</span>) <span class="op">//</span> (<span class="dv">1024</span><span class="op">**</span><span class="dv">2</span>)</span>
+<span id="annotated-cell-3-12"><a href="#annotated-cell-3-12"></a>        <span class="bu">print</span>(<span class="ss">f"Attempting to allocate </span><span class="sc">{</span>mb_size<span class="sc">}</span><span class="ss"> MB float64 array..."</span>)</span>
+<span id="annotated-cell-3-13"><a href="#annotated-cell-3-13"></a></span>
+<span id="annotated-cell-3-14"><a href="#annotated-cell-3-14"></a>        <span class="co"># This single C-level malloc will eventually fail and raise MemoryError</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-15" class="code-annotation-target"><a href="#annotated-cell-3-15"></a>        arr <span class="op">=</span> np.ones(current_elements, dtype<span class="op">=</span>np.float64)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-16" class="code-annotation-target"><a href="#annotated-cell-3-16"></a>        current_elements <span class="op">=</span> <span class="bu">int</span>(current_elements <span class="op">*</span> <span class="fl">1.5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="15" data-code-annotation="1">NumPy arrays are backed by C/C++ allocations. When <code>np.ones</code> is called, it bypasses Python’s memory manager and requests contiguous memory from the system. Without native profiling enabled, Memray would only track the Python wrapper, missing the underlying C allocation.</span>
+</dd>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="16" data-code-annotation="2">Grow by 50% each iteration.</span>
+</dd>
+</dl>
 </div>
 </div>
-<div class="course-info-item">
-<div class="label">
-<p>Lecturer</p>
+</section>
+<section id="running-the-simulator" class="level3">
+<h3 class="anchored" data-anchor-id="running-the-simulator">Running the Simulator</h3>
+<p>The entry point sets the memory limit and runs one of the allocation functions.</p>
+<div id="1a45501c" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-2" class="code-annotation-target"><a href="#annotated-cell-4-2"></a>    limit_memory(<span class="dv">1</span> <span class="op">*</span> <span class="dv">1024</span><span class="op">**</span><span class="dv">3</span>)</span>
+<span id="annotated-cell-4-3"><a href="#annotated-cell-4-3"></a></span>
+<span id="annotated-cell-4-4"><a href="#annotated-cell-4-4"></a>    <span class="cf">try</span>:</span>
+<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5"></a>        <span class="cf">if</span> secrets.choice([<span class="va">True</span>, <span class="va">False</span>]):</span>
+<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6"></a>            leak_python()</span>
+<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7"></a>        <span class="cf">else</span>:</span>
+<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8"></a>            leak_numpy()</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-9" class="code-annotation-target"><a href="#annotated-cell-4-9"></a>    <span class="cf">except</span> <span class="pp">MemoryError</span>:</span>
+<span id="annotated-cell-4-10"><a href="#annotated-cell-4-10"></a>        <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[!] MemoryError caught. Memray can now flush the capture file to disk."</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="2" data-code-annotation="1">Restricts the process to exactly 1 GB of virtual memory.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="9" data-code-annotation="2">Catching <code>MemoryError</code> allows the script to exit gracefully. This is required for Memray to flush its buffers and write the profile data to disk.</span>
+</dd>
+</dl>
 </div>
-<div class="value">
-<p>Bartosz Wróblewski</p>
+</div>
+</section>
+</section>
+<section id="running-the-profiler" class="level2">
+<h2 class="anchored" data-anchor-id="running-the-profiler">Running the Profiler</h2>
+<p>To capture native allocations, run the script with the <code>--native</code> flag:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">memray</span> run <span class="at">--native</span> oom_simulator.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This generates a binary capture file (e.g., <code>memray-oom_simulator.py.12345.bin</code>).</p>
+</section>
+<section id="analyzing-the-results" class="level2">
+<h2 class="anchored" data-anchor-id="analyzing-the-results">Analyzing the Results</h2>
+<p>Memray provides several formats to analyze the generated binary file.</p>
+<section id="html-flamegraph" class="level3">
+<h3 class="anchored" data-anchor-id="html-flamegraph">HTML Flamegraph</h3>
+<p>You can generate an interactive HTML flamegraph to visualize allocations:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">memray</span> flamegraph memray-oom_simulator.py.12345.bin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This will produce an HTML file that you can open in a browser.</p>
+<ul>
+<li><strong>Python Allocation:</strong> The graph will show a large block for <code>os.urandom</code>.</li>
+<li><strong>NumPy Allocation:</strong> The graph will show the call stack going from Python into <code>numpy.core.multiarray.ones</code> and down to the C allocation function that blew the 1 GB limit.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.png" class="lightbox" data-gallery="memray" data-glightbox="description: .lightbox-desc-2;title:Memray Flamegraph;" title="Memray Flamegraph"><img src="../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.png" class="img-fluid figure-img" alt="Memray Flamegraph"></a></p>
+<figcaption>Memray Flamegraph</figcaption>
+</figure>
+</div>
+</section>
+<section id="live-terminal-ui" class="level3">
+<h3 class="anchored" data-anchor-id="live-terminal-ui">Live Terminal UI</h3>
+<p>Memray includes a terminal UI (similar to <code>htop</code>) to view memory allocations in real time:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="ex">memray</span> run <span class="at">--native</span> <span class="at">--live</span> oom_simulator.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This shows real-time memory spikes, top allocating files, and a running plot of heap usage. It is useful for monitoring background services over SSH.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-live.png" class="lightbox" data-gallery="memray" data-glightbox="description: .lightbox-desc-3;title:Memray Live TUI;" title="Memray Live TUI"><img src="../../assets/images/posts/26-07-02-oom-python/memray-live.png" class="img-fluid figure-img" alt="Memray Live TUI"></a></p>
+<figcaption>Memray Live TUI</figcaption>
+</figure>
+</div>
+</section>
+<section id="statistics-summary" class="level3">
+<h3 class="anchored" data-anchor-id="statistics-summary">Statistics Summary</h3>
+<p>For a quick text summary of allocations, use the <code>stats</code> command:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="ex">memray</span> stats memray-oom_simulator.py.12345.bin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This outputs a summary directly to the terminal, containing:</p>
+<ul>
+<li>Total memory allocated.</li>
+<li>The top allocating functions (both Python and C-level).</li>
+<li>A histogram of allocation sizes.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-stats.png" class="lightbox" data-gallery="memray" data-glightbox="description: .lightbox-desc-4;title:Memray Stats;" title="Memray Stats"><img src="../../assets/images/posts/26-07-02-oom-python/memray-stats.png" class="img-fluid figure-img" alt="Memray Stats"></a></p>
+<figcaption>Memray Stats</figcaption>
+</figure>
+</div>
+</section>
+<section id="terminal-tree-view" class="level3">
+<h3 class="anchored" data-anchor-id="terminal-tree-view">Terminal Tree View</h3>
+<p>You can also render an inverted call graph in the terminal using the <code>tree</code> command:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="ex">memray</span> tree memray-oom_simulator.py.12345.bin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This visualizes the call relationships of functions that consumed memory. It helps trace a memory leak straight to the source.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-tree.png" class="lightbox" data-gallery="memray" data-glightbox="description: .lightbox-desc-5;title:Memray Tree;" title="Memray Tree"><img src="../../assets/images/posts/26-07-02-oom-python/memray-tree.png" class="img-fluid figure-img" alt="Memray Tree"></a></p>
+<figcaption>Memray Tree</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
 </div>
 </div>
+<div class="callout-body-container callout-body">
+<p>Download the companion script <a href="../../assets/python/oom_simulator.py">here</a>.</p>
 </div>
 </div>
-<div class="columns">
-<div class="column" style="width:25%;">
-<p><a href="../../assets/images/posts/python_academy.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="../../assets/images/posts/python_academy.png" class="course-logo img-fluid"></a></p>
-</div><div class="column" style="width:70%;">
-<p>A comprehensive Python training program designed for intermediate Python users, targeting quantitative analysts and data scientists. Covering core language mechanics needed to graduate from “Python user” to “Python developer”, with a focus on writing clean, efficient, and maintainable code in a professional environment.</p>
-</div>
-</div>
-<section id="course-modules" class="level2">
-<h2 class="anchored" data-anchor-id="course-modules">Course Modules</h2>
-<ol type="1">
-<li><a href="25-10-12-python-academy-fibonacci/">Fibonacci Numbers Case Study</a> - Introduction to optimization, recursion, and memoization.</li>
-<li><a href="25-10-23-python-academy-functions-closures-decorators/">Functions, Closures and Decorators</a> - Deep dive into Python’s first-class functions and scope.</li>
-<li><a href="25-11-05-python-academy-iteration/">Efficient Iteration</a> - Understanding iterators, generators, and memory-efficient loops.</li>
-<li><a href="25-11-27-python-academy-environment-management/">Python Env Management: From venv to uv</a> - Best practices for dependency isolation and modern tooling.</li>
-<li><a href="25-12-04-python-academy-class-anatomy/">Anatomy of a Python Class</a> - Internal mechanics of objects, attributes, and methods.</li>
-<li><a href="25-12-12-python-academy-data-model/">The Python Data Model</a> - Mastering dunder methods and Python’s protocol-based design.</li>
-<li><a href="25-12-18-python-academy-oop-basics/">Inheritance, Polymorphism &amp; Protocols</a> - Clean object-oriented design and structural subtyping.</li>
-</ol>
 
 
+<div class="hidden" aria-hidden="true">
+<div class="glightbox-desc lightbox-desc-2">
+<p>HTML flamegraph showing the call stack of the NumPy allocation.</p>
+</div>
+<div class="glightbox-desc lightbox-desc-3">
+<p>Terminal UI monitoring memory usage.</p>
+</div>
+<div class="glightbox-desc lightbox-desc-4">
+<p>Terminal statistics summary of memory usage.</p>
+</div>
+<div class="glightbox-desc lightbox-desc-5">
+<p>Call graph tree showing allocation hierarchy.</p>
+</div>
+</div>
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
