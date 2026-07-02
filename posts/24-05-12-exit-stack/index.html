@@ -120,16 +120,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="../../css/styles.css">
 <meta property="og:title" content="bwrob blog">
 <meta property="og:description" content="bwrob personal and professional blog">
-<meta property="og:image" content="https://bwrob.github.io/assets/images/posts/24-05-12-exit-stack/flowchart.png">
+<meta property="og:image" content="https://bwrob.github.io/posts/24-05-12-exit-stack/cover.jpg">
 <meta property="og:site_name" content="bwrob blog">
-<meta property="og:image:height" content="214">
-<meta property="og:image:width" content="759">
 <meta name="twitter:title" content="bwrob blog">
 <meta name="twitter:description" content="bwrob personal and professional blog">
-<meta name="twitter:image" content="https://bwrob.github.io/assets/images/posts/24-05-12-exit-stack/flowchart.png">
+<meta name="twitter:image" content="https://bwrob.github.io/posts/24-05-12-exit-stack/cover.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image-height" content="214">
-<meta name="twitter:image-width" content="759">
 </head>
 
 <body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -471,7 +467,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="mock-functions" class="level3">
 <h3 class="anchored" data-anchor-id="mock-functions">Mock functions</h3>
 <p>The setup described above comes from a real-life situation I worked through. I can’t show you the actual API usage or data (or even the name of RMS itself), so we need to define some mocker functions. Mocks like this are actually not an uncommon thing — such approach is prevalent in testing API client code. In our case it would look like this:</p>
-<div id="463d39fb" class="cell" data-execution_count="1">
+<div id="272ffafa" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="im">from</span> enum <span class="im">import</span> StrEnum</span>
@@ -527,7 +523,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-managers" class="level3">
 <h3 class="anchored" data-anchor-id="context-managers">Context managers</h3>
 <p>Easiest way to define a CM is through <code>contextlib.contextmanager</code> decorator. To use it, you need a function that returns a generator. Code executed on enter should come before <code>yield</code> statement and the one for the exit afterwards. The generator yields the result of the CM (ex. handle to an opened file), the <code>y</code> in <code>with x(*args) as y:</code>.</p>
-<div id="7001306a" class="cell" data-execution_count="2">
+<div id="c18f5ec3" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a><span class="im">from</span> contextlib <span class="im">import</span> contextmanager</span>
@@ -564,7 +560,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Modern approach to Python development leans heavily towards type annotations. Dynamical typing is powerful but can lead to unwieldy code. To properly annotate the <code>analysis</code> function we need to import <code>Generator</code> from <code>typing</code> module. Remember, the <code>@contextmanager</code> decorator takes the function and turns it into CM — a class with <code>__enter__</code> and <code>__exit__</code> methods. The <code>Generator</code> needs three inputs but in our case only the first one is important — <code>YieldType</code>, here <code>str</code> (<a href="https://docs.python.org/3/library/typing.html#typing.Generator">see</a> for more).</p>
 <p>With this done implementing the 3 remaining CMs is easy, just remember our flow chart.</p>
-<div id="38ac965d" class="cell" data-execution_count="3">
+<div id="2aeddcb4" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a><span class="at">@contextmanager</span></span>
@@ -636,7 +632,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="analysis-results" class="level3">
 <h3 class="anchored" data-anchor-id="analysis-results">Analysis results</h3>
 <p>No stress or complexity here, to run the analysis we need to specify which analysis to run on which portfolio.</p>
-<div id="6ec3c972" class="cell" data-execution_count="4">
+<div id="51c22ec1" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -666,7 +662,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="using-contexts-directly" class="level3">
 <h3 class="anchored" data-anchor-id="using-contexts-directly">Using contexts directly</h3>
 <p>First, we use the managers directly through <code>with</code> clause, remembering the dependencies from our flow chart.</p>
-<div id="7d5e3a4e" class="cell" data-execution_count="5">
+<div id="2ed802b4" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>PORTFOLIO <span class="op">=</span> <span class="st">"portfolio_1"</span></span>
@@ -690,7 +686,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>This is terrible! I am already getting lost, needed few tries to get it right. We ended up with <strong>6</strong> levels of indentation, the code is confusing, the flow is obtuse. Let’s run it either way, to see if at least works.</p>
-<div id="d33ac284" class="cell" data-execution_count="6">
+<div id="4de3109d" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">def</span> print_title(title: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
@@ -706,13 +702,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_b112706f-6246-46a1-9353-0fcaa3e5838c'}
-Preparing analysis using {'benchmark_name': 'benchmark_959d737c-59e3-4c95-be4c-0f9d41463a88'}
-Running analysis analysis_3a326895-bcee-4650-a7a9-d8856b236fc2 on portfolio portfolio_d0d50bb9-b22c-49ac-b3e7-35b7f65731f3.
-Cleaning up after analysis_3a326895-bcee-4650-a7a9-d8856b236fc2.
-Cleaning up after portfolio_d0d50bb9-b22c-49ac-b3e7-35b7f65731f3.
-Cleaning up after benchmark_959d737c-59e3-4c95-be4c-0f9d41463a88.
-Cleaning up after otc_products_b112706f-6246-46a1-9353-0fcaa3e5838c.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_a8b33d68-5802-4cfb-9efb-fb1ff4e66070'}
+Preparing analysis using {'benchmark_name': 'benchmark_865b4418-db3d-4bad-b50e-5875dc83cb5a'}
+Running analysis analysis_dd9d4ab9-cef7-4860-b43e-8d79ebbb529c on portfolio portfolio_cf843ec9-1fae-4a37-b691-ba79396ea5b5.
+Cleaning up after analysis_dd9d4ab9-cef7-4860-b43e-8d79ebbb529c.
+Cleaning up after portfolio_cf843ec9-1fae-4a37-b691-ba79396ea5b5.
+Cleaning up after benchmark_865b4418-db3d-4bad-b50e-5875dc83cb5a.
+Cleaning up after otc_products_a8b33d68-5802-4cfb-9efb-fb1ff4e66070.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <div>
@@ -761,7 +757,7 @@ Cleaning up after otc_products_b112706f-6246-46a1-9353-0fcaa3e5838c.</code></pre
 </div>
 </div>
 <p>So the flow is exactly the same as in our first attempt. Let’s try it!</p>
-<div id="4ad18dd2" class="cell" data-execution_count="7">
+<div id="990697e8" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="im">from</span> contextlib <span class="im">import</span> ExitStack</span>
@@ -789,7 +785,7 @@ Cleaning up after otc_products_b112706f-6246-46a1-9353-0fcaa3e5838c.</code></pre
 </details>
 </div>
 <p>That’s amazing (if the approach works)! In our code we end up with only single <code>with</code> clause and the outputs of CMs are defined just like the regular variables. We just need to wrap the CM calls in <code>stack.enter_context</code> method that pushes each CM to the stack.</p>
-<div id="529ed386" class="cell" data-execution_count="8">
+<div id="a0de3d58" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>print_title(<span class="st">"Running analysis with exit stack."</span>)</span>
@@ -801,20 +797,20 @@ Cleaning up after otc_products_b112706f-6246-46a1-9353-0fcaa3e5838c.</code></pre
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_e53fa6e0-d80c-486b-be4c-c34f735af197'}
-Preparing analysis using {'benchmark_name': 'benchmark_fb1989f1-0d05-4efa-8d3f-49002ca081e0'}
-Running analysis analysis_89ec71d9-79db-4d62-ade6-13b06d9d0623 on portfolio portfolio_962ffc6a-730c-4ea2-bc47-77a47cc3fa57.
-Cleaning up after analysis_89ec71d9-79db-4d62-ade6-13b06d9d0623.
-Cleaning up after portfolio_962ffc6a-730c-4ea2-bc47-77a47cc3fa57.
-Cleaning up after benchmark_fb1989f1-0d05-4efa-8d3f-49002ca081e0.
-Cleaning up after otc_products_e53fa6e0-d80c-486b-be4c-c34f735af197.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_6fec886d-5add-4df0-b519-f25cd5bbff43'}
+Preparing analysis using {'benchmark_name': 'benchmark_880150ca-16e1-467d-b44a-2f1178455cc7'}
+Running analysis analysis_0313bf18-4597-43fe-be36-10e2abaa7cac on portfolio portfolio_9fcb79cc-222a-4ada-99f3-676d9d6cc516.
+Cleaning up after analysis_0313bf18-4597-43fe-be36-10e2abaa7cac.
+Cleaning up after portfolio_9fcb79cc-222a-4ada-99f3-676d9d6cc516.
+Cleaning up after benchmark_880150ca-16e1-467d-b44a-2f1178455cc7.
+Cleaning up after otc_products_6fec886d-5add-4df0-b519-f25cd5bbff43.</code></pre>
 </div>
 </div>
 <p>It works as well! We also get a package of benefits for free.</p>
 <section id="disabling-the-clean-up" class="level3">
 <h3 class="anchored" data-anchor-id="disabling-the-clean-up">Disabling the clean up</h3>
 <p>Working with API is tricky and debugging could be a painful experience. If we notice something iffy with the results we are reciving, it could be due to a bug at any of the stages. In such case disabling the artifact clean up and examining them is a good way to investigate. How do we do that? Comment out the exit code in our resource CMs? Nope, now we know better. With exit stack approach we just need to clean up the stack before exiting its context.</p>
-<div id="3205acb4" class="cell" data-execution_count="9">
+<div id="739c473d" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1"></a><span class="kw">def</span> run_analysis_with_exit_stack(</span>
@@ -857,7 +853,7 @@ Cleaning up after otc_products_e53fa6e0-d80c-486b-be4c-c34f735af197.</code></pre
 </dl>
 </div>
 </div>
-<div id="6f3d15fe" class="cell" data-execution_count="10">
+<div id="49d1be24" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>print_title(<span class="st">"Running analysis with exit stack and no clean up."</span>)</span>
@@ -869,9 +865,9 @@ Cleaning up after otc_products_e53fa6e0-d80c-486b-be4c-c34f735af197.</code></pre
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_e3ad5ca4-24e0-4216-85e1-22228008d4ce'}
-Preparing analysis using {'benchmark_name': 'benchmark_0dfab8fb-c1f2-4300-bad4-53dc9381fc7c'}
-Running analysis analysis_26e6dec2-e2dc-4f4c-8441-b8646b5a92dc on portfolio portfolio_577e5030-7599-4beb-88be-2f5be4b8ff0d.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_feade083-941f-4942-88db-2ce51933f5f9'}
+Preparing analysis using {'benchmark_name': 'benchmark_ea88c581-3ae2-490e-8073-6937cc4f83fa'}
+Running analysis analysis_c12b1409-6fb2-4f2f-bf00-871973e716d9 on portfolio portfolio_5b7a9fc7-f3ef-4333-aff7-59bd78b8d8fb.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <div>
@@ -894,7 +890,7 @@ Running analysis analysis_26e6dec2-e2dc-4f4c-8441-b8646b5a92dc on portfolio port
 <section id="multiple-portfolios" class="level3">
 <h3 class="anchored" data-anchor-id="multiple-portfolios">Multiple portfolios</h3>
 <p>Benefit #2 — what do we do if we have multiple managers and many portfolios to re-run for? Or — outside of the example scope — we want to held multiple files open at the same time? Easy, we just push to the stack in a loop or a list comprehension.</p>
-<div id="602c9d5d" class="cell" data-execution_count="11">
+<div id="655d1d6b" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>PORTFOLIOS <span class="op">=</span> [<span class="st">"portfolio_1"</span>, <span class="st">"portfolio_2"</span>, <span class="st">"portfolio_3"</span>]</span>
@@ -944,19 +940,19 @@ Running analysis analysis_26e6dec2-e2dc-4f4c-8441-b8646b5a92dc on portfolio port
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_fee304a1-8758-4f65-b192-ce35480453d5'}
-Preparing portfolio using {'portfolio_name': 'portfolio_2', 'otc_products_uuid': 'otc_products_fee304a1-8758-4f65-b192-ce35480453d5'}
-Preparing portfolio using {'portfolio_name': 'portfolio_3', 'otc_products_uuid': 'otc_products_fee304a1-8758-4f65-b192-ce35480453d5'}
-Preparing analysis using {'benchmark_name': 'benchmark_9aeb9b3d-6fb6-4bff-be9b-b7a167f3f7c6'}
-Running analysis analysis_dfc6183f-2305-4467-9028-8ab8658bd1cf on portfolio portfolio_cbd1d134-a2ea-46ef-bbd8-c259b07bb25e.
-Running analysis analysis_dfc6183f-2305-4467-9028-8ab8658bd1cf on portfolio portfolio_2eec909f-21e3-41e0-81aa-729f8322b24b.
-Running analysis analysis_dfc6183f-2305-4467-9028-8ab8658bd1cf on portfolio portfolio_042ab763-6a7b-43ec-995b-1fedc2b84875.
-Cleaning up after analysis_dfc6183f-2305-4467-9028-8ab8658bd1cf.
-Cleaning up after portfolio_042ab763-6a7b-43ec-995b-1fedc2b84875.
-Cleaning up after portfolio_2eec909f-21e3-41e0-81aa-729f8322b24b.
-Cleaning up after portfolio_cbd1d134-a2ea-46ef-bbd8-c259b07bb25e.
-Cleaning up after benchmark_9aeb9b3d-6fb6-4bff-be9b-b7a167f3f7c6.
-Cleaning up after otc_products_fee304a1-8758-4f65-b192-ce35480453d5.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_f0722e1b-53fd-4115-b4c0-81fd39c79687'}
+Preparing portfolio using {'portfolio_name': 'portfolio_2', 'otc_products_uuid': 'otc_products_f0722e1b-53fd-4115-b4c0-81fd39c79687'}
+Preparing portfolio using {'portfolio_name': 'portfolio_3', 'otc_products_uuid': 'otc_products_f0722e1b-53fd-4115-b4c0-81fd39c79687'}
+Preparing analysis using {'benchmark_name': 'benchmark_07bd5c58-43eb-45fe-aba2-d353fcc8cbd4'}
+Running analysis analysis_eaf3d80c-f957-4718-9b68-977c118da5f2 on portfolio portfolio_5e9417d8-cf2c-4189-a57f-4983aa0218c5.
+Running analysis analysis_eaf3d80c-f957-4718-9b68-977c118da5f2 on portfolio portfolio_0818359e-4bac-49f4-98b0-fdeb818f820e.
+Running analysis analysis_eaf3d80c-f957-4718-9b68-977c118da5f2 on portfolio portfolio_ac2f02b5-10d3-4222-a3bf-82dea106ace8.
+Cleaning up after analysis_eaf3d80c-f957-4718-9b68-977c118da5f2.
+Cleaning up after portfolio_ac2f02b5-10d3-4222-a3bf-82dea106ace8.
+Cleaning up after portfolio_0818359e-4bac-49f4-98b0-fdeb818f820e.
+Cleaning up after portfolio_5e9417d8-cf2c-4189-a57f-4983aa0218c5.
+Cleaning up after benchmark_07bd5c58-43eb-45fe-aba2-d353fcc8cbd4.
+Cleaning up after otc_products_f0722e1b-53fd-4115-b4c0-81fd39c79687.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <div>
