@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -14,10 +14,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -76,12 +79,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-96a43165c4d0207e3a751099b8d9671b.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-c6434e2816b6e53f820184e91c93ac7d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-73751680ca121cac81413277327230eb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../site_libs/bootstrap/bootstrap-c7170261eb2bbedd820cef4c8c5b1644.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../../site_libs/bootstrap/bootstrap-dark-49de6045867557a8d47d4e02c0bec047.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-fcffe00015cf7e92884255123184f18a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-5865491327066f56f9cc3bed50bb0a86.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -432,30 +435,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="creating-and-activating">Creating and Activating</h3>
 <p>The standard way to make a sandbox is with <code>venv</code>.</p>
 <p>To create one named <code>.venv</code> (the industry standard name):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">python</span> <span class="at">-m</span> venv .venv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="ex">python</span> <span class="at">-m</span> venv .venv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>You’ll see a new <code>.venv</code> folder pop up. But it’s just sitting there until you <strong>activate</strong> it.</p>
 <p><strong>On macOS/Linux:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="bu">source</span> .venv/bin/activate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="bu">source</span> .venv/bin/activate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>On Windows:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource powershell number-lines code-with-copy"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1"></a><span class="op">.</span><span class="fu">venv</span>\Scripts\Activate<span class="op">.</span><span class="fu">ps1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource powershell number-lines code-with-copy"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="op">.</span><span class="fu">venv</span>\Scripts\Activate<span class="op">.</span><span class="fu">ps1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Once you see <code>(.venv)</code> in your prompt, you’re in the sandbox. Anything you install here stays here.</p>
 </section>
 <section id="managing-packages-with-pip" class="level3">
 <h3 class="anchored" data-anchor-id="managing-packages-with-pip">Managing Packages with pip</h3>
 <p><code>pip</code> is your tool for grabbing libraries from the internet (PyPI).</p>
 <p>To install something:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="ex">pip</span> install requests</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="ex">pip</span> install requests</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>To see what you’ve got:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="ex">pip</span> list</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="ex">pip</span> list</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="requirements.txt" class="level3">
 <h3 class="anchored" data-anchor-id="requirements.txt"><code>requirements.txt</code></h3>
 <p>So you’ve built a cool app. How do you tell your friend exactly which libraries they need to run it? You hand them a <code>requirements.txt</code>.</p>
 <p>You can generate this list from your current environment automatically:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">pip</span> freeze <span class="op">&gt;</span> requirements.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a><span class="ex">pip</span> freeze <span class="op">&gt;</span> requirements.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This dumps every installed package and its exact version into a text file.</p>
 <p>When your friend grabs your code, they just run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>And boom, their environment looks just like yours.</p>
 </section>
 <section id="generating-requirements-from-code-with-pipreqs" class="level3">
@@ -465,9 +468,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This is where <code>pipreqs</code> shines. It analyzes your source code imports to determine exactly what packages are needed. It’s the perfect tool to bootstrap “good practices” for a project that started without them.</p>
 <ol type="1">
 <li><p><strong>Install it:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="ex">pip</span> install pipreqs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-label="1"></a><span class="ex">pip</span> install pipreqs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p><strong>Run it:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="ex">pipreqs</span> .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a><span class="ex">pipreqs</span> .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 </ol>
 <p>This scans your <code>.py</code> files and generates a clean, minimal <code>requirements.txt</code> based solely on the libraries you actually import. Now you have a solid foundation to create a fresh virtual environment!</p>
 </section>
@@ -478,29 +481,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="setting-up-with-uv" class="level3">
 <h3 class="anchored" data-anchor-id="setting-up-with-uv">Setting up with uv</h3>
 <p>Instead of manually creating folders and files, <code>uv</code> creates the project skeleton for you:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="ex">uv</span> init my-project</span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="bu">cd</span> my-project</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-label="1"></a><span class="ex">uv</span> init my-project</span>
+<span id="cb10-2"><a href="#cb10-2" aria-label="2"></a><span class="bu">cd</span> my-project</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This sets up a standard structure, including a <code>pyproject.toml</code>. This file is the modern replacement for <code>requirements.txt</code> and <code>setup.py</code>.</p>
 </section>
 <section id="managing-dependencies" class="level3">
 <h3 class="anchored" data-anchor-id="managing-dependencies">Managing Dependencies</h3>
 <p>With <code>uv</code>, the days of <code>pip install</code> followed by remembering to run <code>pip freeze</code> are over. You just tell <code>uv</code> what you want:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1"></a><span class="ex">uv</span> add requests</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a><span class="ex">uv</span> add requests</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This one command does all the heavy lifting: 1. Finds the best version of <code>requests</code>. 2. Installs it (creating a virtual environment automatically if you don’t have one). 3. Updates your <code>pyproject.toml</code>. 4. Updates <code>uv.lock</code>, which locks down the exact versions of everything (like <code>package-lock.json</code> in the JS world) so your builds are 100% reproducible.</p>
 </section>
 <section id="development-dependencies" class="level3">
 <h3 class="anchored" data-anchor-id="development-dependencies">Development Dependencies</h3>
 <p>Sometimes you need tools just for development—like testing frameworks or linters—that shouldn’t be shipped with your actual app. <code>uv</code> handles this cleanly:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1"></a><span class="ex">uv</span> add <span class="at">--dev</span> pytest ruff</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-label="1"></a><span class="ex">uv</span> add <span class="at">--dev</span> pytest ruff</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Take <code>ruff</code> for example. It’s a fast linter and formatter. You want it while you’re coding to keep things tidy, but your users don’t need it to run your app. Adding it with <code>--dev</code> puts it in a special <code>[tool.uv.dev-dependencies]</code> section, keeping your production environment lean.</p>
 </section>
 <section id="managing-python-versions" class="level3">
 <h3 class="anchored" data-anchor-id="managing-python-versions">Managing Python Versions</h3>
 <p>This is where <code>uv</code> really shines. Need to test on Python 3.11 but you only have 3.12 installed? <code>uv</code> can fetch it for you:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1"></a><span class="ex">uv</span> python install 3.11</span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="ex">uv</span> venv <span class="at">--python</span> 3.11</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a><span class="ex">uv</span> python install 3.11</span>
+<span id="cb13-2"><a href="#cb13-2" aria-label="2"></a><span class="ex">uv</span> venv <span class="at">--python</span> 3.11</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Or you can just pin your project to a specific version, and <code>uv</code> will respect that:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1"></a><span class="ex">uv</span> python pin 3.12</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-label="1"></a><span class="ex">uv</span> python pin 3.12</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="packaging-sharing-your-code" class="level3">
 <h3 class="anchored" data-anchor-id="packaging-sharing-your-code">Packaging: Sharing Your Code</h3>
@@ -516,30 +519,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Traditionally, building a package meant wrestling with a file called <code>setup.py</code> using a library called <code>setuptools</code>. This little Python script was where you’d declare everything about your package: its name, version, author, a brief description, and most importantly, its dependencies. You’d define which modules to include, any data files, and even entry points for command-line tools.</p>
 <p>It was powerful, for sure, but also notoriously tricky to get right. Debugging <code>setup.py</code> was tedious — you’d write code to describe your package, manage included files, and handle dependencies. It worked, but slight changes in Python’s packaging standards would often mean revisiting this script.</p>
 <p>Here’s a super basic <code>setup.py</code> example for a package named <code>my_package</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-13"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1"></a><span class="co"># setup.py</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-13-2" class="code-annotation-target"><a href="#annotated-cell-13-2"></a><span class="im">from</span> setuptools <span class="im">import</span> setup, find_packages</span>
-<span id="annotated-cell-13-3"><a href="#annotated-cell-13-3"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-13-4" class="code-annotation-target"><a href="#annotated-cell-13-4"></a>setup(</span>
-<span id="annotated-cell-13-5"><a href="#annotated-cell-13-5"></a>    name<span class="op">=</span><span class="st">'my_package'</span>,</span>
-<span id="annotated-cell-13-6"><a href="#annotated-cell-13-6"></a>    version<span class="op">=</span><span class="st">'0.1.0'</span>,</span>
-<span id="annotated-cell-13-7"><a href="#annotated-cell-13-7"></a>    packages<span class="op">=</span>find_packages(),</span>
-<span id="annotated-cell-13-8"><a href="#annotated-cell-13-8"></a>    install_requires<span class="op">=</span>[</span>
-<span id="annotated-cell-13-9"><a href="#annotated-cell-13-9"></a>        <span class="st">'requests'</span>,</span>
-<span id="annotated-cell-13-10"><a href="#annotated-cell-13-10"></a>        <span class="st">'numpy'</span>,</span>
-<span id="annotated-cell-13-11"><a href="#annotated-cell-13-11"></a>    ],</span>
-<span id="annotated-cell-13-12"><a href="#annotated-cell-13-12"></a>    author<span class="op">=</span><span class="st">'Your Name'</span>,</span>
-<span id="annotated-cell-13-13"><a href="#annotated-cell-13-13"></a>    author_email<span class="op">=</span><span class="st">'your.email@example.com'</span>,</span>
-<span id="annotated-cell-13-14"><a href="#annotated-cell-13-14"></a>    description<span class="op">=</span><span class="st">'A simple example package.'</span>,</span>
-<span id="annotated-cell-13-15"><a href="#annotated-cell-13-15"></a>    long_description<span class="op">=</span><span class="bu">open</span>(<span class="st">'README.md'</span>).read(),</span>
-<span id="annotated-cell-13-16"><a href="#annotated-cell-13-16"></a>    long_description_content_type<span class="op">=</span><span class="st">'text/markdown'</span>,</span>
-<span id="annotated-cell-13-17"><a href="#annotated-cell-13-17"></a>    url<span class="op">=</span><span class="st">'https://github.com/yourusername/my_package'</span>,</span>
-<span id="annotated-cell-13-18"><a href="#annotated-cell-13-18"></a>    classifiers<span class="op">=</span>[</span>
-<span id="annotated-cell-13-19"><a href="#annotated-cell-13-19"></a>        <span class="st">'Programming Language :: Python :: 3'</span>,</span>
-<span id="annotated-cell-13-20"><a href="#annotated-cell-13-20"></a>        <span class="st">'License :: OSI Approved :: MIT License'</span>,</span>
-<span id="annotated-cell-13-21"><a href="#annotated-cell-13-21"></a>        <span class="st">'Operating System :: OS Independent'</span>,</span>
-<span id="annotated-cell-13-22"><a href="#annotated-cell-13-22"></a>    ],</span>
-<span id="annotated-cell-13-23"><a href="#annotated-cell-13-23"></a>    python_requires<span class="op">=</span><span class="st">'&gt;=3.8'</span>,</span>
-<span id="annotated-cell-13-24"><a href="#annotated-cell-13-24"></a>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-13"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1" aria-label="1"></a><span class="co"># setup.py</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-13-2" class="code-annotation-target"><a href="#annotated-cell-13-2" aria-label="2"></a><span class="im">from</span> setuptools <span class="im">import</span> setup, find_packages</span>
+<span id="annotated-cell-13-3"><a href="#annotated-cell-13-3" aria-label="3"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-13-4" class="code-annotation-target"><a href="#annotated-cell-13-4" aria-label="4"></a>setup(</span>
+<span id="annotated-cell-13-5"><a href="#annotated-cell-13-5" aria-label="5"></a>    name<span class="op">=</span><span class="st">'my_package'</span>,</span>
+<span id="annotated-cell-13-6"><a href="#annotated-cell-13-6" aria-label="6"></a>    version<span class="op">=</span><span class="st">'0.1.0'</span>,</span>
+<span id="annotated-cell-13-7"><a href="#annotated-cell-13-7" aria-label="7"></a>    packages<span class="op">=</span>find_packages(),</span>
+<span id="annotated-cell-13-8"><a href="#annotated-cell-13-8" aria-label="8"></a>    install_requires<span class="op">=</span>[</span>
+<span id="annotated-cell-13-9"><a href="#annotated-cell-13-9" aria-label="9"></a>        <span class="st">'requests'</span>,</span>
+<span id="annotated-cell-13-10"><a href="#annotated-cell-13-10" aria-label="10"></a>        <span class="st">'numpy'</span>,</span>
+<span id="annotated-cell-13-11"><a href="#annotated-cell-13-11" aria-label="11"></a>    ],</span>
+<span id="annotated-cell-13-12"><a href="#annotated-cell-13-12" aria-label="12"></a>    author<span class="op">=</span><span class="st">'Your Name'</span>,</span>
+<span id="annotated-cell-13-13"><a href="#annotated-cell-13-13" aria-label="13"></a>    author_email<span class="op">=</span><span class="st">'your.email@example.com'</span>,</span>
+<span id="annotated-cell-13-14"><a href="#annotated-cell-13-14" aria-label="14"></a>    description<span class="op">=</span><span class="st">'A simple example package.'</span>,</span>
+<span id="annotated-cell-13-15"><a href="#annotated-cell-13-15" aria-label="15"></a>    long_description<span class="op">=</span><span class="bu">open</span>(<span class="st">'README.md'</span>).read(),</span>
+<span id="annotated-cell-13-16"><a href="#annotated-cell-13-16" aria-label="16"></a>    long_description_content_type<span class="op">=</span><span class="st">'text/markdown'</span>,</span>
+<span id="annotated-cell-13-17"><a href="#annotated-cell-13-17" aria-label="17"></a>    url<span class="op">=</span><span class="st">'https://github.com/yourusername/my_package'</span>,</span>
+<span id="annotated-cell-13-18"><a href="#annotated-cell-13-18" aria-label="18"></a>    classifiers<span class="op">=</span>[</span>
+<span id="annotated-cell-13-19"><a href="#annotated-cell-13-19" aria-label="19"></a>        <span class="st">'Programming Language :: Python :: 3'</span>,</span>
+<span id="annotated-cell-13-20"><a href="#annotated-cell-13-20" aria-label="20"></a>        <span class="st">'License :: OSI Approved :: MIT License'</span>,</span>
+<span id="annotated-cell-13-21"><a href="#annotated-cell-13-21" aria-label="21"></a>        <span class="st">'Operating System :: OS Independent'</span>,</span>
+<span id="annotated-cell-13-22"><a href="#annotated-cell-13-22" aria-label="22"></a>    ],</span>
+<span id="annotated-cell-13-23"><a href="#annotated-cell-13-23" aria-label="23"></a>    python_requires<span class="op">=</span><span class="st">'&gt;=3.8'</span>,</span>
+<span id="annotated-cell-13-24"><a href="#annotated-cell-13-24" aria-label="24"></a>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
 <dd>
@@ -551,13 +554,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 </dl>
 <p>And to build your package (both source and wheel distributions) using this file, you’d run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1"></a><span class="ex">python</span> setup.py sdist bdist_wheel</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-label="1"></a><span class="ex">python</span> setup.py sdist bdist_wheel</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="the-new-way-uv-build" class="level4">
 <h4 class="anchored" data-anchor-id="the-new-way-uv-build">The New Way: uv build</h4>
 <p>Since <code>uv</code> already knows everything about your project from <code>pyproject.toml</code>, building a package is laughably simple. You don’t need a <code>setup.py</code> anymore.</p>
 <p>Just run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1"></a><span class="ex">uv</span> build</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-label="1"></a><span class="ex">uv</span> build</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>That’s it. <code>uv</code> will look at your <code>pyproject.toml</code>, gather your code, and spit out a shiny <code>.whl</code> file (and a <code>.tar.gz</code> source distribution just in case) into a <code>dist/</code> folder. You can then upload these to PyPI or share them directly.</p>
 </section>
 </section>

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -14,10 +14,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -76,12 +79,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-96a43165c4d0207e3a751099b8d9671b.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-c6434e2816b6e53f820184e91c93ac7d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-73751680ca121cac81413277327230eb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../site_libs/bootstrap/bootstrap-c7170261eb2bbedd820cef4c8c5b1644.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../../site_libs/bootstrap/bootstrap-dark-49de6045867557a8d47d4e02c0bec047.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-fcffe00015cf7e92884255123184f18a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-5865491327066f56f9cc3bed50bb0a86.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -434,11 +437,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="lists-vs.-tuples-the-eager-iterables" class="level2">
 <h2 class="anchored" data-anchor-id="lists-vs.-tuples-the-eager-iterables">Lists vs.&nbsp;Tuples: The Eager Iterables</h2>
 <p>Lists and tuples are the most common sequence types in Python. They are <em>eager</em> in the sense that all their elements are stored in memory at once. When you create a list of a million numbers, Python allocates memory for all of them.</p>
-<div id="ba82a2bb" class="cell" data-execution_count="1">
+<div id="fa13a084" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>my_list <span class="op">=</span> [i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1_000_000</span>)]</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># This creates a list with 1,000,000 integers in memory.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a>my_list <span class="op">=</span> [i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1_000_000</span>)]</span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a><span class="co"># This creates a list with 1,000,000 integers in memory.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>This is fine for small to medium-sized datasets, but for very large datasets, this can lead to <code>MemoryError</code>.</p>
@@ -460,16 +463,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>__next__()</code>: Returns the next item from the stream. When there are no more items, it raises a <code>StopIteration</code> exception.</li>
 </ul>
 <p>You can get an iterator from any iterable (like a list) using the <code>iter()</code> function.</p>
-<div id="d8bde90f" class="cell" data-execution_count="2">
+<div id="a49a2843" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>my_list <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span>
-<span id="cb2-2"><a href="#cb2-2"></a>my_iterator <span class="op">=</span> <span class="bu">iter</span>(my_list)</span>
-<span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="bu">print</span>(<span class="bu">next</span>(my_iterator))  <span class="co"># Output: 1</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="bu">print</span>(<span class="bu">next</span>(my_iterator))  <span class="co"># Output: 2</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="bu">print</span>(<span class="bu">next</span>(my_iterator))  <span class="co"># Output: 3</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="co"># The next call would raise StopIteration</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>my_list <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a>my_iterator <span class="op">=</span> <span class="bu">iter</span>(my_list)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a><span class="bu">print</span>(<span class="bu">next</span>(my_iterator))  <span class="co"># Output: 1</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a><span class="bu">print</span>(<span class="bu">next</span>(my_iterator))  <span class="co"># Output: 2</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a><span class="bu">print</span>(<span class="bu">next</span>(my_iterator))  <span class="co"># Output: 3</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a><span class="co"># The next call would raise StopIteration</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>1
@@ -482,16 +485,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="generators-simplified-iterators">Generators: Simplified Iterators</h2>
 <p>Generators are a simpler way to create iterators. Instead of writing a class with <code>__iter__</code> and <code>__next__</code>, you write a function that uses <code>yield</code>.</p>
 <p>Here’s a simple generator that produces a sequence of numbers:</p>
-<div id="b1dd53f0" class="cell" data-execution_count="3">
+<div id="43a438ae" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">def</span> number_generator(n):</span>
-<span id="cb4-2"><a href="#cb4-2"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n):</span>
-<span id="cb4-3"><a href="#cb4-3"></a>        <span class="cf">yield</span> i</span>
-<span id="cb4-4"><a href="#cb4-4"></a></span>
-<span id="cb4-5"><a href="#cb4-5"></a>gen <span class="op">=</span> number_generator(<span class="dv">1_000_000</span>)</span>
-<span id="cb4-6"><a href="#cb4-6"></a><span class="co"># No large list is created in memory here.</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="co"># The generator object 'gen' is created, ready to produce numbers.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="kw">def</span> number_generator(n):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a>        <span class="cf">yield</span> i</span>
+<span id="cb4-4"><a href="#cb4-4" aria-label="4"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-label="5"></a>gen <span class="op">=</span> number_generator(<span class="dv">1_000_000</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-label="6"></a><span class="co"># No large list is created in memory here.</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-label="7"></a><span class="co"># The generator object 'gen' is created, ready to produce numbers.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>The state of the generator is saved between <code>yield</code> calls. This allows it to resume where it left off.</p>
@@ -499,32 +502,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="example-flattening-a-list-of-lists">Example: Flattening a List of Lists</h3>
 <p>A common task is to flatten a list of lists into a single list. A generator is a perfect tool for this, especially when dealing with large datasets, as it avoids creating a new, large list in memory.</p>
 <p>Imagine you have a list of trades, where each trade has a list of associated cashflows. You want to process all cashflows from all trades.</p>
-<div id="68a99e16" class="cell" data-execution_count="4">
+<div id="a43ca794" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>trades_cashflows <span class="op">=</span> [</span>
-<span id="cb5-2"><a href="#cb5-2"></a>    [<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>],  <span class="co"># Cashflows for Trade 1</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a>    [<span class="dv">15</span>, <span class="dv">25</span>],  <span class="co"># Cashflows for Trade 2</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a>    [<span class="dv">100</span>, <span class="op">-</span><span class="dv">10</span>, <span class="dv">5</span>],  <span class="co"># Cashflows for Trade 3</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a>    <span class="dv">110</span>,  <span class="co"># Simple payment doesn't need to be in a list!</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a>]</span>
-<span id="cb5-7"><a href="#cb5-7"></a></span>
-<span id="cb5-8"><a href="#cb5-8"></a></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="kw">def</span> flatten(list_of_lists):</span>
-<span id="cb5-10"><a href="#cb5-10"></a>    <span class="cf">for</span> item <span class="kw">in</span> list_of_lists:</span>
-<span id="cb5-11"><a href="#cb5-11"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(item, <span class="bu">list</span>):</span>
-<span id="cb5-12"><a href="#cb5-12"></a>            <span class="cf">for</span> subitem <span class="kw">in</span> item:</span>
-<span id="cb5-13"><a href="#cb5-13"></a>                <span class="cf">yield</span> subitem</span>
-<span id="cb5-14"><a href="#cb5-14"></a>        <span class="cf">else</span>:</span>
-<span id="cb5-15"><a href="#cb5-15"></a>            <span class="cf">yield</span> item</span>
-<span id="cb5-16"><a href="#cb5-16"></a></span>
-<span id="cb5-17"><a href="#cb5-17"></a></span>
-<span id="cb5-18"><a href="#cb5-18"></a><span class="co"># The generator does not hold all cashflows in memory</span></span>
-<span id="cb5-19"><a href="#cb5-19"></a>all_cashflows_generator <span class="op">=</span> flatten(trades_cashflows)</span>
-<span id="cb5-20"><a href="#cb5-20"></a></span>
-<span id="cb5-21"><a href="#cb5-21"></a><span class="cf">for</span> cf <span class="kw">in</span> all_cashflows_generator:</span>
-<span id="cb5-22"><a href="#cb5-22"></a>    <span class="bu">print</span>(cf, end<span class="op">=</span><span class="st">" "</span>)</span>
-<span id="cb5-23"><a href="#cb5-23"></a><span class="co"># Output: 10 20 30 15 25 100 -10 5 110</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a>trades_cashflows <span class="op">=</span> [</span>
+<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a>    [<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>],  <span class="co"># Cashflows for Trade 1</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-label="3"></a>    [<span class="dv">15</span>, <span class="dv">25</span>],  <span class="co"># Cashflows for Trade 2</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-label="4"></a>    [<span class="dv">100</span>, <span class="op">-</span><span class="dv">10</span>, <span class="dv">5</span>],  <span class="co"># Cashflows for Trade 3</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-label="5"></a>    <span class="dv">110</span>,  <span class="co"># Simple payment doesn't need to be in a list!</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-label="6"></a>]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-label="7"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-label="8"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-label="9"></a><span class="kw">def</span> flatten(list_of_lists):</span>
+<span id="cb5-10"><a href="#cb5-10" aria-label="10"></a>    <span class="cf">for</span> item <span class="kw">in</span> list_of_lists:</span>
+<span id="cb5-11"><a href="#cb5-11" aria-label="11"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(item, <span class="bu">list</span>):</span>
+<span id="cb5-12"><a href="#cb5-12" aria-label="12"></a>            <span class="cf">for</span> subitem <span class="kw">in</span> item:</span>
+<span id="cb5-13"><a href="#cb5-13" aria-label="13"></a>                <span class="cf">yield</span> subitem</span>
+<span id="cb5-14"><a href="#cb5-14" aria-label="14"></a>        <span class="cf">else</span>:</span>
+<span id="cb5-15"><a href="#cb5-15" aria-label="15"></a>            <span class="cf">yield</span> item</span>
+<span id="cb5-16"><a href="#cb5-16" aria-label="16"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-label="17"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-label="18"></a><span class="co"># The generator does not hold all cashflows in memory</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-label="19"></a>all_cashflows_generator <span class="op">=</span> flatten(trades_cashflows)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-label="20"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-label="21"></a><span class="cf">for</span> cf <span class="kw">in</span> all_cashflows_generator:</span>
+<span id="cb5-22"><a href="#cb5-22" aria-label="22"></a>    <span class="bu">print</span>(cf, end<span class="op">=</span><span class="st">" "</span>)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-label="23"></a><span class="co"># Output: 10 20 30 15 25 100 -10 5 110</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>10 20 30 15 25 100 -10 5 110 </code></pre>
@@ -537,70 +540,70 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="memory-efficiency-in-action">Memory Efficiency in Action</h2>
 <p>To make our memory analysis cleaner, we can define a decorator. This is a more Pythonic way to wrap functions with common boilerplate code, like starting and stopping <code>tracemalloc</code>.</p>
 <p>Let’s demonstrate the memory difference using a decorator with the standard library’s <code>tracemalloc</code> module. We’ll compare the memory usage of creating a list versus creating a generator.</p>
-<div id="e1ce8718" class="cell" data-execution_count="5">
+<div id="d06134f7" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="im">import</span> tracemalloc</span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="im">from</span> functools <span class="im">import</span> wraps</span>
-<span id="cb7-3"><a href="#cb7-3"></a></span>
-<span id="cb7-4"><a href="#cb7-4"></a></span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="kw">def</span> profile_memory(func):</span>
-<span id="cb7-6"><a href="#cb7-6"></a>    <span class="co">"""A decorator to profile the memory usage of a function."""</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a></span>
-<span id="cb7-8"><a href="#cb7-8"></a>    <span class="at">@wraps</span>(func)</span>
-<span id="cb7-9"><a href="#cb7-9"></a>    <span class="kw">def</span> wrapper(<span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
-<span id="cb7-10"><a href="#cb7-10"></a>        tracemalloc.start()</span>
-<span id="cb7-11"><a href="#cb7-11"></a>        result <span class="op">=</span> func(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
-<span id="cb7-12"><a href="#cb7-12"></a>        current, peak <span class="op">=</span> tracemalloc.get_traced_memory()</span>
-<span id="cb7-13"><a href="#cb7-13"></a>        <span class="bu">print</span>(<span class="ss">f"Function: </span><span class="sc">{</span>func<span class="sc">.</span><span class="va">__name__</span><span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb7-14"><a href="#cb7-14"></a>        <span class="bu">print</span>(</span>
-<span id="cb7-15"><a href="#cb7-15"></a>            <span class="ss">f"Current memory usage is </span><span class="sc">{</span>current <span class="op">/</span> <span class="dv">10</span><span class="op">**</span><span class="dv">6</span><span class="sc">:.6f}</span><span class="ss">MB; Peak was </span><span class="sc">{</span>peak <span class="op">/</span> <span class="dv">10</span><span class="op">**</span><span class="dv">6</span><span class="sc">:.6f}</span><span class="ss">MB"</span></span>
-<span id="cb7-16"><a href="#cb7-16"></a>        )</span>
-<span id="cb7-17"><a href="#cb7-17"></a>        tracemalloc.stop()</span>
-<span id="cb7-18"><a href="#cb7-18"></a>        <span class="cf">return</span> result</span>
-<span id="cb7-19"><a href="#cb7-19"></a></span>
-<span id="cb7-20"><a href="#cb7-20"></a>    <span class="cf">return</span> wrapper</span>
-<span id="cb7-21"><a href="#cb7-21"></a></span>
-<span id="cb7-22"><a href="#cb7-22"></a></span>
-<span id="cb7-23"><a href="#cb7-23"></a><span class="at">@profile_memory</span></span>
-<span id="cb7-24"><a href="#cb7-24"></a><span class="kw">def</span> create_list(n):</span>
-<span id="cb7-25"><a href="#cb7-25"></a>    <span class="co">"""This function creates a list of n numbers."""</span></span>
-<span id="cb7-26"><a href="#cb7-26"></a>    <span class="cf">return</span> [i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n)]</span>
-<span id="cb7-27"><a href="#cb7-27"></a></span>
-<span id="cb7-28"><a href="#cb7-28"></a></span>
-<span id="cb7-29"><a href="#cb7-29"></a><span class="at">@profile_memory</span></span>
-<span id="cb7-30"><a href="#cb7-30"></a><span class="kw">def</span> create_generator(n):</span>
-<span id="cb7-31"><a href="#cb7-31"></a>    <span class="co">"""This function creates a generator of n numbers."""</span></span>
-<span id="cb7-32"><a href="#cb7-32"></a>    <span class="cf">return</span> (i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n))</span>
-<span id="cb7-33"><a href="#cb7-33"></a></span>
-<span id="cb7-34"><a href="#cb7-34"></a></span>
-<span id="cb7-35"><a href="#cb7-35"></a>n <span class="op">=</span> <span class="dv">1_000_000</span></span>
-<span id="cb7-36"><a href="#cb7-36"></a><span class="bu">print</span>(<span class="st">"Profiling memory for list creation..."</span>)</span>
-<span id="cb7-37"><a href="#cb7-37"></a>my_list <span class="op">=</span> create_list(n)</span>
-<span id="cb7-38"><a href="#cb7-38"></a></span>
-<span id="cb7-39"><a href="#cb7-39"></a></span>
-<span id="cb7-40"><a href="#cb7-40"></a><span class="bu">print</span>(<span class="st">"Profiling memory for generator creation..."</span>)</span>
-<span id="cb7-41"><a href="#cb7-41"></a>my_generator <span class="op">=</span> create_generator(n)</span>
-<span id="cb7-42"><a href="#cb7-42"></a></span>
-<span id="cb7-43"><a href="#cb7-43"></a><span class="co"># The generator itself is small. Let's profile consuming it.</span></span>
-<span id="cb7-44"><a href="#cb7-44"></a><span class="at">@profile_memory</span></span>
-<span id="cb7-45"><a href="#cb7-45"></a><span class="kw">def</span> consume_generator(gen):</span>
-<span id="cb7-46"><a href="#cb7-46"></a>    <span class="cf">return</span> <span class="bu">list</span>(gen)</span>
-<span id="cb7-47"><a href="#cb7-47"></a></span>
-<span id="cb7-48"><a href="#cb7-48"></a></span>
-<span id="cb7-49"><a href="#cb7-49"></a><span class="bu">print</span>(<span class="st">"Profiling memory for generator consumption..."</span>)</span>
-<span id="cb7-50"><a href="#cb7-50"></a>consumed_list <span class="op">=</span> consume_generator(my_generator)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="im">import</span> tracemalloc</span>
+<span id="cb7-2"><a href="#cb7-2" aria-label="2"></a><span class="im">from</span> functools <span class="im">import</span> wraps</span>
+<span id="cb7-3"><a href="#cb7-3" aria-label="3"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-label="4"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-label="5"></a><span class="kw">def</span> profile_memory(func):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-label="6"></a>    <span class="co">"""A decorator to profile the memory usage of a function."""</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-label="7"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-label="8"></a>    <span class="at">@wraps</span>(func)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-label="9"></a>    <span class="kw">def</span> wrapper(<span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb7-10"><a href="#cb7-10" aria-label="10"></a>        tracemalloc.start()</span>
+<span id="cb7-11"><a href="#cb7-11" aria-label="11"></a>        result <span class="op">=</span> func(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-label="12"></a>        current, peak <span class="op">=</span> tracemalloc.get_traced_memory()</span>
+<span id="cb7-13"><a href="#cb7-13" aria-label="13"></a>        <span class="bu">print</span>(<span class="ss">f"Function: </span><span class="sc">{</span>func<span class="sc">.</span><span class="va">__name__</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-label="14"></a>        <span class="bu">print</span>(</span>
+<span id="cb7-15"><a href="#cb7-15" aria-label="15"></a>            <span class="ss">f"Current memory usage is </span><span class="sc">{</span>current <span class="op">/</span> <span class="dv">10</span><span class="op">**</span><span class="dv">6</span><span class="sc">:.6f}</span><span class="ss">MB; Peak was </span><span class="sc">{</span>peak <span class="op">/</span> <span class="dv">10</span><span class="op">**</span><span class="dv">6</span><span class="sc">:.6f}</span><span class="ss">MB"</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-label="16"></a>        )</span>
+<span id="cb7-17"><a href="#cb7-17" aria-label="17"></a>        tracemalloc.stop()</span>
+<span id="cb7-18"><a href="#cb7-18" aria-label="18"></a>        <span class="cf">return</span> result</span>
+<span id="cb7-19"><a href="#cb7-19" aria-label="19"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-label="20"></a>    <span class="cf">return</span> wrapper</span>
+<span id="cb7-21"><a href="#cb7-21" aria-label="21"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-label="22"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-label="23"></a><span class="at">@profile_memory</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-label="24"></a><span class="kw">def</span> create_list(n):</span>
+<span id="cb7-25"><a href="#cb7-25" aria-label="25"></a>    <span class="co">"""This function creates a list of n numbers."""</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-label="26"></a>    <span class="cf">return</span> [i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n)]</span>
+<span id="cb7-27"><a href="#cb7-27" aria-label="27"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-label="28"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-label="29"></a><span class="at">@profile_memory</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-label="30"></a><span class="kw">def</span> create_generator(n):</span>
+<span id="cb7-31"><a href="#cb7-31" aria-label="31"></a>    <span class="co">"""This function creates a generator of n numbers."""</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-label="32"></a>    <span class="cf">return</span> (i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n))</span>
+<span id="cb7-33"><a href="#cb7-33" aria-label="33"></a></span>
+<span id="cb7-34"><a href="#cb7-34" aria-label="34"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-label="35"></a>n <span class="op">=</span> <span class="dv">1_000_000</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-label="36"></a><span class="bu">print</span>(<span class="st">"Profiling memory for list creation..."</span>)</span>
+<span id="cb7-37"><a href="#cb7-37" aria-label="37"></a>my_list <span class="op">=</span> create_list(n)</span>
+<span id="cb7-38"><a href="#cb7-38" aria-label="38"></a></span>
+<span id="cb7-39"><a href="#cb7-39" aria-label="39"></a></span>
+<span id="cb7-40"><a href="#cb7-40" aria-label="40"></a><span class="bu">print</span>(<span class="st">"Profiling memory for generator creation..."</span>)</span>
+<span id="cb7-41"><a href="#cb7-41" aria-label="41"></a>my_generator <span class="op">=</span> create_generator(n)</span>
+<span id="cb7-42"><a href="#cb7-42" aria-label="42"></a></span>
+<span id="cb7-43"><a href="#cb7-43" aria-label="43"></a><span class="co"># The generator itself is small. Let's profile consuming it.</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-label="44"></a><span class="at">@profile_memory</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-label="45"></a><span class="kw">def</span> consume_generator(gen):</span>
+<span id="cb7-46"><a href="#cb7-46" aria-label="46"></a>    <span class="cf">return</span> <span class="bu">list</span>(gen)</span>
+<span id="cb7-47"><a href="#cb7-47" aria-label="47"></a></span>
+<span id="cb7-48"><a href="#cb7-48" aria-label="48"></a></span>
+<span id="cb7-49"><a href="#cb7-49" aria-label="49"></a><span class="bu">print</span>(<span class="st">"Profiling memory for generator consumption..."</span>)</span>
+<span id="cb7-50"><a href="#cb7-50" aria-label="50"></a>consumed_list <span class="op">=</span> consume_generator(my_generator)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Profiling memory for list creation...
 Function: create_list
-Current memory usage is 40.441184MB; Peak was 40.441224MB
+Current memory usage is 40.441278MB; Peak was 40.441318MB
 Profiling memory for generator creation...
 Function: create_generator
 Current memory usage is 0.000392MB; Peak was 0.000392MB
 Profiling memory for generator consumption...
 Function: consume_generator
-Current memory usage is 40.441225MB; Peak was 40.441225MB</code></pre>
+Current memory usage is 40.441240MB; Peak was 40.441240MB</code></pre>
 </div>
 </div>
 <p>The output speaks for itself: creating the generator uses almost no memory. The cost only shows up when you actually consume it into a list.</p>
@@ -610,12 +613,12 @@ Current memory usage is 40.441225MB; Peak was 40.441225MB</code></pre>
 <p>A few built-in functions that come up constantly:</p>
 <ul>
 <li><p><strong><code>enumerate(iterable, start=0)</code></strong>: When processing a series of cashflows, you might need to know the period number for each payment. <code>enumerate</code> is perfect for this.</p>
-<div id="ef703694" class="cell" data-execution_count="6">
+<div id="d9931015" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>cashflows <span class="op">=</span> [<span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">1100</span>] <span class="co"># Coupon payments and principal</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="cf">for</span> period, cf <span class="kw">in</span> <span class="bu">enumerate</span>(cashflows, <span class="dv">1</span>):</span>
-<span id="cb9-3"><a href="#cb9-3"></a>    <span class="bu">print</span>(<span class="ss">f"Period </span><span class="sc">{</span>period<span class="sc">}</span><span class="ss">: Cashflow = </span><span class="sc">{</span>cf<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a>cashflows <span class="op">=</span> [<span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">1100</span>] <span class="co"># Coupon payments and principal</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-label="2"></a><span class="cf">for</span> period, cf <span class="kw">in</span> <span class="bu">enumerate</span>(cashflows, <span class="dv">1</span>):</span>
+<span id="cb9-3"><a href="#cb9-3" aria-label="3"></a>    <span class="bu">print</span>(<span class="ss">f"Period </span><span class="sc">{</span>period<span class="sc">}</span><span class="ss">: Cashflow = </span><span class="sc">{</span>cf<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Period 1: Cashflow = 100
@@ -625,13 +628,13 @@ Period 4: Cashflow = 1100</code></pre>
 </div>
 </div></li>
 <li><p><strong><code>zip(*iterables)</code></strong>: This function is very useful for combining different streams of data. For example, you can pair trade dates with their corresponding notionals.</p>
-<div id="ab2e0687" class="cell" data-execution_count="7">
+<div id="d40b1373" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>trade_dates <span class="op">=</span> [<span class="st">'2025-11-05'</span>, <span class="st">'2025-11-06'</span>, <span class="st">'2025-11-07'</span>]</span>
-<span id="cb11-2"><a href="#cb11-2"></a>notionals <span class="op">=</span> [<span class="dv">1_000_000</span>, <span class="dv">2_500_000</span>, <span class="dv">500_000</span>]</span>
-<span id="cb11-3"><a href="#cb11-3"></a><span class="cf">for</span> date, notional <span class="kw">in</span> <span class="bu">zip</span>(trade_dates, notionals):</span>
-<span id="cb11-4"><a href="#cb11-4"></a>    <span class="bu">print</span>(<span class="ss">f"On </span><span class="sc">{</span>date<span class="sc">}</span><span class="ss">, we traded a notional of </span><span class="sc">{</span>notional<span class="sc">:,}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a>trade_dates <span class="op">=</span> [<span class="st">'2025-11-05'</span>, <span class="st">'2025-11-06'</span>, <span class="st">'2025-11-07'</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-label="2"></a>notionals <span class="op">=</span> [<span class="dv">1_000_000</span>, <span class="dv">2_500_000</span>, <span class="dv">500_000</span>]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-label="3"></a><span class="cf">for</span> date, notional <span class="kw">in</span> <span class="bu">zip</span>(trade_dates, notionals):</span>
+<span id="cb11-4"><a href="#cb11-4" aria-label="4"></a>    <span class="bu">print</span>(<span class="ss">f"On </span><span class="sc">{</span>date<span class="sc">}</span><span class="ss">, we traded a notional of </span><span class="sc">{</span>notional<span class="sc">:,}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>On 2025-11-05, we traded a notional of 1,000,000
@@ -640,28 +643,28 @@ On 2025-11-07, we traded a notional of 500,000</code></pre>
 </div>
 </div></li>
 <li><p><strong><code>sorted(iterable, key=None, reverse=False)</code></strong>: Sorting is a common task. You might want to sort a list of trades by maturity date or notional.</p>
-<div id="514bfda8" class="cell" data-execution_count="8">
+<div id="df1b454a" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="im">from</span> datetime <span class="im">import</span> date</span>
-<span id="cb13-3"><a href="#cb13-3"></a></span>
-<span id="cb13-4"><a href="#cb13-4"></a><span class="at">@dataclass</span></span>
-<span id="cb13-5"><a href="#cb13-5"></a><span class="kw">class</span> Trade:</span>
-<span id="cb13-6"><a href="#cb13-6"></a>    trade_id: <span class="bu">str</span></span>
-<span id="cb13-7"><a href="#cb13-7"></a>    maturity: date</span>
-<span id="cb13-8"><a href="#cb13-8"></a>    notional: <span class="bu">float</span></span>
-<span id="cb13-9"><a href="#cb13-9"></a></span>
-<span id="cb13-10"><a href="#cb13-10"></a>trades <span class="op">=</span> [</span>
-<span id="cb13-11"><a href="#cb13-11"></a>    Trade(<span class="st">'T1'</span>, date(<span class="dv">2026</span>, <span class="dv">12</span>, <span class="dv">31</span>), <span class="dv">10_000_000</span>),</span>
-<span id="cb13-12"><a href="#cb13-12"></a>    Trade(<span class="st">'T2'</span>, date(<span class="dv">2025</span>, <span class="dv">12</span>, <span class="dv">31</span>), <span class="dv">5_000_000</span>),</span>
-<span id="cb13-13"><a href="#cb13-13"></a>    Trade(<span class="st">'T3'</span>, date(<span class="dv">2027</span>, <span class="dv">12</span>, <span class="dv">31</span>), <span class="dv">15_000_000</span>),</span>
-<span id="cb13-14"><a href="#cb13-14"></a>]</span>
-<span id="cb13-15"><a href="#cb13-15"></a></span>
-<span id="cb13-16"><a href="#cb13-16"></a><span class="co"># Sort trades by maturity date</span></span>
-<span id="cb13-17"><a href="#cb13-17"></a>sorted_by_maturity <span class="op">=</span> <span class="bu">sorted</span>(trades, key<span class="op">=</span><span class="kw">lambda</span> t: t.maturity)</span>
-<span id="cb13-18"><a href="#cb13-18"></a><span class="cf">for</span> trade <span class="kw">in</span> sorted_by_maturity:</span>
-<span id="cb13-19"><a href="#cb13-19"></a>    <span class="bu">print</span>(trade)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb13-2"><a href="#cb13-2" aria-label="2"></a><span class="im">from</span> datetime <span class="im">import</span> date</span>
+<span id="cb13-3"><a href="#cb13-3" aria-label="3"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-label="4"></a><span class="at">@dataclass</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-label="5"></a><span class="kw">class</span> Trade:</span>
+<span id="cb13-6"><a href="#cb13-6" aria-label="6"></a>    trade_id: <span class="bu">str</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-label="7"></a>    maturity: date</span>
+<span id="cb13-8"><a href="#cb13-8" aria-label="8"></a>    notional: <span class="bu">float</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-label="9"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-label="10"></a>trades <span class="op">=</span> [</span>
+<span id="cb13-11"><a href="#cb13-11" aria-label="11"></a>    Trade(<span class="st">'T1'</span>, date(<span class="dv">2026</span>, <span class="dv">12</span>, <span class="dv">31</span>), <span class="dv">10_000_000</span>),</span>
+<span id="cb13-12"><a href="#cb13-12" aria-label="12"></a>    Trade(<span class="st">'T2'</span>, date(<span class="dv">2025</span>, <span class="dv">12</span>, <span class="dv">31</span>), <span class="dv">5_000_000</span>),</span>
+<span id="cb13-13"><a href="#cb13-13" aria-label="13"></a>    Trade(<span class="st">'T3'</span>, date(<span class="dv">2027</span>, <span class="dv">12</span>, <span class="dv">31</span>), <span class="dv">15_000_000</span>),</span>
+<span id="cb13-14"><a href="#cb13-14" aria-label="14"></a>]</span>
+<span id="cb13-15"><a href="#cb13-15" aria-label="15"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-label="16"></a><span class="co"># Sort trades by maturity date</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-label="17"></a>sorted_by_maturity <span class="op">=</span> <span class="bu">sorted</span>(trades, key<span class="op">=</span><span class="kw">lambda</span> t: t.maturity)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-label="18"></a><span class="cf">for</span> trade <span class="kw">in</span> sorted_by_maturity:</span>
+<span id="cb13-19"><a href="#cb13-19" aria-label="19"></a>    <span class="bu">print</span>(trade)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Trade(trade_id='T2', maturity=datetime.date(2025, 12, 31), notional=5000000)
@@ -677,82 +680,82 @@ Trade(trade_id='T3', maturity=datetime.date(2027, 12, 31), notional=15000000)</c
 <ul>
 <li><p><strong><code>itertools.chain(*iterables)</code> and <code>itertools.chain.from_iterable(iterable)</code></strong>: Often you need to process items from several sequences in a row. <code>chain</code> lets you treat them as a single, continuous stream without merging them in memory. A great example is pricing a fixed-to-float swap leg, where initial coupon payments are fixed, and later ones are floating.</p>
 <p><code>chain.from_iterable</code> is a useful variant that takes a single iterable of iterables.</p>
-<div id="351c1224" class="cell" data-execution_count="9">
+<div id="131d0108" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a><span class="im">import</span> itertools</span>
-<span id="cb15-2"><a href="#cb15-2"></a><span class="im">import</span> random</span>
-<span id="cb15-3"><a href="#cb15-3"></a></span>
-<span id="cb15-4"><a href="#cb15-4"></a><span class="co"># First 2 years have fixed coupons</span></span>
-<span id="cb15-5"><a href="#cb15-5"></a>fixed_leg <span class="op">=</span> [<span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>]</span>
-<span id="cb15-6"><a href="#cb15-6"></a></span>
-<span id="cb15-7"><a href="#cb15-7"></a><span class="co"># Next 3 years have floating coupons (calculated for demonstration)</span></span>
-<span id="cb15-8"><a href="#cb15-8"></a>floating_leg <span class="op">=</span> [<span class="dv">50</span> <span class="op">+</span> random.uniform(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>)]</span>
-<span id="cb15-9"><a href="#cb15-9"></a></span>
-<span id="cb15-10"><a href="#cb15-10"></a><span class="co"># We have a list of cashflow legs</span></span>
-<span id="cb15-11"><a href="#cb15-11"></a>bond_legs <span class="op">=</span> [fixed_leg, floating_leg]</span>
-<span id="cb15-12"><a href="#cb15-12"></a></span>
-<span id="cb15-13"><a href="#cb15-13"></a><span class="co"># We can use chain.from_iterable to chain them together</span></span>
-<span id="cb15-14"><a href="#cb15-14"></a>full_swap_leg <span class="op">=</span> itertools.chain.from_iterable(bond_legs)</span>
-<span id="cb15-15"><a href="#cb15-15"></a></span>
-<span id="cb15-16"><a href="#cb15-16"></a><span class="bu">print</span>(<span class="st">"Full cashflow stream for the leg:"</span>)</span>
-<span id="cb15-17"><a href="#cb15-17"></a><span class="cf">for</span> cf <span class="kw">in</span> full_swap_leg:</span>
-<span id="cb15-18"><a href="#cb15-18"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>cf<span class="sc">:.2f}</span><span class="ss">"</span>, end<span class="op">=</span><span class="st">' '</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-label="1"></a><span class="im">import</span> itertools</span>
+<span id="cb15-2"><a href="#cb15-2" aria-label="2"></a><span class="im">import</span> random</span>
+<span id="cb15-3"><a href="#cb15-3" aria-label="3"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-label="4"></a><span class="co"># First 2 years have fixed coupons</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-label="5"></a>fixed_leg <span class="op">=</span> [<span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-label="6"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-label="7"></a><span class="co"># Next 3 years have floating coupons (calculated for demonstration)</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-label="8"></a>floating_leg <span class="op">=</span> [<span class="dv">50</span> <span class="op">+</span> random.uniform(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>)]</span>
+<span id="cb15-9"><a href="#cb15-9" aria-label="9"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-label="10"></a><span class="co"># We have a list of cashflow legs</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-label="11"></a>bond_legs <span class="op">=</span> [fixed_leg, floating_leg]</span>
+<span id="cb15-12"><a href="#cb15-12" aria-label="12"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-label="13"></a><span class="co"># We can use chain.from_iterable to chain them together</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-label="14"></a>full_swap_leg <span class="op">=</span> itertools.chain.from_iterable(bond_legs)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-label="15"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-label="16"></a><span class="bu">print</span>(<span class="st">"Full cashflow stream for the leg:"</span>)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-label="17"></a><span class="cf">for</span> cf <span class="kw">in</span> full_swap_leg:</span>
+<span id="cb15-18"><a href="#cb15-18" aria-label="18"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>cf<span class="sc">:.2f}</span><span class="ss">"</span>, end<span class="op">=</span><span class="st">' '</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Full cashflow stream for the leg:
-50.00 50.00 50.00 50.00 47.70 54.80 47.51 52.35 45.58 49.08 </code></pre>
+50.00 50.00 50.00 50.00 54.64 51.60 53.66 52.65 45.08 47.15 </code></pre>
 </div>
 </div></li>
 <li><p><strong><code>itertools.accumulate(iterable[, func])</code></strong>: This is ideal for calculating cumulative sums or running products. A common use case is to calculate the cumulative P&amp;L of a trading strategy.</p>
-<div id="14490526" class="cell" data-execution_count="10">
+<div id="4dc89a2f" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="im">import</span> itertools</span>
-<span id="cb17-2"><a href="#cb17-2"></a>daily_pnl <span class="op">=</span> [<span class="dv">150</span>, <span class="op">-</span><span class="dv">200</span>, <span class="dv">50</span>, <span class="dv">300</span>, <span class="op">-</span><span class="dv">100</span>]</span>
-<span id="cb17-3"><a href="#cb17-3"></a>cumulative_pnl <span class="op">=</span> itertools.accumulate(daily_pnl)</span>
-<span id="cb17-4"><a href="#cb17-4"></a><span class="bu">print</span>(<span class="bu">list</span>(cumulative_pnl))</span>
-<span id="cb17-5"><a href="#cb17-5"></a><span class="co"># Output: [150, -50, 0, 300, 200]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-label="1"></a><span class="im">import</span> itertools</span>
+<span id="cb17-2"><a href="#cb17-2" aria-label="2"></a>daily_pnl <span class="op">=</span> [<span class="dv">150</span>, <span class="op">-</span><span class="dv">200</span>, <span class="dv">50</span>, <span class="dv">300</span>, <span class="op">-</span><span class="dv">100</span>]</span>
+<span id="cb17-3"><a href="#cb17-3" aria-label="3"></a>cumulative_pnl <span class="op">=</span> itertools.accumulate(daily_pnl)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-label="4"></a><span class="bu">print</span>(<span class="bu">list</span>(cumulative_pnl))</span>
+<span id="cb17-5"><a href="#cb17-5" aria-label="5"></a><span class="co"># Output: [150, -50, 0, 300, 200]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[150, -50, 0, 300, 200]</code></pre>
 </div>
 </div>
 <p>It can also model more complex recurrence relations, like the amortization of a loan. Let’s calculate the outstanding balance of a fixed-payment annuity until it’s paid off.</p>
-<div id="92a1ab18" class="cell" data-execution_count="11">
+<div id="73e60b90" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a><span class="im">import</span> itertools</span>
-<span id="cb19-2"><a href="#cb19-2"></a></span>
-<span id="cb19-3"><a href="#cb19-3"></a></span>
-<span id="cb19-4"><a href="#cb19-4"></a><span class="kw">def</span> outstanding_balance(balance, payment, rate):</span>
-<span id="cb19-5"><a href="#cb19-5"></a>    <span class="cf">return</span> balance <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> rate) <span class="op">-</span> payment</span>
-<span id="cb19-6"><a href="#cb19-6"></a></span>
-<span id="cb19-7"><a href="#cb19-7"></a></span>
-<span id="cb19-8"><a href="#cb19-8"></a>initial_notional <span class="op">=</span> <span class="dv">1_000</span></span>
-<span id="cb19-9"><a href="#cb19-9"></a>interest_rate <span class="op">=</span> <span class="fl">0.01</span>  <span class="co"># Monthly rate (around 12% annually)</span></span>
-<span id="cb19-10"><a href="#cb19-10"></a>monthly_payment <span class="op">=</span> <span class="dv">50</span></span>
-<span id="cb19-11"><a href="#cb19-11"></a></span>
-<span id="cb19-12"><a href="#cb19-12"></a><span class="co"># Create an infinite stream of payments</span></span>
-<span id="cb19-13"><a href="#cb19-13"></a>payments <span class="op">=</span> itertools.repeat(monthly_payment)</span>
-<span id="cb19-14"><a href="#cb19-14"></a></span>
-<span id="cb19-15"><a href="#cb19-15"></a><span class="co"># The first argument to the lambda is the accumulated value (the balance)</span></span>
-<span id="cb19-16"><a href="#cb19-16"></a><span class="co"># The second argument is the next item from the iterable (the payment)</span></span>
-<span id="cb19-17"><a href="#cb19-17"></a>balances <span class="op">=</span> itertools.accumulate(</span>
-<span id="cb19-18"><a href="#cb19-18"></a>    payments,</span>
-<span id="cb19-19"><a href="#cb19-19"></a>    <span class="kw">lambda</span> balance, pmt: outstanding_balance(balance, pmt, interest_rate),</span>
-<span id="cb19-20"><a href="#cb19-20"></a>    initial<span class="op">=</span>initial_notional,</span>
-<span id="cb19-21"><a href="#cb19-21"></a>)</span>
-<span id="cb19-22"><a href="#cb19-22"></a></span>
-<span id="cb19-23"><a href="#cb19-23"></a><span class="co"># We can use takewhile to iterate until the loan is paid off (balance &gt; 0)</span></span>
-<span id="cb19-24"><a href="#cb19-24"></a><span class="co"># The +1 is to see the final payment that brings the balance to &lt;= 0</span></span>
-<span id="cb19-25"><a href="#cb19-25"></a>amortization_schedule <span class="op">=</span> itertools.takewhile(<span class="kw">lambda</span> balance: balance <span class="op">&gt;</span> <span class="dv">0</span>, balances)</span>
-<span id="cb19-26"><a href="#cb19-26"></a></span>
-<span id="cb19-27"><a href="#cb19-27"></a><span class="cf">for</span> i, balance <span class="kw">in</span> <span class="bu">enumerate</span>(amortization_schedule):</span>
-<span id="cb19-28"><a href="#cb19-28"></a>    <span class="bu">print</span>(<span class="ss">f"Month          </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>balance<span class="sc">:,.2f}</span><span class="ss">"</span>)</span>
-<span id="cb19-29"><a href="#cb19-29"></a></span>
-<span id="cb19-30"><a href="#cb19-30"></a><span class="co"># Note: A proper amortization schedule would have a final smaller payment.</span></span>
-<span id="cb19-31"><a href="#cb19-31"></a><span class="co"># This example is to demonstrate the power of itertools.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-label="1"></a><span class="im">import</span> itertools</span>
+<span id="cb19-2"><a href="#cb19-2" aria-label="2"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-label="3"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-label="4"></a><span class="kw">def</span> outstanding_balance(balance, payment, rate):</span>
+<span id="cb19-5"><a href="#cb19-5" aria-label="5"></a>    <span class="cf">return</span> balance <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> rate) <span class="op">-</span> payment</span>
+<span id="cb19-6"><a href="#cb19-6" aria-label="6"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-label="7"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-label="8"></a>initial_notional <span class="op">=</span> <span class="dv">1_000</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-label="9"></a>interest_rate <span class="op">=</span> <span class="fl">0.01</span>  <span class="co"># Monthly rate (around 12% annually)</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-label="10"></a>monthly_payment <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-label="11"></a></span>
+<span id="cb19-12"><a href="#cb19-12" aria-label="12"></a><span class="co"># Create an infinite stream of payments</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-label="13"></a>payments <span class="op">=</span> itertools.repeat(monthly_payment)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-label="14"></a></span>
+<span id="cb19-15"><a href="#cb19-15" aria-label="15"></a><span class="co"># The first argument to the lambda is the accumulated value (the balance)</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-label="16"></a><span class="co"># The second argument is the next item from the iterable (the payment)</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-label="17"></a>balances <span class="op">=</span> itertools.accumulate(</span>
+<span id="cb19-18"><a href="#cb19-18" aria-label="18"></a>    payments,</span>
+<span id="cb19-19"><a href="#cb19-19" aria-label="19"></a>    <span class="kw">lambda</span> balance, pmt: outstanding_balance(balance, pmt, interest_rate),</span>
+<span id="cb19-20"><a href="#cb19-20" aria-label="20"></a>    initial<span class="op">=</span>initial_notional,</span>
+<span id="cb19-21"><a href="#cb19-21" aria-label="21"></a>)</span>
+<span id="cb19-22"><a href="#cb19-22" aria-label="22"></a></span>
+<span id="cb19-23"><a href="#cb19-23" aria-label="23"></a><span class="co"># We can use takewhile to iterate until the loan is paid off (balance &gt; 0)</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-label="24"></a><span class="co"># The +1 is to see the final payment that brings the balance to &lt;= 0</span></span>
+<span id="cb19-25"><a href="#cb19-25" aria-label="25"></a>amortization_schedule <span class="op">=</span> itertools.takewhile(<span class="kw">lambda</span> balance: balance <span class="op">&gt;</span> <span class="dv">0</span>, balances)</span>
+<span id="cb19-26"><a href="#cb19-26" aria-label="26"></a></span>
+<span id="cb19-27"><a href="#cb19-27" aria-label="27"></a><span class="cf">for</span> i, balance <span class="kw">in</span> <span class="bu">enumerate</span>(amortization_schedule):</span>
+<span id="cb19-28"><a href="#cb19-28" aria-label="28"></a>    <span class="bu">print</span>(<span class="ss">f"Month          </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>balance<span class="sc">:,.2f}</span><span class="ss">"</span>)</span>
+<span id="cb19-29"><a href="#cb19-29" aria-label="29"></a></span>
+<span id="cb19-30"><a href="#cb19-30" aria-label="30"></a><span class="co"># Note: A proper amortization schedule would have a final smaller payment.</span></span>
+<span id="cb19-31"><a href="#cb19-31" aria-label="31"></a><span class="co"># This example is to demonstrate the power of itertools.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Month          1: 1,000.00
@@ -781,19 +784,19 @@ Month          23: 21.14</code></pre>
 </div>
 </div></li>
 <li><p><strong><code>itertools.pairwise(iterable)</code></strong>: As we’ve seen, this is ideal for working with consecutive items in a sequence. Calculating year fractions for a swap leg is a prime example.</p>
-<div id="5b957904" class="cell" data-execution_count="12">
+<div id="db0ce89a" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a><span class="im">import</span> itertools</span>
-<span id="cb21-2"><a href="#cb21-2"></a><span class="im">from</span> datetime <span class="im">import</span> date</span>
-<span id="cb21-3"><a href="#cb21-3"></a></span>
-<span id="cb21-4"><a href="#cb21-4"></a>payment_dates <span class="op">=</span> [date(<span class="dv">2025</span>, <span class="dv">1</span>, <span class="dv">15</span>), date(<span class="dv">2025</span>, <span class="dv">7</span>, <span class="dv">15</span>), date(<span class="dv">2026</span>, <span class="dv">1</span>, <span class="dv">15</span>)]</span>
-<span id="cb21-5"><a href="#cb21-5"></a><span class="kw">def</span> year_fraction(start, end):</span>
-<span id="cb21-6"><a href="#cb21-6"></a>    <span class="cf">return</span> (end <span class="op">-</span> start).days <span class="op">/</span> <span class="fl">365.25</span></span>
-<span id="cb21-7"><a href="#cb21-7"></a></span>
-<span id="cb21-8"><a href="#cb21-8"></a><span class="cf">for</span> start, end <span class="kw">in</span> itertools.pairwise(payment_dates):</span>
-<span id="cb21-9"><a href="#cb21-9"></a>    yf <span class="op">=</span> year_fraction(start, end)</span>
-<span id="cb21-10"><a href="#cb21-10"></a>    <span class="bu">print</span>(<span class="ss">f"Period: </span><span class="sc">{</span>start<span class="sc">}</span><span class="ss"> to </span><span class="sc">{</span>end<span class="sc">}</span><span class="ss">, Year Fraction: </span><span class="sc">{</span>yf<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-label="1"></a><span class="im">import</span> itertools</span>
+<span id="cb21-2"><a href="#cb21-2" aria-label="2"></a><span class="im">from</span> datetime <span class="im">import</span> date</span>
+<span id="cb21-3"><a href="#cb21-3" aria-label="3"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-label="4"></a>payment_dates <span class="op">=</span> [date(<span class="dv">2025</span>, <span class="dv">1</span>, <span class="dv">15</span>), date(<span class="dv">2025</span>, <span class="dv">7</span>, <span class="dv">15</span>), date(<span class="dv">2026</span>, <span class="dv">1</span>, <span class="dv">15</span>)]</span>
+<span id="cb21-5"><a href="#cb21-5" aria-label="5"></a><span class="kw">def</span> year_fraction(start, end):</span>
+<span id="cb21-6"><a href="#cb21-6" aria-label="6"></a>    <span class="cf">return</span> (end <span class="op">-</span> start).days <span class="op">/</span> <span class="fl">365.25</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-label="7"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-label="8"></a><span class="cf">for</span> start, end <span class="kw">in</span> itertools.pairwise(payment_dates):</span>
+<span id="cb21-9"><a href="#cb21-9" aria-label="9"></a>    yf <span class="op">=</span> year_fraction(start, end)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-label="10"></a>    <span class="bu">print</span>(<span class="ss">f"Period: </span><span class="sc">{</span>start<span class="sc">}</span><span class="ss"> to </span><span class="sc">{</span>end<span class="sc">}</span><span class="ss">, Year Fraction: </span><span class="sc">{</span>yf<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Period: 2025-01-15 to 2025-07-15, Year Fraction: 0.4956
@@ -801,13 +804,13 @@ Period: 2025-07-15 to 2026-01-15, Year Fraction: 0.5038</code></pre>
 </div>
 </div></li>
 <li><p><strong><code>itertools.cycle(iterable)</code></strong>: Repeats a sequence indefinitely. This can be used to cycle through a set of risk scenarios or apply a repeating pattern of market data shocks.</p>
-<div id="ed9755f0" class="cell" data-execution_count="13">
+<div id="d9412aae" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1"></a><span class="im">import</span> itertools</span>
-<span id="cb23-2"><a href="#cb23-2"></a>scenarios <span class="op">=</span> itertools.cycle([<span class="st">'Base'</span>, <span class="st">'Rate Up'</span>, <span class="st">'Rate Down'</span>])</span>
-<span id="cb23-3"><a href="#cb23-3"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
-<span id="cb23-4"><a href="#cb23-4"></a>    <span class="bu">print</span>(<span class="ss">f"Running scenario: </span><span class="sc">{</span><span class="bu">next</span>(scenarios)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-label="1"></a><span class="im">import</span> itertools</span>
+<span id="cb23-2"><a href="#cb23-2" aria-label="2"></a>scenarios <span class="op">=</span> itertools.cycle([<span class="st">'Base'</span>, <span class="st">'Rate Up'</span>, <span class="st">'Rate Down'</span>])</span>
+<span id="cb23-3"><a href="#cb23-3" aria-label="3"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
+<span id="cb23-4"><a href="#cb23-4" aria-label="4"></a>    <span class="bu">print</span>(<span class="ss">f"Running scenario: </span><span class="sc">{</span><span class="bu">next</span>(scenarios)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running scenario: Base

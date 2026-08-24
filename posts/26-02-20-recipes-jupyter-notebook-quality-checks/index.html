@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -14,10 +14,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -76,12 +79,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-96a43165c4d0207e3a751099b8d9671b.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-c6434e2816b6e53f820184e91c93ac7d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-73751680ca121cac81413277327230eb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-c7170261eb2bbedd820cef4c8c5b1644.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-49de6045867557a8d47d4e02c0bec047.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-fcffe00015cf7e92884255123184f18a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-5865491327066f56f9cc3bed50bb0a86.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -412,45 +415,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>There might be some other conventions your team is following (or at least trying to). Nice titles, descriptive expelnations, sectioning etc. Without a cerberus checking those commit after commit it’s hard to muster the discipline ourselves.</p>
 <p>Since notebooks are just JSON files under the hood, we can easily prepare a zero-dependency Python script to be our watchdog.</p>
 <p>Let’s define a helper class to represent the structure of a notebook cell, and then write some functions to check for common quality issues.</p>
-<div id="7e4e1680" class="cell" data-execution_count="1">
+<div id="a8973351" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">"""Check Jupyter notebooks for quality criteria."""</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> json</span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="im">import</span> sys</span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="im">from</span> typing <span class="im">import</span> TypedDict, cast</span>
-<span id="cb1-7"><a href="#cb1-7"></a></span>
-<span id="cb1-8"><a href="#cb1-8"></a></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="kw">class</span> Cell(TypedDict):</span>
-<span id="cb1-10"><a href="#cb1-10"></a>    <span class="co">"""A cell in a Jupyter notebook."""</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a></span>
-<span id="cb1-12"><a href="#cb1-12"></a>    cell_type: <span class="bu">str</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a>    outputs: <span class="bu">list</span>[<span class="bu">dict</span>]</span>
-<span id="cb1-14"><a href="#cb1-14"></a>    execution_count: <span class="bu">int</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a>    source: <span class="bu">list</span>[<span class="bu">str</span>]</span>
-<span id="cb1-16"><a href="#cb1-16"></a>    metadata: <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">str</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="co">"""Check Jupyter notebooks for quality criteria."""</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a><span class="im">import</span> json</span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a><span class="im">import</span> sys</span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a><span class="im">from</span> typing <span class="im">import</span> TypedDict, cast</span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a><span class="kw">class</span> Cell(TypedDict):</span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a>    <span class="co">"""A cell in a Jupyter notebook."""</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a>    cell_type: <span class="bu">str</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a>    outputs: <span class="bu">list</span>[<span class="bu">dict</span>]</span>
+<span id="cb1-14"><a href="#cb1-14" aria-label="14"></a>    execution_count: <span class="bu">int</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-label="15"></a>    source: <span class="bu">list</span>[<span class="bu">str</span>]</span>
+<span id="cb1-16"><a href="#cb1-16" aria-label="16"></a>    metadata: <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">str</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>This script will perform a couple of simple checks on each notebook:</p>
-<div id="81f501b2" class="cell" data-execution_count="2">
+<div id="9bb18f2a" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1"></a><span class="kw">def</span> first_cell_is_markdown(cells: <span class="bu">list</span>[Cell]) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>    <span class="co">"""Check if the first cell in the notebook is a markdown cell."""</span></span>
-<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3"></a>    first <span class="op">=</span> cells[<span class="dv">0</span>]</span>
-<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4"></a>    cell_type: <span class="bu">str</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> first.get(<span class="st">"cell_type"</span>)</span>
-<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a>    <span class="cf">return</span> cell_type <span class="op">==</span> <span class="st">"markdown"</span></span>
-<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6"></a></span>
-<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-8" class="code-annotation-target"><a href="#annotated-cell-2-8"></a><span class="kw">def</span> outputs_are_empty(cells: <span class="bu">list</span>[Cell]) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
-<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9"></a>    <span class="co">"""Check if all cells in the notebook have empty outputs."""</span></span>
-<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10"></a>    <span class="cf">for</span> cell <span class="kw">in</span> cells:</span>
-<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11"></a>        outputs <span class="op">=</span> cell.get(<span class="st">"outputs"</span>)</span>
-<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12"></a>        <span class="cf">if</span> outputs:</span>
-<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13"></a>            <span class="cf">return</span> <span class="va">False</span></span>
-<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14"></a>    <span class="cf">return</span> <span class="va">True</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-label="1"></a><span class="kw">def</span> first_cell_is_markdown(cells: <span class="bu">list</span>[Cell]) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-label="2"></a>    <span class="co">"""Check if the first cell in the notebook is a markdown cell."""</span></span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-label="3"></a>    first <span class="op">=</span> cells[<span class="dv">0</span>]</span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-label="4"></a>    cell_type: <span class="bu">str</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> first.get(<span class="st">"cell_type"</span>)</span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-label="5"></a>    <span class="cf">return</span> cell_type <span class="op">==</span> <span class="st">"markdown"</span></span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-label="6"></a></span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-label="7"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-8" class="code-annotation-target"><a href="#annotated-cell-2-8" aria-label="8"></a><span class="kw">def</span> outputs_are_empty(cells: <span class="bu">list</span>[Cell]) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-label="9"></a>    <span class="co">"""Check if all cells in the notebook have empty outputs."""</span></span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-label="10"></a>    <span class="cf">for</span> cell <span class="kw">in</span> cells:</span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-label="11"></a>        outputs <span class="op">=</span> cell.get(<span class="st">"outputs"</span>)</span>
+<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12" aria-label="12"></a>        <span class="cf">if</span> outputs:</span>
+<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13" aria-label="13"></a>            <span class="cf">return</span> <span class="va">False</span></span>
+<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14" aria-label="14"></a>    <span class="cf">return</span> <span class="va">True</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -466,44 +469,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Then we need some logic to run these checks on all notebooks in a directory:</p>
-<div id="a242b67a" class="cell" data-execution_count="3">
+<div id="c63cb76a" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1"></a><span class="kw">def</span> check_notebook(path: Path) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
-<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2"></a>    <span class="co">"""Check if a notebook satisfies the quality criteria."""</span></span>
-<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3"></a>    json_string <span class="op">=</span> path.read_text(encoding<span class="op">=</span><span class="st">"utf8"</span>)</span>
-<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4"></a>    data <span class="op">=</span> json.loads(json_string)</span>
-<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5"></a></span>
-<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6"></a>    cells <span class="op">=</span> data.get(<span class="st">"cells"</span>)</span>
-<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7"></a>    <span class="cf">if</span> <span class="kw">not</span> cells:</span>
-<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8"></a>        <span class="co"># We shouldn't have empty notebooks in our repo</span></span>
-<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9"></a>        <span class="cf">return</span> <span class="va">False</span></span>
-<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10"></a></span>
-<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11"></a>    cells <span class="op">=</span> cast(<span class="st">"list[Cell]"</span>, cells)</span>
-<span id="annotated-cell-3-12"><a href="#annotated-cell-3-12"></a>    <span class="cf">return</span> <span class="bu">all</span>(</span>
-<span id="annotated-cell-3-13"><a href="#annotated-cell-3-13"></a>        (</span>
-<span id="annotated-cell-3-14"><a href="#annotated-cell-3-14"></a>            first_cell_is_markdown(cells),</span>
-<span id="annotated-cell-3-15"><a href="#annotated-cell-3-15"></a>            outputs_are_empty(cells),</span>
-<span id="annotated-cell-3-16"><a href="#annotated-cell-3-16"></a>            <span class="co"># Potentially more checks could be added here in the future.</span></span>
-<span id="annotated-cell-3-17"><a href="#annotated-cell-3-17"></a>        )</span>
-<span id="annotated-cell-3-18"><a href="#annotated-cell-3-18"></a>    )</span>
-<span id="annotated-cell-3-19"><a href="#annotated-cell-3-19"></a></span>
-<span id="annotated-cell-3-20"><a href="#annotated-cell-3-20"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-21" class="code-annotation-target"><a href="#annotated-cell-3-21"></a><span class="kw">def</span> check_directory(path_str: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
-<span id="annotated-cell-3-22"><a href="#annotated-cell-3-22"></a>    <span class="co">"""Check all notebooks in a directory and its subdirectories."""</span></span>
-<span id="annotated-cell-3-23"><a href="#annotated-cell-3-23"></a>    all_notebooks <span class="op">=</span> Path(path_str).glob(<span class="st">"**/*.ipynb"</span>)</span>
-<span id="annotated-cell-3-24"><a href="#annotated-cell-3-24"></a>    failed <span class="op">=</span> [path <span class="cf">for</span> path <span class="kw">in</span> all_notebooks <span class="cf">if</span> <span class="kw">not</span> check_notebook(path)]</span>
-<span id="annotated-cell-3-25"><a href="#annotated-cell-3-25"></a></span>
-<span id="annotated-cell-3-26"><a href="#annotated-cell-3-26"></a>    <span class="cf">if</span> <span class="kw">not</span> failed:</span>
-<span id="annotated-cell-3-27"><a href="#annotated-cell-3-27"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
-<span id="annotated-cell-3-28"><a href="#annotated-cell-3-28"></a></span>
-<span id="annotated-cell-3-29"><a href="#annotated-cell-3-29"></a>    failed_str <span class="op">=</span> <span class="st">"</span><span class="ch">\n\t</span><span class="st">"</span>.join(<span class="bu">str</span>(path) <span class="cf">for</span> path <span class="kw">in</span> failed)</span>
-<span id="annotated-cell-3-30"><a href="#annotated-cell-3-30"></a>    <span class="bu">print</span>(<span class="ss">f"Failed check on notebooks:</span><span class="ch">\n\t</span><span class="sc">{</span>failed_str<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="annotated-cell-3-31"><a href="#annotated-cell-3-31"></a>    <span class="cf">return</span> <span class="dv">1</span></span>
-<span id="annotated-cell-3-32"><a href="#annotated-cell-3-32"></a></span>
-<span id="annotated-cell-3-33"><a href="#annotated-cell-3-33"></a></span>
-<span id="annotated-cell-3-34"><a href="#annotated-cell-3-34"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
-<span id="annotated-cell-3-35"><a href="#annotated-cell-3-35"></a>    sys.exit(check_directory(<span class="st">"."</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1" aria-label="1"></a><span class="kw">def</span> check_notebook(path: Path) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-label="2"></a>    <span class="co">"""Check if a notebook satisfies the quality criteria."""</span></span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-label="3"></a>    json_string <span class="op">=</span> path.read_text(encoding<span class="op">=</span><span class="st">"utf8"</span>)</span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-label="4"></a>    data <span class="op">=</span> json.loads(json_string)</span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-label="5"></a></span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-label="6"></a>    cells <span class="op">=</span> data.get(<span class="st">"cells"</span>)</span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-label="7"></a>    <span class="cf">if</span> <span class="kw">not</span> cells:</span>
+<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8" aria-label="8"></a>        <span class="co"># We shouldn't have empty notebooks in our repo</span></span>
+<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9" aria-label="9"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10" aria-label="10"></a></span>
+<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11" aria-label="11"></a>    cells <span class="op">=</span> cast(<span class="st">"list[Cell]"</span>, cells)</span>
+<span id="annotated-cell-3-12"><a href="#annotated-cell-3-12" aria-label="12"></a>    <span class="cf">return</span> <span class="bu">all</span>(</span>
+<span id="annotated-cell-3-13"><a href="#annotated-cell-3-13" aria-label="13"></a>        (</span>
+<span id="annotated-cell-3-14"><a href="#annotated-cell-3-14" aria-label="14"></a>            first_cell_is_markdown(cells),</span>
+<span id="annotated-cell-3-15"><a href="#annotated-cell-3-15" aria-label="15"></a>            outputs_are_empty(cells),</span>
+<span id="annotated-cell-3-16"><a href="#annotated-cell-3-16" aria-label="16"></a>            <span class="co"># Potentially more checks could be added here in the future.</span></span>
+<span id="annotated-cell-3-17"><a href="#annotated-cell-3-17" aria-label="17"></a>        )</span>
+<span id="annotated-cell-3-18"><a href="#annotated-cell-3-18" aria-label="18"></a>    )</span>
+<span id="annotated-cell-3-19"><a href="#annotated-cell-3-19" aria-label="19"></a></span>
+<span id="annotated-cell-3-20"><a href="#annotated-cell-3-20" aria-label="20"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-21" class="code-annotation-target"><a href="#annotated-cell-3-21" aria-label="21"></a><span class="kw">def</span> check_directory(path_str: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="annotated-cell-3-22"><a href="#annotated-cell-3-22" aria-label="22"></a>    <span class="co">"""Check all notebooks in a directory and its subdirectories."""</span></span>
+<span id="annotated-cell-3-23"><a href="#annotated-cell-3-23" aria-label="23"></a>    all_notebooks <span class="op">=</span> Path(path_str).glob(<span class="st">"**/*.ipynb"</span>)</span>
+<span id="annotated-cell-3-24"><a href="#annotated-cell-3-24" aria-label="24"></a>    failed <span class="op">=</span> [path <span class="cf">for</span> path <span class="kw">in</span> all_notebooks <span class="cf">if</span> <span class="kw">not</span> check_notebook(path)]</span>
+<span id="annotated-cell-3-25"><a href="#annotated-cell-3-25" aria-label="25"></a></span>
+<span id="annotated-cell-3-26"><a href="#annotated-cell-3-26" aria-label="26"></a>    <span class="cf">if</span> <span class="kw">not</span> failed:</span>
+<span id="annotated-cell-3-27"><a href="#annotated-cell-3-27" aria-label="27"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="annotated-cell-3-28"><a href="#annotated-cell-3-28" aria-label="28"></a></span>
+<span id="annotated-cell-3-29"><a href="#annotated-cell-3-29" aria-label="29"></a>    failed_str <span class="op">=</span> <span class="st">"</span><span class="ch">\n\t</span><span class="st">"</span>.join(<span class="bu">str</span>(path) <span class="cf">for</span> path <span class="kw">in</span> failed)</span>
+<span id="annotated-cell-3-30"><a href="#annotated-cell-3-30" aria-label="30"></a>    <span class="bu">print</span>(<span class="ss">f"Failed check on notebooks:</span><span class="ch">\n\t</span><span class="sc">{</span>failed_str<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="annotated-cell-3-31"><a href="#annotated-cell-3-31" aria-label="31"></a>    <span class="cf">return</span> <span class="dv">1</span></span>
+<span id="annotated-cell-3-32"><a href="#annotated-cell-3-32" aria-label="32"></a></span>
+<span id="annotated-cell-3-33"><a href="#annotated-cell-3-33" aria-label="33"></a></span>
+<span id="annotated-cell-3-34"><a href="#annotated-cell-3-34" aria-label="34"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="annotated-cell-3-35"><a href="#annotated-cell-3-35" aria-label="35"></a>    sys.exit(check_directory(<span class="st">"."</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">

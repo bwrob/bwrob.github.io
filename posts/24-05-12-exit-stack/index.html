@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -14,10 +14,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -76,12 +79,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-96a43165c4d0207e3a751099b8d9671b.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-c6434e2816b6e53f820184e91c93ac7d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-73751680ca121cac81413277327230eb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-c7170261eb2bbedd820cef4c8c5b1644.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-49de6045867557a8d47d4e02c0bec047.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-fcffe00015cf7e92884255123184f18a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-5865491327066f56f9cc3bed50bb0a86.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -467,47 +470,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="mock-functions" class="level3">
 <h3 class="anchored" data-anchor-id="mock-functions">Mock functions</h3>
 <p>The setup described above comes from a real-life situation I worked through. I can’t show you the actual API usage or data (or even the name of RMS itself), so we need to define some mocker functions. Mocks like this are actually not an uncommon thing — such approach is prevalent in testing API client code. In our case it would look like this:</p>
-<div id="272ffafa" class="cell" data-execution_count="1">
+<div id="da889189" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="im">from</span> enum <span class="im">import</span> StrEnum</span>
-<span id="annotated-cell-1-2"><a href="#annotated-cell-1-2"></a><span class="im">from</span> uuid <span class="im">import</span> uuid4</span>
-<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3"></a></span>
-<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4"></a></span>
-<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5"></a><span class="kw">class</span> MockObject(StrEnum):</span>
-<span id="annotated-cell-1-6"><a href="#annotated-cell-1-6"></a>    <span class="co">"""Types of mock objects."""</span></span>
-<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7"></a></span>
-<span id="annotated-cell-1-8"><a href="#annotated-cell-1-8"></a>    ANALYSIS <span class="op">=</span> <span class="st">"analysis"</span></span>
-<span id="annotated-cell-1-9"><a href="#annotated-cell-1-9"></a>    BENCHMARK <span class="op">=</span> <span class="st">"benchmark"</span></span>
-<span id="annotated-cell-1-10"><a href="#annotated-cell-1-10"></a>    OTC_PRODUCTS <span class="op">=</span> <span class="st">"otc_products"</span></span>
-<span id="annotated-cell-1-11"><a href="#annotated-cell-1-11"></a>    PORTFOLIO <span class="op">=</span> <span class="st">"portfolio"</span></span>
-<span id="annotated-cell-1-12"><a href="#annotated-cell-1-12"></a></span>
-<span id="annotated-cell-1-13"><a href="#annotated-cell-1-13"></a></span>
-<span id="annotated-cell-1-14"><a href="#annotated-cell-1-14"></a><span class="kw">def</span> mock_object(object_type: MockObject) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="annotated-cell-1-15"><a href="#annotated-cell-1-15"></a>    <span class="co">"""Mock a UUID for a given object type.</span></span>
-<span id="annotated-cell-1-16"><a href="#annotated-cell-1-16"></a></span>
-<span id="annotated-cell-1-17"><a href="#annotated-cell-1-17"></a><span class="co">    Args:</span></span>
-<span id="annotated-cell-1-18"><a href="#annotated-cell-1-18"></a><span class="co">        object_type: Type of object.</span></span>
-<span id="annotated-cell-1-19"><a href="#annotated-cell-1-19"></a><span class="co">    """</span></span>
-<span id="annotated-cell-1-20"><a href="#annotated-cell-1-20"></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>object_type<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>uuid4()<span class="sc">}</span><span class="ss">"</span></span>
-<span id="annotated-cell-1-21"><a href="#annotated-cell-1-21"></a></span>
-<span id="annotated-cell-1-22"><a href="#annotated-cell-1-22"></a></span>
-<span id="annotated-cell-1-23"><a href="#annotated-cell-1-23"></a><span class="kw">def</span> mock_preparation(object_type: MockObject, <span class="op">**</span>kwargs) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="annotated-cell-1-24"><a href="#annotated-cell-1-24"></a>    <span class="co">"""Mock preparation of an object.</span></span>
-<span id="annotated-cell-1-25"><a href="#annotated-cell-1-25"></a></span>
-<span id="annotated-cell-1-26"><a href="#annotated-cell-1-26"></a><span class="co">    Args:</span></span>
-<span id="annotated-cell-1-27"><a href="#annotated-cell-1-27"></a><span class="co">        object_type: Type of object.</span></span>
-<span id="annotated-cell-1-28"><a href="#annotated-cell-1-28"></a><span class="co">    """</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-29" class="code-annotation-target"><a href="#annotated-cell-1-29"></a>    <span class="bu">print</span>(<span class="ss">f"Preparing </span><span class="sc">{</span>object_type<span class="sc">}</span><span class="ss">"</span> <span class="op">+</span> (<span class="ss">f" using </span><span class="sc">{</span>kwargs<span class="sc">}</span><span class="ss">"</span> <span class="cf">if</span> kwargs <span class="cf">else</span> <span class="st">"."</span>))</span>
-<span id="annotated-cell-1-30"><a href="#annotated-cell-1-30"></a></span>
-<span id="annotated-cell-1-31"><a href="#annotated-cell-1-31"></a></span>
-<span id="annotated-cell-1-32"><a href="#annotated-cell-1-32"></a><span class="kw">def</span> mock_clean_up(object_uuid: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="annotated-cell-1-33"><a href="#annotated-cell-1-33"></a>    <span class="co">"""Mock clean up of an object.</span></span>
-<span id="annotated-cell-1-34"><a href="#annotated-cell-1-34"></a></span>
-<span id="annotated-cell-1-35"><a href="#annotated-cell-1-35"></a><span class="co">    Args:</span></span>
-<span id="annotated-cell-1-36"><a href="#annotated-cell-1-36"></a><span class="co">        object_uuid: Uuid of the object.</span></span>
-<span id="annotated-cell-1-37"><a href="#annotated-cell-1-37"></a><span class="co">    """</span></span>
-<span id="annotated-cell-1-38"><a href="#annotated-cell-1-38"></a>    <span class="bu">print</span>(<span class="ss">f"Cleaning up after </span><span class="sc">{</span>object_uuid<span class="sc">}</span><span class="ss">."</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-label="1"></a><span class="im">from</span> enum <span class="im">import</span> StrEnum</span>
+<span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-label="2"></a><span class="im">from</span> uuid <span class="im">import</span> uuid4</span>
+<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-label="3"></a></span>
+<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-label="4"></a></span>
+<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5" aria-label="5"></a><span class="kw">class</span> MockObject(StrEnum):</span>
+<span id="annotated-cell-1-6"><a href="#annotated-cell-1-6" aria-label="6"></a>    <span class="co">"""Types of mock objects."""</span></span>
+<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7" aria-label="7"></a></span>
+<span id="annotated-cell-1-8"><a href="#annotated-cell-1-8" aria-label="8"></a>    ANALYSIS <span class="op">=</span> <span class="st">"analysis"</span></span>
+<span id="annotated-cell-1-9"><a href="#annotated-cell-1-9" aria-label="9"></a>    BENCHMARK <span class="op">=</span> <span class="st">"benchmark"</span></span>
+<span id="annotated-cell-1-10"><a href="#annotated-cell-1-10" aria-label="10"></a>    OTC_PRODUCTS <span class="op">=</span> <span class="st">"otc_products"</span></span>
+<span id="annotated-cell-1-11"><a href="#annotated-cell-1-11" aria-label="11"></a>    PORTFOLIO <span class="op">=</span> <span class="st">"portfolio"</span></span>
+<span id="annotated-cell-1-12"><a href="#annotated-cell-1-12" aria-label="12"></a></span>
+<span id="annotated-cell-1-13"><a href="#annotated-cell-1-13" aria-label="13"></a></span>
+<span id="annotated-cell-1-14"><a href="#annotated-cell-1-14" aria-label="14"></a><span class="kw">def</span> mock_object(object_type: MockObject) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="annotated-cell-1-15"><a href="#annotated-cell-1-15" aria-label="15"></a>    <span class="co">"""Mock a UUID for a given object type.</span></span>
+<span id="annotated-cell-1-16"><a href="#annotated-cell-1-16" aria-label="16"></a></span>
+<span id="annotated-cell-1-17"><a href="#annotated-cell-1-17" aria-label="17"></a><span class="co">    Args:</span></span>
+<span id="annotated-cell-1-18"><a href="#annotated-cell-1-18" aria-label="18"></a><span class="co">        object_type: Type of object.</span></span>
+<span id="annotated-cell-1-19"><a href="#annotated-cell-1-19" aria-label="19"></a><span class="co">    """</span></span>
+<span id="annotated-cell-1-20"><a href="#annotated-cell-1-20" aria-label="20"></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>object_type<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>uuid4()<span class="sc">}</span><span class="ss">"</span></span>
+<span id="annotated-cell-1-21"><a href="#annotated-cell-1-21" aria-label="21"></a></span>
+<span id="annotated-cell-1-22"><a href="#annotated-cell-1-22" aria-label="22"></a></span>
+<span id="annotated-cell-1-23"><a href="#annotated-cell-1-23" aria-label="23"></a><span class="kw">def</span> mock_preparation(object_type: MockObject, <span class="op">**</span>kwargs) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="annotated-cell-1-24"><a href="#annotated-cell-1-24" aria-label="24"></a>    <span class="co">"""Mock preparation of an object.</span></span>
+<span id="annotated-cell-1-25"><a href="#annotated-cell-1-25" aria-label="25"></a></span>
+<span id="annotated-cell-1-26"><a href="#annotated-cell-1-26" aria-label="26"></a><span class="co">    Args:</span></span>
+<span id="annotated-cell-1-27"><a href="#annotated-cell-1-27" aria-label="27"></a><span class="co">        object_type: Type of object.</span></span>
+<span id="annotated-cell-1-28"><a href="#annotated-cell-1-28" aria-label="28"></a><span class="co">    """</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-29" class="code-annotation-target"><a href="#annotated-cell-1-29" aria-label="29"></a>    <span class="bu">print</span>(<span class="ss">f"Preparing </span><span class="sc">{</span>object_type<span class="sc">}</span><span class="ss">"</span> <span class="op">+</span> (<span class="ss">f" using </span><span class="sc">{</span>kwargs<span class="sc">}</span><span class="ss">"</span> <span class="cf">if</span> kwargs <span class="cf">else</span> <span class="st">"."</span>))</span>
+<span id="annotated-cell-1-30"><a href="#annotated-cell-1-30" aria-label="30"></a></span>
+<span id="annotated-cell-1-31"><a href="#annotated-cell-1-31" aria-label="31"></a></span>
+<span id="annotated-cell-1-32"><a href="#annotated-cell-1-32" aria-label="32"></a><span class="kw">def</span> mock_clean_up(object_uuid: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="annotated-cell-1-33"><a href="#annotated-cell-1-33" aria-label="33"></a>    <span class="co">"""Mock clean up of an object.</span></span>
+<span id="annotated-cell-1-34"><a href="#annotated-cell-1-34" aria-label="34"></a></span>
+<span id="annotated-cell-1-35"><a href="#annotated-cell-1-35" aria-label="35"></a><span class="co">    Args:</span></span>
+<span id="annotated-cell-1-36"><a href="#annotated-cell-1-36" aria-label="36"></a><span class="co">        object_uuid: Uuid of the object.</span></span>
+<span id="annotated-cell-1-37"><a href="#annotated-cell-1-37" aria-label="37"></a><span class="co">    """</span></span>
+<span id="annotated-cell-1-38"><a href="#annotated-cell-1-38" aria-label="38"></a>    <span class="bu">print</span>(<span class="ss">f"Cleaning up after </span><span class="sc">{</span>object_uuid<span class="sc">}</span><span class="ss">."</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -523,31 +526,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-managers" class="level3">
 <h3 class="anchored" data-anchor-id="context-managers">Context managers</h3>
 <p>Easiest way to define a CM is through <code>contextlib.contextmanager</code> decorator. To use it, you need a function that returns a generator. Code executed on enter should come before <code>yield</code> statement and the one for the exit afterwards. The generator yields the result of the CM (ex. handle to an opened file), the <code>y</code> in <code>with x(*args) as y:</code>.</p>
-<div id="c18f5ec3" class="cell" data-execution_count="2">
+<div id="0269ed3f" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a><span class="im">from</span> contextlib <span class="im">import</span> contextmanager</span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a><span class="im">from</span> typing <span class="im">import</span> Generator</span>
-<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3"></a></span>
-<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4"></a><span class="at">@contextmanager</span></span>
-<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a><span class="kw">def</span> analysis(</span>
-<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6"></a>    <span class="op">*</span>,</span>
-<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7"></a>    benchmark_uuid: <span class="bu">str</span>,</span>
-<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8"></a>) <span class="op">-&gt;</span> Generator[<span class="bu">str</span>, <span class="va">None</span>, <span class="va">None</span>]:</span>
-<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9"></a>    <span class="co">"""Mock definition of an analysis.</span></span>
-<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10"></a></span>
-<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11"></a><span class="co">    Example: equity delta and correlation with benchmark.</span></span>
-<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12"></a></span>
-<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13"></a><span class="co">    Args:</span></span>
-<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14"></a><span class="co">        benchmark_uuid: Uuid of the benchmark.</span></span>
-<span id="annotated-cell-2-15"><a href="#annotated-cell-2-15"></a><span class="co">    """</span></span>
-<span id="annotated-cell-2-16"><a href="#annotated-cell-2-16"></a>    mock_preparation(</span>
-<span id="annotated-cell-2-17"><a href="#annotated-cell-2-17"></a>        MockObject.ANALYSIS,</span>
-<span id="annotated-cell-2-18"><a href="#annotated-cell-2-18"></a>        benchmark_name<span class="op">=</span>benchmark_uuid,</span>
-<span id="annotated-cell-2-19"><a href="#annotated-cell-2-19"></a>    )</span>
-<span id="annotated-cell-2-20"><a href="#annotated-cell-2-20"></a>    analysis_uuid <span class="op">=</span> mock_object(MockObject.ANALYSIS)</span>
-<span id="annotated-cell-2-21"><a href="#annotated-cell-2-21"></a>    <span class="cf">yield</span> analysis_uuid</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-22" class="code-annotation-target"><a href="#annotated-cell-2-22"></a>    mock_clean_up(analysis_uuid)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-label="1"></a><span class="im">from</span> contextlib <span class="im">import</span> contextmanager</span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-label="2"></a><span class="im">from</span> typing <span class="im">import</span> Generator</span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-label="3"></a></span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-label="4"></a><span class="at">@contextmanager</span></span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-label="5"></a><span class="kw">def</span> analysis(</span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-label="6"></a>    <span class="op">*</span>,</span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-label="7"></a>    benchmark_uuid: <span class="bu">str</span>,</span>
+<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-label="8"></a>) <span class="op">-&gt;</span> Generator[<span class="bu">str</span>, <span class="va">None</span>, <span class="va">None</span>]:</span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-label="9"></a>    <span class="co">"""Mock definition of an analysis.</span></span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-label="10"></a></span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-label="11"></a><span class="co">    Example: equity delta and correlation with benchmark.</span></span>
+<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12" aria-label="12"></a></span>
+<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13" aria-label="13"></a><span class="co">    Args:</span></span>
+<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14" aria-label="14"></a><span class="co">        benchmark_uuid: Uuid of the benchmark.</span></span>
+<span id="annotated-cell-2-15"><a href="#annotated-cell-2-15" aria-label="15"></a><span class="co">    """</span></span>
+<span id="annotated-cell-2-16"><a href="#annotated-cell-2-16" aria-label="16"></a>    mock_preparation(</span>
+<span id="annotated-cell-2-17"><a href="#annotated-cell-2-17" aria-label="17"></a>        MockObject.ANALYSIS,</span>
+<span id="annotated-cell-2-18"><a href="#annotated-cell-2-18" aria-label="18"></a>        benchmark_name<span class="op">=</span>benchmark_uuid,</span>
+<span id="annotated-cell-2-19"><a href="#annotated-cell-2-19" aria-label="19"></a>    )</span>
+<span id="annotated-cell-2-20"><a href="#annotated-cell-2-20" aria-label="20"></a>    analysis_uuid <span class="op">=</span> mock_object(MockObject.ANALYSIS)</span>
+<span id="annotated-cell-2-21"><a href="#annotated-cell-2-21" aria-label="21"></a>    <span class="cf">yield</span> analysis_uuid</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-22" class="code-annotation-target"><a href="#annotated-cell-2-22" aria-label="22"></a>    mock_clean_up(analysis_uuid)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -560,56 +563,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Modern approach to Python development leans heavily towards type annotations. Dynamical typing is powerful but can lead to unwieldy code. To properly annotate the <code>analysis</code> function we need to import <code>Generator</code> from <code>typing</code> module. Remember, the <code>@contextmanager</code> decorator takes the function and turns it into CM — a class with <code>__enter__</code> and <code>__exit__</code> methods. The <code>Generator</code> needs three inputs but in our case only the first one is important — <code>YieldType</code>, here <code>str</code> (<a href="https://docs.python.org/3/library/typing.html#typing.Generator">see</a> for more).</p>
 <p>With this done implementing the 3 remaining CMs is easy, just remember our flow chart.</p>
-<div id="2aeddcb4" class="cell" data-execution_count="3">
+<div id="db08cf35" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a><span class="at">@contextmanager</span></span>
-<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2"></a><span class="kw">def</span> benchmark() <span class="op">-&gt;</span> Generator[<span class="bu">str</span>, <span class="va">None</span>, <span class="va">None</span>]:</span>
-<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3"></a>    <span class="co">"""Mock definition of a benchmark.</span></span>
-<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4"></a></span>
-<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5"></a><span class="co">    Args:</span></span>
-<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6"></a><span class="co">        otc_products_uuid: Uuid of the otc products.</span></span>
-<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7"></a><span class="co">    """</span></span>
-<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8"></a>    mock_preparation(</span>
-<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9"></a>        MockObject.BENCHMARK,</span>
-<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10"></a>    )</span>
-<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11"></a>    benchmark_uuid <span class="op">=</span> mock_object(MockObject.BENCHMARK)</span>
-<span id="annotated-cell-3-12"><a href="#annotated-cell-3-12"></a>    <span class="cf">yield</span> benchmark_uuid</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-13" class="code-annotation-target"><a href="#annotated-cell-3-13"></a>    mock_clean_up(benchmark_uuid)</span>
-<span id="annotated-cell-3-14"><a href="#annotated-cell-3-14"></a></span>
-<span id="annotated-cell-3-15"><a href="#annotated-cell-3-15"></a></span>
-<span id="annotated-cell-3-16"><a href="#annotated-cell-3-16"></a><span class="at">@contextmanager</span></span>
-<span id="annotated-cell-3-17"><a href="#annotated-cell-3-17"></a><span class="kw">def</span> otc_products() <span class="op">-&gt;</span> Generator[<span class="bu">str</span>, <span class="va">None</span>, <span class="va">None</span>]:</span>
-<span id="annotated-cell-3-18"><a href="#annotated-cell-3-18"></a>    <span class="co">"""Mock definition of an otc products.</span></span>
-<span id="annotated-cell-3-19"><a href="#annotated-cell-3-19"></a></span>
-<span id="annotated-cell-3-20"><a href="#annotated-cell-3-20"></a><span class="co">    Args:</span></span>
-<span id="annotated-cell-3-21"><a href="#annotated-cell-3-21"></a><span class="co">        otc_products_uuid: Uuid of the otc products.</span></span>
-<span id="annotated-cell-3-22"><a href="#annotated-cell-3-22"></a><span class="co">    """</span></span>
-<span id="annotated-cell-3-23"><a href="#annotated-cell-3-23"></a>    mock_preparation(MockObject.OTC_PRODUCTS)</span>
-<span id="annotated-cell-3-24"><a href="#annotated-cell-3-24"></a>    otcs_uuid <span class="op">=</span> mock_object(MockObject.OTC_PRODUCTS)</span>
-<span id="annotated-cell-3-25"><a href="#annotated-cell-3-25"></a>    <span class="cf">yield</span> otcs_uuid</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-26" class="code-annotation-target"><a href="#annotated-cell-3-26"></a>    mock_clean_up(otcs_uuid)</span>
-<span id="annotated-cell-3-27"><a href="#annotated-cell-3-27"></a></span>
-<span id="annotated-cell-3-28"><a href="#annotated-cell-3-28"></a></span>
-<span id="annotated-cell-3-29"><a href="#annotated-cell-3-29"></a><span class="at">@contextmanager</span></span>
-<span id="annotated-cell-3-30"><a href="#annotated-cell-3-30"></a><span class="kw">def</span> portfolio(</span>
-<span id="annotated-cell-3-31"><a href="#annotated-cell-3-31"></a>    <span class="op">*</span>,</span>
-<span id="annotated-cell-3-32"><a href="#annotated-cell-3-32"></a>    portfolio_name: <span class="bu">str</span>,</span>
-<span id="annotated-cell-3-33"><a href="#annotated-cell-3-33"></a>    otc_products_uuid: <span class="bu">str</span>,</span>
-<span id="annotated-cell-3-34"><a href="#annotated-cell-3-34"></a>) <span class="op">-&gt;</span> Generator[<span class="bu">str</span>, <span class="va">None</span>, <span class="va">None</span>]:</span>
-<span id="annotated-cell-3-35"><a href="#annotated-cell-3-35"></a>    <span class="co">"""Mock definition of a portfolio.</span></span>
-<span id="annotated-cell-3-36"><a href="#annotated-cell-3-36"></a></span>
-<span id="annotated-cell-3-37"><a href="#annotated-cell-3-37"></a><span class="co">    Args:</span></span>
-<span id="annotated-cell-3-38"><a href="#annotated-cell-3-38"></a><span class="co">        otc_products_uuid: Uuid of the otc products.</span></span>
-<span id="annotated-cell-3-39"><a href="#annotated-cell-3-39"></a><span class="co">    """</span></span>
-<span id="annotated-cell-3-40"><a href="#annotated-cell-3-40"></a>    mock_preparation(</span>
-<span id="annotated-cell-3-41"><a href="#annotated-cell-3-41"></a>        MockObject.PORTFOLIO,</span>
-<span id="annotated-cell-3-42"><a href="#annotated-cell-3-42"></a>        portfolio_name<span class="op">=</span>portfolio_name,</span>
-<span id="annotated-cell-3-43"><a href="#annotated-cell-3-43"></a>        otc_products_uuid<span class="op">=</span>otc_products_uuid,</span>
-<span id="annotated-cell-3-44"><a href="#annotated-cell-3-44"></a>    )</span>
-<span id="annotated-cell-3-45"><a href="#annotated-cell-3-45"></a>    portfolio_uuid <span class="op">=</span> mock_object(MockObject.PORTFOLIO)</span>
-<span id="annotated-cell-3-46"><a href="#annotated-cell-3-46"></a>    <span class="cf">yield</span> portfolio_uuid</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-3-47" class="code-annotation-target"><a href="#annotated-cell-3-47"></a>    mock_clean_up(portfolio_uuid)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-label="1"></a><span class="at">@contextmanager</span></span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-label="2"></a><span class="kw">def</span> benchmark() <span class="op">-&gt;</span> Generator[<span class="bu">str</span>, <span class="va">None</span>, <span class="va">None</span>]:</span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-label="3"></a>    <span class="co">"""Mock definition of a benchmark.</span></span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-label="4"></a></span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-label="5"></a><span class="co">    Args:</span></span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-label="6"></a><span class="co">        otc_products_uuid: Uuid of the otc products.</span></span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-label="7"></a><span class="co">    """</span></span>
+<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8" aria-label="8"></a>    mock_preparation(</span>
+<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9" aria-label="9"></a>        MockObject.BENCHMARK,</span>
+<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10" aria-label="10"></a>    )</span>
+<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11" aria-label="11"></a>    benchmark_uuid <span class="op">=</span> mock_object(MockObject.BENCHMARK)</span>
+<span id="annotated-cell-3-12"><a href="#annotated-cell-3-12" aria-label="12"></a>    <span class="cf">yield</span> benchmark_uuid</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-13" class="code-annotation-target"><a href="#annotated-cell-3-13" aria-label="13"></a>    mock_clean_up(benchmark_uuid)</span>
+<span id="annotated-cell-3-14"><a href="#annotated-cell-3-14" aria-label="14"></a></span>
+<span id="annotated-cell-3-15"><a href="#annotated-cell-3-15" aria-label="15"></a></span>
+<span id="annotated-cell-3-16"><a href="#annotated-cell-3-16" aria-label="16"></a><span class="at">@contextmanager</span></span>
+<span id="annotated-cell-3-17"><a href="#annotated-cell-3-17" aria-label="17"></a><span class="kw">def</span> otc_products() <span class="op">-&gt;</span> Generator[<span class="bu">str</span>, <span class="va">None</span>, <span class="va">None</span>]:</span>
+<span id="annotated-cell-3-18"><a href="#annotated-cell-3-18" aria-label="18"></a>    <span class="co">"""Mock definition of an otc products.</span></span>
+<span id="annotated-cell-3-19"><a href="#annotated-cell-3-19" aria-label="19"></a></span>
+<span id="annotated-cell-3-20"><a href="#annotated-cell-3-20" aria-label="20"></a><span class="co">    Args:</span></span>
+<span id="annotated-cell-3-21"><a href="#annotated-cell-3-21" aria-label="21"></a><span class="co">        otc_products_uuid: Uuid of the otc products.</span></span>
+<span id="annotated-cell-3-22"><a href="#annotated-cell-3-22" aria-label="22"></a><span class="co">    """</span></span>
+<span id="annotated-cell-3-23"><a href="#annotated-cell-3-23" aria-label="23"></a>    mock_preparation(MockObject.OTC_PRODUCTS)</span>
+<span id="annotated-cell-3-24"><a href="#annotated-cell-3-24" aria-label="24"></a>    otcs_uuid <span class="op">=</span> mock_object(MockObject.OTC_PRODUCTS)</span>
+<span id="annotated-cell-3-25"><a href="#annotated-cell-3-25" aria-label="25"></a>    <span class="cf">yield</span> otcs_uuid</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-26" class="code-annotation-target"><a href="#annotated-cell-3-26" aria-label="26"></a>    mock_clean_up(otcs_uuid)</span>
+<span id="annotated-cell-3-27"><a href="#annotated-cell-3-27" aria-label="27"></a></span>
+<span id="annotated-cell-3-28"><a href="#annotated-cell-3-28" aria-label="28"></a></span>
+<span id="annotated-cell-3-29"><a href="#annotated-cell-3-29" aria-label="29"></a><span class="at">@contextmanager</span></span>
+<span id="annotated-cell-3-30"><a href="#annotated-cell-3-30" aria-label="30"></a><span class="kw">def</span> portfolio(</span>
+<span id="annotated-cell-3-31"><a href="#annotated-cell-3-31" aria-label="31"></a>    <span class="op">*</span>,</span>
+<span id="annotated-cell-3-32"><a href="#annotated-cell-3-32" aria-label="32"></a>    portfolio_name: <span class="bu">str</span>,</span>
+<span id="annotated-cell-3-33"><a href="#annotated-cell-3-33" aria-label="33"></a>    otc_products_uuid: <span class="bu">str</span>,</span>
+<span id="annotated-cell-3-34"><a href="#annotated-cell-3-34" aria-label="34"></a>) <span class="op">-&gt;</span> Generator[<span class="bu">str</span>, <span class="va">None</span>, <span class="va">None</span>]:</span>
+<span id="annotated-cell-3-35"><a href="#annotated-cell-3-35" aria-label="35"></a>    <span class="co">"""Mock definition of a portfolio.</span></span>
+<span id="annotated-cell-3-36"><a href="#annotated-cell-3-36" aria-label="36"></a></span>
+<span id="annotated-cell-3-37"><a href="#annotated-cell-3-37" aria-label="37"></a><span class="co">    Args:</span></span>
+<span id="annotated-cell-3-38"><a href="#annotated-cell-3-38" aria-label="38"></a><span class="co">        otc_products_uuid: Uuid of the otc products.</span></span>
+<span id="annotated-cell-3-39"><a href="#annotated-cell-3-39" aria-label="39"></a><span class="co">    """</span></span>
+<span id="annotated-cell-3-40"><a href="#annotated-cell-3-40" aria-label="40"></a>    mock_preparation(</span>
+<span id="annotated-cell-3-41"><a href="#annotated-cell-3-41" aria-label="41"></a>        MockObject.PORTFOLIO,</span>
+<span id="annotated-cell-3-42"><a href="#annotated-cell-3-42" aria-label="42"></a>        portfolio_name<span class="op">=</span>portfolio_name,</span>
+<span id="annotated-cell-3-43"><a href="#annotated-cell-3-43" aria-label="43"></a>        otc_products_uuid<span class="op">=</span>otc_products_uuid,</span>
+<span id="annotated-cell-3-44"><a href="#annotated-cell-3-44" aria-label="44"></a>    )</span>
+<span id="annotated-cell-3-45"><a href="#annotated-cell-3-45" aria-label="45"></a>    portfolio_uuid <span class="op">=</span> mock_object(MockObject.PORTFOLIO)</span>
+<span id="annotated-cell-3-46"><a href="#annotated-cell-3-46" aria-label="46"></a>    <span class="cf">yield</span> portfolio_uuid</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-3-47" class="code-annotation-target"><a href="#annotated-cell-3-47" aria-label="47"></a>    mock_clean_up(portfolio_uuid)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -632,26 +635,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="analysis-results" class="level3">
 <h3 class="anchored" data-anchor-id="analysis-results">Analysis results</h3>
 <p>No stress or complexity here, to run the analysis we need to specify which analysis to run on which portfolio.</p>
-<div id="51c22ec1" class="cell" data-execution_count="4">
+<div id="41345064" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-2"><a href="#cb1-2"></a></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">def</span> analysis_results(</span>
-<span id="cb1-4"><a href="#cb1-4"></a>    <span class="op">*</span>,</span>
-<span id="cb1-5"><a href="#cb1-5"></a>    analysis_uuid: <span class="bu">str</span>,</span>
-<span id="cb1-6"><a href="#cb1-6"></a>    portfolio_uuid: <span class="bu">str</span>,</span>
-<span id="cb1-7"><a href="#cb1-7"></a>) <span class="op">-&gt;</span> pd.DataFrame:</span>
-<span id="cb1-8"><a href="#cb1-8"></a>    <span class="co">"""Mock running the analysis on a given portfolio.</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co">    Returns empty dataframe.</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a></span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="co">    Args:</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="co">        analysis_uuid: Uuid of the analysis.</span></span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="co">        portfolio_uuid: Uuid of the portfolio.</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a><span class="co">    """</span></span>
-<span id="cb1-16"><a href="#cb1-16"></a>    <span class="bu">print</span>(<span class="ss">f"Running analysis </span><span class="sc">{</span>analysis_uuid<span class="sc">}</span><span class="ss"> on portfolio </span><span class="sc">{</span>portfolio_uuid<span class="sc">}</span><span class="ss">."</span>)</span>
-<span id="cb1-17"><a href="#cb1-17"></a>    <span class="cf">return</span> pd.DataFrame()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a><span class="kw">def</span> analysis_results(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a>    <span class="op">*</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a>    analysis_uuid: <span class="bu">str</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a>    portfolio_uuid: <span class="bu">str</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a>) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a>    <span class="co">"""Mock running the analysis on a given portfolio.</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a><span class="co">    Returns empty dataframe.</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a><span class="co">    Args:</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a><span class="co">        analysis_uuid: Uuid of the analysis.</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-label="14"></a><span class="co">        portfolio_uuid: Uuid of the portfolio.</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-label="15"></a><span class="co">    """</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-label="16"></a>    <span class="bu">print</span>(<span class="ss">f"Running analysis </span><span class="sc">{</span>analysis_uuid<span class="sc">}</span><span class="ss"> on portfolio </span><span class="sc">{</span>portfolio_uuid<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-label="17"></a>    <span class="cf">return</span> pd.DataFrame()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -662,39 +665,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="using-contexts-directly" class="level3">
 <h3 class="anchored" data-anchor-id="using-contexts-directly">Using contexts directly</h3>
 <p>First, we use the managers directly through <code>with</code> clause, remembering the dependencies from our flow chart.</p>
-<div id="2ed802b4" class="cell" data-execution_count="5">
+<div id="d57fad30" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>PORTFOLIO <span class="op">=</span> <span class="st">"portfolio_1"</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">def</span> run_analysis() <span class="op">-&gt;</span> pd.DataFrame:</span>
-<span id="cb2-4"><a href="#cb2-4"></a>    <span class="co">"""Mock running the analysis using with clauses."""</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a>    <span class="cf">with</span> otc_products() <span class="im">as</span> otc_uuid:</span>
-<span id="cb2-6"><a href="#cb2-6"></a>        <span class="cf">with</span> benchmark() <span class="im">as</span> benchmark_uuid:</span>
-<span id="cb2-7"><a href="#cb2-7"></a>            <span class="cf">with</span> portfolio(</span>
-<span id="cb2-8"><a href="#cb2-8"></a>                portfolio_name<span class="op">=</span>PORTFOLIO,</span>
-<span id="cb2-9"><a href="#cb2-9"></a>                otc_products_uuid<span class="op">=</span>otc_uuid,</span>
-<span id="cb2-10"><a href="#cb2-10"></a>            ) <span class="im">as</span> portfolio_uuid:</span>
-<span id="cb2-11"><a href="#cb2-11"></a>                <span class="cf">with</span> analysis(</span>
-<span id="cb2-12"><a href="#cb2-12"></a>                    benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
-<span id="cb2-13"><a href="#cb2-13"></a>                ) <span class="im">as</span> analysis_uuid:</span>
-<span id="cb2-14"><a href="#cb2-14"></a>                    results <span class="op">=</span> analysis_results(</span>
-<span id="cb2-15"><a href="#cb2-15"></a>                        analysis_uuid<span class="op">=</span>analysis_uuid,</span>
-<span id="cb2-16"><a href="#cb2-16"></a>                        portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
-<span id="cb2-17"><a href="#cb2-17"></a>                    )</span>
-<span id="cb2-18"><a href="#cb2-18"></a>    <span class="cf">return</span> results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>PORTFOLIO <span class="op">=</span> <span class="st">"portfolio_1"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a><span class="kw">def</span> run_analysis() <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>    <span class="co">"""Mock running the analysis using with clauses."""</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>    <span class="cf">with</span> otc_products() <span class="im">as</span> otc_uuid:</span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a>        <span class="cf">with</span> benchmark() <span class="im">as</span> benchmark_uuid:</span>
+<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a>            <span class="cf">with</span> portfolio(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a>                portfolio_name<span class="op">=</span>PORTFOLIO,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-label="9"></a>                otc_products_uuid<span class="op">=</span>otc_uuid,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-label="10"></a>            ) <span class="im">as</span> portfolio_uuid:</span>
+<span id="cb2-11"><a href="#cb2-11" aria-label="11"></a>                <span class="cf">with</span> analysis(</span>
+<span id="cb2-12"><a href="#cb2-12" aria-label="12"></a>                    benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-label="13"></a>                ) <span class="im">as</span> analysis_uuid:</span>
+<span id="cb2-14"><a href="#cb2-14" aria-label="14"></a>                    results <span class="op">=</span> analysis_results(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-label="15"></a>                        analysis_uuid<span class="op">=</span>analysis_uuid,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-label="16"></a>                        portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-label="17"></a>                    )</span>
+<span id="cb2-18"><a href="#cb2-18" aria-label="18"></a>    <span class="cf">return</span> results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>This is terrible! I am already getting lost, needed few tries to get it right. We ended up with <strong>6</strong> levels of indentation, the code is confusing, the flow is obtuse. Let’s run it either way, to see if at least works.</p>
-<div id="4de3109d" class="cell" data-execution_count="6">
+<div id="a6205fe1" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">def</span> print_title(title: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb3-2"><a href="#cb3-2"></a>    <span class="co">"""Print a title padded, surrounded by dashes and empty lines."""</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span> <span class="op">+</span> title.center(<span class="dv">60</span>, <span class="st">"-"</span>) <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
-<span id="cb3-4"><a href="#cb3-4"></a></span>
-<span id="cb3-5"><a href="#cb3-5"></a>print_title(<span class="st">"Running analysis."</span>)</span>
-<span id="cb3-6"><a href="#cb3-6"></a>run_analysis()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="kw">def</span> print_title(title: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a>    <span class="co">"""Print a title padded, surrounded by dashes and empty lines."""</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span> <span class="op">+</span> title.center(<span class="dv">60</span>, <span class="st">"-"</span>) <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a>print_title(<span class="st">"Running analysis."</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a>run_analysis()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -702,13 +705,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_a8b33d68-5802-4cfb-9efb-fb1ff4e66070'}
-Preparing analysis using {'benchmark_name': 'benchmark_865b4418-db3d-4bad-b50e-5875dc83cb5a'}
-Running analysis analysis_dd9d4ab9-cef7-4860-b43e-8d79ebbb529c on portfolio portfolio_cf843ec9-1fae-4a37-b691-ba79396ea5b5.
-Cleaning up after analysis_dd9d4ab9-cef7-4860-b43e-8d79ebbb529c.
-Cleaning up after portfolio_cf843ec9-1fae-4a37-b691-ba79396ea5b5.
-Cleaning up after benchmark_865b4418-db3d-4bad-b50e-5875dc83cb5a.
-Cleaning up after otc_products_a8b33d68-5802-4cfb-9efb-fb1ff4e66070.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_c5876610-bfb8-4171-9ddb-1b74ca2c0e56'}
+Preparing analysis using {'benchmark_name': 'benchmark_632ffca0-c5de-4fb2-bd6f-b82dd50af364'}
+Running analysis analysis_78a3e378-9269-4901-b126-eb740f82a9bb on portfolio portfolio_2ba42755-19af-4c68-983f-be42753c7ad7.
+Cleaning up after analysis_78a3e378-9269-4901-b126-eb740f82a9bb.
+Cleaning up after portfolio_2ba42755-19af-4c68-983f-be42753c7ad7.
+Cleaning up after benchmark_632ffca0-c5de-4fb2-bd6f-b82dd50af364.
+Cleaning up after otc_products_c5876610-bfb8-4171-9ddb-1b74ca2c0e56.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <div>
@@ -757,39 +760,39 @@ Cleaning up after otc_products_a8b33d68-5802-4cfb-9efb-fb1ff4e66070.</code></pre
 </div>
 </div>
 <p>So the flow is exactly the same as in our first attempt. Let’s try it!</p>
-<div id="990697e8" class="cell" data-execution_count="7">
+<div id="deb933dc" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="im">from</span> contextlib <span class="im">import</span> ExitStack</span>
-<span id="cb5-2"><a href="#cb5-2"></a></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="kw">def</span> run_analysis_with_exit_stack() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb5-4"><a href="#cb5-4"></a>    <span class="co">"""Mock running the analysis using exit stack."""</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a>    <span class="cf">with</span> ExitStack() <span class="im">as</span> stack:</span>
-<span id="cb5-6"><a href="#cb5-6"></a>        otc_uuid <span class="op">=</span> stack.enter_context(otc_products())</span>
-<span id="cb5-7"><a href="#cb5-7"></a>        benchmark_uuid <span class="op">=</span> stack.enter_context(benchmark())</span>
-<span id="cb5-8"><a href="#cb5-8"></a>        portfolio_uuid <span class="op">=</span> stack.enter_context(</span>
-<span id="cb5-9"><a href="#cb5-9"></a>            portfolio(</span>
-<span id="cb5-10"><a href="#cb5-10"></a>                portfolio_name<span class="op">=</span>PORTFOLIO,</span>
-<span id="cb5-11"><a href="#cb5-11"></a>                otc_products_uuid<span class="op">=</span>otc_uuid,</span>
-<span id="cb5-12"><a href="#cb5-12"></a>            )</span>
-<span id="cb5-13"><a href="#cb5-13"></a>        )</span>
-<span id="cb5-14"><a href="#cb5-14"></a>        analysis_uuid <span class="op">=</span> stack.enter_context(</span>
-<span id="cb5-15"><a href="#cb5-15"></a>            analysis(</span>
-<span id="cb5-16"><a href="#cb5-16"></a>                benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
-<span id="cb5-17"><a href="#cb5-17"></a>            )</span>
-<span id="cb5-18"><a href="#cb5-18"></a>        )</span>
-<span id="cb5-19"><a href="#cb5-19"></a>        results <span class="op">=</span> analysis_results(</span>
-<span id="cb5-20"><a href="#cb5-20"></a>            analysis_uuid<span class="op">=</span>analysis_uuid,</span>
-<span id="cb5-21"><a href="#cb5-21"></a>            portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
-<span id="cb5-22"><a href="#cb5-22"></a>        )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="im">from</span> contextlib <span class="im">import</span> ExitStack</span>
+<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-label="3"></a><span class="kw">def</span> run_analysis_with_exit_stack() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb5-4"><a href="#cb5-4" aria-label="4"></a>    <span class="co">"""Mock running the analysis using exit stack."""</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-label="5"></a>    <span class="cf">with</span> ExitStack() <span class="im">as</span> stack:</span>
+<span id="cb5-6"><a href="#cb5-6" aria-label="6"></a>        otc_uuid <span class="op">=</span> stack.enter_context(otc_products())</span>
+<span id="cb5-7"><a href="#cb5-7" aria-label="7"></a>        benchmark_uuid <span class="op">=</span> stack.enter_context(benchmark())</span>
+<span id="cb5-8"><a href="#cb5-8" aria-label="8"></a>        portfolio_uuid <span class="op">=</span> stack.enter_context(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-label="9"></a>            portfolio(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-label="10"></a>                portfolio_name<span class="op">=</span>PORTFOLIO,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-label="11"></a>                otc_products_uuid<span class="op">=</span>otc_uuid,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-label="12"></a>            )</span>
+<span id="cb5-13"><a href="#cb5-13" aria-label="13"></a>        )</span>
+<span id="cb5-14"><a href="#cb5-14" aria-label="14"></a>        analysis_uuid <span class="op">=</span> stack.enter_context(</span>
+<span id="cb5-15"><a href="#cb5-15" aria-label="15"></a>            analysis(</span>
+<span id="cb5-16"><a href="#cb5-16" aria-label="16"></a>                benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-label="17"></a>            )</span>
+<span id="cb5-18"><a href="#cb5-18" aria-label="18"></a>        )</span>
+<span id="cb5-19"><a href="#cb5-19" aria-label="19"></a>        results <span class="op">=</span> analysis_results(</span>
+<span id="cb5-20"><a href="#cb5-20" aria-label="20"></a>            analysis_uuid<span class="op">=</span>analysis_uuid,</span>
+<span id="cb5-21"><a href="#cb5-21" aria-label="21"></a>            portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
+<span id="cb5-22"><a href="#cb5-22" aria-label="22"></a>        )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>That’s amazing (if the approach works)! In our code we end up with only single <code>with</code> clause and the outputs of CMs are defined just like the regular variables. We just need to wrap the CM calls in <code>stack.enter_context</code> method that pushes each CM to the stack.</p>
-<div id="a0de3d58" class="cell" data-execution_count="8">
+<div id="d9868687" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>print_title(<span class="st">"Running analysis with exit stack."</span>)</span>
-<span id="cb6-2"><a href="#cb6-2"></a>run_analysis_with_exit_stack()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a>print_title(<span class="st">"Running analysis with exit stack."</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-label="2"></a>run_analysis_with_exit_stack()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -797,52 +800,52 @@ Cleaning up after otc_products_a8b33d68-5802-4cfb-9efb-fb1ff4e66070.</code></pre
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_6fec886d-5add-4df0-b519-f25cd5bbff43'}
-Preparing analysis using {'benchmark_name': 'benchmark_880150ca-16e1-467d-b44a-2f1178455cc7'}
-Running analysis analysis_0313bf18-4597-43fe-be36-10e2abaa7cac on portfolio portfolio_9fcb79cc-222a-4ada-99f3-676d9d6cc516.
-Cleaning up after analysis_0313bf18-4597-43fe-be36-10e2abaa7cac.
-Cleaning up after portfolio_9fcb79cc-222a-4ada-99f3-676d9d6cc516.
-Cleaning up after benchmark_880150ca-16e1-467d-b44a-2f1178455cc7.
-Cleaning up after otc_products_6fec886d-5add-4df0-b519-f25cd5bbff43.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_c3eaa585-60d2-4f95-8f91-b4e495d80ba4'}
+Preparing analysis using {'benchmark_name': 'benchmark_ac16907b-8bb8-4da9-82a5-cf9a64d56352'}
+Running analysis analysis_06a8a24c-892a-48c8-bffe-c508936d91be on portfolio portfolio_76d24214-f248-421f-830b-ccb75321f4a9.
+Cleaning up after analysis_06a8a24c-892a-48c8-bffe-c508936d91be.
+Cleaning up after portfolio_76d24214-f248-421f-830b-ccb75321f4a9.
+Cleaning up after benchmark_ac16907b-8bb8-4da9-82a5-cf9a64d56352.
+Cleaning up after otc_products_c3eaa585-60d2-4f95-8f91-b4e495d80ba4.</code></pre>
 </div>
 </div>
 <p>It works as well! We also get a package of benefits for free.</p>
 <section id="disabling-the-clean-up" class="level3">
 <h3 class="anchored" data-anchor-id="disabling-the-clean-up">Disabling the clean up</h3>
 <p>Working with API is tricky and debugging could be a painful experience. If we notice something iffy with the results we are reciving, it could be due to a bug at any of the stages. In such case disabling the artifact clean up and examining them is a good way to investigate. How do we do that? Comment out the exit code in our resource CMs? Nope, now we know better. With exit stack approach we just need to clean up the stack before exiting its context.</p>
-<div id="739c473d" class="cell" data-execution_count="9">
+<div id="0db9b0f7" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1"></a><span class="kw">def</span> run_analysis_with_exit_stack(</span>
-<span id="annotated-cell-9-2"><a href="#annotated-cell-9-2"></a>    clean_up: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>,</span>
-<span id="annotated-cell-9-3"><a href="#annotated-cell-9-3"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="annotated-cell-9-4"><a href="#annotated-cell-9-4"></a>    <span class="co">"""Mock running the analysis using exit stack.</span></span>
-<span id="annotated-cell-9-5"><a href="#annotated-cell-9-5"></a></span>
-<span id="annotated-cell-9-6"><a href="#annotated-cell-9-6"></a><span class="co">    Args:</span></span>
-<span id="annotated-cell-9-7"><a href="#annotated-cell-9-7"></a><span class="co">        clean_up: Whether to clean up after the objects.</span></span>
-<span id="annotated-cell-9-8"><a href="#annotated-cell-9-8"></a><span class="co">    """</span></span>
-<span id="annotated-cell-9-9"><a href="#annotated-cell-9-9"></a></span>
-<span id="annotated-cell-9-10"><a href="#annotated-cell-9-10"></a>    <span class="cf">with</span> ExitStack() <span class="im">as</span> stack:</span>
-<span id="annotated-cell-9-11"><a href="#annotated-cell-9-11"></a>        otc_uuid <span class="op">=</span> stack.enter_context(otc_products())</span>
-<span id="annotated-cell-9-12"><a href="#annotated-cell-9-12"></a>        benchmark_uuid <span class="op">=</span> stack.enter_context(benchmark())</span>
-<span id="annotated-cell-9-13"><a href="#annotated-cell-9-13"></a>        portfolio_uuid <span class="op">=</span> stack.enter_context(</span>
-<span id="annotated-cell-9-14"><a href="#annotated-cell-9-14"></a>            portfolio(</span>
-<span id="annotated-cell-9-15"><a href="#annotated-cell-9-15"></a>                portfolio_name<span class="op">=</span>PORTFOLIO,</span>
-<span id="annotated-cell-9-16"><a href="#annotated-cell-9-16"></a>                otc_products_uuid<span class="op">=</span>otc_uuid,</span>
-<span id="annotated-cell-9-17"><a href="#annotated-cell-9-17"></a>            )</span>
-<span id="annotated-cell-9-18"><a href="#annotated-cell-9-18"></a>        )</span>
-<span id="annotated-cell-9-19"><a href="#annotated-cell-9-19"></a>        analysis_uuid <span class="op">=</span> stack.enter_context(</span>
-<span id="annotated-cell-9-20"><a href="#annotated-cell-9-20"></a>            analysis(</span>
-<span id="annotated-cell-9-21"><a href="#annotated-cell-9-21"></a>                benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
-<span id="annotated-cell-9-22"><a href="#annotated-cell-9-22"></a>            )</span>
-<span id="annotated-cell-9-23"><a href="#annotated-cell-9-23"></a>        )</span>
-<span id="annotated-cell-9-24"><a href="#annotated-cell-9-24"></a>        results <span class="op">=</span> analysis_results(</span>
-<span id="annotated-cell-9-25"><a href="#annotated-cell-9-25"></a>            analysis_uuid<span class="op">=</span>analysis_uuid,</span>
-<span id="annotated-cell-9-26"><a href="#annotated-cell-9-26"></a>            portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
-<span id="annotated-cell-9-27"><a href="#annotated-cell-9-27"></a>        )</span>
-<span id="annotated-cell-9-28"><a href="#annotated-cell-9-28"></a>        <span class="cf">if</span> <span class="kw">not</span> clean_up:</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-9-29" class="code-annotation-target"><a href="#annotated-cell-9-29"></a>            _ <span class="op">=</span> stack.pop_all()</span>
-<span id="annotated-cell-9-30"><a href="#annotated-cell-9-30"></a>    <span class="cf">return</span> results</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-label="1"></a><span class="kw">def</span> run_analysis_with_exit_stack(</span>
+<span id="annotated-cell-9-2"><a href="#annotated-cell-9-2" aria-label="2"></a>    clean_up: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>,</span>
+<span id="annotated-cell-9-3"><a href="#annotated-cell-9-3" aria-label="3"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="annotated-cell-9-4"><a href="#annotated-cell-9-4" aria-label="4"></a>    <span class="co">"""Mock running the analysis using exit stack.</span></span>
+<span id="annotated-cell-9-5"><a href="#annotated-cell-9-5" aria-label="5"></a></span>
+<span id="annotated-cell-9-6"><a href="#annotated-cell-9-6" aria-label="6"></a><span class="co">    Args:</span></span>
+<span id="annotated-cell-9-7"><a href="#annotated-cell-9-7" aria-label="7"></a><span class="co">        clean_up: Whether to clean up after the objects.</span></span>
+<span id="annotated-cell-9-8"><a href="#annotated-cell-9-8" aria-label="8"></a><span class="co">    """</span></span>
+<span id="annotated-cell-9-9"><a href="#annotated-cell-9-9" aria-label="9"></a></span>
+<span id="annotated-cell-9-10"><a href="#annotated-cell-9-10" aria-label="10"></a>    <span class="cf">with</span> ExitStack() <span class="im">as</span> stack:</span>
+<span id="annotated-cell-9-11"><a href="#annotated-cell-9-11" aria-label="11"></a>        otc_uuid <span class="op">=</span> stack.enter_context(otc_products())</span>
+<span id="annotated-cell-9-12"><a href="#annotated-cell-9-12" aria-label="12"></a>        benchmark_uuid <span class="op">=</span> stack.enter_context(benchmark())</span>
+<span id="annotated-cell-9-13"><a href="#annotated-cell-9-13" aria-label="13"></a>        portfolio_uuid <span class="op">=</span> stack.enter_context(</span>
+<span id="annotated-cell-9-14"><a href="#annotated-cell-9-14" aria-label="14"></a>            portfolio(</span>
+<span id="annotated-cell-9-15"><a href="#annotated-cell-9-15" aria-label="15"></a>                portfolio_name<span class="op">=</span>PORTFOLIO,</span>
+<span id="annotated-cell-9-16"><a href="#annotated-cell-9-16" aria-label="16"></a>                otc_products_uuid<span class="op">=</span>otc_uuid,</span>
+<span id="annotated-cell-9-17"><a href="#annotated-cell-9-17" aria-label="17"></a>            )</span>
+<span id="annotated-cell-9-18"><a href="#annotated-cell-9-18" aria-label="18"></a>        )</span>
+<span id="annotated-cell-9-19"><a href="#annotated-cell-9-19" aria-label="19"></a>        analysis_uuid <span class="op">=</span> stack.enter_context(</span>
+<span id="annotated-cell-9-20"><a href="#annotated-cell-9-20" aria-label="20"></a>            analysis(</span>
+<span id="annotated-cell-9-21"><a href="#annotated-cell-9-21" aria-label="21"></a>                benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
+<span id="annotated-cell-9-22"><a href="#annotated-cell-9-22" aria-label="22"></a>            )</span>
+<span id="annotated-cell-9-23"><a href="#annotated-cell-9-23" aria-label="23"></a>        )</span>
+<span id="annotated-cell-9-24"><a href="#annotated-cell-9-24" aria-label="24"></a>        results <span class="op">=</span> analysis_results(</span>
+<span id="annotated-cell-9-25"><a href="#annotated-cell-9-25" aria-label="25"></a>            analysis_uuid<span class="op">=</span>analysis_uuid,</span>
+<span id="annotated-cell-9-26"><a href="#annotated-cell-9-26" aria-label="26"></a>            portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
+<span id="annotated-cell-9-27"><a href="#annotated-cell-9-27" aria-label="27"></a>        )</span>
+<span id="annotated-cell-9-28"><a href="#annotated-cell-9-28" aria-label="28"></a>        <span class="cf">if</span> <span class="kw">not</span> clean_up:</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-9-29" class="code-annotation-target"><a href="#annotated-cell-9-29" aria-label="29"></a>            _ <span class="op">=</span> stack.pop_all()</span>
+<span id="annotated-cell-9-30"><a href="#annotated-cell-9-30" aria-label="30"></a>    <span class="cf">return</span> results</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -853,11 +856,11 @@ Cleaning up after otc_products_6fec886d-5add-4df0-b519-f25cd5bbff43.</code></pre
 </dl>
 </div>
 </div>
-<div id="49d1be24" class="cell" data-execution_count="10">
+<div id="d982e77f" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>print_title(<span class="st">"Running analysis with exit stack and no clean up."</span>)</span>
-<span id="cb8-2"><a href="#cb8-2"></a>run_analysis_with_exit_stack(clean_up<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-label="1"></a>print_title(<span class="st">"Running analysis with exit stack and no clean up."</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-label="2"></a>run_analysis_with_exit_stack(clean_up<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -865,9 +868,9 @@ Cleaning up after otc_products_6fec886d-5add-4df0-b519-f25cd5bbff43.</code></pre
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_feade083-941f-4942-88db-2ce51933f5f9'}
-Preparing analysis using {'benchmark_name': 'benchmark_ea88c581-3ae2-490e-8073-6937cc4f83fa'}
-Running analysis analysis_c12b1409-6fb2-4f2f-bf00-871973e716d9 on portfolio portfolio_5b7a9fc7-f3ef-4333-aff7-59bd78b8d8fb.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_223007da-2977-4fb8-b026-4d683801015c'}
+Preparing analysis using {'benchmark_name': 'benchmark_d4221d93-48c4-469d-9247-48f88ef8d5b0'}
+Running analysis analysis_ba436f83-c727-48fb-904b-af0c1eb5dda4 on portfolio portfolio_f8b1bd0a-3f48-4f68-85c0-c71c23104da6.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <div>
@@ -890,49 +893,49 @@ Running analysis analysis_c12b1409-6fb2-4f2f-bf00-871973e716d9 on portfolio port
 <section id="multiple-portfolios" class="level3">
 <h3 class="anchored" data-anchor-id="multiple-portfolios">Multiple portfolios</h3>
 <p>Benefit #2 — what do we do if we have multiple managers and many portfolios to re-run for? Or — outside of the example scope — we want to held multiple files open at the same time? Easy, we just push to the stack in a loop or a list comprehension.</p>
-<div id="655d1d6b" class="cell" data-execution_count="11">
+<div id="f68e4dae" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>PORTFOLIOS <span class="op">=</span> [<span class="st">"portfolio_1"</span>, <span class="st">"portfolio_2"</span>, <span class="st">"portfolio_3"</span>]</span>
-<span id="cb10-2"><a href="#cb10-2"></a></span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="kw">def</span> run_analysis_with_exit_stack(clean_up: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>):</span>
-<span id="cb10-4"><a href="#cb10-4"></a>    <span class="co">"""Mock running the analysis for multiple portfolios using exit stack.</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a></span>
-<span id="cb10-6"><a href="#cb10-6"></a><span class="co">    Args:</span></span>
-<span id="cb10-7"><a href="#cb10-7"></a><span class="co">        clean_up: Whether to clean up after the objects.</span></span>
-<span id="cb10-8"><a href="#cb10-8"></a><span class="co">    """</span></span>
-<span id="cb10-9"><a href="#cb10-9"></a>    <span class="cf">with</span> ExitStack() <span class="im">as</span> stack:</span>
-<span id="cb10-10"><a href="#cb10-10"></a>        otc_uuid <span class="op">=</span> stack.enter_context(otc_products())</span>
-<span id="cb10-11"><a href="#cb10-11"></a>        benchmark_uuid <span class="op">=</span> stack.enter_context(benchmark())</span>
-<span id="cb10-12"><a href="#cb10-12"></a>        portfolio_uuids <span class="op">=</span> [</span>
-<span id="cb10-13"><a href="#cb10-13"></a>            stack.enter_context(</span>
-<span id="cb10-14"><a href="#cb10-14"></a>                portfolio(</span>
-<span id="cb10-15"><a href="#cb10-15"></a>                    portfolio_name<span class="op">=</span>portfolio_name,</span>
-<span id="cb10-16"><a href="#cb10-16"></a>                    otc_products_uuid<span class="op">=</span>otc_uuid,</span>
-<span id="cb10-17"><a href="#cb10-17"></a>                )</span>
-<span id="cb10-18"><a href="#cb10-18"></a>            )</span>
-<span id="cb10-19"><a href="#cb10-19"></a>            <span class="cf">for</span> portfolio_name <span class="kw">in</span> PORTFOLIOS</span>
-<span id="cb10-20"><a href="#cb10-20"></a>        ]</span>
-<span id="cb10-21"><a href="#cb10-21"></a>        analysis_uuid <span class="op">=</span> stack.enter_context(</span>
-<span id="cb10-22"><a href="#cb10-22"></a>            analysis(</span>
-<span id="cb10-23"><a href="#cb10-23"></a>                benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
-<span id="cb10-24"><a href="#cb10-24"></a>            )</span>
-<span id="cb10-25"><a href="#cb10-25"></a>        )</span>
-<span id="cb10-26"><a href="#cb10-26"></a>        result_parts <span class="op">=</span> [</span>
-<span id="cb10-27"><a href="#cb10-27"></a>            analysis_results(</span>
-<span id="cb10-28"><a href="#cb10-28"></a>                analysis_uuid<span class="op">=</span>analysis_uuid,</span>
-<span id="cb10-29"><a href="#cb10-29"></a>                portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
-<span id="cb10-30"><a href="#cb10-30"></a>            )</span>
-<span id="cb10-31"><a href="#cb10-31"></a>            <span class="cf">for</span> portfolio_uuid <span class="kw">in</span> portfolio_uuids</span>
-<span id="cb10-32"><a href="#cb10-32"></a>        ]</span>
-<span id="cb10-33"><a href="#cb10-33"></a>        results <span class="op">=</span> pd.concat(result_parts)</span>
-<span id="cb10-34"><a href="#cb10-34"></a></span>
-<span id="cb10-35"><a href="#cb10-35"></a>        <span class="cf">if</span> <span class="kw">not</span> clean_up:</span>
-<span id="cb10-36"><a href="#cb10-36"></a>            _ <span class="op">=</span> stack.pop_all()</span>
-<span id="cb10-37"><a href="#cb10-37"></a>    <span class="cf">return</span> results</span>
-<span id="cb10-38"><a href="#cb10-38"></a></span>
-<span id="cb10-39"><a href="#cb10-39"></a>print_title(<span class="st">"Running analysis with exit stack on multiple portfolios."</span>)</span>
-<span id="cb10-40"><a href="#cb10-40"></a>run_analysis_with_exit_stack(clean_up<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-label="1"></a>PORTFOLIOS <span class="op">=</span> [<span class="st">"portfolio_1"</span>, <span class="st">"portfolio_2"</span>, <span class="st">"portfolio_3"</span>]</span>
+<span id="cb10-2"><a href="#cb10-2" aria-label="2"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-label="3"></a><span class="kw">def</span> run_analysis_with_exit_stack(clean_up: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>):</span>
+<span id="cb10-4"><a href="#cb10-4" aria-label="4"></a>    <span class="co">"""Mock running the analysis for multiple portfolios using exit stack.</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-label="5"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-label="6"></a><span class="co">    Args:</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-label="7"></a><span class="co">        clean_up: Whether to clean up after the objects.</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-label="8"></a><span class="co">    """</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-label="9"></a>    <span class="cf">with</span> ExitStack() <span class="im">as</span> stack:</span>
+<span id="cb10-10"><a href="#cb10-10" aria-label="10"></a>        otc_uuid <span class="op">=</span> stack.enter_context(otc_products())</span>
+<span id="cb10-11"><a href="#cb10-11" aria-label="11"></a>        benchmark_uuid <span class="op">=</span> stack.enter_context(benchmark())</span>
+<span id="cb10-12"><a href="#cb10-12" aria-label="12"></a>        portfolio_uuids <span class="op">=</span> [</span>
+<span id="cb10-13"><a href="#cb10-13" aria-label="13"></a>            stack.enter_context(</span>
+<span id="cb10-14"><a href="#cb10-14" aria-label="14"></a>                portfolio(</span>
+<span id="cb10-15"><a href="#cb10-15" aria-label="15"></a>                    portfolio_name<span class="op">=</span>portfolio_name,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-label="16"></a>                    otc_products_uuid<span class="op">=</span>otc_uuid,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-label="17"></a>                )</span>
+<span id="cb10-18"><a href="#cb10-18" aria-label="18"></a>            )</span>
+<span id="cb10-19"><a href="#cb10-19" aria-label="19"></a>            <span class="cf">for</span> portfolio_name <span class="kw">in</span> PORTFOLIOS</span>
+<span id="cb10-20"><a href="#cb10-20" aria-label="20"></a>        ]</span>
+<span id="cb10-21"><a href="#cb10-21" aria-label="21"></a>        analysis_uuid <span class="op">=</span> stack.enter_context(</span>
+<span id="cb10-22"><a href="#cb10-22" aria-label="22"></a>            analysis(</span>
+<span id="cb10-23"><a href="#cb10-23" aria-label="23"></a>                benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
+<span id="cb10-24"><a href="#cb10-24" aria-label="24"></a>            )</span>
+<span id="cb10-25"><a href="#cb10-25" aria-label="25"></a>        )</span>
+<span id="cb10-26"><a href="#cb10-26" aria-label="26"></a>        result_parts <span class="op">=</span> [</span>
+<span id="cb10-27"><a href="#cb10-27" aria-label="27"></a>            analysis_results(</span>
+<span id="cb10-28"><a href="#cb10-28" aria-label="28"></a>                analysis_uuid<span class="op">=</span>analysis_uuid,</span>
+<span id="cb10-29"><a href="#cb10-29" aria-label="29"></a>                portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
+<span id="cb10-30"><a href="#cb10-30" aria-label="30"></a>            )</span>
+<span id="cb10-31"><a href="#cb10-31" aria-label="31"></a>            <span class="cf">for</span> portfolio_uuid <span class="kw">in</span> portfolio_uuids</span>
+<span id="cb10-32"><a href="#cb10-32" aria-label="32"></a>        ]</span>
+<span id="cb10-33"><a href="#cb10-33" aria-label="33"></a>        results <span class="op">=</span> pd.concat(result_parts)</span>
+<span id="cb10-34"><a href="#cb10-34" aria-label="34"></a></span>
+<span id="cb10-35"><a href="#cb10-35" aria-label="35"></a>        <span class="cf">if</span> <span class="kw">not</span> clean_up:</span>
+<span id="cb10-36"><a href="#cb10-36" aria-label="36"></a>            _ <span class="op">=</span> stack.pop_all()</span>
+<span id="cb10-37"><a href="#cb10-37" aria-label="37"></a>    <span class="cf">return</span> results</span>
+<span id="cb10-38"><a href="#cb10-38" aria-label="38"></a></span>
+<span id="cb10-39"><a href="#cb10-39" aria-label="39"></a>print_title(<span class="st">"Running analysis with exit stack on multiple portfolios."</span>)</span>
+<span id="cb10-40"><a href="#cb10-40" aria-label="40"></a>run_analysis_with_exit_stack(clean_up<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -940,19 +943,19 @@ Running analysis analysis_c12b1409-6fb2-4f2f-bf00-871973e716d9 on portfolio port
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_f0722e1b-53fd-4115-b4c0-81fd39c79687'}
-Preparing portfolio using {'portfolio_name': 'portfolio_2', 'otc_products_uuid': 'otc_products_f0722e1b-53fd-4115-b4c0-81fd39c79687'}
-Preparing portfolio using {'portfolio_name': 'portfolio_3', 'otc_products_uuid': 'otc_products_f0722e1b-53fd-4115-b4c0-81fd39c79687'}
-Preparing analysis using {'benchmark_name': 'benchmark_07bd5c58-43eb-45fe-aba2-d353fcc8cbd4'}
-Running analysis analysis_eaf3d80c-f957-4718-9b68-977c118da5f2 on portfolio portfolio_5e9417d8-cf2c-4189-a57f-4983aa0218c5.
-Running analysis analysis_eaf3d80c-f957-4718-9b68-977c118da5f2 on portfolio portfolio_0818359e-4bac-49f4-98b0-fdeb818f820e.
-Running analysis analysis_eaf3d80c-f957-4718-9b68-977c118da5f2 on portfolio portfolio_ac2f02b5-10d3-4222-a3bf-82dea106ace8.
-Cleaning up after analysis_eaf3d80c-f957-4718-9b68-977c118da5f2.
-Cleaning up after portfolio_ac2f02b5-10d3-4222-a3bf-82dea106ace8.
-Cleaning up after portfolio_0818359e-4bac-49f4-98b0-fdeb818f820e.
-Cleaning up after portfolio_5e9417d8-cf2c-4189-a57f-4983aa0218c5.
-Cleaning up after benchmark_07bd5c58-43eb-45fe-aba2-d353fcc8cbd4.
-Cleaning up after otc_products_f0722e1b-53fd-4115-b4c0-81fd39c79687.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_46019088-607d-4780-8ca9-e7ab037d96aa'}
+Preparing portfolio using {'portfolio_name': 'portfolio_2', 'otc_products_uuid': 'otc_products_46019088-607d-4780-8ca9-e7ab037d96aa'}
+Preparing portfolio using {'portfolio_name': 'portfolio_3', 'otc_products_uuid': 'otc_products_46019088-607d-4780-8ca9-e7ab037d96aa'}
+Preparing analysis using {'benchmark_name': 'benchmark_38b39f30-a04d-44ff-9a5d-c789f9edcdc2'}
+Running analysis analysis_97cbdde0-42c5-4588-8ad3-08d07ce69baa on portfolio portfolio_07cdfc0e-9643-4431-9c38-08b1379e857b.
+Running analysis analysis_97cbdde0-42c5-4588-8ad3-08d07ce69baa on portfolio portfolio_5272d4e8-920d-4abd-9cc2-601ceb77560b.
+Running analysis analysis_97cbdde0-42c5-4588-8ad3-08d07ce69baa on portfolio portfolio_5166f70e-24c3-4fcd-bf7d-380e23668769.
+Cleaning up after analysis_97cbdde0-42c5-4588-8ad3-08d07ce69baa.
+Cleaning up after portfolio_5166f70e-24c3-4fcd-bf7d-380e23668769.
+Cleaning up after portfolio_5272d4e8-920d-4abd-9cc2-601ceb77560b.
+Cleaning up after portfolio_07cdfc0e-9643-4431-9c38-08b1379e857b.
+Cleaning up after benchmark_38b39f30-a04d-44ff-9a5d-c789f9edcdc2.
+Cleaning up after otc_products_46019088-607d-4780-8ca9-e7ab037d96aa.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <div>

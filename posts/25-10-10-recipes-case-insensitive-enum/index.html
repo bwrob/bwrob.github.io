@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -14,10 +14,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -76,12 +79,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-96a43165c4d0207e3a751099b8d9671b.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-c6434e2816b6e53f820184e91c93ac7d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-73751680ca121cac81413277327230eb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-c7170261eb2bbedd820cef4c8c5b1644.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-49de6045867557a8d47d4e02c0bec047.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-fcffe00015cf7e92884255123184f18a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-5865491327066f56f9cc3bed50bb0a86.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -417,98 +420,98 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>When working with enums in Python, you might want to create an enum that is case-insensitive. This can be particularly useful when you want to allow users to input values without worrying about the case. Here’s how you can achieve this by subclassing <code>StrEnum</code>. To enforce that all enum members are defined in lowercase, we can use a hook <code>__init_subclass__</code>.</p>
 <section id="implementation" class="level2">
 <h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
-<div id="793e5f9a" class="cell" data-execution_count="1">
+<div id="8681de2d" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> __future__ <span class="im">import</span> annotations</span>
-<span id="cb1-2"><a href="#cb1-2"></a></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> sys</span>
-<span id="cb1-4"><a href="#cb1-4"></a></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="cf">if</span> sys.version_info <span class="op">&gt;=</span> (<span class="dv">3</span>, <span class="dv">11</span>):</span>
-<span id="cb1-6"><a href="#cb1-6"></a>    <span class="im">from</span> enum <span class="im">import</span> StrEnum</span>
-<span id="cb1-7"><a href="#cb1-7"></a>    <span class="im">from</span> typing <span class="im">import</span> Self, override</span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="cf">else</span>:</span>
-<span id="cb1-9"><a href="#cb1-9"></a>    <span class="im">from</span> backports.strenum <span class="im">import</span> StrEnum</span>
-<span id="cb1-10"><a href="#cb1-10"></a>    <span class="im">from</span> typing_extensions <span class="im">import</span> Self, override</span>
-<span id="cb1-11"><a href="#cb1-11"></a></span>
-<span id="cb1-12"><a href="#cb1-12"></a></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="kw">class</span> CaseInsensitiveStrEnum(StrEnum):</span>
-<span id="cb1-14"><a href="#cb1-14"></a>    <span class="co">"""A case-insensitive string enum.</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a></span>
-<span id="cb1-16"><a href="#cb1-16"></a><span class="co">    This class extends the `StrEnum` class to provide case-insensitive member lookup.</span></span>
-<span id="cb1-17"><a href="#cb1-17"></a><span class="co">    It also provides a custom `_generate_next_value_` method that returns the</span></span>
-<span id="cb1-18"><a href="#cb1-18"></a><span class="co">    lowercase version of the member name for use with `auto()`.</span></span>
-<span id="cb1-19"><a href="#cb1-19"></a><span class="co">    """</span></span>
-<span id="cb1-20"><a href="#cb1-20"></a></span>
-<span id="cb1-21"><a href="#cb1-21"></a>    <span class="at">@classmethod</span></span>
-<span id="cb1-22"><a href="#cb1-22"></a>    <span class="kw">def</span> <span class="fu">__init_subclass__</span>(cls, <span class="op">**</span>kwargs: <span class="bu">dict</span>[<span class="bu">str</span>, Any]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb1-23"><a href="#cb1-23"></a>        <span class="co">"""Implement the special hook that is called when a class is subclassed.</span></span>
-<span id="cb1-24"><a href="#cb1-24"></a></span>
-<span id="cb1-25"><a href="#cb1-25"></a><span class="co">        It allows us to customize the class creation process without using metaclasses.</span></span>
-<span id="cb1-26"><a href="#cb1-26"></a><span class="co">        """</span></span>
-<span id="cb1-27"><a href="#cb1-27"></a>        <span class="bu">super</span>().<span class="fu">__init_subclass__</span>(<span class="op">**</span>kwargs)</span>
-<span id="cb1-28"><a href="#cb1-28"></a></span>
-<span id="cb1-29"><a href="#cb1-29"></a>        <span class="cf">for</span> member <span class="kw">in</span> cls:</span>
-<span id="cb1-30"><a href="#cb1-30"></a>            <span class="cf">if</span> <span class="kw">not</span> member.islower() <span class="kw">or</span> <span class="kw">not</span> member.value.islower():</span>
-<span id="cb1-31"><a href="#cb1-31"></a>                msg <span class="op">=</span> <span class="ss">f"Member '</span><span class="sc">{</span>member<span class="sc">}</span><span class="ss">' and value </span><span class="sc">{</span>member<span class="sc">.</span>value<span class="sc">}</span><span class="ss"> must be lowercase."</span></span>
-<span id="cb1-32"><a href="#cb1-32"></a>                <span class="cf">raise</span> <span class="pp">TypeError</span>(msg)</span>
-<span id="cb1-33"><a href="#cb1-33"></a></span>
-<span id="cb1-34"><a href="#cb1-34"></a>    <span class="at">@override</span></span>
-<span id="cb1-35"><a href="#cb1-35"></a>    <span class="at">@staticmethod</span></span>
-<span id="cb1-36"><a href="#cb1-36"></a>    <span class="kw">def</span> _generate_next_value_(</span>
-<span id="cb1-37"><a href="#cb1-37"></a>        name: <span class="bu">str</span>, start: <span class="bu">int</span>, count: <span class="bu">int</span>, last_values: <span class="bu">list</span>[<span class="bu">str</span>]</span>
-<span id="cb1-38"><a href="#cb1-38"></a>    ) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb1-39"><a href="#cb1-39"></a>        <span class="co">"""Return the lower-cased version of the member name.</span></span>
-<span id="cb1-40"><a href="#cb1-40"></a></span>
-<span id="cb1-41"><a href="#cb1-41"></a><span class="co">        This method is overridden to ensure that when `auto()` is used to create</span></span>
-<span id="cb1-42"><a href="#cb1-42"></a><span class="co">        enum members, their values are the lowercase version of their names.</span></span>
-<span id="cb1-43"><a href="#cb1-43"></a><span class="co">        """</span></span>
-<span id="cb1-44"><a href="#cb1-44"></a>        <span class="cf">return</span> name.lower()</span>
-<span id="cb1-45"><a href="#cb1-45"></a></span>
-<span id="cb1-46"><a href="#cb1-46"></a>    <span class="at">@override</span></span>
-<span id="cb1-47"><a href="#cb1-47"></a>    <span class="at">@classmethod</span></span>
-<span id="cb1-48"><a href="#cb1-48"></a>    <span class="kw">def</span> _missing_(cls, value: <span class="bu">object</span>) <span class="op">-&gt;</span> Self <span class="op">|</span> <span class="va">None</span>:</span>
-<span id="cb1-49"><a href="#cb1-49"></a>        <span class="co">"""Provide case-insensitive member lookup.</span></span>
-<span id="cb1-50"><a href="#cb1-50"></a></span>
-<span id="cb1-51"><a href="#cb1-51"></a><span class="co">        This method is called when a value is not found in the enum.</span></span>
-<span id="cb1-52"><a href="#cb1-52"></a><span class="co">        It is overridden to perform a case-insensitive search for the member.</span></span>
-<span id="cb1-53"><a href="#cb1-53"></a><span class="co">        """</span></span>
-<span id="cb1-54"><a href="#cb1-54"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(value, <span class="bu">str</span>):</span>
-<span id="cb1-55"><a href="#cb1-55"></a>            <span class="cf">return</span> <span class="va">None</span></span>
-<span id="cb1-56"><a href="#cb1-56"></a></span>
-<span id="cb1-57"><a href="#cb1-57"></a>        value <span class="op">=</span> value.lower()</span>
-<span id="cb1-58"><a href="#cb1-58"></a>        <span class="cf">for</span> member <span class="kw">in</span> cls:</span>
-<span id="cb1-59"><a href="#cb1-59"></a>            <span class="cf">if</span> member.name.lower() <span class="op">==</span> value:</span>
-<span id="cb1-60"><a href="#cb1-60"></a>                <span class="cf">return</span> member</span>
-<span id="cb1-61"><a href="#cb1-61"></a></span>
-<span id="cb1-62"><a href="#cb1-62"></a>        <span class="cf">return</span> <span class="va">None</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="im">from</span> __future__ <span class="im">import</span> annotations</span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a><span class="im">import</span> sys</span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a><span class="cf">if</span> sys.version_info <span class="op">&gt;=</span> (<span class="dv">3</span>, <span class="dv">11</span>):</span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a>    <span class="im">from</span> enum <span class="im">import</span> StrEnum</span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a>    <span class="im">from</span> typing <span class="im">import</span> Self, override</span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a><span class="cf">else</span>:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a>    <span class="im">from</span> backports.strenum <span class="im">import</span> StrEnum</span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a>    <span class="im">from</span> typing_extensions <span class="im">import</span> Self, override</span>
+<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a><span class="kw">class</span> CaseInsensitiveStrEnum(StrEnum):</span>
+<span id="cb1-14"><a href="#cb1-14" aria-label="14"></a>    <span class="co">"""A case-insensitive string enum.</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-label="15"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-label="16"></a><span class="co">    This class extends the `StrEnum` class to provide case-insensitive member lookup.</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-label="17"></a><span class="co">    It also provides a custom `_generate_next_value_` method that returns the</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-label="18"></a><span class="co">    lowercase version of the member name for use with `auto()`.</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-label="19"></a><span class="co">    """</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-label="20"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-label="21"></a>    <span class="at">@classmethod</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-label="22"></a>    <span class="kw">def</span> <span class="fu">__init_subclass__</span>(cls, <span class="op">**</span>kwargs: <span class="bu">dict</span>[<span class="bu">str</span>, Any]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb1-23"><a href="#cb1-23" aria-label="23"></a>        <span class="co">"""Implement the special hook that is called when a class is subclassed.</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-label="24"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-label="25"></a><span class="co">        It allows us to customize the class creation process without using metaclasses.</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-label="26"></a><span class="co">        """</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-label="27"></a>        <span class="bu">super</span>().<span class="fu">__init_subclass__</span>(<span class="op">**</span>kwargs)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-label="28"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-label="29"></a>        <span class="cf">for</span> member <span class="kw">in</span> cls:</span>
+<span id="cb1-30"><a href="#cb1-30" aria-label="30"></a>            <span class="cf">if</span> <span class="kw">not</span> member.islower() <span class="kw">or</span> <span class="kw">not</span> member.value.islower():</span>
+<span id="cb1-31"><a href="#cb1-31" aria-label="31"></a>                msg <span class="op">=</span> <span class="ss">f"Member '</span><span class="sc">{</span>member<span class="sc">}</span><span class="ss">' and value </span><span class="sc">{</span>member<span class="sc">.</span>value<span class="sc">}</span><span class="ss"> must be lowercase."</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-label="32"></a>                <span class="cf">raise</span> <span class="pp">TypeError</span>(msg)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-label="33"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-label="34"></a>    <span class="at">@override</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-label="35"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-label="36"></a>    <span class="kw">def</span> _generate_next_value_(</span>
+<span id="cb1-37"><a href="#cb1-37" aria-label="37"></a>        name: <span class="bu">str</span>, start: <span class="bu">int</span>, count: <span class="bu">int</span>, last_values: <span class="bu">list</span>[<span class="bu">str</span>]</span>
+<span id="cb1-38"><a href="#cb1-38" aria-label="38"></a>    ) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb1-39"><a href="#cb1-39" aria-label="39"></a>        <span class="co">"""Return the lower-cased version of the member name.</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-label="40"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-label="41"></a><span class="co">        This method is overridden to ensure that when `auto()` is used to create</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-label="42"></a><span class="co">        enum members, their values are the lowercase version of their names.</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-label="43"></a><span class="co">        """</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-label="44"></a>        <span class="cf">return</span> name.lower()</span>
+<span id="cb1-45"><a href="#cb1-45" aria-label="45"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-label="46"></a>    <span class="at">@override</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-label="47"></a>    <span class="at">@classmethod</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-label="48"></a>    <span class="kw">def</span> _missing_(cls, value: <span class="bu">object</span>) <span class="op">-&gt;</span> Self <span class="op">|</span> <span class="va">None</span>:</span>
+<span id="cb1-49"><a href="#cb1-49" aria-label="49"></a>        <span class="co">"""Provide case-insensitive member lookup.</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-label="50"></a></span>
+<span id="cb1-51"><a href="#cb1-51" aria-label="51"></a><span class="co">        This method is called when a value is not found in the enum.</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-label="52"></a><span class="co">        It is overridden to perform a case-insensitive search for the member.</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-label="53"></a><span class="co">        """</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-label="54"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(value, <span class="bu">str</span>):</span>
+<span id="cb1-55"><a href="#cb1-55" aria-label="55"></a>            <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-label="56"></a></span>
+<span id="cb1-57"><a href="#cb1-57" aria-label="57"></a>        value <span class="op">=</span> value.lower()</span>
+<span id="cb1-58"><a href="#cb1-58" aria-label="58"></a>        <span class="cf">for</span> member <span class="kw">in</span> cls:</span>
+<span id="cb1-59"><a href="#cb1-59" aria-label="59"></a>            <span class="cf">if</span> member.name.lower() <span class="op">==</span> value:</span>
+<span id="cb1-60"><a href="#cb1-60" aria-label="60"></a>                <span class="cf">return</span> member</span>
+<span id="cb1-61"><a href="#cb1-61" aria-label="61"></a></span>
+<span id="cb1-62"><a href="#cb1-62" aria-label="62"></a>        <span class="cf">return</span> <span class="va">None</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
 <section id="example-usage" class="level2">
 <h2 class="anchored" data-anchor-id="example-usage">Example Usage</h2>
 <p>Here is an example of how to use the <code>CaseInsensitiveStrEnum</code> class:</p>
-<div id="bf8d9e92" class="cell" data-execution_count="2">
+<div id="900883d9" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> enum <span class="im">import</span> auto</span>
-<span id="cb2-2"><a href="#cb2-2"></a></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">class</span> TestEnum(CaseInsensitiveStrEnum):</span>
-<span id="cb2-4"><a href="#cb2-4"></a>    test <span class="op">=</span> auto()</span>
-<span id="cb2-5"><a href="#cb2-5"></a>    enumz <span class="op">=</span> auto()</span>
-<span id="cb2-6"><a href="#cb2-6"></a></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="bu">print</span>(<span class="ss">f"List of members: </span><span class="sc">{</span>[member.name <span class="cf">for</span> member <span class="kw">in</span> TestEnum]<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="bu">print</span>(<span class="ss">f"List of values: </span><span class="sc">{</span>[member.value <span class="cf">for</span> member <span class="kw">in</span> TestEnum]<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="bu">print</span>(<span class="ss">f'Accessing "Test": </span><span class="sc">{</span>TestEnum(<span class="st">"Test"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb2-10"><a href="#cb2-10"></a><span class="bu">print</span>(<span class="ss">f'Accessing "test": </span><span class="sc">{</span>TestEnum(<span class="st">"test"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="bu">print</span>(<span class="ss">f'Accessing "ENUMZ": </span><span class="sc">{</span>TestEnum(<span class="st">"ENUMZ"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb2-12"><a href="#cb2-12"></a></span>
-<span id="cb2-13"><a href="#cb2-13"></a></span>
-<span id="cb2-14"><a href="#cb2-14"></a><span class="cf">try</span>:</span>
-<span id="cb2-15"><a href="#cb2-15"></a>    <span class="kw">class</span> TestEnum(CaseInsensitiveStrEnum):</span>
-<span id="cb2-16"><a href="#cb2-16"></a>        TEST <span class="op">=</span> <span class="st">"TEST"</span>  <span class="co"># This will raise a TypeError</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a><span class="cf">except</span> <span class="pp">TypeError</span> <span class="im">as</span> e:</span>
-<span id="cb2-18"><a href="#cb2-18"></a>    <span class="bu">print</span>(e)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="im">from</span> enum <span class="im">import</span> auto</span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a><span class="kw">class</span> TestEnum(CaseInsensitiveStrEnum):</span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>    test <span class="op">=</span> auto()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>    enumz <span class="op">=</span> auto()</span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a><span class="bu">print</span>(<span class="ss">f"List of members: </span><span class="sc">{</span>[member.name <span class="cf">for</span> member <span class="kw">in</span> TestEnum]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a><span class="bu">print</span>(<span class="ss">f"List of values: </span><span class="sc">{</span>[member.value <span class="cf">for</span> member <span class="kw">in</span> TestEnum]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-label="9"></a><span class="bu">print</span>(<span class="ss">f'Accessing "Test": </span><span class="sc">{</span>TestEnum(<span class="st">"Test"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-label="10"></a><span class="bu">print</span>(<span class="ss">f'Accessing "test": </span><span class="sc">{</span>TestEnum(<span class="st">"test"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-label="11"></a><span class="bu">print</span>(<span class="ss">f'Accessing "ENUMZ": </span><span class="sc">{</span>TestEnum(<span class="st">"ENUMZ"</span>)<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-label="12"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-label="13"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-label="14"></a><span class="cf">try</span>:</span>
+<span id="cb2-15"><a href="#cb2-15" aria-label="15"></a>    <span class="kw">class</span> TestEnum(CaseInsensitiveStrEnum):</span>
+<span id="cb2-16"><a href="#cb2-16" aria-label="16"></a>        TEST <span class="op">=</span> <span class="st">"TEST"</span>  <span class="co"># This will raise a TypeError</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-label="17"></a><span class="cf">except</span> <span class="pp">TypeError</span> <span class="im">as</span> e:</span>
+<span id="cb2-18"><a href="#cb2-18" aria-label="18"></a>    <span class="bu">print</span>(e)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>List of members: ['test', 'enumz']

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -73,12 +76,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-96a43165c4d0207e3a751099b8d9671b.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-c6434e2816b6e53f820184e91c93ac7d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-73751680ca121cac81413277327230eb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-c7170261eb2bbedd820cef4c8c5b1644.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-49de6045867557a8d47d4e02c0bec047.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-fcffe00015cf7e92884255123184f18a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-5865491327066f56f9cc3bed50bb0a86.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -387,42 +390,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="instalacja" class="level2">
 <h2 data-anchor-id="instalacja">Instalacja</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">conda</span> install <span class="at">-c</span> conda-forge ruff</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="ex">conda</span> install <span class="at">-c</span> conda-forge ruff</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="użycie-z-poziomu-terminala" class="level2">
 <h2 data-anchor-id="użycie-z-poziomu-terminala">Użycie z poziomu terminala</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># poprawia formatowanie kodu</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="ex">ruff</span> format</span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="co"># sprawdza kod</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="ex">ruff</span> check</span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="co"># sprawdza kod i poprawia błędy które można naprawić automatycznie</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="ex">ruff</span> check <span class="at">--fix</span> <span class="at">--unsafe-fixes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="co"># poprawia formatowanie kodu</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a><span class="ex">ruff</span> format</span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a><span class="co"># sprawdza kod</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a><span class="ex">ruff</span> check</span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a><span class="co"># sprawdza kod i poprawia błędy które można naprawić automatycznie</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a><span class="ex">ruff</span> check <span class="at">--fix</span> <span class="at">--unsafe-fixes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="dodatkowa-konfiguracja" class="level2">
 <h2 data-anchor-id="dodatkowa-konfiguracja">Dodatkowa konfiguracja</h2>
 <p>Ruff można skonfigurować za pomocą pliku <code>ruff.toml</code>. Przykładowa konfiguracja:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource toml number-lines code-with-copy"><code class="sourceCode toml"><span id="cb3-1"><a href="#cb3-1"></a><span class="dt">line-length</span>    <span class="op">=</span> <span class="dv">79</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="dt">target-version</span> <span class="op">=</span> <span class="st">"py312"</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="kw">[lint]</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a>    <span class="dt">select</span> <span class="op">=</span> <span class="op">[</span><span class="st">"ALL"</span><span class="op">]</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a>    <span class="dt">ignore</span> <span class="op">=</span> <span class="op">[</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a>        <span class="st">"COM"</span><span class="op">,</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a>        <span class="st">"D203"</span><span class="op">,</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a>        <span class="st">"D211"</span><span class="op">,</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a>        <span class="st">"D213"</span><span class="op">,</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a>        <span class="st">"FA"</span><span class="op">,</span></span>
-<span id="cb3-12"><a href="#cb3-12"></a>        <span class="st">"ISC"</span><span class="op">,</span></span>
-<span id="cb3-13"><a href="#cb3-13"></a>        <span class="st">"T"</span><span class="op">,</span></span>
-<span id="cb3-14"><a href="#cb3-14"></a>        <span class="st">"TC"</span><span class="op">,</span></span>
-<span id="cb3-15"><a href="#cb3-15"></a>    <span class="op">]</span></span>
-<span id="cb3-16"><a href="#cb3-16"></a></span>
-<span id="cb3-17"><a href="#cb3-17"></a><span class="kw">[format]</span></span>
-<span id="cb3-18"><a href="#cb3-18"></a>    <span class="dt">docstring-code-format</span> <span class="op">=</span> <span class="cn">true</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource toml number-lines code-with-copy"><code class="sourceCode toml"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="dt">line-length</span>    <span class="op">=</span> <span class="dv">79</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a><span class="dt">target-version</span> <span class="op">=</span> <span class="st">"py312"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a><span class="kw">[lint]</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a>    <span class="dt">select</span> <span class="op">=</span> <span class="op">[</span><span class="st">"ALL"</span><span class="op">]</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a>    <span class="dt">ignore</span> <span class="op">=</span> <span class="op">[</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-label="7"></a>        <span class="st">"COM"</span><span class="op">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-label="8"></a>        <span class="st">"D203"</span><span class="op">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-label="9"></a>        <span class="st">"D211"</span><span class="op">,</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-label="10"></a>        <span class="st">"D213"</span><span class="op">,</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-label="11"></a>        <span class="st">"FA"</span><span class="op">,</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-label="12"></a>        <span class="st">"ISC"</span><span class="op">,</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-label="13"></a>        <span class="st">"T"</span><span class="op">,</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-label="14"></a>        <span class="st">"TC"</span><span class="op">,</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-label="15"></a>    <span class="op">]</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-label="16"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-label="17"></a><span class="kw">[format]</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-label="18"></a>    <span class="dt">docstring-code-format</span> <span class="op">=</span> <span class="cn">true</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Aby użyć tej konfiguracji, należy uruchomić Ruff z odpowiednim argumentem:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="ex">ruff</span> <span class="at">--config</span> ruff.toml format</span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="ex">ruff</span> <span class="at">--config</span> ruff.toml check</span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="ex">ruff</span> <span class="at">--config</span> ruff.toml check <span class="at">--fix</span> <span class="at">--unsafe-fixes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="ex">ruff</span> <span class="at">--config</span> ruff.toml format</span>
+<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a><span class="ex">ruff</span> <span class="at">--config</span> ruff.toml check</span>
+<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a><span class="ex">ruff</span> <span class="at">--config</span> ruff.toml check <span class="at">--fix</span> <span class="at">--unsafe-fixes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="integracja-z-vscode" class="level2">
 <h2 data-anchor-id="integracja-z-vscode">Integracja z VSCode</h2>
@@ -430,19 +433,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Instalacja rozszerzenia [ruff].</li>
 <li>Dodanie do pliku <code>.vscode/settings.json</code> następującej konfiguracji.</li>
 </ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource {json} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1"><a href="#cb5-1"></a>{</span>
-<span id="cb5-2"><a href="#cb5-2"></a>   "[python]": {</span>
-<span id="cb5-3"><a href="#cb5-3"></a>        "editor.codeActionsOnSave": {</span>
-<span id="cb5-4"><a href="#cb5-4"></a>            "source.fixAll": "always",</span>
-<span id="cb5-5"><a href="#cb5-5"></a>            "source.organizeImports": "always"</span>
-<span id="cb5-6"><a href="#cb5-6"></a>        },</span>
-<span id="cb5-7"><a href="#cb5-7"></a>        "editor.defaultFormatter": "charliermarsh.ruff",</span>
-<span id="cb5-8"><a href="#cb5-8"></a>        "editor.formatOnSave": true,</span>
-<span id="cb5-9"><a href="#cb5-9"></a>        "editor.formatOnType": true,</span>
-<span id="cb5-10"><a href="#cb5-10"></a>    },</span>
-<span id="cb5-11"><a href="#cb5-11"></a>    "ruff.configuration": "ruff.toml",</span>
-<span id="cb5-12"><a href="#cb5-12"></a>    "ruff.configurationPreference": "filesystemFirst",</span>
-<span id="cb5-13"><a href="#cb5-13"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource {json} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a>{</span>
+<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a>   "[python]": {</span>
+<span id="cb5-3"><a href="#cb5-3" aria-label="3"></a>        "editor.codeActionsOnSave": {</span>
+<span id="cb5-4"><a href="#cb5-4" aria-label="4"></a>            "source.fixAll": "always",</span>
+<span id="cb5-5"><a href="#cb5-5" aria-label="5"></a>            "source.organizeImports": "always"</span>
+<span id="cb5-6"><a href="#cb5-6" aria-label="6"></a>        },</span>
+<span id="cb5-7"><a href="#cb5-7" aria-label="7"></a>        "editor.defaultFormatter": "charliermarsh.ruff",</span>
+<span id="cb5-8"><a href="#cb5-8" aria-label="8"></a>        "editor.formatOnSave": true,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-label="9"></a>        "editor.formatOnType": true,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-label="10"></a>    },</span>
+<span id="cb5-11"><a href="#cb5-11" aria-label="11"></a>    "ruff.configuration": "ruff.toml",</span>
+<span id="cb5-12"><a href="#cb5-12" aria-label="12"></a>    "ruff.configurationPreference": "filesystemFirst",</span>
+<span id="cb5-13"><a href="#cb5-13" aria-label="13"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="zadanie" class="level2">
 <h2 data-anchor-id="zadanie">Zadanie</h2>

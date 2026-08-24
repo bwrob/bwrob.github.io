@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -14,10 +14,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -76,12 +79,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-96a43165c4d0207e3a751099b8d9671b.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-c6434e2816b6e53f820184e91c93ac7d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-73751680ca121cac81413277327230eb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../site_libs/bootstrap/bootstrap-c7170261eb2bbedd820cef4c8c5b1644.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../../site_libs/bootstrap/bootstrap-dark-49de6045867557a8d47d4e02c0bec047.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-fcffe00015cf7e92884255123184f18a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-5865491327066f56f9cc3bed50bb0a86.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -438,26 +441,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="starting-simple-the-empty-class" class="level2">
 <h2 class="anchored" data-anchor-id="starting-simple-the-empty-class">Starting Simple: The Empty Class</h2>
 <p>Python’s dynamic nature allows for flexibility that can be surprising if you are coming from statically typed languages like C++ or Java. The most minimal class definition in Python is simply an empty block.</p>
-<div id="860373d9" class="cell" data-execution_count="1">
+<div id="b415b9b4" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">class</span> Option:</span>
-<span id="cb1-2"><a href="#cb1-2"></a>    <span class="cf">pass</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">class</span> Option:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a>    <span class="cf">pass</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>This <code>Option</code> class might seem useless, but Python allows us to attach attributes to instances dynamically—a practice sometimes called “monkey patching” in broader contexts.</p>
-<div id="9c63a420" class="cell" data-execution_count="2">
+<div id="d9b5a1ee" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Create an instance</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a>my_option <span class="op">=</span> Option()</span>
-<span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># Attach attributes dynamically</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a>my_option.strike <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a>my_option.expiry <span class="op">=</span> <span class="st">"2025-12-20"</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a>my_option.<span class="bu">type</span> <span class="op">=</span> <span class="st">"Call"</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a></span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="bu">print</span>(<span class="ss">f"Option strike: </span><span class="sc">{</span>my_option<span class="sc">.</span>strike<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="co"># Create an instance</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a>my_option <span class="op">=</span> Option()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a><span class="co"># Attach attributes dynamically</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>my_option.strike <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a>my_option.expiry <span class="op">=</span> <span class="st">"2025-12-20"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a>my_option.<span class="bu">type</span> <span class="op">=</span> <span class="st">"Call"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-label="9"></a><span class="bu">print</span>(<span class="ss">f"Option strike: </span><span class="sc">{</span>my_option<span class="sc">.</span>strike<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Option strike: 100</code></pre>
@@ -469,18 +472,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="enforcing-structure-__init__">Enforcing Structure: <code>__init__</code></h2>
 <p>To fix this, we use the <code>__init__</code> method. Think of it as your “initializer” (sometimes called a constructor). It runs the second an object is created, making sure every instance starts off with the right data in the right place.</p>
 <p>Here’s how we can define a <code>EuropeanOption</code> class with a proper setup.</p>
-<div id="543fa9e2" class="cell" data-execution_count="3">
+<div id="2e24b019" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">class</span> EuropeanOption:</span>
-<span id="cb4-2"><a href="#cb4-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike: <span class="bu">float</span>, expiry: <span class="bu">str</span>, option_type: <span class="bu">str</span>):</span>
-<span id="cb4-3"><a href="#cb4-3"></a>        <span class="va">self</span>.strike <span class="op">=</span> strike</span>
-<span id="cb4-4"><a href="#cb4-4"></a>        <span class="va">self</span>.expiry <span class="op">=</span> expiry</span>
-<span id="cb4-5"><a href="#cb4-5"></a>        <span class="va">self</span>.option_type <span class="op">=</span> option_type</span>
-<span id="cb4-6"><a href="#cb4-6"></a></span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="co"># Now, we HAVE to provide these arguments to create an instance</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a><span class="co"># euro_option = EuropeanOption() # This would blow up with a TypeError</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a>euro_option <span class="op">=</span> EuropeanOption(<span class="fl">100.0</span>, <span class="st">"2025-12-20"</span>, <span class="st">"Call"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="kw">class</span> EuropeanOption:</span>
+<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike: <span class="bu">float</span>, expiry: <span class="bu">str</span>, option_type: <span class="bu">str</span>):</span>
+<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a>        <span class="va">self</span>.strike <span class="op">=</span> strike</span>
+<span id="cb4-4"><a href="#cb4-4" aria-label="4"></a>        <span class="va">self</span>.expiry <span class="op">=</span> expiry</span>
+<span id="cb4-5"><a href="#cb4-5" aria-label="5"></a>        <span class="va">self</span>.option_type <span class="op">=</span> option_type</span>
+<span id="cb4-6"><a href="#cb4-6" aria-label="6"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-label="7"></a><span class="co"># Now, we HAVE to provide these arguments to create an instance</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-label="8"></a><span class="co"># euro_option = EuropeanOption() # This would blow up with a TypeError</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-label="9"></a>euro_option <span class="op">=</span> EuropeanOption(<span class="fl">100.0</span>, <span class="st">"2025-12-20"</span>, <span class="st">"Call"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <section id="self-the-secret-sauce" class="level3">
@@ -498,24 +501,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="class-attributes-vs.-instance-attributes">Class Attributes vs.&nbsp;Instance Attributes</h2>
 <p>The attributes <code>strike</code>, <code>expiry</code>, and <code>option_type</code> are <strong>instance attributes</strong>. They belong to a specific object; one option’s strike does not affect another’s.</p>
 <p>Sometimes, however, we need to share data across <em>all</em> instances of a class. These are <strong>class attributes</strong>, defined directly in the class body.</p>
-<div id="6383a105" class="cell" data-execution_count="4">
+<div id="85917875" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">class</span> EuropeanOption:</span>
-<span id="cb5-2"><a href="#cb5-2"></a>    <span class="co"># Class attribute</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a>    CONTRACT_SIZE <span class="op">=</span> <span class="dv">100</span>  <span class="co"># Standard lot size</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a>    _DEFAULT_OPTION_TYPE <span class="op">=</span> <span class="st">"Call"</span> <span class="co"># Default for new options</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a></span>
-<span id="cb5-6"><a href="#cb5-6"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike: <span class="bu">float</span>, expiry: <span class="bu">str</span>, option_type: <span class="bu">str</span>):</span>
-<span id="cb5-7"><a href="#cb5-7"></a>        <span class="va">self</span>.strike <span class="op">=</span> strike  <span class="co"># Instance attribute</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a>        <span class="va">self</span>.expiry <span class="op">=</span> expiry</span>
-<span id="cb5-9"><a href="#cb5-9"></a>        <span class="va">self</span>.option_type <span class="op">=</span> option_type</span>
-<span id="cb5-10"><a href="#cb5-10"></a></span>
-<span id="cb5-11"><a href="#cb5-11"></a>op1 <span class="op">=</span> EuropeanOption(<span class="dv">100</span>, <span class="st">"2025-12-20"</span>, <span class="st">"Call"</span>)</span>
-<span id="cb5-12"><a href="#cb5-12"></a>op2 <span class="op">=</span> EuropeanOption(<span class="dv">110</span>, <span class="st">"2025-12-20"</span>, <span class="st">"Put"</span>)</span>
-<span id="cb5-13"><a href="#cb5-13"></a></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="bu">print</span>(<span class="ss">f"Option 1 contract size: </span><span class="sc">{</span>op1<span class="sc">.</span>CONTRACT_SIZE<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb5-15"><a href="#cb5-15"></a><span class="bu">print</span>(<span class="ss">f"Option 2 contract size: </span><span class="sc">{</span>op2<span class="sc">.</span>CONTRACT_SIZE<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="kw">class</span> EuropeanOption:</span>
+<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a>    <span class="co"># Class attribute</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-label="3"></a>    CONTRACT_SIZE <span class="op">=</span> <span class="dv">100</span>  <span class="co"># Standard lot size</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-label="4"></a>    _DEFAULT_OPTION_TYPE <span class="op">=</span> <span class="st">"Call"</span> <span class="co"># Default for new options</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-label="5"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-label="6"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike: <span class="bu">float</span>, expiry: <span class="bu">str</span>, option_type: <span class="bu">str</span>):</span>
+<span id="cb5-7"><a href="#cb5-7" aria-label="7"></a>        <span class="va">self</span>.strike <span class="op">=</span> strike  <span class="co"># Instance attribute</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-label="8"></a>        <span class="va">self</span>.expiry <span class="op">=</span> expiry</span>
+<span id="cb5-9"><a href="#cb5-9" aria-label="9"></a>        <span class="va">self</span>.option_type <span class="op">=</span> option_type</span>
+<span id="cb5-10"><a href="#cb5-10" aria-label="10"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-label="11"></a>op1 <span class="op">=</span> EuropeanOption(<span class="dv">100</span>, <span class="st">"2025-12-20"</span>, <span class="st">"Call"</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-label="12"></a>op2 <span class="op">=</span> EuropeanOption(<span class="dv">110</span>, <span class="st">"2025-12-20"</span>, <span class="st">"Put"</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-label="13"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-label="14"></a><span class="bu">print</span>(<span class="ss">f"Option 1 contract size: </span><span class="sc">{</span>op1<span class="sc">.</span>CONTRACT_SIZE<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-label="15"></a><span class="bu">print</span>(<span class="ss">f"Option 2 contract size: </span><span class="sc">{</span>op2<span class="sc">.</span>CONTRACT_SIZE<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Option 1 contract size: 100
@@ -567,25 +570,25 @@ Option 2 contract size: 100</code></pre>
 <section id="instance-methods" class="level3">
 <h3 class="anchored" data-anchor-id="instance-methods">Instance Methods</h3>
 <p><strong>Instance methods</strong> are the default — functions defined inside a class that operate on a specific instance via <code>self</code>.</p>
-<div id="2c7054d3" class="cell" data-execution_count="5">
+<div id="6280e163" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">class</span> EuropeanOption:</span>
-<span id="cb7-2"><a href="#cb7-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike: <span class="bu">float</span>, option_type: <span class="bu">str</span>):</span>
-<span id="cb7-3"><a href="#cb7-3"></a>        <span class="va">self</span>.strike <span class="op">=</span> strike</span>
-<span id="cb7-4"><a href="#cb7-4"></a>        <span class="va">self</span>.option_type <span class="op">=</span> option_type</span>
-<span id="cb7-5"><a href="#cb7-5"></a></span>
-<span id="cb7-6"><a href="#cb7-6"></a>    <span class="kw">def</span> payoff(<span class="va">self</span>, spot_price: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb7-7"><a href="#cb7-7"></a>        <span class="cf">if</span> <span class="va">self</span>.option_type <span class="op">==</span> <span class="st">"Call"</span>:</span>
-<span id="cb7-8"><a href="#cb7-8"></a>            <span class="cf">return</span> <span class="bu">max</span>(spot_price <span class="op">-</span> <span class="va">self</span>.strike, <span class="fl">0.0</span>)</span>
-<span id="cb7-9"><a href="#cb7-9"></a>        <span class="cf">elif</span> <span class="va">self</span>.option_type <span class="op">==</span> <span class="st">"Put"</span>:</span>
-<span id="cb7-10"><a href="#cb7-10"></a>            <span class="cf">return</span> <span class="bu">max</span>(<span class="va">self</span>.strike <span class="op">-</span> spot_price, <span class="fl">0.0</span>)</span>
-<span id="cb7-11"><a href="#cb7-11"></a>        <span class="cf">else</span>:</span>
-<span id="cb7-12"><a href="#cb7-12"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Unknown option type"</span>)</span>
-<span id="cb7-13"><a href="#cb7-13"></a></span>
-<span id="cb7-14"><a href="#cb7-14"></a>call <span class="op">=</span> EuropeanOption(<span class="dv">100</span>, <span class="st">"Call"</span>)</span>
-<span id="cb7-15"><a href="#cb7-15"></a><span class="bu">print</span>(<span class="ss">f"Spot 110, Call Payoff: </span><span class="sc">{</span>call<span class="sc">.</span>payoff(<span class="dv">110</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb7-16"><a href="#cb7-16"></a><span class="bu">print</span>(<span class="ss">f"Spot 90, Call Payoff: </span><span class="sc">{</span>call<span class="sc">.</span>payoff(<span class="dv">90</span>)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="kw">class</span> EuropeanOption:</span>
+<span id="cb7-2"><a href="#cb7-2" aria-label="2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike: <span class="bu">float</span>, option_type: <span class="bu">str</span>):</span>
+<span id="cb7-3"><a href="#cb7-3" aria-label="3"></a>        <span class="va">self</span>.strike <span class="op">=</span> strike</span>
+<span id="cb7-4"><a href="#cb7-4" aria-label="4"></a>        <span class="va">self</span>.option_type <span class="op">=</span> option_type</span>
+<span id="cb7-5"><a href="#cb7-5" aria-label="5"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-label="6"></a>    <span class="kw">def</span> payoff(<span class="va">self</span>, spot_price: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb7-7"><a href="#cb7-7" aria-label="7"></a>        <span class="cf">if</span> <span class="va">self</span>.option_type <span class="op">==</span> <span class="st">"Call"</span>:</span>
+<span id="cb7-8"><a href="#cb7-8" aria-label="8"></a>            <span class="cf">return</span> <span class="bu">max</span>(spot_price <span class="op">-</span> <span class="va">self</span>.strike, <span class="fl">0.0</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-label="9"></a>        <span class="cf">elif</span> <span class="va">self</span>.option_type <span class="op">==</span> <span class="st">"Put"</span>:</span>
+<span id="cb7-10"><a href="#cb7-10" aria-label="10"></a>            <span class="cf">return</span> <span class="bu">max</span>(<span class="va">self</span>.strike <span class="op">-</span> spot_price, <span class="fl">0.0</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-label="11"></a>        <span class="cf">else</span>:</span>
+<span id="cb7-12"><a href="#cb7-12" aria-label="12"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Unknown option type"</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-label="13"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-label="14"></a>call <span class="op">=</span> EuropeanOption(<span class="dv">100</span>, <span class="st">"Call"</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-label="15"></a><span class="bu">print</span>(<span class="ss">f"Spot 110, Call Payoff: </span><span class="sc">{</span>call<span class="sc">.</span>payoff(<span class="dv">110</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-label="16"></a><span class="bu">print</span>(<span class="ss">f"Spot 90, Call Payoff: </span><span class="sc">{</span>call<span class="sc">.</span>payoff(<span class="dv">90</span>)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Spot 110, Call Payoff: 10
@@ -598,42 +601,42 @@ Spot 90, Call Payoff: 0.0</code></pre>
 <h2 class="anchored" data-anchor-id="class-methods">Class Methods</h2>
 <p>Sometimes we need a method that operates on the class itself rather than a specific instance. These are <strong>class methods</strong>, receiving the class (<code>cls</code>) as their first argument instead of <code>self</code>. They are marked with the <code>@classmethod</code> decorator.</p>
 <p>A common use case for class methods is creating <strong>factory methods</strong>—alternative ways to instantiate the class.</p>
-<div id="ec80b890" class="cell" data-execution_count="6">
+<div id="9641ef4f" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">class</span> EuropeanOption:</span>
-<span id="cb9-2"><a href="#cb9-2"></a>    _DEFAULT_OPTION_TYPE <span class="op">=</span> <span class="st">"Call"</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a></span>
-<span id="cb9-4"><a href="#cb9-4"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike: <span class="bu">float</span>, option_type: <span class="bu">str</span>):</span>
-<span id="cb9-5"><a href="#cb9-5"></a>        <span class="va">self</span>.strike <span class="op">=</span> strike</span>
-<span id="cb9-6"><a href="#cb9-6"></a>        <span class="va">self</span>.option_type <span class="op">=</span> option_type</span>
-<span id="cb9-7"><a href="#cb9-7"></a></span>
-<span id="cb9-8"><a href="#cb9-8"></a>    <span class="kw">def</span> <span class="fu">__repr__</span>(<span class="va">self</span>):</span>
-<span id="cb9-9"><a href="#cb9-9"></a>        <span class="cf">return</span> <span class="ss">f"EuropeanOption(strike=</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>strike<span class="sc">}</span><span class="ss">, type='</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>option_type<span class="sc">}</span><span class="ss">')"</span></span>
-<span id="cb9-10"><a href="#cb9-10"></a></span>
-<span id="cb9-11"><a href="#cb9-11"></a>    <span class="at">@classmethod</span></span>
-<span id="cb9-12"><a href="#cb9-12"></a>    <span class="kw">def</span> from_string(cls, description: <span class="bu">str</span>):</span>
-<span id="cb9-13"><a href="#cb9-13"></a>        <span class="co"># Parses strings like "Call-100" or "Put-150"</span></span>
-<span id="cb9-14"><a href="#cb9-14"></a>        parts <span class="op">=</span> description.split(<span class="st">'-'</span>)</span>
-<span id="cb9-15"><a href="#cb9-15"></a>        option_type <span class="op">=</span> parts[<span class="dv">0</span>]</span>
-<span id="cb9-16"><a href="#cb9-16"></a>        strike <span class="op">=</span> <span class="bu">float</span>(parts[<span class="dv">1</span>])</span>
-<span id="cb9-17"><a href="#cb9-17"></a>        <span class="cf">return</span> cls(strike, option_type)</span>
-<span id="cb9-18"><a href="#cb9-18"></a></span>
-<span id="cb9-19"><a href="#cb9-19"></a>    <span class="at">@classmethod</span></span>
-<span id="cb9-20"><a href="#cb9-20"></a>    <span class="kw">def</span> set_default_option_type(cls, new_type: <span class="bu">str</span>):</span>
-<span id="cb9-21"><a href="#cb9-21"></a>        <span class="co">"""Sets a new default option type for the class."""</span></span>
-<span id="cb9-22"><a href="#cb9-22"></a>        <span class="cf">if</span> new_type <span class="kw">not</span> <span class="kw">in</span> [<span class="st">"Call"</span>, <span class="st">"Put"</span>]:</span>
-<span id="cb9-23"><a href="#cb9-23"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Option type must be 'Call' or 'Put'."</span>)</span>
-<span id="cb9-24"><a href="#cb9-24"></a>        cls._DEFAULT_OPTION_TYPE <span class="op">=</span> new_type</span>
-<span id="cb9-25"><a href="#cb9-25"></a></span>
-<span id="cb9-26"><a href="#cb9-26"></a><span class="co"># Create an instance using the factory</span></span>
-<span id="cb9-27"><a href="#cb9-27"></a>option_from_str <span class="op">=</span> EuropeanOption.from_string(<span class="st">"Put-120"</span>)</span>
-<span id="cb9-28"><a href="#cb9-28"></a><span class="bu">print</span>(<span class="ss">f"Created from string: </span><span class="sc">{</span>option_from_str<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb9-29"><a href="#cb9-29"></a></span>
-<span id="cb9-30"><a href="#cb9-30"></a><span class="co"># Demonstrate non-builder class method</span></span>
-<span id="cb9-31"><a href="#cb9-31"></a><span class="bu">print</span>(<span class="ss">f"Default option type before change: </span><span class="sc">{</span>EuropeanOption<span class="sc">.</span>_DEFAULT_OPTION_TYPE<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb9-32"><a href="#cb9-32"></a>EuropeanOption.set_default_option_type(<span class="st">"Put"</span>)</span>
-<span id="cb9-33"><a href="#cb9-33"></a><span class="bu">print</span>(<span class="ss">f"Default option type after change: </span><span class="sc">{</span>EuropeanOption<span class="sc">.</span>_DEFAULT_OPTION_TYPE<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a><span class="kw">class</span> EuropeanOption:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-label="2"></a>    _DEFAULT_OPTION_TYPE <span class="op">=</span> <span class="st">"Call"</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-label="3"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-label="4"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike: <span class="bu">float</span>, option_type: <span class="bu">str</span>):</span>
+<span id="cb9-5"><a href="#cb9-5" aria-label="5"></a>        <span class="va">self</span>.strike <span class="op">=</span> strike</span>
+<span id="cb9-6"><a href="#cb9-6" aria-label="6"></a>        <span class="va">self</span>.option_type <span class="op">=</span> option_type</span>
+<span id="cb9-7"><a href="#cb9-7" aria-label="7"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-label="8"></a>    <span class="kw">def</span> <span class="fu">__repr__</span>(<span class="va">self</span>):</span>
+<span id="cb9-9"><a href="#cb9-9" aria-label="9"></a>        <span class="cf">return</span> <span class="ss">f"EuropeanOption(strike=</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>strike<span class="sc">}</span><span class="ss">, type='</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>option_type<span class="sc">}</span><span class="ss">')"</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-label="10"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-label="11"></a>    <span class="at">@classmethod</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-label="12"></a>    <span class="kw">def</span> from_string(cls, description: <span class="bu">str</span>):</span>
+<span id="cb9-13"><a href="#cb9-13" aria-label="13"></a>        <span class="co"># Parses strings like "Call-100" or "Put-150"</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-label="14"></a>        parts <span class="op">=</span> description.split(<span class="st">'-'</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-label="15"></a>        option_type <span class="op">=</span> parts[<span class="dv">0</span>]</span>
+<span id="cb9-16"><a href="#cb9-16" aria-label="16"></a>        strike <span class="op">=</span> <span class="bu">float</span>(parts[<span class="dv">1</span>])</span>
+<span id="cb9-17"><a href="#cb9-17" aria-label="17"></a>        <span class="cf">return</span> cls(strike, option_type)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-label="18"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-label="19"></a>    <span class="at">@classmethod</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-label="20"></a>    <span class="kw">def</span> set_default_option_type(cls, new_type: <span class="bu">str</span>):</span>
+<span id="cb9-21"><a href="#cb9-21" aria-label="21"></a>        <span class="co">"""Sets a new default option type for the class."""</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-label="22"></a>        <span class="cf">if</span> new_type <span class="kw">not</span> <span class="kw">in</span> [<span class="st">"Call"</span>, <span class="st">"Put"</span>]:</span>
+<span id="cb9-23"><a href="#cb9-23" aria-label="23"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Option type must be 'Call' or 'Put'."</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-label="24"></a>        cls._DEFAULT_OPTION_TYPE <span class="op">=</span> new_type</span>
+<span id="cb9-25"><a href="#cb9-25" aria-label="25"></a></span>
+<span id="cb9-26"><a href="#cb9-26" aria-label="26"></a><span class="co"># Create an instance using the factory</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-label="27"></a>option_from_str <span class="op">=</span> EuropeanOption.from_string(<span class="st">"Put-120"</span>)</span>
+<span id="cb9-28"><a href="#cb9-28" aria-label="28"></a><span class="bu">print</span>(<span class="ss">f"Created from string: </span><span class="sc">{</span>option_from_str<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-label="29"></a></span>
+<span id="cb9-30"><a href="#cb9-30" aria-label="30"></a><span class="co"># Demonstrate non-builder class method</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-label="31"></a><span class="bu">print</span>(<span class="ss">f"Default option type before change: </span><span class="sc">{</span>EuropeanOption<span class="sc">.</span>_DEFAULT_OPTION_TYPE<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-32"><a href="#cb9-32" aria-label="32"></a>EuropeanOption.set_default_option_type(<span class="st">"Put"</span>)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-label="33"></a><span class="bu">print</span>(<span class="ss">f"Default option type after change: </span><span class="sc">{</span>EuropeanOption<span class="sc">.</span>_DEFAULT_OPTION_TYPE<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Created from string: EuropeanOption(strike=120.0, type='Put')
@@ -646,22 +649,22 @@ Default option type after change: Put</code></pre>
 <h2 class="anchored" data-anchor-id="static-methods">Static Methods</h2>
 <p>A <strong>static method</strong> behaves like a regular function but lives within the class’s namespace. It doesn’t receive <code>self</code> or <code>cls</code> automatically. We use the <code>@staticmethod</code> decorator for utility functions that are logically related to the class but don’t need access to the class or instance state.</p>
 <p>For an option class, a static method might implement a pricing formula component that is purely mathematical.</p>
-<div id="d8fec819" class="cell" data-execution_count="7">
+<div id="87dc25e5" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="im">import</span> math</span>
-<span id="cb11-2"><a href="#cb11-2"></a></span>
-<span id="cb11-3"><a href="#cb11-3"></a><span class="kw">class</span> EuropeanOption:</span>
-<span id="cb11-4"><a href="#cb11-4"></a>    <span class="co"># ... (previous methods) ...</span></span>
-<span id="cb11-5"><a href="#cb11-5"></a></span>
-<span id="cb11-6"><a href="#cb11-6"></a>    <span class="at">@staticmethod</span></span>
-<span id="cb11-7"><a href="#cb11-7"></a>    <span class="kw">def</span> d1(S, K, T, r, sigma):</span>
-<span id="cb11-8"><a href="#cb11-8"></a>        <span class="co">"""Calculates d1 term for Black-Scholes."""</span></span>
-<span id="cb11-9"><a href="#cb11-9"></a>        <span class="cf">return</span> (math.log(S <span class="op">/</span> K) <span class="op">+</span> (r <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> sigma <span class="op">**</span> <span class="dv">2</span>) <span class="op">*</span> T) <span class="op">/</span> (sigma <span class="op">*</span> math.sqrt(T))</span>
-<span id="cb11-10"><a href="#cb11-10"></a></span>
-<span id="cb11-11"><a href="#cb11-11"></a><span class="co"># We can call it without an instance</span></span>
-<span id="cb11-12"><a href="#cb11-12"></a>d1_val <span class="op">=</span> EuropeanOption.d1(S<span class="op">=</span><span class="dv">100</span>, K<span class="op">=</span><span class="dv">100</span>, T<span class="op">=</span><span class="dv">1</span>, r<span class="op">=</span><span class="fl">0.05</span>, sigma<span class="op">=</span><span class="fl">0.2</span>)</span>
-<span id="cb11-13"><a href="#cb11-13"></a><span class="bu">print</span>(<span class="ss">f"d1 value: </span><span class="sc">{</span>d1_val<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a><span class="im">import</span> math</span>
+<span id="cb11-2"><a href="#cb11-2" aria-label="2"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-label="3"></a><span class="kw">class</span> EuropeanOption:</span>
+<span id="cb11-4"><a href="#cb11-4" aria-label="4"></a>    <span class="co"># ... (previous methods) ...</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-label="5"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-label="6"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-label="7"></a>    <span class="kw">def</span> d1(S, K, T, r, sigma):</span>
+<span id="cb11-8"><a href="#cb11-8" aria-label="8"></a>        <span class="co">"""Calculates d1 term for Black-Scholes."""</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-label="9"></a>        <span class="cf">return</span> (math.log(S <span class="op">/</span> K) <span class="op">+</span> (r <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> sigma <span class="op">**</span> <span class="dv">2</span>) <span class="op">*</span> T) <span class="op">/</span> (sigma <span class="op">*</span> math.sqrt(T))</span>
+<span id="cb11-10"><a href="#cb11-10" aria-label="10"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-label="11"></a><span class="co"># We can call it without an instance</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-label="12"></a>d1_val <span class="op">=</span> EuropeanOption.d1(S<span class="op">=</span><span class="dv">100</span>, K<span class="op">=</span><span class="dv">100</span>, T<span class="op">=</span><span class="dv">1</span>, r<span class="op">=</span><span class="fl">0.05</span>, sigma<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-label="13"></a><span class="bu">print</span>(<span class="ss">f"d1 value: </span><span class="sc">{</span>d1_val<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>d1 value: 0.3500</code></pre>
@@ -672,31 +675,31 @@ Default option type after change: Put</code></pre>
 <h2 class="anchored" data-anchor-id="the-property-decorator-property">The Property Decorator: <code>@property</code></h2>
 <p>In finance, invalid data can lead to significant errors. A negative strike price or a negative volatility is nonsensical. In languages like Java or C++, you typically implement <code>getStrike()</code> and <code>setStrike()</code> methods to handle validation. Python offers a cleaner alternative: the <code>@property</code> decorator.</p>
 <p>This allows us to access a method as if it were an attribute, adding logic like validation seamlessly.</p>
-<div id="422a0bc9" class="cell" data-execution_count="8">
+<div id="63f2676d" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">class</span> EuropeanOption:</span>
-<span id="cb13-2"><a href="#cb13-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike: <span class="bu">float</span>):</span>
-<span id="cb13-3"><a href="#cb13-3"></a>        <span class="co"># We assign to the property, triggering the setter validation</span></span>
-<span id="cb13-4"><a href="#cb13-4"></a>        <span class="va">self</span>.strike <span class="op">=</span> strike</span>
-<span id="cb13-5"><a href="#cb13-5"></a></span>
-<span id="cb13-6"><a href="#cb13-6"></a>    <span class="at">@property</span></span>
-<span id="cb13-7"><a href="#cb13-7"></a>    <span class="kw">def</span> strike(<span class="va">self</span>):</span>
-<span id="cb13-8"><a href="#cb13-8"></a>        <span class="cf">return</span> <span class="va">self</span>._strike</span>
-<span id="cb13-9"><a href="#cb13-9"></a></span>
-<span id="cb13-10"><a href="#cb13-10"></a>    <span class="at">@strike.setter</span></span>
-<span id="cb13-11"><a href="#cb13-11"></a>    <span class="kw">def</span> strike(<span class="va">self</span>, value):</span>
-<span id="cb13-12"><a href="#cb13-12"></a>        <span class="cf">if</span> value <span class="op">&lt;</span> <span class="dv">0</span>:</span>
-<span id="cb13-13"><a href="#cb13-13"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Strike price cannot be negative."</span>)</span>
-<span id="cb13-14"><a href="#cb13-14"></a>        <span class="va">self</span>._strike <span class="op">=</span> value</span>
-<span id="cb13-15"><a href="#cb13-15"></a></span>
-<span id="cb13-16"><a href="#cb13-16"></a>opt <span class="op">=</span> EuropeanOption(<span class="dv">100</span>)</span>
-<span id="cb13-17"><a href="#cb13-17"></a><span class="bu">print</span>(<span class="ss">f"Current Strike: </span><span class="sc">{</span>opt<span class="sc">.</span>strike<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb13-18"><a href="#cb13-18"></a></span>
-<span id="cb13-19"><a href="#cb13-19"></a><span class="cf">try</span>:</span>
-<span id="cb13-20"><a href="#cb13-20"></a>    opt.strike <span class="op">=</span> <span class="op">-</span><span class="dv">50</span></span>
-<span id="cb13-21"><a href="#cb13-21"></a><span class="cf">except</span> <span class="pp">ValueError</span> <span class="im">as</span> e:</span>
-<span id="cb13-22"><a href="#cb13-22"></a>    <span class="bu">print</span>(<span class="ss">f"Error caught: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a><span class="kw">class</span> EuropeanOption:</span>
+<span id="cb13-2"><a href="#cb13-2" aria-label="2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike: <span class="bu">float</span>):</span>
+<span id="cb13-3"><a href="#cb13-3" aria-label="3"></a>        <span class="co"># We assign to the property, triggering the setter validation</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-label="4"></a>        <span class="va">self</span>.strike <span class="op">=</span> strike</span>
+<span id="cb13-5"><a href="#cb13-5" aria-label="5"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-label="6"></a>    <span class="at">@property</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-label="7"></a>    <span class="kw">def</span> strike(<span class="va">self</span>):</span>
+<span id="cb13-8"><a href="#cb13-8" aria-label="8"></a>        <span class="cf">return</span> <span class="va">self</span>._strike</span>
+<span id="cb13-9"><a href="#cb13-9" aria-label="9"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-label="10"></a>    <span class="at">@strike.setter</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-label="11"></a>    <span class="kw">def</span> strike(<span class="va">self</span>, value):</span>
+<span id="cb13-12"><a href="#cb13-12" aria-label="12"></a>        <span class="cf">if</span> value <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb13-13"><a href="#cb13-13" aria-label="13"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Strike price cannot be negative."</span>)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-label="14"></a>        <span class="va">self</span>._strike <span class="op">=</span> value</span>
+<span id="cb13-15"><a href="#cb13-15" aria-label="15"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-label="16"></a>opt <span class="op">=</span> EuropeanOption(<span class="dv">100</span>)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-label="17"></a><span class="bu">print</span>(<span class="ss">f"Current Strike: </span><span class="sc">{</span>opt<span class="sc">.</span>strike<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-label="18"></a></span>
+<span id="cb13-19"><a href="#cb13-19" aria-label="19"></a><span class="cf">try</span>:</span>
+<span id="cb13-20"><a href="#cb13-20" aria-label="20"></a>    opt.strike <span class="op">=</span> <span class="op">-</span><span class="dv">50</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-label="21"></a><span class="cf">except</span> <span class="pp">ValueError</span> <span class="im">as</span> e:</span>
+<span id="cb13-22"><a href="#cb13-22" aria-label="22"></a>    <span class="bu">print</span>(<span class="ss">f"Error caught: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Current Strike: 100
@@ -708,20 +711,20 @@ Error caught: Strike price cannot be negative.</code></pre>
 <section id="access-control-private-vs.-protected" class="level2">
 <h2 class="anchored" data-anchor-id="access-control-private-vs.-protected">Access Control: Private vs.&nbsp;Protected</h2>
 <p>Python does not enforce strict <code>private</code> or <code>protected</code> keywords. Instead, it relies on naming conventions:</p>
-<div id="15a0f62e" class="cell" data-execution_count="9">
+<div id="17343f69" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1"></a><span class="kw">class</span> EuropeanOption:</span>
-<span id="annotated-cell-9-2"><a href="#annotated-cell-9-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike: <span class="bu">float</span>):</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-9-3" class="code-annotation-target"><a href="#annotated-cell-9-3"></a>        <span class="va">self</span>._strike <span class="op">=</span> strike</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-9-4" class="code-annotation-target"><a href="#annotated-cell-9-4"></a>        <span class="va">self</span>.__valuation_model <span class="op">=</span> <span class="st">"BS"</span></span>
-<span id="annotated-cell-9-5"><a href="#annotated-cell-9-5"></a></span>
-<span id="annotated-cell-9-6"><a href="#annotated-cell-9-6"></a></span>
-<span id="annotated-cell-9-7"><a href="#annotated-cell-9-7"></a>opt <span class="op">=</span> EuropeanOption(<span class="dv">100</span>)</span>
-<span id="annotated-cell-9-8"><a href="#annotated-cell-9-8"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-9-9" class="code-annotation-target"><a href="#annotated-cell-9-9"></a><span class="bu">print</span>(opt._strike)</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-9-10" class="code-annotation-target"><a href="#annotated-cell-9-10"></a><span class="co"># print(opt.__valuation_model)</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-9-11" class="code-annotation-target"><a href="#annotated-cell-9-11"></a><span class="bu">print</span>(opt._EuropeanOption__valuation_model)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-label="1"></a><span class="kw">class</span> EuropeanOption:</span>
+<span id="annotated-cell-9-2"><a href="#annotated-cell-9-2" aria-label="2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike: <span class="bu">float</span>):</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-9-3" class="code-annotation-target"><a href="#annotated-cell-9-3" aria-label="3"></a>        <span class="va">self</span>._strike <span class="op">=</span> strike</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-9-4" class="code-annotation-target"><a href="#annotated-cell-9-4" aria-label="4"></a>        <span class="va">self</span>.__valuation_model <span class="op">=</span> <span class="st">"BS"</span></span>
+<span id="annotated-cell-9-5"><a href="#annotated-cell-9-5" aria-label="5"></a></span>
+<span id="annotated-cell-9-6"><a href="#annotated-cell-9-6" aria-label="6"></a></span>
+<span id="annotated-cell-9-7"><a href="#annotated-cell-9-7" aria-label="7"></a>opt <span class="op">=</span> EuropeanOption(<span class="dv">100</span>)</span>
+<span id="annotated-cell-9-8"><a href="#annotated-cell-9-8" aria-label="8"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-9-9" class="code-annotation-target"><a href="#annotated-cell-9-9" aria-label="9"></a><span class="bu">print</span>(opt._strike)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-9-10" class="code-annotation-target"><a href="#annotated-cell-9-10" aria-label="10"></a><span class="co"># print(opt.__valuation_model)</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-9-11" class="code-annotation-target"><a href="#annotated-cell-9-11" aria-label="11"></a><span class="bu">print</span>(opt._EuropeanOption__valuation_model)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -758,41 +761,41 @@ BS</code></pre>
 <h2 class="anchored" data-anchor-id="memory-optimization-__slots__">Memory Optimization: <code>__slots__</code></h2>
 <p>Standard Python objects store their attributes in a dictionary (<code>__dict__</code>), which allows for the dynamic behavior we saw earlier. However, dictionaries come with memory overhead.</p>
 <p>If you are running a Monte Carlo simulation with millions of paths, this overhead can become a bottleneck. <code>__slots__</code> tells Python to reserve space for <em>only</em> a specific set of attributes, removing the dynamic dictionary and saving memory.</p>
-<div id="a0dcf81f" class="cell" data-execution_count="10">
+<div id="e67dfb66" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="im">import</span> sys</span>
-<span id="cb16-2"><a href="#cb16-2"></a></span>
-<span id="cb16-3"><a href="#cb16-3"></a></span>
-<span id="cb16-4"><a href="#cb16-4"></a><span class="kw">class</span> StandardOption:</span>
-<span id="cb16-5"><a href="#cb16-5"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike, expiry):</span>
-<span id="cb16-6"><a href="#cb16-6"></a>        <span class="va">self</span>.strike <span class="op">=</span> strike</span>
-<span id="cb16-7"><a href="#cb16-7"></a>        <span class="va">self</span>.expiry <span class="op">=</span> expiry</span>
-<span id="cb16-8"><a href="#cb16-8"></a></span>
-<span id="cb16-9"><a href="#cb16-9"></a></span>
-<span id="cb16-10"><a href="#cb16-10"></a><span class="kw">class</span> SlottedOption:</span>
-<span id="cb16-11"><a href="#cb16-11"></a>    <span class="va">__slots__</span> <span class="op">=</span> [<span class="st">"strike"</span>, <span class="st">"expiry"</span>]</span>
-<span id="cb16-12"><a href="#cb16-12"></a></span>
-<span id="cb16-13"><a href="#cb16-13"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike, expiry):</span>
-<span id="cb16-14"><a href="#cb16-14"></a>        <span class="va">self</span>.strike <span class="op">=</span> strike</span>
-<span id="cb16-15"><a href="#cb16-15"></a>        <span class="va">self</span>.expiry <span class="op">=</span> expiry</span>
-<span id="cb16-16"><a href="#cb16-16"></a></span>
-<span id="cb16-17"><a href="#cb16-17"></a></span>
-<span id="cb16-18"><a href="#cb16-18"></a><span class="co"># Compare memory usage</span></span>
-<span id="cb16-19"><a href="#cb16-19"></a>std_opt <span class="op">=</span> StandardOption(<span class="dv">100</span>, <span class="st">"2025-12-20"</span>)</span>
-<span id="cb16-20"><a href="#cb16-20"></a>slot_opt <span class="op">=</span> SlottedOption(<span class="dv">100</span>, <span class="st">"2025-12-20"</span>)</span>
-<span id="cb16-21"><a href="#cb16-21"></a></span>
-<span id="cb16-22"><a href="#cb16-22"></a></span>
-<span id="cb16-23"><a href="#cb16-23"></a><span class="co"># Helper function to estimate size (rough approximation)</span></span>
-<span id="cb16-24"><a href="#cb16-24"></a><span class="kw">def</span> get_size(obj):</span>
-<span id="cb16-25"><a href="#cb16-25"></a>    size <span class="op">=</span> sys.getsizeof(obj)</span>
-<span id="cb16-26"><a href="#cb16-26"></a>    <span class="cf">if</span> <span class="bu">hasattr</span>(obj, <span class="st">"__dict__"</span>):</span>
-<span id="cb16-27"><a href="#cb16-27"></a>        size <span class="op">+=</span> sys.getsizeof(obj.__dict__)</span>
-<span id="cb16-28"><a href="#cb16-28"></a>    <span class="cf">return</span> size</span>
-<span id="cb16-29"><a href="#cb16-29"></a></span>
-<span id="cb16-30"><a href="#cb16-30"></a></span>
-<span id="cb16-31"><a href="#cb16-31"></a><span class="bu">print</span>(<span class="ss">f"Standard Option Size: ~</span><span class="sc">{</span>get_size(std_opt)<span class="sc">}</span><span class="ss"> bytes"</span>)</span>
-<span id="cb16-32"><a href="#cb16-32"></a><span class="bu">print</span>(<span class="ss">f"Slotted Option Size:  ~</span><span class="sc">{</span>get_size(slot_opt)<span class="sc">}</span><span class="ss"> bytes"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-label="1"></a><span class="im">import</span> sys</span>
+<span id="cb16-2"><a href="#cb16-2" aria-label="2"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-label="3"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-label="4"></a><span class="kw">class</span> StandardOption:</span>
+<span id="cb16-5"><a href="#cb16-5" aria-label="5"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike, expiry):</span>
+<span id="cb16-6"><a href="#cb16-6" aria-label="6"></a>        <span class="va">self</span>.strike <span class="op">=</span> strike</span>
+<span id="cb16-7"><a href="#cb16-7" aria-label="7"></a>        <span class="va">self</span>.expiry <span class="op">=</span> expiry</span>
+<span id="cb16-8"><a href="#cb16-8" aria-label="8"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-label="9"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-label="10"></a><span class="kw">class</span> SlottedOption:</span>
+<span id="cb16-11"><a href="#cb16-11" aria-label="11"></a>    <span class="va">__slots__</span> <span class="op">=</span> [<span class="st">"strike"</span>, <span class="st">"expiry"</span>]</span>
+<span id="cb16-12"><a href="#cb16-12" aria-label="12"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-label="13"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, strike, expiry):</span>
+<span id="cb16-14"><a href="#cb16-14" aria-label="14"></a>        <span class="va">self</span>.strike <span class="op">=</span> strike</span>
+<span id="cb16-15"><a href="#cb16-15" aria-label="15"></a>        <span class="va">self</span>.expiry <span class="op">=</span> expiry</span>
+<span id="cb16-16"><a href="#cb16-16" aria-label="16"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-label="17"></a></span>
+<span id="cb16-18"><a href="#cb16-18" aria-label="18"></a><span class="co"># Compare memory usage</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-label="19"></a>std_opt <span class="op">=</span> StandardOption(<span class="dv">100</span>, <span class="st">"2025-12-20"</span>)</span>
+<span id="cb16-20"><a href="#cb16-20" aria-label="20"></a>slot_opt <span class="op">=</span> SlottedOption(<span class="dv">100</span>, <span class="st">"2025-12-20"</span>)</span>
+<span id="cb16-21"><a href="#cb16-21" aria-label="21"></a></span>
+<span id="cb16-22"><a href="#cb16-22" aria-label="22"></a></span>
+<span id="cb16-23"><a href="#cb16-23" aria-label="23"></a><span class="co"># Helper function to estimate size (rough approximation)</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-label="24"></a><span class="kw">def</span> get_size(obj):</span>
+<span id="cb16-25"><a href="#cb16-25" aria-label="25"></a>    size <span class="op">=</span> sys.getsizeof(obj)</span>
+<span id="cb16-26"><a href="#cb16-26" aria-label="26"></a>    <span class="cf">if</span> <span class="bu">hasattr</span>(obj, <span class="st">"__dict__"</span>):</span>
+<span id="cb16-27"><a href="#cb16-27" aria-label="27"></a>        size <span class="op">+=</span> sys.getsizeof(obj.__dict__)</span>
+<span id="cb16-28"><a href="#cb16-28" aria-label="28"></a>    <span class="cf">return</span> size</span>
+<span id="cb16-29"><a href="#cb16-29" aria-label="29"></a></span>
+<span id="cb16-30"><a href="#cb16-30" aria-label="30"></a></span>
+<span id="cb16-31"><a href="#cb16-31" aria-label="31"></a><span class="bu">print</span>(<span class="ss">f"Standard Option Size: ~</span><span class="sc">{</span>get_size(std_opt)<span class="sc">}</span><span class="ss"> bytes"</span>)</span>
+<span id="cb16-32"><a href="#cb16-32" aria-label="32"></a><span class="bu">print</span>(<span class="ss">f"Slotted Option Size:  ~</span><span class="sc">{</span>get_size(slot_opt)<span class="sc">}</span><span class="ss"> bytes"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Standard Option Size: ~344 bytes
@@ -804,20 +807,20 @@ Slotted Option Size:  ~48 bytes</code></pre>
 <section id="modern-python-data-classes" class="level2">
 <h2 class="anchored" data-anchor-id="modern-python-data-classes">Modern Python: Data Classes</h2>
 <p>Since Python 3.7, there is an even easier way to create classes that primarily store data. The <code>@dataclass</code> decorator automatically generates <code>__init__</code>, <code>__repr__</code>, <code>__eq__</code>, and other special methods for you, reducing boilerplate.</p>
-<div id="8a81a0af" class="cell" data-execution_count="11">
+<div id="b5056132" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
-<span id="cb18-2"><a href="#cb18-2"></a></span>
-<span id="cb18-3"><a href="#cb18-3"></a><span class="at">@dataclass</span></span>
-<span id="cb18-4"><a href="#cb18-4"></a><span class="kw">class</span> OptionData:</span>
-<span id="cb18-5"><a href="#cb18-5"></a>    strike: <span class="bu">float</span></span>
-<span id="cb18-6"><a href="#cb18-6"></a>    expiry: <span class="bu">str</span></span>
-<span id="cb18-7"><a href="#cb18-7"></a>    option_type: <span class="bu">str</span> <span class="op">=</span> <span class="st">"Call"</span> <span class="co"># Default value</span></span>
-<span id="cb18-8"><a href="#cb18-8"></a></span>
-<span id="cb18-9"><a href="#cb18-9"></a><span class="co"># No need to write __init__ or __repr__ manually!</span></span>
-<span id="cb18-10"><a href="#cb18-10"></a>opt_data <span class="op">=</span> OptionData(<span class="fl">100.0</span>, <span class="st">"2025-12-20"</span>)</span>
-<span id="cb18-11"><a href="#cb18-11"></a><span class="bu">print</span>(opt_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-label="1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb18-2"><a href="#cb18-2" aria-label="2"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-label="3"></a><span class="at">@dataclass</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-label="4"></a><span class="kw">class</span> OptionData:</span>
+<span id="cb18-5"><a href="#cb18-5" aria-label="5"></a>    strike: <span class="bu">float</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-label="6"></a>    expiry: <span class="bu">str</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-label="7"></a>    option_type: <span class="bu">str</span> <span class="op">=</span> <span class="st">"Call"</span> <span class="co"># Default value</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-label="8"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-label="9"></a><span class="co"># No need to write __init__ or __repr__ manually!</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-label="10"></a>opt_data <span class="op">=</span> OptionData(<span class="fl">100.0</span>, <span class="st">"2025-12-20"</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-label="11"></a><span class="bu">print</span>(opt_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>OptionData(strike=100.0, expiry='2025-12-20', option_type='Call')</code></pre>

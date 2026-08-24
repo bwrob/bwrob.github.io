@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -14,10 +14,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -76,12 +79,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-96a43165c4d0207e3a751099b8d9671b.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-c6434e2816b6e53f820184e91c93ac7d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-73751680ca121cac81413277327230eb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-c7170261eb2bbedd820cef4c8c5b1644.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-49de6045867557a8d47d4e02c0bec047.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-fcffe00015cf7e92884255123184f18a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-5865491327066f56f9cc3bed50bb0a86.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -454,21 +457,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>the public interface that integrates with the rest of the codebase or is called at the top level, <strong>the manager</strong>.</li>
 </ul>
 <p>We can start by creating the public interface, see what we want to achieve and later deal with filling in a working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:</p>
-<div id="c234bf37" class="cell" data-execution_count="1">
+<div id="6cb8789c" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">def</span> run_startup_script() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb1-2"><a href="#cb1-2"></a>    <span class="co">"""Run the startup script."""</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a>    logger.info(<span class="ss">f" Welcome </span><span class="sc">{</span>os<span class="sc">.</span>getlogin()<span class="sc">}</span><span class="ss">! "</span>.center(<span class="dv">40</span>, <span class="st">"*"</span>))</span>
-<span id="cb1-4"><a href="#cb1-4"></a>    start_programs(</span>
-<span id="cb1-5"><a href="#cb1-5"></a>        [</span>
-<span id="cb1-6"><a href="#cb1-6"></a>            Program.POWERSHELL,</span>
-<span id="cb1-7"><a href="#cb1-7"></a>            Program.NOTEPAD,</span>
-<span id="cb1-8"><a href="#cb1-8"></a>            (Program.FIREFOX, <span class="dv">8</span>),</span>
-<span id="cb1-9"><a href="#cb1-9"></a>        ],</span>
-<span id="cb1-10"><a href="#cb1-10"></a>    )</span>
-<span id="cb1-11"><a href="#cb1-11"></a>    start_work_files([Path.home() <span class="op">/</span> <span class="st">".temp"</span>])</span>
-<span id="cb1-12"><a href="#cb1-12"></a>    run_commands([<span class="st">'Write-Output "test"'</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">def</span> run_startup_script() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a>    <span class="co">"""Run the startup script."""</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a>    logger.info(<span class="ss">f" Welcome </span><span class="sc">{</span>os<span class="sc">.</span>getlogin()<span class="sc">}</span><span class="ss">! "</span>.center(<span class="dv">40</span>, <span class="st">"*"</span>))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a>    start_programs(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a>        [</span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a>            Program.POWERSHELL,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a>            Program.NOTEPAD,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a>            (Program.FIREFOX, <span class="dv">8</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a>        ],</span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a>    )</span>
+<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a>    start_work_files([Path.home() <span class="op">/</span> <span class="st">".temp"</span>])</span>
+<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a>    run_commands([<span class="st">'Write-Output "test"'</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>We specify programs to be launched, open all files in a chosen temp folder and run a list of shell commands. After each step there should be some delay to avoid spamming system with process calls. Certain steps might be more time consuming, like cloud services authorization. Those need longer delay. On the other hand, specifying delay for each task would be cumbersome, most cases would be fine with some default value. We end up with a design that our soon-to-be workers <code>start_programs</code>, <code>start_work_files</code>, and <code>run_commands</code> expect lists of either <code>task</code> or <code>(task, delay_seconds)</code>. We can now start the implementation by figuring out how the delay time should be defaulted if not specified.</p>
@@ -478,48 +481,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Now we can start the implementation. We want the workers to be called with a list of tasks, but a task can be either a command or a tuple including the delay. Let’s not include some complicated conditionals in each of the workers — that would be annoying and potentially get out of sync at some point.</p>
 <p>Other way to do this is to add a default delay to all non-tuple items. We can implement that as a separate defaulting function, which we would call in each worker. But — being more clever! — we could also use a decorator that changes the workers’s signature.</p>
 <p>First, for convenience, let’s define a template type annotation.</p>
-<div id="c6001a5b" class="cell" data-execution_count="2">
+<div id="8f1d07ac" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a><span class="im">from</span> functools <span class="im">import</span> wraps</span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a><span class="im">from</span> collections.abc <span class="im">import</span> Callable</span>
-<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3"></a><span class="im">from</span> typing <span class="im">import</span> TypeVar</span>
-<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-5" class="code-annotation-target"><a href="#annotated-cell-2-5"></a>T <span class="op">=</span> TypeVar(<span class="st">"T"</span>)</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-6" class="code-annotation-target"><a href="#annotated-cell-2-6"></a>Task <span class="op">=</span> <span class="bu">tuple</span>[T, <span class="bu">int</span>]</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-7" class="code-annotation-target"><a href="#annotated-cell-2-7"></a>TaskList <span class="op">=</span> <span class="bu">list</span>[Task[T]]</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-2-8" class="code-annotation-target"><a href="#annotated-cell-2-8"></a>TaskListOptionalDelay <span class="op">=</span> <span class="bu">list</span>[Task[T] <span class="op">|</span> T]</span>
-<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9"></a></span>
-<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10"></a></span>
-<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11"></a>DEFAULT_DELAY_SECONDS <span class="op">=</span> <span class="dv">4</span></span>
-<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-2-13" class="code-annotation-target"><a href="#annotated-cell-2-13"></a><span class="kw">def</span> with_optional_delay(</span>
-<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14"></a>    task_worker: Callable[[TaskList[T]], <span class="va">None</span>],</span>
-<span id="annotated-cell-2-15"><a href="#annotated-cell-2-15"></a>) <span class="op">-&gt;</span> Callable[[TaskListOptionalDelay[T]], <span class="va">None</span>]:</span>
-<span id="annotated-cell-2-16"><a href="#annotated-cell-2-16"></a>    <span class="co">"""Add default delay to all non-tuple items.</span></span>
-<span id="annotated-cell-2-17"><a href="#annotated-cell-2-17"></a></span>
-<span id="annotated-cell-2-18"><a href="#annotated-cell-2-18"></a><span class="co">    Args:</span></span>
-<span id="annotated-cell-2-19"><a href="#annotated-cell-2-19"></a><span class="co">    ----</span></span>
-<span id="annotated-cell-2-20"><a href="#annotated-cell-2-20"></a><span class="co">        task_worker: A function that takes a list of tasks.</span></span>
-<span id="annotated-cell-2-21"><a href="#annotated-cell-2-21"></a></span>
-<span id="annotated-cell-2-22"><a href="#annotated-cell-2-22"></a><span class="co">    """</span></span>
-<span id="annotated-cell-2-23"><a href="#annotated-cell-2-23"></a></span>
-<span id="annotated-cell-2-24"><a href="#annotated-cell-2-24"></a>    <span class="at">@wraps</span>(task_worker)</span>
-<span id="annotated-cell-2-25"><a href="#annotated-cell-2-25"></a>    <span class="kw">def</span> task_defaulted_worker(task_list: TaskListOptionalDelay[T]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="annotated-cell-2-26"><a href="#annotated-cell-2-26"></a>        <span class="co">"""Add a default delay to tasks in a task list if no delay is specified.</span></span>
-<span id="annotated-cell-2-27"><a href="#annotated-cell-2-27"></a></span>
-<span id="annotated-cell-2-28"><a href="#annotated-cell-2-28"></a><span class="co">        Args:</span></span>
-<span id="annotated-cell-2-29"><a href="#annotated-cell-2-29"></a><span class="co">        ----</span></span>
-<span id="annotated-cell-2-30"><a href="#annotated-cell-2-30"></a><span class="co">            task_list: A list of tasks with optional delays.</span></span>
-<span id="annotated-cell-2-31"><a href="#annotated-cell-2-31"></a></span>
-<span id="annotated-cell-2-32"><a href="#annotated-cell-2-32"></a><span class="co">        """</span></span>
-<span id="annotated-cell-2-33"><a href="#annotated-cell-2-33"></a>        tasks_with_defaulted_delays: TaskList[T] <span class="op">=</span> [</span>
-<span id="annotated-cell-2-34"><a href="#annotated-cell-2-34"></a>            item <span class="cf">if</span> <span class="bu">isinstance</span>(item, <span class="bu">tuple</span>) <span class="cf">else</span> (item, DEFAULT_DELAY_SECONDS)</span>
-<span id="annotated-cell-2-35"><a href="#annotated-cell-2-35"></a>            <span class="cf">for</span> item <span class="kw">in</span> task_list</span>
-<span id="annotated-cell-2-36"><a href="#annotated-cell-2-36"></a>        ]</span>
-<span id="annotated-cell-2-37"><a href="#annotated-cell-2-37"></a>        <span class="cf">return</span> task_worker(tasks_with_defaulted_delays)</span>
-<span id="annotated-cell-2-38"><a href="#annotated-cell-2-38"></a></span>
-<span id="annotated-cell-2-39"><a href="#annotated-cell-2-39"></a>    <span class="cf">return</span> task_defaulted_worker</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-label="1"></a><span class="im">from</span> functools <span class="im">import</span> wraps</span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-label="2"></a><span class="im">from</span> collections.abc <span class="im">import</span> Callable</span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-label="3"></a><span class="im">from</span> typing <span class="im">import</span> TypeVar</span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-label="4"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-5" class="code-annotation-target"><a href="#annotated-cell-2-5" aria-label="5"></a>T <span class="op">=</span> TypeVar(<span class="st">"T"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-6" class="code-annotation-target"><a href="#annotated-cell-2-6" aria-label="6"></a>Task <span class="op">=</span> <span class="bu">tuple</span>[T, <span class="bu">int</span>]</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-7" class="code-annotation-target"><a href="#annotated-cell-2-7" aria-label="7"></a>TaskList <span class="op">=</span> <span class="bu">list</span>[Task[T]]</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-2-8" class="code-annotation-target"><a href="#annotated-cell-2-8" aria-label="8"></a>TaskListOptionalDelay <span class="op">=</span> <span class="bu">list</span>[Task[T] <span class="op">|</span> T]</span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-label="9"></a></span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-label="10"></a></span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-label="11"></a>DEFAULT_DELAY_SECONDS <span class="op">=</span> <span class="dv">4</span></span>
+<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12" aria-label="12"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-2-13" class="code-annotation-target"><a href="#annotated-cell-2-13" aria-label="13"></a><span class="kw">def</span> with_optional_delay(</span>
+<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14" aria-label="14"></a>    task_worker: Callable[[TaskList[T]], <span class="va">None</span>],</span>
+<span id="annotated-cell-2-15"><a href="#annotated-cell-2-15" aria-label="15"></a>) <span class="op">-&gt;</span> Callable[[TaskListOptionalDelay[T]], <span class="va">None</span>]:</span>
+<span id="annotated-cell-2-16"><a href="#annotated-cell-2-16" aria-label="16"></a>    <span class="co">"""Add default delay to all non-tuple items.</span></span>
+<span id="annotated-cell-2-17"><a href="#annotated-cell-2-17" aria-label="17"></a></span>
+<span id="annotated-cell-2-18"><a href="#annotated-cell-2-18" aria-label="18"></a><span class="co">    Args:</span></span>
+<span id="annotated-cell-2-19"><a href="#annotated-cell-2-19" aria-label="19"></a><span class="co">    ----</span></span>
+<span id="annotated-cell-2-20"><a href="#annotated-cell-2-20" aria-label="20"></a><span class="co">        task_worker: A function that takes a list of tasks.</span></span>
+<span id="annotated-cell-2-21"><a href="#annotated-cell-2-21" aria-label="21"></a></span>
+<span id="annotated-cell-2-22"><a href="#annotated-cell-2-22" aria-label="22"></a><span class="co">    """</span></span>
+<span id="annotated-cell-2-23"><a href="#annotated-cell-2-23" aria-label="23"></a></span>
+<span id="annotated-cell-2-24"><a href="#annotated-cell-2-24" aria-label="24"></a>    <span class="at">@wraps</span>(task_worker)</span>
+<span id="annotated-cell-2-25"><a href="#annotated-cell-2-25" aria-label="25"></a>    <span class="kw">def</span> task_defaulted_worker(task_list: TaskListOptionalDelay[T]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="annotated-cell-2-26"><a href="#annotated-cell-2-26" aria-label="26"></a>        <span class="co">"""Add a default delay to tasks in a task list if no delay is specified.</span></span>
+<span id="annotated-cell-2-27"><a href="#annotated-cell-2-27" aria-label="27"></a></span>
+<span id="annotated-cell-2-28"><a href="#annotated-cell-2-28" aria-label="28"></a><span class="co">        Args:</span></span>
+<span id="annotated-cell-2-29"><a href="#annotated-cell-2-29" aria-label="29"></a><span class="co">        ----</span></span>
+<span id="annotated-cell-2-30"><a href="#annotated-cell-2-30" aria-label="30"></a><span class="co">            task_list: A list of tasks with optional delays.</span></span>
+<span id="annotated-cell-2-31"><a href="#annotated-cell-2-31" aria-label="31"></a></span>
+<span id="annotated-cell-2-32"><a href="#annotated-cell-2-32" aria-label="32"></a><span class="co">        """</span></span>
+<span id="annotated-cell-2-33"><a href="#annotated-cell-2-33" aria-label="33"></a>        tasks_with_defaulted_delays: TaskList[T] <span class="op">=</span> [</span>
+<span id="annotated-cell-2-34"><a href="#annotated-cell-2-34" aria-label="34"></a>            item <span class="cf">if</span> <span class="bu">isinstance</span>(item, <span class="bu">tuple</span>) <span class="cf">else</span> (item, DEFAULT_DELAY_SECONDS)</span>
+<span id="annotated-cell-2-35"><a href="#annotated-cell-2-35" aria-label="35"></a>            <span class="cf">for</span> item <span class="kw">in</span> task_list</span>
+<span id="annotated-cell-2-36"><a href="#annotated-cell-2-36" aria-label="36"></a>        ]</span>
+<span id="annotated-cell-2-37"><a href="#annotated-cell-2-37" aria-label="37"></a>        <span class="cf">return</span> task_worker(tasks_with_defaulted_delays)</span>
+<span id="annotated-cell-2-38"><a href="#annotated-cell-2-38" aria-label="38"></a></span>
+<span id="annotated-cell-2-39"><a href="#annotated-cell-2-39" aria-label="39"></a>    <span class="cf">return</span> task_defaulted_worker</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -550,78 +553,78 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="main-workers" class="level3">
 <h3 class="anchored" data-anchor-id="main-workers">Main workers</h3>
 <p>With the preparation done, we can start with the workers. For the programs we will be launching, we need to look up the exact paths of the executables. Let’s define a <code>Program</code> enum that would wrap those up in readable nice names. For working with system paths we will use <code>pathlib.Path</code> that provides high-level interface.</p>
-<div id="30ad3e5e" class="cell" data-execution_count="3">
+<div id="5d5dc3c2" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> enum <span class="im">import</span> Enum</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="kw">class</span> Program(Enum):</span>
-<span id="cb2-6"><a href="#cb2-6"></a>    <span class="co">"""Types of programs."""</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a></span>
-<span id="cb2-8"><a href="#cb2-8"></a>    POWERSHELL <span class="op">=</span> Path(<span class="vs">r"C:</span><span class="dv">\w</span><span class="vs">indows</span><span class="dv">\s</span><span class="vs">ystem32</span><span class="dv">\w</span><span class="vs">indowspowershell</span><span class="ch">\v</span><span class="vs">1</span><span class="dv">.</span><span class="vs">0</span><span class="er">\</span><span class="vs">powershell</span><span class="dv">.</span><span class="vs">exe"</span>)</span>
-<span id="cb2-9"><a href="#cb2-9"></a>    NOTEPAD <span class="op">=</span> Path(<span class="vs">r"C:</span><span class="er">\</span><span class="vs">Program Files</span><span class="er">\</span><span class="vs">Notepad</span><span class="op">++</span><span class="ch">\n</span><span class="vs">otepad</span><span class="op">++</span><span class="dv">.</span><span class="vs">exe"</span>)</span>
-<span id="cb2-10"><a href="#cb2-10"></a>    FIREFOX <span class="op">=</span> Path(<span class="vs">r"C:</span><span class="er">\</span><span class="vs">ProgramData</span><span class="dv">\M</span><span class="vs">icrosoft</span><span class="dv">\W</span><span class="vs">indows</span><span class="dv">\S</span><span class="vs">tart Menu</span><span class="er">\</span><span class="vs">Programs</span><span class="er">\</span><span class="vs">Firefox</span><span class="dv">.</span><span class="vs">lnk"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="im">from</span> enum <span class="im">import</span> Enum</span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a><span class="kw">class</span> Program(Enum):</span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a>    <span class="co">"""Types of programs."""</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a>    POWERSHELL <span class="op">=</span> Path(<span class="vs">r"C:</span><span class="dv">\w</span><span class="vs">indows</span><span class="dv">\s</span><span class="vs">ystem32</span><span class="dv">\w</span><span class="vs">indowspowershell</span><span class="ch">\v</span><span class="vs">1</span><span class="dv">.</span><span class="vs">0</span><span class="er">\</span><span class="vs">powershell</span><span class="dv">.</span><span class="vs">exe"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-label="9"></a>    NOTEPAD <span class="op">=</span> Path(<span class="vs">r"C:</span><span class="er">\</span><span class="vs">Program Files</span><span class="er">\</span><span class="vs">Notepad</span><span class="op">++</span><span class="ch">\n</span><span class="vs">otepad</span><span class="op">++</span><span class="dv">.</span><span class="vs">exe"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-label="10"></a>    FIREFOX <span class="op">=</span> Path(<span class="vs">r"C:</span><span class="er">\</span><span class="vs">ProgramData</span><span class="dv">\M</span><span class="vs">icrosoft</span><span class="dv">\W</span><span class="vs">indows</span><span class="dv">\S</span><span class="vs">tart Menu</span><span class="er">\</span><span class="vs">Programs</span><span class="er">\</span><span class="vs">Firefox</span><span class="dv">.</span><span class="vs">lnk"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Other than that, the main workers <code>start_programs</code>, <code>start_work_files</code>, and <code>run_commands</code> are simple. They just iterate over the provided <code>TaskList</code> and do the respective action for a given <code>Task</code>.</p>
-<div id="4706f9dd" class="cell" data-execution_count="4">
+<div id="e07fba05" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="at">@with_optional_delay</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">def</span> start_programs(</span>
-<span id="cb3-3"><a href="#cb3-3"></a>    programs: TaskList[Program],</span>
-<span id="cb3-4"><a href="#cb3-4"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb3-5"><a href="#cb3-5"></a>    <span class="co">"""Start listed programs.</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="co">    Args:</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="co">    ----</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co">        programs: List of programs to start.</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="co">            Can be a string or a tuple. If a tuple is given, the first</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="co">            element is the name, the second is the delay.</span></span>
-<span id="cb3-12"><a href="#cb3-12"></a></span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="co">    """</span></span>
-<span id="cb3-14"><a href="#cb3-14"></a>    <span class="cf">for</span> program, delay <span class="kw">in</span> programs:</span>
-<span id="cb3-15"><a href="#cb3-15"></a>        start_process(</span>
-<span id="cb3-16"><a href="#cb3-16"></a>            name<span class="op">=</span>program.name,</span>
-<span id="cb3-17"><a href="#cb3-17"></a>            path<span class="op">=</span>program.value,</span>
-<span id="cb3-18"><a href="#cb3-18"></a>            delay<span class="op">=</span>delay,</span>
-<span id="cb3-19"><a href="#cb3-19"></a>        )</span>
-<span id="cb3-20"><a href="#cb3-20"></a></span>
-<span id="cb3-21"><a href="#cb3-21"></a></span>
-<span id="cb3-22"><a href="#cb3-22"></a><span class="at">@with_optional_delay</span></span>
-<span id="cb3-23"><a href="#cb3-23"></a><span class="kw">def</span> start_work_files(</span>
-<span id="cb3-24"><a href="#cb3-24"></a>    directory_tasks: TaskList[Path],</span>
-<span id="cb3-25"><a href="#cb3-25"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb3-26"><a href="#cb3-26"></a>    <span class="co">"""Start all  files in the work folders.</span></span>
-<span id="cb3-27"><a href="#cb3-27"></a></span>
-<span id="cb3-28"><a href="#cb3-28"></a><span class="co">    Args:</span></span>
-<span id="cb3-29"><a href="#cb3-29"></a><span class="co">    ----</span></span>
-<span id="cb3-30"><a href="#cb3-30"></a><span class="co">        directory_tasks: List of tasks with paths to work folders.</span></span>
-<span id="cb3-31"><a href="#cb3-31"></a></span>
-<span id="cb3-32"><a href="#cb3-32"></a><span class="co">    """</span></span>
-<span id="cb3-33"><a href="#cb3-33"></a>    <span class="cf">for</span> path, delay <span class="kw">in</span> path_files(directory_tasks):</span>
-<span id="cb3-34"><a href="#cb3-34"></a>        start_process(</span>
-<span id="cb3-35"><a href="#cb3-35"></a>            name<span class="op">=</span>path.name,</span>
-<span id="cb3-36"><a href="#cb3-36"></a>            path<span class="op">=</span>path,</span>
-<span id="cb3-37"><a href="#cb3-37"></a>            delay<span class="op">=</span>delay,</span>
-<span id="cb3-38"><a href="#cb3-38"></a>        )</span>
-<span id="cb3-39"><a href="#cb3-39"></a></span>
-<span id="cb3-40"><a href="#cb3-40"></a></span>
-<span id="cb3-41"><a href="#cb3-41"></a><span class="at">@with_optional_delay</span></span>
-<span id="cb3-42"><a href="#cb3-42"></a><span class="kw">def</span> run_commands(</span>
-<span id="cb3-43"><a href="#cb3-43"></a>    commands: TaskList[<span class="bu">str</span>],</span>
-<span id="cb3-44"><a href="#cb3-44"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb3-45"><a href="#cb3-45"></a>    <span class="co">"""Run all commands in the command list.</span></span>
-<span id="cb3-46"><a href="#cb3-46"></a></span>
-<span id="cb3-47"><a href="#cb3-47"></a><span class="co">    Args:</span></span>
-<span id="cb3-48"><a href="#cb3-48"></a><span class="co">    ----</span></span>
-<span id="cb3-49"><a href="#cb3-49"></a><span class="co">        commands: List of commands to run.</span></span>
-<span id="cb3-50"><a href="#cb3-50"></a></span>
-<span id="cb3-51"><a href="#cb3-51"></a><span class="co">    """</span></span>
-<span id="cb3-52"><a href="#cb3-52"></a>    <span class="cf">for</span> command, delay <span class="kw">in</span> commands:</span>
-<span id="cb3-53"><a href="#cb3-53"></a>        run_command(command, delay)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="at">@with_optional_delay</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a><span class="kw">def</span> start_programs(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a>    programs: TaskList[Program],</span>
+<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a>    <span class="co">"""Start listed programs.</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-label="7"></a><span class="co">    Args:</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-label="8"></a><span class="co">    ----</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-label="9"></a><span class="co">        programs: List of programs to start.</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-label="10"></a><span class="co">            Can be a string or a tuple. If a tuple is given, the first</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-label="11"></a><span class="co">            element is the name, the second is the delay.</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-label="12"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-label="13"></a><span class="co">    """</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-label="14"></a>    <span class="cf">for</span> program, delay <span class="kw">in</span> programs:</span>
+<span id="cb3-15"><a href="#cb3-15" aria-label="15"></a>        start_process(</span>
+<span id="cb3-16"><a href="#cb3-16" aria-label="16"></a>            name<span class="op">=</span>program.name,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-label="17"></a>            path<span class="op">=</span>program.value,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-label="18"></a>            delay<span class="op">=</span>delay,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-label="19"></a>        )</span>
+<span id="cb3-20"><a href="#cb3-20" aria-label="20"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-label="21"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-label="22"></a><span class="at">@with_optional_delay</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-label="23"></a><span class="kw">def</span> start_work_files(</span>
+<span id="cb3-24"><a href="#cb3-24" aria-label="24"></a>    directory_tasks: TaskList[Path],</span>
+<span id="cb3-25"><a href="#cb3-25" aria-label="25"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb3-26"><a href="#cb3-26" aria-label="26"></a>    <span class="co">"""Start all  files in the work folders.</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-label="27"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-label="28"></a><span class="co">    Args:</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-label="29"></a><span class="co">    ----</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-label="30"></a><span class="co">        directory_tasks: List of tasks with paths to work folders.</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-label="31"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-label="32"></a><span class="co">    """</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-label="33"></a>    <span class="cf">for</span> path, delay <span class="kw">in</span> path_files(directory_tasks):</span>
+<span id="cb3-34"><a href="#cb3-34" aria-label="34"></a>        start_process(</span>
+<span id="cb3-35"><a href="#cb3-35" aria-label="35"></a>            name<span class="op">=</span>path.name,</span>
+<span id="cb3-36"><a href="#cb3-36" aria-label="36"></a>            path<span class="op">=</span>path,</span>
+<span id="cb3-37"><a href="#cb3-37" aria-label="37"></a>            delay<span class="op">=</span>delay,</span>
+<span id="cb3-38"><a href="#cb3-38" aria-label="38"></a>        )</span>
+<span id="cb3-39"><a href="#cb3-39" aria-label="39"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-label="40"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-label="41"></a><span class="at">@with_optional_delay</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-label="42"></a><span class="kw">def</span> run_commands(</span>
+<span id="cb3-43"><a href="#cb3-43" aria-label="43"></a>    commands: TaskList[<span class="bu">str</span>],</span>
+<span id="cb3-44"><a href="#cb3-44" aria-label="44"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb3-45"><a href="#cb3-45" aria-label="45"></a>    <span class="co">"""Run all commands in the command list.</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-label="46"></a></span>
+<span id="cb3-47"><a href="#cb3-47" aria-label="47"></a><span class="co">    Args:</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-label="48"></a><span class="co">    ----</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-label="49"></a><span class="co">        commands: List of commands to run.</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-label="50"></a></span>
+<span id="cb3-51"><a href="#cb3-51" aria-label="51"></a><span class="co">    """</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-label="52"></a>    <span class="cf">for</span> command, delay <span class="kw">in</span> commands:</span>
+<span id="cb3-53"><a href="#cb3-53" aria-label="53"></a>        run_command(command, delay)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -634,47 +637,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>filter the iteration (ex. <em>for path in directory if filter(path)</em>).</li>
 </ul>
 <p>Here we’ll have all three of them combined!</p>
-<div id="5864d8a3" class="cell" data-execution_count="5">
+<div id="e3136826" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>NAME_EXCLUDES <span class="op">=</span> (<span class="st">"$"</span>, <span class="st">"tmp"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2"></a>EXT_EXCLUDES <span class="op">=</span> (<span class="st">"exe"</span>,)</span>
-<span id="cb4-3"><a href="#cb4-3"></a></span>
-<span id="cb4-4"><a href="#cb4-4"></a></span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="kw">def</span> filter_excluded(</span>
-<span id="cb4-6"><a href="#cb4-6"></a>    path: Path,</span>
-<span id="cb4-7"><a href="#cb4-7"></a>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
-<span id="cb4-8"><a href="#cb4-8"></a>    <span class="co">"""Filter path based on name and extension exclude lists.</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a></span>
-<span id="cb4-10"><a href="#cb4-10"></a><span class="co">    Args:</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a><span class="co">    ----</span></span>
-<span id="cb4-12"><a href="#cb4-12"></a><span class="co">        path: Path to filter.</span></span>
-<span id="cb4-13"><a href="#cb4-13"></a></span>
-<span id="cb4-14"><a href="#cb4-14"></a><span class="co">    """</span></span>
-<span id="cb4-15"><a href="#cb4-15"></a>    <span class="cf">return</span> (path.stem <span class="kw">not</span> <span class="kw">in</span> NAME_EXCLUDES) <span class="kw">and</span> (path.suffix <span class="kw">not</span> <span class="kw">in</span> EXT_EXCLUDES)</span>
-<span id="cb4-16"><a href="#cb4-16"></a></span>
-<span id="cb4-17"><a href="#cb4-17"></a></span>
-<span id="cb4-18"><a href="#cb4-18"></a></span>
-<span id="cb4-19"><a href="#cb4-19"></a><span class="kw">def</span> path_files(</span>
-<span id="cb4-20"><a href="#cb4-20"></a>    directory_tasks: TaskList[Path],</span>
-<span id="cb4-21"><a href="#cb4-21"></a>) <span class="op">-&gt;</span> Generator[<span class="bu">tuple</span>[Path, <span class="bu">int</span>], <span class="va">None</span>, <span class="va">None</span>]:</span>
-<span id="cb4-22"><a href="#cb4-22"></a>    <span class="co">"""Generate all files in the work folder that are not excluded.</span></span>
-<span id="cb4-23"><a href="#cb4-23"></a></span>
-<span id="cb4-24"><a href="#cb4-24"></a><span class="co">    Yields the folder path at beginning of the generator.</span></span>
-<span id="cb4-25"><a href="#cb4-25"></a></span>
-<span id="cb4-26"><a href="#cb4-26"></a><span class="co">    Args:</span></span>
-<span id="cb4-27"><a href="#cb4-27"></a><span class="co">    ----</span></span>
-<span id="cb4-28"><a href="#cb4-28"></a><span class="co">        directory_tasks: List of tasks with paths to work folders.</span></span>
-<span id="cb4-29"><a href="#cb4-29"></a></span>
-<span id="cb4-30"><a href="#cb4-30"></a><span class="co">    """</span></span>
-<span id="cb4-31"><a href="#cb4-31"></a>    <span class="cf">for</span> folder, delay <span class="kw">in</span> directory_tasks:</span>
-<span id="cb4-32"><a href="#cb4-32"></a>        <span class="cf">yield</span> folder, delay</span>
-<span id="cb4-33"><a href="#cb4-33"></a></span>
-<span id="cb4-34"><a href="#cb4-34"></a>        all_files <span class="op">=</span> folder.glob(FILES_IN_TREE_PATTERN)</span>
-<span id="cb4-35"><a href="#cb4-35"></a>        filtered <span class="op">=</span> <span class="bu">filter</span>(filter_excluded, all_files)</span>
-<span id="cb4-36"><a href="#cb4-36"></a></span>
-<span id="cb4-37"><a href="#cb4-37"></a>        <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> filtered:</span>
-<span id="cb4-38"><a href="#cb4-38"></a>            <span class="cf">yield</span> <span class="bu">file</span>, delay</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a>NAME_EXCLUDES <span class="op">=</span> (<span class="st">"$"</span>, <span class="st">"tmp"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a>EXT_EXCLUDES <span class="op">=</span> (<span class="st">"exe"</span>,)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-label="4"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-label="5"></a><span class="kw">def</span> filter_excluded(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-label="6"></a>    path: Path,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-label="7"></a>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb4-8"><a href="#cb4-8" aria-label="8"></a>    <span class="co">"""Filter path based on name and extension exclude lists.</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-label="9"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-label="10"></a><span class="co">    Args:</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-label="11"></a><span class="co">    ----</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-label="12"></a><span class="co">        path: Path to filter.</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-label="13"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-label="14"></a><span class="co">    """</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-label="15"></a>    <span class="cf">return</span> (path.stem <span class="kw">not</span> <span class="kw">in</span> NAME_EXCLUDES) <span class="kw">and</span> (path.suffix <span class="kw">not</span> <span class="kw">in</span> EXT_EXCLUDES)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-label="16"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-label="17"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-label="18"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-label="19"></a><span class="kw">def</span> path_files(</span>
+<span id="cb4-20"><a href="#cb4-20" aria-label="20"></a>    directory_tasks: TaskList[Path],</span>
+<span id="cb4-21"><a href="#cb4-21" aria-label="21"></a>) <span class="op">-&gt;</span> Generator[<span class="bu">tuple</span>[Path, <span class="bu">int</span>], <span class="va">None</span>, <span class="va">None</span>]:</span>
+<span id="cb4-22"><a href="#cb4-22" aria-label="22"></a>    <span class="co">"""Generate all files in the work folder that are not excluded.</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-label="23"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-label="24"></a><span class="co">    Yields the folder path at beginning of the generator.</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-label="25"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-label="26"></a><span class="co">    Args:</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-label="27"></a><span class="co">    ----</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-label="28"></a><span class="co">        directory_tasks: List of tasks with paths to work folders.</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-label="29"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-label="30"></a><span class="co">    """</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-label="31"></a>    <span class="cf">for</span> folder, delay <span class="kw">in</span> directory_tasks:</span>
+<span id="cb4-32"><a href="#cb4-32" aria-label="32"></a>        <span class="cf">yield</span> folder, delay</span>
+<span id="cb4-33"><a href="#cb4-33" aria-label="33"></a></span>
+<span id="cb4-34"><a href="#cb4-34" aria-label="34"></a>        all_files <span class="op">=</span> folder.glob(FILES_IN_TREE_PATTERN)</span>
+<span id="cb4-35"><a href="#cb4-35" aria-label="35"></a>        filtered <span class="op">=</span> <span class="bu">filter</span>(filter_excluded, all_files)</span>
+<span id="cb4-36"><a href="#cb4-36" aria-label="36"></a></span>
+<span id="cb4-37"><a href="#cb4-37" aria-label="37"></a>        <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> filtered:</span>
+<span id="cb4-38"><a href="#cb4-38" aria-label="38"></a>            <span class="cf">yield</span> <span class="bu">file</span>, delay</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>The <code>filter_excluded</code> function filters out files based on exclusions in name and extension lists. <code>Path.stem</code> and <code>Path.suffix</code> are used to check if the file name or extension is in the lists respectively.</p>
@@ -682,65 +685,65 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="interacting-with-the-os" class="level3">
 <h3 class="anchored" data-anchor-id="interacting-with-the-os">Interacting with the OS</h3>
 <p>With all of the framework prepared, the next step is to interact with the OS. To open a file, folder or run an app, we can use the <code>os.startfile</code> function. All the rest of the <code>start_process</code> function is just utility logging. For running a shell command we can use the <code>subprocess</code> module, calling powershell with the <code>powershell.exe</code> and adding the command to run.</p>
-<div id="e3a8bf14" class="cell" data-execution_count="6">
+<div id="4cf43b63" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="im">import</span> os</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="im">import</span> subprocess</span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="im">import</span> time</span>
-<span id="cb5-4"><a href="#cb5-4"></a></span>
-<span id="cb5-5"><a href="#cb5-5"></a></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="kw">def</span> start_process(</span>
-<span id="cb5-7"><a href="#cb5-7"></a>    <span class="op">*</span>,</span>
-<span id="cb5-8"><a href="#cb5-8"></a>    name: <span class="bu">str</span>,</span>
-<span id="cb5-9"><a href="#cb5-9"></a>    path: Path,</span>
-<span id="cb5-10"><a href="#cb5-10"></a>    delay: <span class="bu">int</span> <span class="op">=</span> DEFAULT_DELAY_SECONDS,</span>
-<span id="cb5-11"><a href="#cb5-11"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb5-12"><a href="#cb5-12"></a>    <span class="co">"""Given a path, starts the target.</span></span>
-<span id="cb5-13"><a href="#cb5-13"></a></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="co">    Behavior:</span></span>
-<span id="cb5-15"><a href="#cb5-15"></a><span class="co">        * Minimizes all windows.</span></span>
-<span id="cb5-16"><a href="#cb5-16"></a><span class="co">        * Depending on the path target:</span></span>
-<span id="cb5-17"><a href="#cb5-17"></a><span class="co">            * executable files are run,</span></span>
-<span id="cb5-18"><a href="#cb5-18"></a><span class="co">            * content files are opened with system default program,</span></span>
-<span id="cb5-19"><a href="#cb5-19"></a><span class="co">            * folders are opened with system explorer.</span></span>
-<span id="cb5-20"><a href="#cb5-20"></a></span>
-<span id="cb5-21"><a href="#cb5-21"></a><span class="co">    Args:</span></span>
-<span id="cb5-22"><a href="#cb5-22"></a><span class="co">    ----</span></span>
-<span id="cb5-23"><a href="#cb5-23"></a><span class="co">        name: Name of the process to start.</span></span>
-<span id="cb5-24"><a href="#cb5-24"></a><span class="co">        path: Path to the target.</span></span>
-<span id="cb5-25"><a href="#cb5-25"></a><span class="co">        delay: Time to wait after starting the process.</span></span>
-<span id="cb5-26"><a href="#cb5-26"></a></span>
-<span id="cb5-27"><a href="#cb5-27"></a><span class="co">    """</span></span>
-<span id="cb5-28"><a href="#cb5-28"></a>    <span class="cf">if</span> path.is_dir():</span>
-<span id="cb5-29"><a href="#cb5-29"></a>        logger.info(<span class="st">"Opening folder </span><span class="sc">%s</span><span class="st">"</span>, name)</span>
-<span id="cb5-30"><a href="#cb5-30"></a></span>
-<span id="cb5-31"><a href="#cb5-31"></a>    <span class="cf">if</span> path.suffix <span class="kw">in</span> (<span class="st">".exe"</span>, <span class="st">".lnk"</span>):</span>
-<span id="cb5-32"><a href="#cb5-32"></a>        logger.info(<span class="st">"Running app </span><span class="sc">%s</span><span class="st">"</span>, name)</span>
-<span id="cb5-33"><a href="#cb5-33"></a>    <span class="cf">else</span>:</span>
-<span id="cb5-34"><a href="#cb5-34"></a>        logger.info(<span class="st">"Opening file </span><span class="sc">%s</span><span class="st">"</span>, name)</span>
-<span id="cb5-35"><a href="#cb5-35"></a></span>
-<span id="cb5-36"><a href="#cb5-36"></a>    os.startfile(path)</span>
-<span id="cb5-37"><a href="#cb5-37"></a>    time.sleep(delay)</span>
-<span id="cb5-38"><a href="#cb5-38"></a></span>
-<span id="cb5-39"><a href="#cb5-39"></a></span>
-<span id="cb5-40"><a href="#cb5-40"></a><span class="kw">def</span> run_command(</span>
-<span id="cb5-41"><a href="#cb5-41"></a>    command: <span class="bu">str</span>,</span>
-<span id="cb5-42"><a href="#cb5-42"></a>    delay: <span class="bu">int</span>,</span>
-<span id="cb5-43"><a href="#cb5-43"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb5-44"><a href="#cb5-44"></a>    <span class="co">"""Run a powershell command.</span></span>
-<span id="cb5-45"><a href="#cb5-45"></a></span>
-<span id="cb5-46"><a href="#cb5-46"></a><span class="co">    Args:</span></span>
-<span id="cb5-47"><a href="#cb5-47"></a><span class="co">    ----</span></span>
-<span id="cb5-48"><a href="#cb5-48"></a><span class="co">        command: Command to run.</span></span>
-<span id="cb5-49"><a href="#cb5-49"></a><span class="co">        delay: Time to wait after starting the process.</span></span>
-<span id="cb5-50"><a href="#cb5-50"></a></span>
-<span id="cb5-51"><a href="#cb5-51"></a><span class="co">    """</span></span>
-<span id="cb5-52"><a href="#cb5-52"></a>    _ <span class="op">=</span> subprocess.call(</span>
-<span id="cb5-53"><a href="#cb5-53"></a>        <span class="ss">f"powershell.exe </span><span class="sc">{</span>command<span class="sc">}</span><span class="ss">"</span>,</span>
-<span id="cb5-54"><a href="#cb5-54"></a>        shell<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb5-55"><a href="#cb5-55"></a>    )</span>
-<span id="cb5-56"><a href="#cb5-56"></a>    time.sleep(delay)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="im">import</span> os</span>
+<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a><span class="im">import</span> subprocess</span>
+<span id="cb5-3"><a href="#cb5-3" aria-label="3"></a><span class="im">import</span> time</span>
+<span id="cb5-4"><a href="#cb5-4" aria-label="4"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-label="5"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-label="6"></a><span class="kw">def</span> start_process(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-label="7"></a>    <span class="op">*</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-label="8"></a>    name: <span class="bu">str</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-label="9"></a>    path: Path,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-label="10"></a>    delay: <span class="bu">int</span> <span class="op">=</span> DEFAULT_DELAY_SECONDS,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-label="11"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb5-12"><a href="#cb5-12" aria-label="12"></a>    <span class="co">"""Given a path, starts the target.</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-label="13"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-label="14"></a><span class="co">    Behavior:</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-label="15"></a><span class="co">        * Minimizes all windows.</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-label="16"></a><span class="co">        * Depending on the path target:</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-label="17"></a><span class="co">            * executable files are run,</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-label="18"></a><span class="co">            * content files are opened with system default program,</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-label="19"></a><span class="co">            * folders are opened with system explorer.</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-label="20"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-label="21"></a><span class="co">    Args:</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-label="22"></a><span class="co">    ----</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-label="23"></a><span class="co">        name: Name of the process to start.</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-label="24"></a><span class="co">        path: Path to the target.</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-label="25"></a><span class="co">        delay: Time to wait after starting the process.</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-label="26"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-label="27"></a><span class="co">    """</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-label="28"></a>    <span class="cf">if</span> path.is_dir():</span>
+<span id="cb5-29"><a href="#cb5-29" aria-label="29"></a>        logger.info(<span class="st">"Opening folder </span><span class="sc">%s</span><span class="st">"</span>, name)</span>
+<span id="cb5-30"><a href="#cb5-30" aria-label="30"></a></span>
+<span id="cb5-31"><a href="#cb5-31" aria-label="31"></a>    <span class="cf">if</span> path.suffix <span class="kw">in</span> (<span class="st">".exe"</span>, <span class="st">".lnk"</span>):</span>
+<span id="cb5-32"><a href="#cb5-32" aria-label="32"></a>        logger.info(<span class="st">"Running app </span><span class="sc">%s</span><span class="st">"</span>, name)</span>
+<span id="cb5-33"><a href="#cb5-33" aria-label="33"></a>    <span class="cf">else</span>:</span>
+<span id="cb5-34"><a href="#cb5-34" aria-label="34"></a>        logger.info(<span class="st">"Opening file </span><span class="sc">%s</span><span class="st">"</span>, name)</span>
+<span id="cb5-35"><a href="#cb5-35" aria-label="35"></a></span>
+<span id="cb5-36"><a href="#cb5-36" aria-label="36"></a>    os.startfile(path)</span>
+<span id="cb5-37"><a href="#cb5-37" aria-label="37"></a>    time.sleep(delay)</span>
+<span id="cb5-38"><a href="#cb5-38" aria-label="38"></a></span>
+<span id="cb5-39"><a href="#cb5-39" aria-label="39"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-label="40"></a><span class="kw">def</span> run_command(</span>
+<span id="cb5-41"><a href="#cb5-41" aria-label="41"></a>    command: <span class="bu">str</span>,</span>
+<span id="cb5-42"><a href="#cb5-42" aria-label="42"></a>    delay: <span class="bu">int</span>,</span>
+<span id="cb5-43"><a href="#cb5-43" aria-label="43"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb5-44"><a href="#cb5-44" aria-label="44"></a>    <span class="co">"""Run a powershell command.</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-label="45"></a></span>
+<span id="cb5-46"><a href="#cb5-46" aria-label="46"></a><span class="co">    Args:</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-label="47"></a><span class="co">    ----</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-label="48"></a><span class="co">        command: Command to run.</span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-label="49"></a><span class="co">        delay: Time to wait after starting the process.</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-label="50"></a></span>
+<span id="cb5-51"><a href="#cb5-51" aria-label="51"></a><span class="co">    """</span></span>
+<span id="cb5-52"><a href="#cb5-52" aria-label="52"></a>    _ <span class="op">=</span> subprocess.call(</span>
+<span id="cb5-53"><a href="#cb5-53" aria-label="53"></a>        <span class="ss">f"powershell.exe </span><span class="sc">{</span>command<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb5-54"><a href="#cb5-54" aria-label="54"></a>        shell<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb5-55"><a href="#cb5-55" aria-label="55"></a>    )</span>
+<span id="cb5-56"><a href="#cb5-56" aria-label="56"></a>    time.sleep(delay)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
