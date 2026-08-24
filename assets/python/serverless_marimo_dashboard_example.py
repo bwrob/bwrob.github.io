@@ -67,7 +67,9 @@ def _(slider: Any) -> tuple[pl.DataFrame]:
 
 
 @app.cell
-def _(df: pl.DataFrame, img: Any, mo: Any, slider: Any, text: Any, v: Any) -> None:
+def _(  # noqa: PLR0917
+    df: pl.DataFrame, img: Any, mo: Any, slider: Any, text: Any, v: Any
+) -> None:
     """Layout the dashboard components."""
     mo.vstack(
         [

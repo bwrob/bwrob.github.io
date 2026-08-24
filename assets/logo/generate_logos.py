@@ -80,7 +80,7 @@ def get_font(
         return ImageFont.load_default()
 
 
-def generate_logo(  # noqa: PLR0913
+def generate_logo(  # noqa: PLR0913, PLR0917
     logo_text: str = ASCII_LOGO,
     font_size: int = 100,
     font_path: str | None = None,
@@ -119,7 +119,7 @@ def generate_logo(  # noqa: PLR0913
         print(f"Warning: Empty bounding box for {output_path}")
 
 
-def generate_favicon(  # noqa: PLR0913
+def generate_favicon(  # noqa: PLR0913, PLR0917
     text: str = "BW",
     side: int = 512,
     font_size: int = 300,
