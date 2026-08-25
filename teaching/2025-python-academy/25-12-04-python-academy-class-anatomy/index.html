@@ -441,7 +441,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="starting-simple-the-empty-class" class="level2">
 <h2 class="anchored" data-anchor-id="starting-simple-the-empty-class">Starting Simple: The Empty Class</h2>
 <p>Python’s dynamic nature allows for flexibility that can be surprising if you are coming from statically typed languages like C++ or Java. The most minimal class definition in Python is simply an empty block.</p>
-<div id="7d0c9b63" class="cell" data-execution_count="1">
+<div id="182cd6b4" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">class</span> Option:</span>
@@ -449,7 +449,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>This <code>Option</code> class might seem useless, but Python allows us to attach attributes to instances dynamically—a practice sometimes called “monkey patching” in broader contexts.</p>
-<div id="e805d7a1" class="cell" data-execution_count="2">
+<div id="bf597abb" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="co"># Create an instance</span></span>
@@ -472,7 +472,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="enforcing-structure-__init__">Enforcing Structure: <code>__init__</code></h2>
 <p>To fix this, we use the <code>__init__</code> method. Think of it as your “initializer” (sometimes called a constructor). It runs the second an object is created, making sure every instance starts off with the right data in the right place.</p>
 <p>Here’s how we can define a <code>EuropeanOption</code> class with a proper setup.</p>
-<div id="23e59f1f" class="cell" data-execution_count="3">
+<div id="8520e3d2" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="kw">class</span> EuropeanOption:</span>
@@ -501,7 +501,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="class-attributes-vs.-instance-attributes">Class Attributes vs.&nbsp;Instance Attributes</h2>
 <p>The attributes <code>strike</code>, <code>expiry</code>, and <code>option_type</code> are <strong>instance attributes</strong>. They belong to a specific object; one option’s strike does not affect another’s.</p>
 <p>Sometimes, however, we need to share data across <em>all</em> instances of a class. These are <strong>class attributes</strong>, defined directly in the class body.</p>
-<div id="4ee8aebc" class="cell" data-execution_count="4">
+<div id="6abb93f8" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="kw">class</span> EuropeanOption:</span>
@@ -570,7 +570,7 @@ Option 2 contract size: 100</code></pre>
 <section id="instance-methods" class="level3">
 <h3 class="anchored" data-anchor-id="instance-methods">Instance Methods</h3>
 <p><strong>Instance methods</strong> are the default — functions defined inside a class that operate on a specific instance via <code>self</code>.</p>
-<div id="522d6b67" class="cell" data-execution_count="5">
+<div id="b09fc324" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="kw">class</span> EuropeanOption:</span>
@@ -601,7 +601,7 @@ Spot 90, Call Payoff: 0.0</code></pre>
 <h2 class="anchored" data-anchor-id="class-methods">Class Methods</h2>
 <p>Sometimes we need a method that operates on the class itself rather than a specific instance. These are <strong>class methods</strong>, receiving the class (<code>cls</code>) as their first argument instead of <code>self</code>. They are marked with the <code>@classmethod</code> decorator.</p>
 <p>A common use case for class methods is creating <strong>factory methods</strong>—alternative ways to instantiate the class.</p>
-<div id="af251591" class="cell" data-execution_count="6">
+<div id="bd644cfe" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a><span class="kw">class</span> EuropeanOption:</span>
@@ -649,7 +649,7 @@ Default option type after change: Put</code></pre>
 <h2 class="anchored" data-anchor-id="static-methods">Static Methods</h2>
 <p>A <strong>static method</strong> behaves like a regular function but lives within the class’s namespace. It doesn’t receive <code>self</code> or <code>cls</code> automatically. We use the <code>@staticmethod</code> decorator for utility functions that are logically related to the class but don’t need access to the class or instance state.</p>
 <p>For an option class, a static method might implement a pricing formula component that is purely mathematical.</p>
-<div id="604876d5" class="cell" data-execution_count="7">
+<div id="4cfa3d4d" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a><span class="im">import</span> math</span>
@@ -675,7 +675,7 @@ Default option type after change: Put</code></pre>
 <h2 class="anchored" data-anchor-id="the-property-decorator-property">The Property Decorator: <code>@property</code></h2>
 <p>In finance, invalid data can lead to significant errors. A negative strike price or a negative volatility is nonsensical. In languages like Java or C++, you typically implement <code>getStrike()</code> and <code>setStrike()</code> methods to handle validation. Python offers a cleaner alternative: the <code>@property</code> decorator.</p>
 <p>This allows us to access a method as if it were an attribute, adding logic like validation seamlessly.</p>
-<div id="323c45f8" class="cell" data-execution_count="8">
+<div id="7dd6e01a" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a><span class="kw">class</span> EuropeanOption:</span>
@@ -711,7 +711,7 @@ Error caught: Strike price cannot be negative.</code></pre>
 <section id="access-control-private-vs.-protected" class="level2">
 <h2 class="anchored" data-anchor-id="access-control-private-vs.-protected">Access Control: Private vs.&nbsp;Protected</h2>
 <p>Python does not enforce strict <code>private</code> or <code>protected</code> keywords. Instead, it relies on naming conventions:</p>
-<div id="bcfce838" class="cell" data-execution_count="9">
+<div id="6b96ce7a" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-label="1"></a><span class="kw">class</span> EuropeanOption:</span>
@@ -761,7 +761,7 @@ BS</code></pre>
 <h2 class="anchored" data-anchor-id="memory-optimization-__slots__">Memory Optimization: <code>__slots__</code></h2>
 <p>Standard Python objects store their attributes in a dictionary (<code>__dict__</code>), which allows for the dynamic behavior we saw earlier. However, dictionaries come with memory overhead.</p>
 <p>If you are running a Monte Carlo simulation with millions of paths, this overhead can become a bottleneck. <code>__slots__</code> tells Python to reserve space for <em>only</em> a specific set of attributes, removing the dynamic dictionary and saving memory.</p>
-<div id="e3107da3" class="cell" data-execution_count="10">
+<div id="8ce4136e" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-label="1"></a><span class="im">import</span> sys</span>
@@ -807,7 +807,7 @@ Slotted Option Size:  ~48 bytes</code></pre>
 <section id="modern-python-data-classes" class="level2">
 <h2 class="anchored" data-anchor-id="modern-python-data-classes">Modern Python: Data Classes</h2>
 <p>Since Python 3.7, there is an even easier way to create classes that primarily store data. The <code>@dataclass</code> decorator automatically generates <code>__init__</code>, <code>__repr__</code>, <code>__eq__</code>, and other special methods for you, reducing boilerplate.</p>
-<div id="b24a3e1d" class="cell" data-execution_count="11">
+<div id="dc1980a6" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-label="1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
