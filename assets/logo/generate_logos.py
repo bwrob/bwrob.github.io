@@ -85,7 +85,7 @@ def generate_logo(  # noqa: PLR0913, PLR0917
     font_size: int = 100,
     font_path: str | None = None,
     output_path: str = "assets/logo/logo_full.png",
-    fill_color: tuple = MAGENTA,
+    fill_color: tuple[int, ...] = MAGENTA,
     line_height_factor: float = 0.85,
     padding: int = 50,
 ) -> None:
@@ -126,8 +126,8 @@ def generate_favicon(  # noqa: PLR0913, PLR0917
     font_path: str | None = None,
     output_path: str = "assets/logo/favicon.png",
     radius: int = 80,
-    bg_color: tuple = PAPER,
-    fill_color: tuple = MAGENTA,
+    bg_color: tuple[int, ...] = PAPER,
+    fill_color: tuple[int, ...] = MAGENTA,
     offset_y: int = -40,
 ) -> None:
     """Generate a sharp BW glyph favicon.

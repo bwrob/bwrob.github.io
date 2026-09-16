@@ -10,7 +10,7 @@ from __future__ import annotations
 import math
 import sys
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, override
 
 
 # 1. The Fuzzy Object
@@ -121,11 +121,13 @@ class EuropeanOptionWithProperty(EuropeanOption):
         self.expiry = expiry
         self.option_type = option_type
 
+    @override
     @property
     def strike(self) -> float:
         """Get the strike price."""
         return self._strike
 
+    @override
     @strike.setter
     def strike(self, value: float) -> None:
         """Set the strike price with validation."""
@@ -165,7 +167,7 @@ try:
 except AttributeError:
     print("Cannot access private variable directly.")
 print(
-    f"Mangled name access: {opt_access._EuropeanOptionWithAccessControl__secret_config}"  # noqa: SLF001
+    f"Mangled name access: {opt_access._EuropeanOptionWithAccessControl__secret_config}"  # noqa: SLF001  # pyrefly: ignore [missing-attribute]
 )
 
 
@@ -186,6 +188,7 @@ class SlottedOption(EuropeanOption):
         self.option_type = option_type
 
     # __repr__ is not inherited if slots are present, needs to be redefined
+    @override
     def __repr__(self) -> str:
         """Return a string representation of the SlottedOption."""
         return (

@@ -69,7 +69,7 @@ class SpreadMixin:
         """Calculate the discount factor including the spread."""
         # Get base discount factor from the parent class via MRO
         base_df = (
-            super().discount_factor(t) if hasattr(super(), "discount_factor") else 1.0
+            super().discount_factor(t) if hasattr(super(), "discount_factor") else 1.0  # pyrefly: ignore [missing-attribute]
         )
         # Apply spread discount: exp(-spread * t)
         return base_df * math.exp(-self.spread * t)

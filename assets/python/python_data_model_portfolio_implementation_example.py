@@ -54,7 +54,7 @@ class Portfolio:
         new_managers = tuple(sorted(set(self.managers + other.managers)))
 
         # Merge contents
-        all_positions = {}
+        all_positions: dict[str, Position] = {}
 
         # Add positions from self
         for pos in self:

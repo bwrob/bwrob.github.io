@@ -56,7 +56,7 @@ class RectangleScheme(IntegrationScheme):
     ) -> float:
         """Integrate a function using rectangle integration."""
         x_points = np.linspace(start, end, self.__steps)
-        values = integrand(x_points)
+        values = integrand(x_points)  # pyrefly: ignore [bad-argument-type]
         dx = (end - start) / np.float64(self.__steps)
         return np.sum(values) * dx
 
@@ -94,7 +94,7 @@ class MonteCarloScheme(IntegrationScheme):
         """Integrate a function using Monte Carlo integration."""
         rng = np.random.default_rng(2137)
         x_points = rng.uniform(start, end, self.__random_points)
-        values = integrand(x_points)
+        values = integrand(x_points)  # pyrefly: ignore [bad-argument-type]
         average_dx = (end - start) / np.float64(self.__random_points)
         return np.sum(values) * average_dx
 
