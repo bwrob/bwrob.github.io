@@ -74,7 +74,7 @@ def benchmark(functions: list[Callable[[int], int]], n: int) -> None:
 
 
 fib_functions = [fibonacci_recursive, fibonacci_recursive_cached, fibonacci_iterative]
-benchmark(fib_functions, 30)
+benchmark(fib_functions, 30)  # pyrefly: ignore [bad-argument-type]
 
 
 # Closures
@@ -91,7 +91,7 @@ good_morning_greeter = get_greeter("Good morning")
 print(good_morning_greeter("World"))
 
 
-good_morning_greeter.__closure__[0].cell_contents  # noqa: B018
+good_morning_greeter.__closure__[0].cell_contents  # noqa: B018  # pyrefly: ignore [unsupported-operation]
 
 
 def polynomial_factory(coefficients: tuple[float, ...]) -> Callable[[float], float]:
@@ -120,7 +120,7 @@ print(p2(5))
 # Decorators
 def my_cache(func: Callable[..., Any]) -> Callable[..., Any]:
     """Cache function results in a simple dictionary."""
-    cache = {}
+    cache: dict[tuple[Any, ...], Any] = {}
 
     def wrapper(*args: Any) -> Any:
         if args in cache:

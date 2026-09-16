@@ -11,12 +11,15 @@
         "plotly>=6.2.0",
         "polars>=1.39.3",
         "pydantic>=2.11.7,<3",
+        "pyrefly>=1.3.1",
         "rich>=14.0.0,<15",
+        "ruff>=0.16.7",
+        "rumdl>=0.2.73",
         "scipy>=1.16.0,<2",
         "seaborn>=0.13.2",
         "sympy>=1.14.0,<2",
         "yfinance>=1.3.0",
-    ]
+]
     name = "bwrob-github-io"
     requires-python = ">=3.13"
     version = "0.1.0"
@@ -39,3 +42,46 @@
 
     [tool.ruff.format]
         docstring-code-format = true
+
+
+[tool.rumdl]
+flavor = "quarto"
+line-length = 88
+exclude = [
+    ".git",
+    ".github",
+    ".venv",
+    "_not_posted",
+    "_site",
+    "_freeze",
+]
+respect-gitignore = true
+
+[tool.rumdl.MD013]
+line-length = 88
+reflow = true
+code-blocks = false
+tables = false
+headings = false
+math-blocks = false
+
+# Rule-specific configurations (uncomment and modify as needed)
+
+# [tool.rumdl.MD003]
+# style = "atx"  # Heading style (atx, atx_closed, setext)
+
+# [tool.rumdl.MD004]
+# style = "asterisk"  # Unordered list style (asterisk, plus, dash, consistent)
+
+# [tool.rumdl.MD007]
+# indent = 4  # Unordered list indentation
+
+# [tool.rumdl.MD013]
+# line-length = 100  # Line length
+# code-blocks = false  # Exclude code blocks from line length check
+# tables = false  # Exclude tables from line length check
+# headings = true  # Include headings in line length check
+
+# [tool.rumdl.MD044]
+# names = ["rumdl", "Markdown", "GitHub"]  # Proper names that should be capitalized correctly
+# code-blocks = false  # Check code blocks for proper names (default: false, skips code blocks)

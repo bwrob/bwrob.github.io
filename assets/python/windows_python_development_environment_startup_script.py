@@ -74,7 +74,7 @@ def start_process(
     else:
         logger.info("Opening file %s", name)
 
-    os.startfile(path)  # noqa: S606
+    os.startfile(path)  # noqa: S606  # pyrefly: ignore [missing-attribute]
     time.sleep(delay)
 
 

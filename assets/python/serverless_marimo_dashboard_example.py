@@ -9,9 +9,9 @@ from __future__ import annotations
 
 from typing import Any
 
-import marimo
-import marimo as mo
-import marimo._runtime
+import marimo  # pyrefly: ignore [missing-import]
+import marimo as mo  # pyrefly: ignore [missing-import]
+import marimo._runtime  # pyrefly: ignore [missing-import]
 import numpy as np
 import polars as pl
 

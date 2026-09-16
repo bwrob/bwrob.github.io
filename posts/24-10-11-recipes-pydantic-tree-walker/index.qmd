@@ -9,7 +9,9 @@ format-links: [html]
 toc-depth: 2
 ---
 
-If you've ever worked with complex Pydantic models, you know it can be tough to see how they're structured. This post shows you a Python script that can help by displaying your models as a tree in the console.
+If you've ever worked with complex Pydantic models, you know it can be tough to see how
+they're structured. This post shows you a Python script that can help by displaying your
+models as a tree in the console.
 
 ## The Script
 
@@ -182,22 +184,31 @@ Let's look at the main parts of the script.
 
 ### display_tree and build_tree
 
-`display_tree` is where it all starts. It creates a `rich.tree.Tree` and then calls `build_tree` to fill it up. `build_tree` goes through the model's fields, makes a label for each one, and then calls itself if it finds any nested models.
+`display_tree` is where it all starts. It creates a `rich.tree.Tree` and then calls
+`build_tree` to fill it up. `build_tree` goes through the model's fields, makes a label
+for each one, and then calls itself if it finds any nested models.
 
 ### type_to_string
 
-This function turns a type hint into a string. It can handle generic types like `list`, `dict`, and `Union` by using `get_origin` and `get_args` from the `typing` module. It also escapes any square brackets in the type string so `rich` can render it correctly.
+This function turns a type hint into a string. It can handle generic types like `list`,
+`dict`, and `Union` by using `get_origin` and `get_args` from the `typing` module. It
+also escapes any square brackets in the type string so `rich` can render it correctly.
 
 ### extract_model_types
 
-This function pulls out Pydantic model types from a composite type. For example, if you have `list[Union[ModelA, str, ModelB]]`, it will give you `ModelA` and `ModelB`. This is how the script explores nested models inside other types.
+This function pulls out Pydantic model types from a composite type. For example, if you
+have `list[Union[ModelA, str, ModelB]]`, it will give you `ModelA` and `ModelB`. This is
+how the script explores nested models inside other types.
 
 ## Conclusion
 
-This script is a simple way to see what your Pydantic models look like. The `rich` library helps make the output clear and colorful, which is a big help when you're dealing with complex data.
+This script is a simple way to see what your Pydantic models look like. The `rich`
+library helps make the output clear and colorful, which is a big help when you're
+dealing with complex data.
 
 ::: callout-note
 
-Download the whole code [here](../../assets/python/pydantic_recursive_model_tree_walker_utility.py).
+Download the whole code
+[here](../../assets/python/pydantic_recursive_model_tree_walker_utility.py).
 
 :::

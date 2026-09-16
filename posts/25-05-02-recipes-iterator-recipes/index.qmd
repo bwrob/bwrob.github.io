@@ -10,15 +10,23 @@ toc-depth: 2
 toc: true
 ---
 
-We're always looping through something in Python. Whether it's processing lines in a file or streaming data from an API, iterables are everywhere.
+We're always looping through something in Python. Whether it's processing lines in a
+file or streaming data from an API, iterables are everywhere.
 
-Python's built-in `itertools` is great, but every now and then you hit a problem that it doesn't quite cover out of the box. Over time, I've put together a small collection of helper functions to handle those "I wish `itertools` had this" moments. Here are a few of my favorites, complete with some type-safe implementations you can drop into your own projects.
+Python's built-in `itertools` is great, but every now and then you hit a problem that it
+doesn't quite cover out of the box. Over time, I've put together a small collection of
+helper functions to handle those "I wish `itertools` had this" moments. Here are a few
+of my favorites, complete with some type-safe implementations you can drop into your own
+projects.
 
 ## batched
 
-This one's a classic: you have a long list and you want to slice it up into chunks. Maybe you're feeding data into a neural network or just trying not to hit a rate limit on an API.
+This one's a classic: you have a long list and you want to slice it up into chunks.
+Maybe you're feeding data into a neural network or just trying not to hit a rate limit
+on an API.
 
-Python 3.12 actually added this to `itertools`, but if you're stuck on an older version or just want a standalone version, here's how you can do it:
+Python 3.12 actually added this to `itertools`, but if you're stuck on an older version
+or just want a standalone version, here's how you can do it:
 
 ```{python}
 from __future__ import annotations
@@ -56,9 +64,12 @@ print(f"batched(range(10), 3): {list(batched(range(10), 3))}")
 
 ## unbox
 
-Ever have a list that *should* only have one thing in it? Maybe it's a filtered database result or a unique ID. Instead of doing `results[0]` and hoping for the best, `unbox` makes sure your assumption is actually right.
+Ever have a list that *should* only have one thing in it? Maybe it's a filtered database
+result or a unique ID. Instead of doing `results[0]` and hoping for the best, `unbox`
+makes sure your assumption is actually right.
 
-It grabs that one item and throws a `ValueError` if it finds more than one (or zero). It's a great way to catch bugs early.
+It grabs that one item and throws a `ValueError` if it finds more than one (or zero).
+It's a great way to catch bugs early.
 
 ```{python}
 def unbox[T](iterable: Iterable[T]) -> T:
@@ -90,7 +101,9 @@ except ValueError as e:
 
 ## unzip
 
-If you've ever used Python's `zip` function, you know it's a lifesaver for pairing up data. But what about the other way around? If you have a list of pairs and you want two separate lists, `unzip` is the tool for the job.
+If you've ever used Python's `zip` function, you know it's a lifesaver for pairing up
+data. But what about the other way around? If you have a list of pairs and you want two
+separate lists, `unzip` is the tool for the job.
 
 ```{python}
 def unzip[T](iterable: Iterable[tuple[T, ...]]) -> tuple[Iterable[T], ...]:
@@ -113,7 +126,9 @@ print(f"unzip({zipped_data}): {[list(it) for it in unzipped_data]}")
 
 ## flatten_iterable
 
-Nested lists are a headache. `flatten_iterable` lets you turn a messy, deeply nested structure into a single, clean list. It's smart enough to leave strings and bytes alone, so you don't end up with a list of individual characters when you didn't mean to.
+Nested lists are a headache. `flatten_iterable` lets you turn a messy, deeply nested
+structure into a single, clean list. It's smart enough to leave strings and bytes alone,
+so you don't end up with a list of individual characters when you didn't mean to.
 
 ```{python}
 from collections.abc import Generator
@@ -147,7 +162,10 @@ print(f"flatten_iterable({nested_list}): {flatten_iterable(nested_list)}")
 
 ## flatten_string_key_dict
 
-Nested dictionaries are great for structure, but they can be a pain to access. This function flattens them into a single level, using dots to join the keys (like `parent.child.grandchild`). It's perfect for turning complex config files into something much easier to work with.
+Nested dictionaries are great for structure, but they can be a pain to access. This
+function flattens them into a single level, using dots to join the keys (like
+`parent.child.grandchild`). It's perfect for turning complex config files into something
+much easier to work with.
 
 ```{python}
 from collections.abc import Mapping
@@ -186,7 +204,11 @@ print(
 
 ## group_by_non_consecutive
 
-If you've ever used `itertools.groupby`, you know the catch: your data *must* be sorted first, or it won't work as expected. This helper function takes care of that for you by sorting the data before grouping it. It's a bit more memory-heavy because it has to hold the whole list in memory to sort it, but for most everyday tasks, it's a huge convenience.
+If you've ever used `itertools.groupby`, you know the catch: your data *must* be sorted
+first, or it won't work as expected. This helper function takes care of that for you by
+sorting the data before grouping it. It's a bit more memory-heavy because it has to hold
+the whole list in memory to sort it, but for most everyday tasks, it's a huge
+convenience.
 
 ```{python}
 import itertools
@@ -238,8 +260,11 @@ for key, group in group_by_non_consecutive(data_nums):
     print(f"  {key}: {list(group)}")
 ```
 
-These are some of the helpers I find myself reaching for time and again. Hopefully, they'll save you some time and keep your code a bit cleaner. You can grab the full script with all these functions and examples below.
+These are some of the helpers I find myself reaching for time and again. Hopefully,
+they'll save you some time and keep your code a bit cleaner. You can grab the full
+script with all these functions and examples below.
 
 ::: callout-note
-Download the whole code [here](../../assets/python/reusable_python_iterator_utilities_and_recipes.py).
+Download the whole code
+[here](../../assets/python/reusable_python_iterator_utilities_and_recipes.py).
 :::

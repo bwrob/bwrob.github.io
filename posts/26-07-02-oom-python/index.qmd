@@ -7,23 +7,32 @@ image: ../../assets/images/posts/26-07-02-oom-python/image.jpg
 format-links: [html]
 ---
 
-![](../../assets/images/posts/26-07-02-oom-python/image.jpg){width="95%" fig-align="center"}
+![](../../assets/images/posts/26-07-02-oom-python/image.jpg){width="95%"
+fig-align="center"}
 
-Finding memory leaks in Python gets complicated when using compiled extensions like NumPy, PyO3, or pybind11. When the system Out of Memory (OOM) killer runs, it terminates the process with a `SIGKILL` without leaving a stack trace.
+Finding memory leaks in Python gets complicated when using compiled extensions like
+NumPy, PyO3, or pybind11. When the system Out of Memory (OOM) killer runs, it terminates
+the process with a `SIGKILL` without leaving a stack trace.
 
-To debug an OOM, you need to find where the allocation occurred: in a Python object or inside a C/C++ backend.
+To debug an OOM, you need to find where the allocation occurred: in a Python object or
+inside a C/C++ backend.
 
-**Memray** is a Python memory profiler that can track allocations down to the native level. Note that it only works on UNIX-based operating systems.
+**Memray** is a Python memory profiler that can track allocations down to the native
+level. Note that it only works on UNIX-based operating systems.
 
 ## Setting Memory Limits
 
-If the Linux OOM killer terminates the process, Memray cannot write its profile data to disk, and the capture is lost.
+If the Linux OOM killer terminates the process, Memray cannot write its profile data to
+disk, and the capture is lost.
 
-We can avoid this by setting a soft memory limit using Python's built-in `resource` module. This forces the interpreter to raise a `MemoryError` before the OS terminates the process, allowing Memray to save the profile data.
+We can avoid this by setting a soft memory limit using Python's built-in `resource`
+module. This forces the interpreter to raise a `MemoryError` before the OS terminates
+the process, allowing Memray to save the profile data.
 
 ## A Memory Leak Example
 
-Below is an example script that triggers an OOM using either a Python bytes object or a NumPy array.
+Below is an example script that triggers an OOM using either a Python bytes object or a
+NumPy array.
 
 ### Setting the Limit
 
@@ -42,7 +51,9 @@ def limit_memory(max_bytes: int) -> None:
     resource.setrlimit(resource.RLIMIT_AS, (max_bytes, max_bytes))  # <1>
 ```
 
-1. The `resource.setrlimit` function caps the virtual memory (`RLIMIT_AS`) available to the process. When memory usage exceeds this limit, the OS denies further allocations, raising a `MemoryError` instead of terminating the process.
+1. The `resource.setrlimit` function caps the virtual memory (`RLIMIT_AS`) available to
+   the process. When memory usage exceeds this limit, the OS denies further allocations,
+   raising a `MemoryError` instead of terminating the process.
 
 ### Pure Python Allocation
 
@@ -66,8 +77,10 @@ def leak_python() -> None:
         current_size = int(current_size * 1.5)  # <3>
 ```
 
-1. Freeing the previous allocation ensures the OOM is triggered by a single large allocation failing, rather than gradual accumulation.
-2. `os.urandom` generates uncompressible bytes, preventing OS memory compression from masking the size of the allocation.
+1. Freeing the previous allocation ensures the OOM is triggered by a single large
+   allocation failing, rather than gradual accumulation.
+2. `os.urandom` generates uncompressible bytes, preventing OS memory compression from
+   masking the size of the allocation.
 3. Grow by 50% each iteration.
 
 ### NumPy Allocation
@@ -95,7 +108,10 @@ def leak_numpy() -> None:
         current_elements = int(current_elements * 1.5)  # <2>
 ```
 
-1. NumPy arrays are backed by C/C++ allocations. When `np.ones` is called, it bypasses Python's memory manager and requests contiguous memory from the system. Without native profiling enabled, Memray would only track the Python wrapper, missing the underlying C allocation.
+1. NumPy arrays are backed by C/C++ allocations. When `np.ones` is called, it bypasses
+   Python's memory manager and requests contiguous memory from the system. Without
+   native profiling enabled, Memray would only track the Python wrapper, missing the
+   underlying C allocation.
 2. Grow by 50% each iteration.
 
 ### Running the Simulator
@@ -117,7 +133,8 @@ if __name__ == "__main__":
 ```
 
 1. Restricts the process to exactly 1 GB of virtual memory.
-2. Catching `MemoryError` allows the script to exit gracefully. This is required for Memray to flush its buffers and write the profile data to disk.
+2. Catching `MemoryError` allows the script to exit gracefully. This is required for
+   Memray to flush its buffers and write the profile data to disk.
 
 ## Running the Profiler
 
@@ -144,21 +161,28 @@ memray flamegraph memray-oom_simulator.py.12345.bin
 This will produce an HTML file that you can open in a browser.
 
 - **Python Allocation:** The graph will show a large block for `os.urandom`.
-- **NumPy Allocation:** The graph will show the call stack going from Python into `numpy.core.multiarray.ones` and down to the C allocation function that blew the 1 GB limit.
+- **NumPy Allocation:** The graph will show the call stack going from Python into
+  `numpy.core.multiarray.ones` and down to the C allocation function that blew the 1 GB
+  limit.
 
-![Memray Flamegraph](../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.png){.lightbox group="memray" description="HTML flamegraph showing the call stack of the NumPy allocation."}
+![Memray Flamegraph](../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.png){.lightbox
+group="memray" description="HTML flamegraph showing the call stack of the NumPy
+allocation."}
 
 ### Live Terminal UI
 
-Memray includes a terminal UI (similar to `htop`) to view memory allocations in real time:
+Memray includes a terminal UI (similar to `htop`) to view memory allocations in real
+time:
 
 ```bash
 memray run --native --live oom_simulator.py
 ```
 
-This shows real-time memory spikes, top allocating files, and a running plot of heap usage. It is useful for monitoring background services over SSH.
+This shows real-time memory spikes, top allocating files, and a running plot of heap
+usage. It is useful for monitoring background services over SSH.
 
-![Memray Live TUI](../../assets/images/posts/26-07-02-oom-python/memray-live.png){.lightbox group="memray" description="Terminal UI monitoring memory usage."}
+![Memray Live TUI](../../assets/images/posts/26-07-02-oom-python/memray-live.png){.lightbox
+group="memray" description="Terminal UI monitoring memory usage."}
 
 ### Statistics Summary
 
@@ -174,7 +198,8 @@ This outputs a summary directly to the terminal, containing:
 - The top allocating functions (both Python and C-level).
 - A histogram of allocation sizes.
 
-![Memray Stats](../../assets/images/posts/26-07-02-oom-python/memray-stats.png){.lightbox group="memray" description="Terminal statistics summary of memory usage."}
+![Memray Stats](../../assets/images/posts/26-07-02-oom-python/memray-stats.png){.lightbox
+group="memray" description="Terminal statistics summary of memory usage."}
 
 ### Terminal Tree View
 
@@ -184,9 +209,11 @@ You can also render an inverted call graph in the terminal using the `tree` comm
 memray tree memray-oom_simulator.py.12345.bin
 ```
 
-This visualizes the call relationships of functions that consumed memory. It helps trace a memory leak straight to the source.
+This visualizes the call relationships of functions that consumed memory. It helps trace
+a memory leak straight to the source.
 
-![Memray Tree](../../assets/images/posts/26-07-02-oom-python/memray-tree.png){.lightbox group="memray" description="Call graph tree showing allocation hierarchy."}
+![Memray Tree](../../assets/images/posts/26-07-02-oom-python/memray-tree.png){.lightbox
+group="memray" description="Call graph tree showing allocation hierarchy."}
 
 ::: callout-note
 

@@ -10,16 +10,20 @@ execute:
 
 ## Gra w Życie
 
-[Conway's Game of Life](https://www.wikiwand.com/en/articles/Conway's_Game_of_Life) to symulacja automatu komórkowego, w której stan każdej komórki w siatce ewoluuje w czasie na podstawie prostych reguł dotyczących jej sąsiadów.
+[Conway's Game of Life](https://www.wikiwand.com/en/articles/Conway's_Game_of_Life) to
+symulacja automatu komórkowego, w której stan każdej komórki w siatce ewoluuje w czasie
+na podstawie prostych reguł dotyczących jej sąsiadów.
 
 **Zasady Gry**
 
-Gra toczy się na dwuwymiarowej siatce komórek, z których każda może być w jednym z dwóch stanów:
+Gra toczy się na dwuwymiarowej siatce komórek, z których każda może być w jednym z dwóch
+stanów:
 
 - Żywa (oznaczona kolorem zielonym w implementacji)
 - Martwa (oznaczona kolorem czarnym w implementacji)
 
-Stan komórki w następnej generacji zależy od stanu jej ośmiu sąsiadów w obecnej generacji, zgodnie z następującymi regułami:
+Stan komórki w następnej generacji zależy od stanu jej ośmiu sąsiadów w obecnej
+generacji, zgodnie z następującymi regułami:
 
 - Martwa komórka z dokładnie trzema żywymi sąsiadami staje się żywa (**narodziny**).
 - Żywa komórka z mniej niż dwoma żywymi sąsiadami umiera z powodu **niedoludnienia**.
@@ -28,21 +32,27 @@ Stan komórki w następnej generacji zależy od stanu jej ośmiu sąsiadów w ob
 
 ## Zadanie
 
-Twoim zadaniem jest uzupełnienie kodu symulacji Game of Life. Poniżej znajduje się szkielet kodu, który musisz wypełnić.
+Twoim zadaniem jest uzupełnienie kodu symulacji Game of Life. Poniżej znajduje się
+szkielet kodu, który musisz wypełnić.
 
-- Uzupełnij funkcję `draw_grid`, rysując na ekranie siatkę komórek z odpowiednimi kolorami (zielony dla komórek żywych, czarny dla martwych).
-- Uzupełnij brakującą część pętli `while` w `game_event_loop` tak aby gra wyświetlała kolejne generacje oraz reagowała na zdarzenia użytkownika.
-- **Dodatkowe wyzwanie:** Zaimplementuj różne początkowe wzory (np. Glider, Gosper glider gun).
-- **Dodatkowe wyzwanie:** Dodaj kontrolę prędkości symulacji. Zaimplementuj możliwość przewijania generacji.
+- Uzupełnij funkcję `draw_grid`, rysując na ekranie siatkę komórek z odpowiednimi
+  kolorami (zielony dla komórek żywych, czarny dla martwych).
+- Uzupełnij brakującą część pętli `while` w `game_event_loop` tak aby gra wyświetlała
+  kolejne generacje oraz reagowała na zdarzenia użytkownika.
+- **Dodatkowe wyzwanie:** Zaimplementuj różne początkowe wzory (np. Glider, Gosper
+  glider gun).
+- **Dodatkowe wyzwanie:** Dodaj kontrolę prędkości symulacji. Zaimplementuj możliwość
+  przewijania generacji.
 
 ### Przykładowe sterowanie
 
 - `Spacja`: Wznawia/wstrzymuje symulację.
 - `R`: Resetuje siatkę do losowego układu.
 - `C`: Czyści siatkę (wszystkie komórki martwe).
-- `Lewy Przycisk Myszy`: Kliknięcie komórki przełącza jej stan (żywa/martwa), ale tylko gdy symulacja jest wstrzymana.
+- `Lewy Przycisk Myszy`: Kliknięcie komórki przełącza jej stan (żywa/martwa), ale tylko
+  gdy symulacja jest wstrzymana.
 
-### Przydatne zasoby:
+### Przydatne zasoby
 
 - [`pygame.init()`](https://www.pygame.org/docs/ref/pygame.html#pygame.init)
 - [`pygame.display.set_mode()`](https://www.pygame.org/docs/ref/pygame.html#pygame.display.set_mode)
@@ -59,7 +69,8 @@ Twoim zadaniem jest uzupełnienie kodu symulacji Game of Life. Poniżej znajduje
 
 ### Przygotowanie środowiska
 
-Dla tego zadania będziesz potrzebować zainstalować Pygame i NumPy. Możesz to zrobić za pomocą poleceń:
+Dla tego zadania będziesz potrzebować zainstalować Pygame i NumPy. Możesz to zrobić za
+pomocą poleceń:
 
 ```{powershell}
 conda create -n pygame-env python=3.12
@@ -93,12 +104,10 @@ GRID_WIDTH = WIDTH // CELL_SIZE
 GRID_HEIGHT = HEIGHT // CELL_SIZE
 DEFAULT_FPS = 10
 
-
 def create_random_grid() -> np.ndarray:
     """Tworzy losową siatkę złożoną z 0 i 1."""
     rng = np.random.default_rng()
     return rng.integers(0, 2, size=(GRID_HEIGHT, GRID_WIDTH), dtype=np.int8)
-
 
 def create_empty_grid() -> np.ndarray:
     """Tworzy pustą siatkę złożoną z 0."""
@@ -106,7 +115,6 @@ def create_empty_grid() -> np.ndarray:
         (GRID_HEIGHT, GRID_WIDTH),
         dtype=np.int8,
     )
-
 
 def get_next_generation(grid: np.ndarray) -> np.ndarray:
     """Oblicza następne pokolenie Gry w Życie."""
@@ -128,11 +136,9 @@ def get_next_generation(grid: np.ndarray) -> np.ndarray:
                 new_grid[r, c] = 1  # Ożywa
     return new_grid
 
-
 def draw_grid(screen: pygame.Surface, grid: np.ndarray) -> None:
     """Rysuje siatkę na ekranie Pygame."""
     pass
-
 
 def game_event_loop() -> None:
     """Obsługuje główną pętlę gry, w tym zdarzenia, aktualizacje i rysowanie."""
@@ -146,14 +152,12 @@ def game_event_loop() -> None:
     while running:
         pass
 
-
 def main() -> None:
     """Główna funkcja uruchamiająca Grę w Życie."""
     pygame.init()
     pygame.display.set_caption("Conway's Game of Life")
     game_event_loop()
     pygame.quit()
-
 
 if __name__ == "__main__":
     main()

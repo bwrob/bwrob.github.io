@@ -11,37 +11,53 @@ image: cover.jpg
 
 ## Introduction
 
-In the finance world, we're always neck-deep in data. It's not just about how fast you can process it, but whether your code is going to crash your server by eating up all the memory.
+In the finance world, we're always neck-deep in data. It's not just about how fast you
+can process it, but whether your code is going to crash your server by eating up all the
+memory.
 
-This post is about iterators and generators — the "lazy" way to handle data that saves memory and avoids headaches.
+This post is about iterators and generators — the "lazy" way to handle data that saves
+memory and avoids headaches.
 
 ## Lists vs. Tuples: The Eager Iterables
 
-Lists and tuples are the most common sequence types in Python. They are *eager* in the sense that all their elements are stored in memory at once. When you create a list of a million numbers, Python allocates memory for all of them.
+Lists and tuples are the most common sequence types in Python. They are *eager* in the
+sense that all their elements are stored in memory at once. When you create a list of a
+million numbers, Python allocates memory for all of them.
 
 ```{python}
 my_list = [i for i in range(1_000_000)]
 # This creates a list with 1,000,000 integers in memory.
 ```
 
-This is fine for small to medium-sized datasets, but for very large datasets, this can lead to `MemoryError`.
+This is fine for small to medium-sized datasets, but for very large datasets, this can
+lead to `MemoryError`.
 
 ### Key Differences
 
 The primary difference between lists and tuples is **mutability**.
 
-*   **Lists** are mutable, meaning you can change their content. You can add, remove, or change elements. This flexibility comes at a cost: lists typically require more memory to store the same number of elements compared to tuples. This is because Python allocates extra memory to accommodate future additions.
+- **Lists** are mutable, meaning you can change their content. You can add, remove, or
+  change elements. This flexibility comes at a cost: lists typically require more
+  memory to store the same number of elements compared to tuples. This is because
+  Python allocates extra memory to accommodate future additions.
 
-*   **Tuples** are immutable. Once a tuple is created, you cannot change its content. This immutability makes them slightly more memory-efficient and faster to access than lists.
+- **Tuples** are immutable. Once a tuple is created, you cannot change its content. This
+  immutability makes them slightly more memory-efficient and faster to access than
+  lists.
 
-From a quant's perspective, you can think of a tuple as a "frozen" or "read-only" list. Use tuples for data that should not change, like coordinates, configuration settings, or records from a database. If you need a collection that you will modify, a list is the way to go.
+From a quant's perspective, you can think of a tuple as a "frozen" or "read-only" list.
+Use tuples for data that should not change, like coordinates, configuration settings, or
+records from a database. If you need a collection that you will modify, a list is the
+way to go.
 
 ## Iterators: The Lazy Approach
 
-An iterator is an object that represents a stream of data. It produces one item at a time, only when requested. The iterator protocol consists of two methods:
+An iterator is an object that represents a stream of data. It produces one item at a
+time, only when requested. The iterator protocol consists of two methods:
 
--   `__iter__()`: Returns the iterator object itself.
--   `__next__()`: Returns the next item from the stream. When there are no more items, it raises a `StopIteration` exception.
+- `__iter__()`: Returns the iterator object itself.
+- `__next__()`: Returns the next item from the stream. When there are no more items, it
+  raises a `StopIteration` exception.
 
 You can get an iterator from any iterable (like a list) using the `iter()` function.
 
@@ -57,7 +73,8 @@ print(next(my_iterator))  # Output: 3
 
 ## Generators: Simplified Iterators
 
-Generators are a simpler way to create iterators. Instead of writing a class with `__iter__` and `__next__`, you write a function that uses `yield`.
+Generators are a simpler way to create iterators. Instead of writing a class with
+`__iter__` and `__next__`, you write a function that uses `yield`.
 
 Here's a simple generator that produces a sequence of numbers:
 
@@ -71,13 +88,17 @@ gen = number_generator(1_000_000)
 # The generator object 'gen' is created, ready to produce numbers.
 ```
 
-The state of the generator is saved between `yield` calls. This allows it to resume where it left off.
+The state of the generator is saved between `yield` calls. This allows it to resume
+where it left off.
 
 ### Example: Flattening a List of Lists
 
-A common task is to flatten a list of lists into a single list. A generator is a perfect tool for this, especially when dealing with large datasets, as it avoids creating a new, large list in memory.
+A common task is to flatten a list of lists into a single list. A generator is a perfect
+tool for this, especially when dealing with large datasets, as it avoids creating a new,
+large list in memory.
 
-Imagine you have a list of trades, where each trade has a list of associated cashflows. You want to process all cashflows from all trades.
+Imagine you have a list of trades, where each trade has a list of associated cashflows.
+You want to process all cashflows from all trades.
 
 ```{python}
 trades_cashflows = [
@@ -87,7 +108,6 @@ trades_cashflows = [
     110,  # Simple payment doesn't need to be in a list!
 ]
 
-
 def flatten(list_of_lists):
     for item in list_of_lists:
         if isinstance(item, list):
@@ -95,7 +115,6 @@ def flatten(list_of_lists):
                 yield subitem
         else:
             yield item
-
 
 # The generator does not hold all cashflows in memory
 all_cashflows_generator = flatten(trades_cashflows)
@@ -109,14 +128,17 @@ The generator only holds one cashflow at a time, regardless of total count.
 
 ## Memory Efficiency in Action
 
-To make our memory analysis cleaner, we can define a decorator. This is a more Pythonic way to wrap functions with common boilerplate code, like starting and stopping `tracemalloc`.
+To make our memory analysis cleaner, we can define a decorator. This is a more Pythonic
+way to wrap functions with common boilerplate code, like starting and stopping
+`tracemalloc`.
 
-Let's demonstrate the memory difference using a decorator with the standard library's `tracemalloc` module. We'll compare the memory usage of creating a list versus creating a generator.
+Let's demonstrate the memory difference using a decorator with the standard library's
+`tracemalloc` module. We'll compare the memory usage of creating a list versus creating
+a generator.
 
 ```{python}
 import tracemalloc
 from functools import wraps
-
 
 def profile_memory(func):
     """A decorator to profile the memory usage of a function."""
@@ -135,23 +157,19 @@ def profile_memory(func):
 
     return wrapper
 
-
 @profile_memory
 def create_list(n):
     """This function creates a list of n numbers."""
     return [i for i in range(n)]
-
 
 @profile_memory
 def create_generator(n):
     """This function creates a generator of n numbers."""
     return (i for i in range(n))
 
-
 n = 1_000_000
 print("Profiling memory for list creation...")
 my_list = create_list(n)
-
 
 print("Profiling memory for generator creation...")
 my_generator = create_generator(n)
@@ -161,20 +179,19 @@ my_generator = create_generator(n)
 def consume_generator(gen):
     return list(gen)
 
-
 print("Profiling memory for generator consumption...")
 consumed_list = consume_generator(my_generator)
 ```
 
-The output speaks for itself: creating the generator uses almost no memory. The cost only shows up when you actually consume it into a list.
-
-
+The output speaks for itself: creating the generator uses almost no memory. The cost
+only shows up when you actually consume it into a list.
 
 ## Essential Iteration Tools: `zip`, `sorted`, `enumerate`
 
 A few built-in functions that come up constantly:
 
-*   **`enumerate(iterable, start=0)`**:  When processing a series of cashflows, you might need to know the period number for each payment. `enumerate` is perfect for this.
+- **`enumerate(iterable, start=0)`**: When processing a series of cashflows, you might
+  need to know the period number for each payment. `enumerate` is perfect for this.
 
     ```{python}
     cashflows = [100, 100, 100, 1100] # Coupon payments and principal
@@ -182,7 +199,8 @@ A few built-in functions that come up constantly:
         print(f"Period {period}: Cashflow = {cf}")
     ```
 
-*   **`zip(*iterables)`**: This function is very useful for combining different streams of data. For example, you can pair trade dates with their corresponding notionals.
+- **`zip(*iterables)`**: This function is very useful for combining different streams of
+  data. For example, you can pair trade dates with their corresponding notionals.
 
     ```{python}
     trade_dates = ['2025-11-05', '2025-11-06', '2025-11-07']
@@ -191,7 +209,8 @@ A few built-in functions that come up constantly:
         print(f"On {date}, we traded a notional of {notional:,}")
     ```
 
-*   **`sorted(iterable, key=None, reverse=False)`**: Sorting is a common task. You might want to sort a list of trades by maturity date or notional.
+- **`sorted(iterable, key=None, reverse=False)`**: Sorting is a common task. You might
+  want to sort a list of trades by maturity date or notional.
 
     ```{python}
     from dataclasses import dataclass
@@ -217,11 +236,16 @@ A few built-in functions that come up constantly:
 
 ## The `itertools` Module: A Treasure Trove for Financial Iteration
 
-The `itertools` module is worth knowing well. Here are the ones I reach for most in financial work.
+The `itertools` module is worth knowing well. Here are the ones I reach for most in
+financial work.
 
-*   **`itertools.chain(*iterables)` and `itertools.chain.from_iterable(iterable)`**: Often you need to process items from several sequences in a row. `chain` lets you treat them as a single, continuous stream without merging them in memory. A great example is pricing a fixed-to-float swap leg, where initial coupon payments are fixed, and later ones are floating.
+- **`itertools.chain(*iterables)` and `itertools.chain.from_iterable(iterable)`**: Often
+  you need to process items from several sequences in a row. `chain` lets you treat
+  them as a single, continuous stream without merging them in memory. A great example
+  is pricing a fixed-to-float swap leg, where initial coupon payments are fixed, and
+  later ones are floating.
 
-    `chain.from_iterable` is a useful variant that takes a single iterable of iterables.
+  `chain.from_iterable` is a useful variant that takes a single iterable of iterables.
 
     ```{python}
     import itertools
@@ -244,7 +268,9 @@ The `itertools` module is worth knowing well. Here are the ones I reach for most
         print(f"{cf:.2f}", end=' ')
     ```
 
-*   **`itertools.accumulate(iterable[, func])`**: This is ideal for calculating cumulative sums or running products. A common use case is to calculate the cumulative P&L of a trading strategy.
+- **`itertools.accumulate(iterable[, func])`**: This is ideal for calculating cumulative
+  sums or running products. A common use case is to calculate the cumulative P&L of a
+  trading strategy.
 
     ```{python}
     import itertools
@@ -254,15 +280,15 @@ The `itertools` module is worth knowing well. Here are the ones I reach for most
     # Output: [150, -50, 0, 300, 200]
     ```
 
-    It can also model more complex recurrence relations, like the amortization of a loan. Let's calculate the outstanding balance of a fixed-payment annuity until it's paid off.
+  It can also model more complex recurrence relations, like the amortization of a loan.
+  Let's calculate the outstanding balance of a fixed-payment annuity until it's paid
+  off.
 
     ```{python}
     import itertools
 
-
     def outstanding_balance(balance, payment, rate):
         return balance * (1 + rate) - payment
-
 
     initial_notional = 1_000
     interest_rate = 0.01  # Monthly rate (around 12% annually)
@@ -290,7 +316,9 @@ The `itertools` module is worth knowing well. Here are the ones I reach for most
     # This example is to demonstrate the power of itertools.
     ```
 
-*   **`itertools.pairwise(iterable)`**: As we've seen, this is ideal for working with consecutive items in a sequence. Calculating year fractions for a swap leg is a prime example.
+- **`itertools.pairwise(iterable)`**: As we've seen, this is ideal for working with
+  consecutive items in a sequence. Calculating year fractions for a swap leg is a
+  prime example.
 
     ```{python}
     import itertools
@@ -305,7 +333,9 @@ The `itertools` module is worth knowing well. Here are the ones I reach for most
         print(f"Period: {start} to {end}, Year Fraction: {yf:.4f}")
     ```
 
-*   **`itertools.cycle(iterable)`**: Repeats a sequence indefinitely. This can be used to cycle through a set of risk scenarios or apply a repeating pattern of market data shocks.
+- **`itertools.cycle(iterable)`**: Repeats a sequence indefinitely. This can be used to
+  cycle through a set of risk scenarios or apply a repeating pattern of market data
+  shocks.
 
     ```{python}
     import itertools
@@ -316,10 +346,19 @@ The `itertools` module is worth knowing well. Here are the ones I reach for most
 
 ## Conclusion
 
-Understanding the difference between being "eager" (grabbing everything at once) and "lazy" (grabbing only what you need) is one of those leveling-up moments in Python. By leaning on iterators, generators, and the `itertools` library, you can write code that's not just more efficient, but also much cleaner and easier to reason about.
+Understanding the difference between being "eager" (grabbing everything at once) and
+"lazy" (grabbing only what you need) is one of those leveling-up moments in Python. By
+leaning on iterators, generators, and the `itertools` library, you can write code that's
+not just more efficient, but also much cleaner and easier to reason about.
 
-The iterator protocol (`__iter__` and `__next__`) we covered here is actually our first taste of Python's data model — a topic we'll dig into after covering [class anatomy](../25-12-04-python-academy-class-anatomy/).
+The iterator protocol (`__iter__` and `__next__`) we covered here is actually our first
+taste of Python's data model — a topic we'll dig into after covering
+[class anatomy](../25-12-04-python-academy-class-anatomy/).
 
 ::: {.callout-note}
-The complete Python script with all the examples from this post is available for download and experimentation. You can get it here: [efficient_iteration_and_generators_patterns.py](../../../assets/python/efficient_iteration_and_generators_patterns.py).
+
+The complete Python script with all the examples from this post is available for
+download and experimentation. You can get it here:
+[efficient_iteration_and_generators_patterns.py](../../../assets/python/efficient_iteration_and_generators_patterns.py).
+
 :::

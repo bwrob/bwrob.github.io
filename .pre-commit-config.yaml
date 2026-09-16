@@ -59,16 +59,22 @@ repos:
       - id: ruff-format
         name: 🐍 ruff · Format Python code
     repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.4
+    rev: v0.16.7
+  - repo: https://github.com/rvben/rumdl-pre-commit
+    rev: v0.2.73
+    hooks:
+      - id: rumdl-fmt
+        name: 📝 rumdl · Format Markdown and Quarto files
+        types: [text]
+        files: \.(md|qmd)$
+        exclude: ^(_not_posted/|_freeze/|_site/)
   - repo: local
     hooks:
-      - id: basedpyright
-        name: 🐍 basedpyright · Type check Python code
-        entry: basedpyright
-        language: python
-        types: [python]
-        additional_dependencies: ["basedpyright==1.39.3"]
-        exclude: ^(_not_posted/|assets/python/)
+      - id: pyrefly
+        name: 🐍 pyrefly · Type check Python code
+        entry: uv run pyrefly check
+        language: system
+        pass_filenames: false
   - hooks:
       - id: uv-lock
         name: 🐍 uv · Lock dependencies

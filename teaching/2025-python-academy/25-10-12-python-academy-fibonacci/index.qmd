@@ -12,15 +12,18 @@ format-links: [html]
 toc-depth: 2
 ---
 
-Fibonacci numbers are a classic interview question and a great way to talk about optimization. In this post, we're going to see how many different ways there are to solve the same problem in Python—from the "obvious" way that's painfully slow, to a few clever tricks that make it fast.
+Fibonacci numbers are a classic interview question and a great way to talk about
+optimization. In this post, we're going to see how many different ways there are to
+solve the same problem in Python—from the "obvious" way that's painfully slow, to a few
+clever tricks that make it fast.
 
 ## Naive Recursive Approach
 
-The Fibonacci sequence is defined by the recurrence relation:
-$F_n = F_{n-1} + F_{n-2}$
+The Fibonacci sequence is defined by the recurrence relation: $F_n = F_{n-1} + F_{n-2}$
 with seed values $F_0=0$ and $F_1=1$.
 
-A naive implementation of this in Python is a direct translation of the mathematical formula:
+A naive implementation of this in Python is a direct translation of the mathematical
+formula:
 
 ```{python}
 def fibonacci_recursive(n: int) -> int:
@@ -32,7 +35,9 @@ def fibonacci_recursive(n: int) -> int:
     return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
 ```
 
-This approach is very intuitive, but it is also very slow. For `n=40`, it already takes a noticeable amount of time to compute. The reason for this is that the function calls itself twice for each `n`, leading to an exponential growth of the call stack.
+This approach is very intuitive, but it is also very slow. For `n=40`, it already takes
+a noticeable amount of time to compute. The reason for this is that the function calls
+itself twice for each `n`, leading to an exponential growth of the call stack.
 
 ```{python}
 from time import perf_counter
@@ -46,12 +51,12 @@ print(f"Execution taken {end - start:.2f} seconds")
 
 ## Visualizing the Call Stack
 
-To better understand the problem, let's visualize the call stack. We can create a "talkative" version of our function that logs every call.
+To better understand the problem, let's visualize the call stack. We can create a
+"talkative" version of our function that logs every call.
 
 ```{python}
 from rich.console import Console
 from rich.tree import Tree
-
 
 def fibonacci_recursive_talkative(n: int) -> int:
     """Calculate the nth Fibonacci number using a recursive approach."""
@@ -77,15 +82,17 @@ For `n=6`, the call tree looks like this:
 _ = fibonacci_recursive_talkative(6)
 ```
 
-As you can see, many values are calculated multiple times. For example, `fibonacci_recursive(4)` is calculated twice, `fibonacci_recursive(3)` is calculated three times, and so on. This is the reason for the inefficiency.
+As you can see, many values are calculated multiple times. For example,
+`fibonacci_recursive(4)` is calculated twice, `fibonacci_recursive(3)` is calculated
+three times, and so on. This is the reason for the inefficiency.
 
 ## Memoization
 
-We can improve the performance by storing the results of the function calls in a cache (a dictionary). This technique is called memoization.
+We can improve the performance by storing the results of the function calls in a cache
+(a dictionary). This technique is called memoization.
 
 ```{python}
 FIBONACCI_CACHE: dict[int, int] = {}
-
 
 def fibonacci_recursive_cached(n: int) -> int:
     """Calculate the nth Fibonacci number using recursion with memoization."""
@@ -103,7 +110,8 @@ def fibonacci_recursive_cached(n: int) -> int:
     return result
 ```
 
-This version is much faster. However, it will fail for large `n` (e.g., `n=8_000`) because of Python's recursion depth limit.
+This version is much faster. However, it will fail for large `n` (e.g., `n=8_000`)
+because of Python's recursion depth limit.
 
 ```{python}
 try:
@@ -112,14 +120,15 @@ except RecursionError as e:
     print(e)
 ```
 
-
 ## Decorators for Caching
 
-A more elegant way to implement memoization is by using a decorator. A decorator is a function that takes another function and extends its behavior without explicitly modifying it. Python's `functools` module provides a built-in decorator `lru_cache` that does exactly what we need.
+A more elegant way to implement memoization is by using a decorator. A decorator is a
+function that takes another function and extends its behavior without explicitly
+modifying it. Python's `functools` module provides a built-in decorator `lru_cache` that
+does exactly what we need.
 
 ```{python}
 from functools import cache
-
 
 @cache
 def fibonacci_recursive_cached_decorator(n: int) -> int:
@@ -133,11 +142,13 @@ def fibonacci_recursive_cached_decorator(n: int) -> int:
     ) + fibonacci_recursive_cached_decorator(n - 2)
 ```
 
-This is the most concise and Pythonic way to write a cached recursive Fibonacci function.
+This is the most concise and Pythonic way to write a cached recursive Fibonacci
+function.
 
 ## Iterative Approach
 
-Another way to solve the problem is to use an iterative approach. This is equivalent to tail recursion optimization.
+Another way to solve the problem is to use an iterative approach. This is equivalent to
+tail recursion optimization.
 
 ```{python}
 def fibonacci_iterative(n: int) -> int:
@@ -153,11 +164,13 @@ def fibonacci_iterative(n: int) -> int:
     return b
 ```
 
-This is the most efficient way (we'll see) to calculate Fibonacci numbers in Python. It has a linear time complexity and constant space complexity.
+This is the most efficient way (we'll see) to calculate Fibonacci numbers in Python. It
+has a linear time complexity and constant space complexity.
 
 ## Performance Comparison
 
-To compare the performance of these implementations, we can use the `perfplot` library. It allows us to easily benchmark different functions over a range of input sizes.
+To compare the performance of these implementations, we can use the `perfplot` library.
+It allows us to easily benchmark different functions over a range of input sizes.
 
 ```{python}
 # | code-fold: true
@@ -167,10 +180,8 @@ import numba
 import perfplot
 import numpy as np
 
-
 def fibonacci_internal_cached_decorator(n: int) -> int:
     """Calculate the nth Fibonacci number using recursion with memoization.
-
 
     This version uses an internal helper function decorated with @cache.
     This forces the cache to be local to this function.
@@ -187,11 +198,9 @@ def fibonacci_internal_cached_decorator(n: int) -> int:
 
     return helper(n)
 
-
 fibonacci_iterative_jit = numba.njit(fibonacci_iterative)
 
 _ = fibonacci_iterative_jit(10) # <1>
-
 
 def fibonacci_linalg_numpy(n):
     """Calculate the nth Fibonacci number using matrix exponentiation with NumPy."""
@@ -205,8 +214,9 @@ def fibonacci_linalg_numpy(n):
     result_matrix = np.linalg.matrix_power(Q, n - 1) # <2>
     return result_matrix[0, 0]
 ```
+
 1. Force compilation
-2. This is the line that cannot be compiled by Numba in nopython mode
+1. This is the line that cannot be compiled by Numba in nopython mode
 
 ```{python}
 # | code-fold: true
@@ -234,7 +244,9 @@ perfplot.show(
 )
 ```
 
-There are more advanced techniques and algorithms to compute Fibonacci numbers, below is a sneak peek for the future at two more efficient methods: using Numba's JIT compilation and matrix exponentiation with NumPy.
+There are more advanced techniques and algorithms to compute Fibonacci numbers, below is
+a sneak peek for the future at two more efficient methods: using Numba's JIT compilation
+and matrix exponentiation with NumPy.
 
 ```{python}
 # | code-fold: true
@@ -261,8 +273,13 @@ perfplot.show(
 
 ```
 
-In the [next post](../25-10-23-python-academy-functions-closures-decorators/), we'll use these Fibonacci implementations to explore first-class functions, closures, and decorators.
+In the [next post](../25-10-23-python-academy-functions-closures-decorators/), we'll use
+these Fibonacci implementations to explore first-class functions, closures, and
+decorators.
 
 ::: callout-note
-Download the whole code [here](../../../assets/python/fibonacci_optimization_and_memoization_case_study.py).
+
+Download the whole code
+[here](../../../assets/python/fibonacci_optimization_and_memoization_case_study.py).
+
 :::

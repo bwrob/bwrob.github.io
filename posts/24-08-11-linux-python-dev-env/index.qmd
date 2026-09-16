@@ -8,14 +8,16 @@ image: cover.jpg
 format-links: [html]
 ---
 
-Installing Python dev tools on Linux is a bit of a pain, but it doesn't have to be. This post will show you how to set up a great Python dev environment on Linux using `brew`, `pipx`, and `poetry`.
+Installing Python dev tools on Linux is a bit of a pain, but it doesn't have to be. This
+post will show you how to set up a great Python dev environment on Linux using `brew`,
+`pipx`, and `poetry`.
 
 ```{bash}
 brew install python@3.12 python@3.13
 ```
 
-Dev tools should be accessable globally, but should't be in the defualt global python env.
-Solution - `pipx`
+Dev tools should be accessable globally, but should't be in the defualt global python
+env. Solution - `pipx`
 
 ```{bash}
 brew install pipx
@@ -32,7 +34,8 @@ autoload -U compinit && compinit
 eval "$(register-python-argcomplete pipx)"
 ```
 
-![](../../assets/images/posts/24-08-11-linux-python-dev-env/1.png){width="90%" fig-align="center"}
+![](../../assets/images/posts/24-08-11-linux-python-dev-env/1.png){width="90%"
+fig-align="center"}
 
 Install dev tools
 
@@ -40,26 +43,33 @@ Install dev tools
 pipx install --force ruff hapless poethepoet poetry pre-commit uv pytest basedpyright
 ```
 
-![](../../assets/images/posts/24-08-11-linux-python-dev-env/2.png){width="90%" fig-align="center"}
+![](../../assets/images/posts/24-08-11-linux-python-dev-env/2.png){width="90%"
+fig-align="center"}
 
 ```{bash}
 nano $(which poetry)
 ```
 
-![](../../assets/images/posts/24-08-11-linux-python-dev-env/3.png){width="90%" fig-align="center"}
+![](../../assets/images/posts/24-08-11-linux-python-dev-env/3.png){width="90%"
+fig-align="center"}
 
 Shebang Line (#!):
-#!/home/bwrob/.local/share/pipx/venvs/poetry/bin/python: This line specifies the interpreter used to run the script. In this case, it's a Python interpreter located in a specific virtual environment (poetry).
 
-This script acts as a launcher for the poetry command. It sets up the environment and handles potential script extensions before delegating the actual command execution to the poetry library.
+## !/home/bwrob/.local/share/pipx/venvs/poetry/bin/python: This line specifies the interpreter used to run the script. In this case, it's a Python interpreter located in a specific virtual environment (poetry)
 
-We can see that each of the toolos install with pipx is installed in its own venv, but is available globally
+This script acts as a launcher for the poetry command. It sets up the environment and
+handles potential script extensions before delegating the actual command execution to
+the poetry library.
+
+We can see that each of the toolos install with pipx is installed in its own venv, but
+is available globally
 
 ```{bash}
 ls /home/bwrob/.local/share/pipx/venvs/ -la
 ```
 
-![](../../assets/images/posts/24-08-11-linux-python-dev-env/4.png){width="90%" fig-align="center"}
+![](../../assets/images/posts/24-08-11-linux-python-dev-env/4.png){width="90%"
+fig-align="center"}
 
 Copy your
 

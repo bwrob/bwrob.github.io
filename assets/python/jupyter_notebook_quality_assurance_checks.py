@@ -3,14 +3,14 @@
 import json
 import sys
 from pathlib import Path
-from typing import TypedDict, cast
+from typing import Any, TypedDict, cast
 
 
 class Cell(TypedDict):
     """A cell in a Jupyter notebook."""
 
     cell_type: str
-    outputs: list[dict]
+    outputs: list[dict[str, Any]]
     execution_count: int
     source: list[str]
     metadata: dict[str, str]

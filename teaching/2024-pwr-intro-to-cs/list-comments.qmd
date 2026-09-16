@@ -10,7 +10,7 @@ format:
     page-layout: article
 ---
 
-### Lista 1
+## Lista 1
 
 Python lista 1 - wyrażenia matematyczne
 
@@ -18,58 +18,63 @@ Python lista 1 - wyrażenia matematyczne
 
 - Zamiast
 
-  ```{python}
-  import math
-  pole = math.pi * 10**2
-  ```
+    ```{python}
+    import math
+    pole = math.pi * 10**2
+    ```
 
   warto użyć
 
-  ```{python}
-  from math import pi
-  pole = pi * 10**2
-  ```
+    ```{python}
+    from math import pi
+    pole = pi * 10**2
+    ```
 
-  Zmniejszamy ilość pisania przy wielokrotnym użyciu, a sam import jest wydajniejszy co może mieć znaczenie przy bardziej zaawansowanych zadaniach.
+  Zmniejszamy ilość pisania przy wielokrotnym użyciu, a sam import jest wydajniejszy co
+  może mieć znaczenie przy bardziej zaawansowanych zadaniach.
 
-- Funkcje pierwiastka kwadratowego i podnoszenia do potęgi $1/2$ są oczywiście równoważne, natomiast polecana jest `math.sqrt`. Mniej ogólne algorytmy są zazwyczaj lepiej zoptymalizowane (przy naszych zastosowaniach nie ma to jednak znaczenia).
+- Funkcje pierwiastka kwadratowego i podnoszenia do potęgi $1/2$ są oczywiście
+  równoważne, natomiast polecana jest `math.sqrt`. Mniej ogólne algorytmy są zazwyczaj
+  lepiej zoptymalizowane (przy naszych zastosowaniach nie ma to jednak znaczenia).
 
-  ```{python}
-  from math import sqrt
-  x = 2
-  y = sqrt(x)
-  z = x**0.5
-  print(y, z, y == z)
-  ```
+    ```{python}
+    from math import sqrt
+    x = 2
+    y = sqrt(x)
+    z = x**0.5
+    print(y, z, y == z)
+    ```
 
-- W *zadaniu 4* występuje funkcja podłoga $ \\lfloor x \\rfloor $. Jest to największa liczba całkowita mniejsza niż $x$. W Pythonie można używać funkcji `math.floor`.
+- W *zadaniu 4* występuje funkcja podłoga $ \\lfloor x \\rfloor $. Jest to największa
+  liczba całkowita mniejsza niż $x$. W Pythonie można używać funkcji `math.floor`.
 
-  ```{python}
-  from math import floor
-  x = 2.5
-  y = 2.9
-  z = -3.1
-  print(floor(x), floor(y), floor(z))
-  ```
+    ```{python}
+    from math import floor
+    x = 2.5
+    y = 2.9
+    z = -3.1
+    print(floor(x), floor(y), floor(z))
+    ```
 
 - *Zadanie 5* pokazuje, jak ważne jest umiejętne korzystanie ze zmiennych pomocniczych.
 
-  ```{python}
-  from math import sqrt, pi
+    ```{python}
+    from math import sqrt, pi
 
-  suma_w_nawiasie = 5 ** 4 + 53 * sqrt(89)
+    suma_w_nawiasie = 5 ** 4 + 53 * sqrt(89)
 
-  mianownik = 80 * sqrt(15) * suma_w_nawiasie ** (3/2)
-  licznik = 3308 * suma_w_nawiasie - 3 * sqrt(89)
-  pi_przyblizenie = mianownik / licznik
+    mianownik = 80 * sqrt(15) * suma_w_nawiasie ** (3/2)
+    licznik = 3308 * suma_w_nawiasie - 3 * sqrt(89)
+    pi_przyblizenie = mianownik / licznik
 
-  print(round(pi_przyblizenie, 10))
-  print(round(pi_przyblizenie, 10) == round(pi, 10))
-  ```
+    print(round(pi_przyblizenie, 10))
+    print(round(pi_przyblizenie, 10) == round(pi, 10))
+    ```
 
   W powyższym kodzie dużo łatwiej wyłapać błąd niż w jednolinijkowym gigancie.
 
-- Do *zadania 6* wrócimy jeszcze raz po funkcjach i pętlach aby zaimplementować dużo czytelniejsze rozwiązanie.
+- Do *zadania 6* wrócimy jeszcze raz po funkcjach i pętlach aby zaimplementować dużo
+  czytelniejsze rozwiązanie.
 
 ### Lista 2
 
@@ -77,11 +82,13 @@ Python lista 2 - napisy
 
 [Lista zadań](https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_2.ipynb)
 
-- W razie gdy chcemy sprawdzić, gdzie w systemie zapisany jest dany plik Python albo zeszyt Jupyter poniższe drukuje obecna ścieżkę roboczą (Current Working Directory).
-  ```{python}
-  import os
-  print(os.getcwd())
-  ```
+- W razie gdy chcemy sprawdzić, gdzie w systemie zapisany jest dany plik Python albo
+  zeszyt Jupyter poniższe drukuje obecna ścieżkę roboczą (Current Working Directory).
+
+    ```{python}
+    import os
+    print(os.getcwd())
+    ```
 
 ### Lista 3
 
@@ -93,11 +100,16 @@ Komentarze dla zaawansowanych:
 
 **Zadanie 2**
 
-Kluczem do pisania szybkiego kodu w Pythonie jest jak najczęstsze korzystanie z wbudowanych funkcji, które wykonywane są bezpośrednio w języku niskopoziomowym.
+Kluczem do pisania szybkiego kodu w Pythonie jest jak najczęstsze korzystanie z
+wbudowanych funkcji, które wykonywane są bezpośrednio w języku niskopoziomowym.
 
-Przykładowo, to zadanie można elegancko rozwiązać za pomocą wbudowaniej biblioteki `itertools`. Składają się na nią pomocnicze funkcje rozwiązujące często potrzebne funkcjonalności dookoła iteratorów:
+Przykładowo, to zadanie można elegancko rozwiązać za pomocą wbudowaniej biblioteki
+`itertools`. Składają się na nią pomocnicze funkcje rozwiązujące często potrzebne
+funkcjonalności dookoła iteratorów:
 
-Stosujemy tu potrójne złożenie generatorów. Generatory to obiekty, po których możemy iterować, a zwracają wartości pojedynczo. Często wykonywane jest to leniwie, dopiero kiedy są o to zapytane.
+Stosujemy tu potrójne złożenie generatorów. Generatory to obiekty, po których możemy
+iterować, a zwracają wartości pojedynczo. Często wykonywane jest to leniwie, dopiero
+kiedy są o to zapytane.
 
 ```{python}
 from itertools import accumulate
@@ -109,14 +121,20 @@ L = list( # <4>
 print(L)
 ```
 
-1. `range(1, 101)` tworzy generator liczb od 1 do 100, nie trzyma tych liczb od razu w pamięci, tylko wie która jest następna.
-1. `(func(n) for n in range(1, 101))` tworzy generator liczb od 1 do 100, a potem wykona operacje na nich.
-1. `accumulate` bierze coś po czym można iterować i operator binarny (domyślnie `+`) i zwraca generator częściowych wartości używania tego operatora na wszystkich elementach generatora.
-1. `list` tworzy listę zawierająca elementy złożonego generatora, zmusza do materializacji wyników. Wszystko powyżej było tworzone leniwie.
+1. `range(1, 101)` tworzy generator liczb od 1 do 100, nie trzyma tych liczb od razu w
+   pamięci, tylko wie która jest następna.
+1. `(func(n) for n in range(1, 101))` tworzy generator liczb od 1 do 100, a potem wykona
+   operacje na nich.
+1. `accumulate` bierze coś po czym można iterować i operator binarny (domyślnie `+`) i
+   zwraca generator częściowych wartości używania tego operatora na wszystkich
+   elementach generatora.
+1. `list` tworzy listę zawierająca elementy złożonego generatora, zmusza do
+   materializacji wyników. Wszystko powyżej było tworzone leniwie.
 
 **Zadanie 5**
 
-Iterowanie się po wszystkich elementach zbioru często da się zastąpić za pomocą matematycznych operacji na zbiorach, które są dobrze zoptymalizowane.
+Iterowanie się po wszystkich elementach zbioru często da się zastąpić za pomocą
+matematycznych operacji na zbiorach, które są dobrze zoptymalizowane.
 
 ```{python}
 S = {"dolnośląskie", "lubuskie", "wielkopolskie"}
@@ -146,7 +164,8 @@ print({key for key, value in D.items() if value.intersection(M)})
 
 **Zadanie 6**
 
-W Pythonie 3.8+ jest to możliwe za pomocą operatora `:=` (walrus operator). Pozwala na tworzenie zmiennych pomocniczych wewnątrz wyrażeń języka.
+W Pythonie 3.8+ jest to możliwe za pomocą operatora `:=` (walrus operator). Pozwala na
+tworzenie zmiennych pomocniczych wewnątrz wyrażeń języka.
 
 ```{python}
 from math import sin, cos, radians
@@ -159,7 +178,7 @@ punkty = {
 print(punkty)
 ```
 
-```
+```text
 Inna metoda jest użycie generatora wewnątrz listy składanej.
 ```
 
@@ -171,7 +190,8 @@ punkty = {
 print(punkty)
 ```
 
-Plusem użycia generatora, a nie osobnej listy jest to, że jest on leniwie ewaluowany - jeden element na raz. Nie trzymamy kątów w pamięci dwa razy.
+Plusem użycia generatora, a nie osobnej listy jest to, że jest on leniwie ewaluowany -
+jeden element na raz. Nie trzymamy kątów w pamięci dwa razy.
 
 ### Lista 4
 
@@ -181,42 +201,43 @@ Python lista 4 - funkcje.
 
 - Na zajęciach zobaczyliśmy jak zapisać zadanie Fizz Buzz bez porównania modulo 15:
 
-  ```{python}
-  def fizz_buzz(
-      liczba: int,
-  ) -> str:
-      """Wyznacz FizzBuzz dla liczby."""
-      msg = ""
-      if liczba % 3 == 0:
-          msg += "Fizz"
-      if liczba % 5 == 0:
-          msg += "Buzz"
-      return msg or str(liczba)
+    ```{python}
+    def fizz_buzz(
+        liczba: int,
+    ) -> str:
+        """Wyznacz FizzBuzz dla liczby."""
+        msg = ""
+        if liczba % 3 == 0:
+            msg += "Fizz"
+        if liczba % 5 == 0:
+            msg += "Buzz"
+        return msg or str(liczba)
 
+    print([fizz_buzz(i) for i in range(1, 16)])
+    ```
 
-  print([fizz_buzz(i) for i in range(1, 16)])
-  ```
+  Jest to szczególnie istotne, jeżeli dodamy dodatkowo `Mizz` dla liczb podzielnych
+  przez 7 i `Duzz` dla liczb podzielnych przez 8. Funkcję można wtedy jeszcze bardziej
+  uprościć za pomocą słownika i listy składanej:
 
-  Jest to szczególnie istotne, jeżeli dodamy dodatkowo `Mizz` dla liczb podzielnych przez 7 i `Duzz` dla liczb podzielnych przez 8. Funkcję można wtedy jeszcze bardziej uprościć za pomocą słownika i listy składanej:
+    ```{python}
+    def fizz_buzz(
+        liczba: int,
+    ) -> str:
+        """Wyznacz FizzBuzz dla liczby."""
+        msg = ""
+        mapa = {
+            3: "Fizz",
+            5: "Buzz",
+            7: "Mizz",
+            8: "Duzz",
+        }
+        lista_slow = [mapa[i] for i in mapa if liczba % i == 0]
+        msg = "".join(lista_slow)
+        return msg or str(liczba)
 
-  ```{python}
-  def fizz_buzz(
-      liczba: int,
-  ) -> str:
-      """Wyznacz FizzBuzz dla liczby."""
-      msg = ""
-      mapa = {
-          3: "Fizz",
-          5: "Buzz",
-          7: "Mizz",
-          8: "Duzz",
-      }
-      lista_slow = [mapa[i] for i in mapa if liczba % i == 0]
-      msg = "".join(lista_slow)
-      return msg or str(liczba)
-
-  print([fizz_buzz(i) for i in range(1, 16)])
-  ```
+    print([fizz_buzz(i) for i in range(1, 16)])
+    ```
 
   Sprawdzanie wszystkich podzielności miesznych byłoby bardzo niekomfortowe.
 
