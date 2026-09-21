@@ -20,21 +20,31 @@ toc-depth: 3
 ssh -t user@remote "tmux new-session -A -s work"
 ```
 
-## Sessions (Shell Commands)
+## Sessions
 
-| Action | Command |
-|---|---|
-| Start unnamed session | `tmux` |
-| Start named session | `tmux new -s <name>` |
-| Start detached session | `tmux new -d -s <name>` |
-| Start session running command | `tmux new -d -s <name> '<cmd>'` |
-| List active sessions | `tmux ls` |
-| Attach to last session | `tmux a` |
-| Attach to named session | `tmux a -t <name>` |
-| Attach and detach other clients | `tmux a -d -t <name>` |
-| Kill named session | `tmux kill-session -t <name>` |
-| Kill all sessions except current | `tmux kill-session -a` |
-| Kill tmux server (all sessions) | `tmux kill-server` |
+Start new session
+
+```bash
+tmux new \ #<1>
+	-s <name> \ #<2>
+	-d \ #<3>
+	-- "<cmd>" #<4>
+```
+
+1. Start new session
+2. with name `<name>`
+3. detached
+4. running comand `<cmd>`
+
+| Action                           | Command                       |
+| -------------------------------- | ----------------------------- |
+| List active sessions             | `tmux ls`                     |
+| Attach to last session           | `tmux a`                      |
+| Attach to named session          | `tmux a -t <name>`            |
+| Attach and detach other clients  | `tmux a -d -t <name>`         |
+| Kill named session               | `tmux kill-session -t <name>` |
+| Kill all sessions except current | `tmux kill-session -a`        |
+| Kill tmux server (all sessions)  | `tmux kill-server`            |
 
 ## Inside tmux: Session Controls
 
