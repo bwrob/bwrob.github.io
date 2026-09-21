@@ -1,138 +1,133 @@
 ---
 title: "Tmux Cheat Sheet"
-description: "Bare-bones tmux command reference for SSH and remote sessions."
+description: "Condensed, high-utility tmux reference for local development and SSH sessions."
 date: "2026-09-20"
-date-modified: "2026-09-20"
+date-modified: "2026-09-21"
 categories: [Dev Env]
 image: cover.jpg
 format-links: [html]
-toc-depth: 3
+toc-depth: 2
 ---
 
 ![](cover.jpg){width="98%" fig-align="center"}
 
-> **Prefix key:** `Ctrl + b` (press prefix, release, then press shortcut key).
+> **Prefix Key:** `Ctrl + b` (press prefix, release, then press shortcut key).
 
-## SSH Remote Workflow
+## 1. Remote SSH Workflow
 
-```bash
-# Connect and attach to session 'work' (creates session if it doesn't exist)
-ssh -t user@remote "tmux new-session -A -s work"
-```
-
-## Sessions
-
-Start new session
+Connect directly into a persistent tmux session over SSH without opening an intermediate
+shell:
 
 ```bash
-tmux new \ #<1>
-	-s <name> \ #<2>
-	-d \ #<3>
-	-- "<cmd>" #<4>
+ssh -t user@remote \ # <1>
+    "tmux new-session \ # <2>
+    -A \ # <3>
+    -s work" # <4>
 ```
 
-1. Start new session
-2. with name `<name>`
-3. detached
-4. running comand `<cmd>`
+1. Force pseudo-terminal allocation (essential for interactive terminal multiplexers)
+2. Run the tmux binary on the remote host
+3. Attach to session if it already exists; create it if it does not
+4. Name of target session (`work`)
 
-| Action                           | Command                       |
-| -------------------------------- | ----------------------------- |
-| List active sessions             | `tmux ls`                     |
-| Attach to last session           | `tmux a`                      |
-| Attach to named session          | `tmux a -t <name>`            |
-| Attach and detach other clients  | `tmux a -d -t <name>`         |
-| Kill named session               | `tmux kill-session -t <name>` |
-| Kill all sessions except current | `tmux kill-session -a`        |
-| Kill tmux server (all sessions)  | `tmux kill-server`            |
+## 2. Managing Sessions (CLI)
 
-## Inside tmux: Session Controls
+### Create a Session
 
-| Action | Shortcut |
-|---|---|
-| Detach from current session | `Ctrl+b` `d` |
-| Detach other clients from current session | `Ctrl+b` `D` |
-| Rename current session | `Ctrl+b` `$` |
-| Interactive session switcher | `Ctrl+b` `s` |
-| Open tmux command prompt | `Ctrl+b` `:` |
+```bash
+tmux new \ # <1>
+    -s <name> \ # <2>
+    -d \ # <3>
+    -- "<cmd>" # <4>
+```
 
-## Panes
+1. Start a new session
+2. Name the session `<name>`
+3. Run detached in the background
+4. Execute initial command `<cmd>` upon startup (optional)
 
-### Splitting
+### Reconnect / Attach
 
-| Action | Shortcut |
-|---|---|
-| Split vertically (left / right) | `Ctrl+b` `%` |
-| Split horizontally (top / bottom) | `Ctrl+b` `"` |
+```bash
+tmux a \ # <1>
+    -t <name> \ # <2>
+    -d # <3>
+```
 
-### Navigating
+1. Attach to an existing session (`a` or `attach-session`)
+2. Target session name `<name>` (omit `-t` to attach to the most recent session)
+3. Detach other connected clients (forces session to resize to your display window)
 
-| Action | Shortcut |
-|---|---|
-| Move focus to pane | `Ctrl+b` `Arrow Keys` |
-| Cycle through panes | `Ctrl+b` `o` |
-| Toggle to last active pane | `Ctrl+b` `;` |
-| Show pane numbers (press number to jump) | `Ctrl+b` `q` |
+### Quick Commands
 
-### Managing
+- `tmux ls` — List all active sessions.
+- `tmux kill-session -t <name>` — Kill session `<name>` (add `-a` to kill all *except*
+  `<name>`).
+- `tmux kill-server` — Terminate all sessions and shutdown tmux daemon.
 
-| Action | Shortcut |
-|---|---|
-| Toggle pane zoom (maximize / restore) | `Ctrl+b` `z` |
-| Close / kill current pane | `Ctrl+b` `x` |
-| Convert pane into separate window | `Ctrl+b` `!` |
-| Cycle pane layouts | `Ctrl+b` `Space` |
-| Swap current pane with next / previous | `Ctrl+b` `}` / `Ctrl+b` `{` |
-| Resize pane | `Ctrl+b` `Ctrl+Arrow` / `Alt+Arrow` |
+## 3. Panes (Splits)
 
-## Windows
+| Action | Shortcut | Notes |
+|---|---|---|
+| Split vertically (side-by-side) | `Ctrl+b` `%` | Divides pane with vertical border |
+| Split horizontally (top / bottom) | `Ctrl+b` `"` | Divides pane with horizontal border |
+| Navigate panes | `Ctrl+b` `Arrow Keys` | Moves focus in direction of arrow |
+| Toggle zoom (fullscreen) | `Ctrl+b` `z` | Maximizes pane to full window; press again to restore |
+| Break pane into new window | `Ctrl+b` `!` | Promotes current pane into its own separate tab |
+| Close current pane | `Ctrl+b` `x` | Closes pane (prompts `y/n` confirmation) |
 
-| Action | Shortcut |
-|---|---|
-| Create new window | `Ctrl+b` `c` |
-| Rename current window | `Ctrl+b` `,` |
-| Next / previous window | `Ctrl+b` `n` / `Ctrl+b` `p` |
-| Switch to window by number | `Ctrl+b` `0`..`9` |
-| Interactive window and session tree | `Ctrl+b` `w` |
-| Close / kill current window | `Ctrl+b` `&` |
+## 4. Windows & Session Controls
 
-## Scrolling & Copy Mode
+| Action | Shortcut | Notes |
+|---|---|---|
+| Detach from session | `Ctrl+b` `d` | Leaves programs running safely in background |
+| Switch session / window tree | `Ctrl+b` `s` / `w` | Interactive menu; navigate with `↑`/`↓`, `Enter` to switch |
+| Rename current session | `Ctrl+b` `$` | Prompts for new session name |
+| Create new window (tab) | `Ctrl+b` `c` | Opens a new shell tab |
+| Rename current window | `Ctrl+b` `,` | Prompts for new window name |
+| Next / Previous window | `Ctrl+b` `n` / `p` | Step through tabs sequentially |
+| Jump to window by index | `Ctrl+b` `0`..`9` | Direct switch to window number |
 
-| Action | Shortcut |
-|---|---|
-| Enter scroll / copy mode | `Ctrl+b` `[` |
-| Scroll page up / page down | `PageUp` / `PageDown` |
-| Start text selection | `Space` |
-| Copy selection and exit mode | `Enter` |
-| Paste copied buffer | `Ctrl+b` `]` |
-| Exit copy mode | `q` |
+## 5. Scrollback & Copy Mode
 
-## Useful Remote Extras
+With mouse mode enabled (see config below), you can scroll and select text directly with
+your mouse.
 
-### Enable Mouse on the Fly
+For keyboard-only navigation:
 
-From tmux command prompt (`Ctrl+b` `:`):
+- Press **`Ctrl+b [`** to enter copy mode.
+- Navigate with Arrow keys or `PageUp` / `PageDown`.
+- Press **`Space`** to start selection, **`Enter`** to copy, and **`q`** to cancel.
+- Paste copied text with **`Ctrl+b ]`**.
+
+## 6. Essential `~/.tmux.conf`
+
+Add these defaults to `~/.tmux.conf` for a modern, responsive terminal experience:
 
 ```tmux
-set -g mouse on
+set -g mouse on # <1>
+set -g base-index 1 # <2>
+set -g pane-base-index 1 # <3>
+set -g history-limit 50000 # <4>
+set -g default-terminal "tmux-256color" # <5>
+set -s escape-time 0 # <6>
+bind | split-window -h -c "#{pane_current_path}" # <7>
+bind - split-window -v -c "#{pane_current_path}" # <8>
+bind r source-file ~/.tmux.conf \; display "Reloaded ~/.tmux.conf" # <9>
 ```
 
-### Minimal `~/.tmux.conf`
-
-```tmux
-# Enable mouse mode (scrolling, selecting, resizing)
-set -g mouse on
-
-# Increase scrollback history limit
-set -g history-limit 50000
-
-# Fix terminal colors
-set -g default-terminal "screen-256color"
-
-# Intuitive split commands (open in current pane directory)
-bind | split-window -h -c "#{pane_current_path}"
-bind - split-window -v -c "#{pane_current_path}"
-
-# Reload config file
-bind r source-file ~/.tmux.conf \; display "Config reloaded!"
-```
+1. **Mouse mode**: Click to focus panes, scroll with mouse wheel, and drag borders to
+   resize.
+2. **1-based window indexing**: Starts windows at 1 instead of 0, matching the number
+   row on your keyboard (`Ctrl+b 1` for first tab).
+3. **1-based pane indexing**: Starts pane indices at 1 for consistency with windows.
+4. **History buffer**: Expands scrollback from default 2,000 to 50,000 lines.
+5. **256-color & true color**: Ensures syntax highlighting in Neovim and modern TUIs
+   looks rich and accurate.
+6. **Zero escape delay**: Eliminates the delay when pressing `Esc` inside Vim / Neovim.
+7. **Intuitive vertical split**: Uses `Ctrl+b |` to split side-by-side, opening inside
+   the current directory.
+8. **Intuitive horizontal split**: Uses `Ctrl+b -` to split top/bottom, opening inside
+   the current directory.
+9. **Fast reload**: Reloads configuration instantly via `Ctrl+b r` without restarting
+   active sessions.
