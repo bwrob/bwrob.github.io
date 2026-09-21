@@ -143,7 +143,10 @@ def load_seed_code(repo_root: Path, from_not_posted: str | None) -> str | None:
         code = candidate.read_text(encoding="utf-8").strip()
         print(f"📦 Seeded prototype from: {candidate.relative_to(repo_root)}")
         return code
-    print(f"Warning: Seed file not found for '{from_not_posted}'", file=sys.stderr)
+    print(
+        f"Warning: Seed file not found for '{from_not_posted}'",
+        file=sys.stderr,
+    )
     return None
 
 

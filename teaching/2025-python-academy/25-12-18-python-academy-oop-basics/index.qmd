@@ -184,7 +184,10 @@ class LinearInterpolator:
 # 3. Use Composition in the Curve
 class InterpolatedZeroCurve(YieldCurve):
     def __init__(
-        self, times: list[float], rates: list[float], interpolator: Interpolator
+        self,
+        times: list[float],
+        rates: list[float],
+        interpolator: Interpolator,
     ):
         self.times = sorted(times)
         self.rates = [r for _, r in sorted(zip(times, rates))]

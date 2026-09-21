@@ -154,7 +154,10 @@ def generate_favicon(  # noqa: PLR0913, PLR0917
 
     # Adjust y for baseline
     draw.text(
-        ((side - w) // 2, (side - h) // 2 + offset_y), text, font=font, fill=fill_color
+        ((side - w) // 2, (side - h) // 2 + offset_y),
+        text,
+        font=font,
+        fill=fill_color,
     )
 
     output_file = Path(output_path)
@@ -168,10 +171,16 @@ if __name__ == "__main__":
         description="Generate workstation aesthetic logos."
     )
     parser.add_argument(
-        "--font-size", type=int, default=80, help="Font size for the logo ASCII text."
+        "--font-size",
+        type=int,
+        default=80,
+        help="Font size for the logo ASCII text.",
     )
     parser.add_argument(
-        "--font-path", type=str, default=None, help="Path to custom TTF/OTF font."
+        "--font-path",
+        type=str,
+        default=None,
+        help="Path to custom TTF/OTF font.",
     )
     parser.add_argument(
         "--line-height-factor",
@@ -183,10 +192,16 @@ if __name__ == "__main__":
         "--padding", type=int, default=50, help="Padding around the logo text."
     )
     parser.add_argument(
-        "--favicon-size", type=int, default=512, help="Favicon image side length."
+        "--favicon-size",
+        type=int,
+        default=512,
+        help="Favicon image side length.",
     )
     parser.add_argument(
-        "--favicon-font-size", type=int, default=300, help="Favicon text font size."
+        "--favicon-font-size",
+        type=int,
+        default=300,
+        help="Favicon text font size.",
     )
     parser.add_argument(
         "--text",
