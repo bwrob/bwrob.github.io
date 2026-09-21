@@ -135,11 +135,15 @@ def load_seed_code(repo_root: Path, from_not_posted: str | None) -> str | None:
     candidate = repo_root / "_not_posted" / from_not_posted
     if not candidate.exists():
         candidate = repo_root / from_not_posted
+    if not candidate.exists():
+        matches = list((repo_root / "_not_posted").rglob(from_not_posted))
+        if matches and matches[0].is_file():
+            candidate = matches[0]
     if candidate.exists() and candidate.is_file():
         code = candidate.read_text(encoding="utf-8").strip()
         print(f"📦 Seeded prototype from: {candidate.relative_to(repo_root)}")
         return code
-    print(f"Warning: Seed file not found at '{candidate}'", file=sys.stderr)
+    print(f"Warning: Seed file not found for '{from_not_posted}'", file=sys.stderr)
     return None
 
 
