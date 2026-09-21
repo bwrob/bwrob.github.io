@@ -40,7 +40,7 @@ Read `posts/<post-slug>/index.qmd`:
 
 ### 2. Undraft and Update Timestamp
 
-In `posts/<post-slug>/index.qmd` frontmatter:
+In `posts/<post-slug>/index.qmd` frontmatter (and `index-pl.qmd` if bilingual):
 
 1. Remove `draft: true` (or change to `draft: false`).
 2. Update `date-modified` to today's date:
@@ -62,6 +62,8 @@ If specific Markdown files need targeted reformatting to the 88-column limit:
 
 ```bash
 uv run rumdl fmt "posts/<post-slug>/index.qmd"
+# If bilingual:
+uv run rumdl fmt "posts/<post-slug>/index-pl.qmd"
 ```
 
 ### 4. Replace Placeholder Cover Art
@@ -96,11 +98,12 @@ formatting.
 
 ## Publication Handoff
 
-When all verification steps succeed, the post can be committed to git and published:
+When all verification steps succeed, the post can be committed to git using the
+repository's conventional commit format:
 
 ```bash
 git add posts/<post-slug>/
-git commit -m "Publish post: <Post Title>"
-# Optional direct publishing to gh-pages:
+git commit -m "feat(posts): publish <post-slug>"
+# Optional direct publishing to gh-pages via Poe:
 # uv run poe publish
 ```

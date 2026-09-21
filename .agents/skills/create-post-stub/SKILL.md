@@ -74,10 +74,16 @@ uv run python .agents/skills/create-post-stub/scripts/scaffold.py \
 
 **Common Options**:
 
-- Multi-category: Pass `--category` multiple times (e.g.
+- **Target Directory**: `--target-dir "teaching/2025-python-academy"` (defaults to
+  `posts`).
+- **Incubator Promotion (`_not_posted/`)**: `--from-not-posted "<script.py>"` seeds the
+  prototype implementation directly into the post walkthrough code block.
+- **Bilingual Edition**: `--bilingual` scaffolds both `index.qmd` (English) and
+  `index-pl.qmd` (Polish) with `.lang-switcher` buttons.
+- **Multi-category**: Pass `--category` multiple times (e.g.
   `--category "Dev Env" --category "Python Recipes"`).
-- Custom Date: Override default today's date with `--date "YYYY-MM-DD"`.
-- Custom Opening Hook: Pass `--hook "Opening introductory sentence..."`.
+- **Custom Date**: Override default today's date with `--date "YYYY-MM-DD"`.
+- **Custom Opening Hook**: Pass `--hook "Opening introductory sentence..."`.
 
 ---
 

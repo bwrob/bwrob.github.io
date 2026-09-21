@@ -24,17 +24,22 @@ engineering, data systems, and quantitative computing blog built with Quarto.
 
 ---
 
-## 2. Blog Post Standards & Conventions
+## 2. Content Standards & Conventions
 
-All blog posts reside in the `posts/` directory.
+All technical blog posts reside in `posts/`, and course curricula reside in
+`teaching/` (e.g. `teaching/2025-python-academy/`).
 
 ### Directory & File Structure
 
 - **Folder naming**: `posts/<YY-MM-DD>-<slug>/` (e.g.
-  `posts/26-09-20-tmux-cheatsheet/`).
+  `posts/26-09-20-tmux-cheatsheet/`) or `teaching/<curriculum>/<YY-MM-DD-slug>/`.
 - **Entrypoint**: `index.qmd` inside the post folder.
+- **Bilingual Editions**: Optional Polish translations use `index-pl.qmd` co-located
+  alongside `index.qmd`, paired with a `.lang-switcher` component.
 - **Cover art**: `cover.jpg` (900×600 px JPEG, ~40–85 KB) co-located directly in the
   post folder.
+- **Incubation Drawer**: Prototype scripts, benchmarks, and scratch notes live in
+  `_not_posted/`. When ready, promote them using `create-post-stub --from-not-posted`.
 
 ### Required Frontmatter (`index.qmd`)
 

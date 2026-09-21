@@ -46,6 +46,9 @@ Flag and replace dead giveaways of generated text:
   *powerhouse*, *game-changer*, *robust*, *seamless*.
 - **Cliche transitions**: *"Without further ado"*, *"Let's dive in"*, *"Look no
   further"*, *"It's worth noting that"*, *"At the end of the day"*.
+- **Domain Nuance (Financial Markets)**: In quantitative finance posts, distinguish
+  between financial borrowing or balance-sheet leverage (valid domain terminology)
+  versus lazy AI filler (*"we can leverage this library"* $\rightarrow$ flag).
 
 ### B. Structural AI Tropes
 
@@ -58,6 +61,10 @@ Flag and replace dead giveaways of generated text:
 - **The Symmetrical Paragraph Sandwich**: Every section ending with a hollow summary
   sentence: *"By applying this pattern, developers can ensure their applications remain
   scalable and efficient."* Delete these tidy summary sentences entirely.
+- **The Inverted Code Dump**: Do not dump a 100-line utility script at the top of an
+  article followed by an autopsy. Frame the architectural dilemma first, inspect the
+  runtime mechanics (e.g. `typing.get_origin` or pointer arithmetic), and only then
+  present the cohesive solution.
 - **Preachy / Moralizing Conclusions**: Sententious wrap-ups (*"Remember, the journey
   of optimization is ongoing"*, *"Ultimately, the best tool depends on your team's
   unique needs"*). Replace with tangible next steps, GitHub links, or benchmarks.
@@ -129,14 +136,18 @@ dimensions:
 - [ ] Are code examples runnable and minimal, accompanied by callout annotations
       (`<1>`, `<2>`)?
 
-### D. Formatting & Frontmatter Standard
+### D. Formatting, Code & Frontmatter Standards
 
 - [ ] Category belongs to the canonical list (`Dev Env`, `Python Recipes`,
       `Data Science`, `Performance`, `Financial Markets`, `Pythonic Distractions`,
       `Career`).
 - [ ] Post title is crisp and descriptive.
 - [ ] Cover image embed is captionless:
-      `![Cover](cover.jpg){width="98%" fig-align="center"}`.
+      `![](cover.jpg){width="98%" fig-align="center"}`.
+- [ ] Links have descriptive text (no bare `[here]` or `[link]`, complying with MD059).
+- [ ] In bash/shell blocks, `# <1>` annotations never trail a line-continuation `\`.
+- [ ] If bilingual (`index-pl.qmd` exists), verify matching frontmatter,
+      `.lang-switcher` pills, and synchronized technical content.
 - [ ] Document lines respect the 88-column limit (run `uv run rumdl fmt <file>`).
 
 ---

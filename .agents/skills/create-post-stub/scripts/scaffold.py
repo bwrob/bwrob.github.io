@@ -8,6 +8,7 @@ image, and normalized index.qmd frontmatter.
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import datetime
 import re
 import shutil
@@ -23,6 +24,18 @@ CANONICAL_CATEGORIES = [
     "Pythonic Distractions",
     "Career",
 ]
+
+DEFAULT_HOOK = (
+    "Opening hook paragraph introducing the problem, tool, or pattern. "
+    "Explain why this matters to developers and what the post demonstrates."
+)
+DEFAULT_CONTEXT = (
+    "Provide background context. Why does this challenge arise? "
+    "What alternatives exist? Outline the architecture or design choice."
+)
+DEFAULT_EXPLANATION = (
+    "Explain the code mechanics, key arguments, and non-obvious nuances."
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -62,6 +75,21 @@ def parse_args() -> argparse.Namespace:
         help="Optional opening hook paragraph for the post body",
     )
     parser.add_argument(
+        "--target-dir",
+        default="posts",
+        help="Target base directory relative to repo root (default: 'posts')",
+    )
+    parser.add_argument(
+        "--from-not-posted",
+        default=None,
+        help="Seed implementation code from a script/note in _not_posted/",
+    )
+    parser.add_argument(
+        "--bilingual",
+        action="store_true",
+        help="Scaffold bilingual edition (index.qmd and index-pl.qmd with switcher)",
+    )
+    parser.add_argument(
         "--force",
         action="store_true",
         help="Overwrite existing post folder if it already exists",
@@ -79,40 +107,18 @@ def validate_slug(slug: str) -> None:
         raise ValueError(msg)
 
 
-def main() -> None:
-    """Scaffold a new blog post directory and template files."""
-    args = parse_args()
-    validate_slug(args.slug)
-
-    # Resolve date
-    if args.date:
+def resolve_post_date(date_str: str | None) -> datetime.date:
+    """Parse string date or return today's date."""
+    if date_str:
         try:
-            post_date = datetime.date.fromisoformat(args.date)
+            return datetime.date.fromisoformat(date_str)
         except ValueError:
-            sys.exit(f"Error: Invalid date format '{args.date}'. Expected YYYY-MM-DD.")
-    else:
-        post_date = datetime.datetime.now(tz=datetime.UTC).date()
+            sys.exit(f"Error: Invalid date format '{date_str}'. Expected YYYY-MM-DD.")
+    return datetime.datetime.now(tz=datetime.UTC).date()
 
-    iso_date = post_date.strftime("%Y-%m-%d")
-    folder_prefix = post_date.strftime("%y-%m-%d")
-    folder_name = f"{folder_prefix}-{args.slug}"
 
-    # Determine directories
-    script_dir = Path(__file__).resolve().parent
-    skill_dir = script_dir.parent
-    repo_root = skill_dir.parents[2]
-    posts_root = repo_root / "posts"
-    target_post_dir = posts_root / folder_name
-
-    if target_post_dir.exists() and not args.force:
-        err_msg = (
-            f"Error: Target directory already exists: {target_post_dir}\n"
-            "Use --force to overwrite."
-        )
-        sys.exit(err_msg)
-
-    # Validate categories
-    categories = args.categories or ["Dev Env"]
+def validate_categories(categories: list[str]) -> None:
+    """Warn if any provided category is outside the canonical taxonomy."""
     for cat in categories:
         if cat not in CANONICAL_CATEGORIES:
             warning_msg = (
@@ -121,7 +127,95 @@ def main() -> None:
             )
             print(warning_msg, file=sys.stderr)
 
-    # Ensure resource files exist
+
+def load_seed_code(repo_root: Path, from_not_posted: str | None) -> str | None:
+    """Read seed code from _not_posted if specified."""
+    if not from_not_posted:
+        return None
+    candidate = repo_root / "_not_posted" / from_not_posted
+    if not candidate.exists():
+        candidate = repo_root / from_not_posted
+    if candidate.exists() and candidate.is_file():
+        code = candidate.read_text(encoding="utf-8").strip()
+        print(f"📦 Seeded prototype from: {candidate.relative_to(repo_root)}")
+        return code
+    print(f"Warning: Seed file not found at '{candidate}'", file=sys.stderr)
+    return None
+
+
+@dataclasses.dataclass(frozen=True)
+class PostContext:
+    """Encapsulates template rendering parameters."""
+
+    title: str
+    description: str
+    iso_date: str
+    categories: list[str]
+    hook: str | None = None
+    seed_code: str | None = None
+    is_pl: bool = False
+    is_bilingual: bool = False
+
+
+def render_content(template: str, ctx: PostContext) -> str:
+    """Render the post template with metadata and code."""
+    switcher = ""
+    if ctx.is_bilingual:
+        en_active = "" if ctx.is_pl else " .active"
+        pl_active = " .active" if ctx.is_pl else ""
+        switcher = (
+            "::: {.lang-switcher}\n"
+            f"[English 🇬🇧](index.qmd){{.lang-btn{en_active}}}\n"
+            f"[Polski 🇵🇱](index-pl.qmd){{.lang-btn{pl_active}}}\n"
+            ":::\n\n"
+        )
+
+    categories_formatted = ", ".join(ctx.categories)
+    hook_text = ctx.hook or DEFAULT_HOOK
+
+    content = (
+        template.replace("{{TITLE}}", ctx.title)
+        .replace("{{DESCRIPTION}}", ctx.description)
+        .replace("{{DATE}}", ctx.iso_date)
+        .replace("{{CATEGORIES}}", categories_formatted)
+        .replace("{{HOOK_PARAGRAPH}}", hook_text)
+        .replace("{{CONTEXT_AND_BACKGROUND}}", DEFAULT_CONTEXT)
+        .replace("{{EXPLANATION}}", DEFAULT_EXPLANATION)
+        .replace("{{LANG_SWITCHER}}", switcher)
+    )
+
+    if ctx.seed_code:
+        default_block = 'def main() -> None:\n    """Demonstrate the core pattern."""'
+        content = content.replace(default_block, ctx.seed_code)
+
+    return content
+
+
+def main() -> None:
+    """Scaffold a new blog post directory and template files."""
+    args = parse_args()
+    validate_slug(args.slug)
+
+    post_date = resolve_post_date(args.date)
+    iso_date = post_date.strftime("%Y-%m-%d")
+    folder_prefix = post_date.strftime("%y-%m-%d")
+    folder_name = f"{folder_prefix}-{args.slug}"
+
+    script_dir = Path(__file__).resolve().parent
+    skill_dir = script_dir.parent
+    repo_root = skill_dir.parents[2]
+    target_post_dir = repo_root / args.target_dir / folder_name
+
+    if target_post_dir.exists() and not args.force:
+        err_msg = (
+            f"Error: Target directory already exists: {target_post_dir}\n"
+            "Use --force to overwrite."
+        )
+        sys.exit(err_msg)
+
+    categories = args.categories or ["Dev Env"]
+    validate_categories(categories)
+
     placeholder_cover = skill_dir / "resources" / "placeholder-cover.jpg"
     template_file = skill_dir / "resources" / "post-template.qmd"
 
@@ -130,48 +224,49 @@ def main() -> None:
     if not template_file.exists():
         sys.exit(f"Error: Template file not found at {template_file}")
 
-    # Create target directory
     target_post_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(placeholder_cover, target_post_dir / "cover.jpg")
 
-    # Copy placeholder cover
-    target_cover = target_post_dir / "cover.jpg"
-    shutil.copyfile(placeholder_cover, target_cover)
+    template_text = template_file.read_text(encoding="utf-8")
+    seed_code = load_seed_code(repo_root, args.from_not_posted)
 
-    # Render template
-    template_content = template_file.read_text(encoding="utf-8")
-    categories_formatted = ", ".join(categories)
-    hook_text = args.hook or (
-        "Opening hook paragraph introducing the problem, tool, or pattern. "
-        "Explain why this matters to developers and what the post demonstrates."
+    ctx_en = PostContext(
+        title=args.title,
+        description=args.description,
+        iso_date=iso_date,
+        categories=categories,
+        hook=args.hook,
+        seed_code=seed_code,
+        is_pl=False,
+        is_bilingual=args.bilingual,
     )
-    context_text = (
-        "Provide background context. Why does this challenge arise? "
-        "What alternatives exist? Outline the architecture or design choice."
-    )
-    explanation_text = (
-        "Explain the code mechanics, key arguments, and non-obvious nuances."
-    )
-
-    content = (
-        template_content.replace("{{TITLE}}", args.title)
-        .replace("{{DESCRIPTION}}", args.description)
-        .replace("{{DATE}}", iso_date)
-        .replace("{{CATEGORIES}}", categories_formatted)
-        .replace("{{HOOK_PARAGRAPH}}", hook_text)
-        .replace("{{CONTEXT_AND_BACKGROUND}}", context_text)
-        .replace("{{EXPLANATION}}", explanation_text)
+    (target_post_dir / "index.qmd").write_text(
+        render_content(template_text, ctx_en), encoding="utf-8"
     )
 
-    target_index = target_post_dir / "index.qmd"
-    target_index.write_text(content, encoding="utf-8")
+    if args.bilingual:
+        ctx_pl = PostContext(
+            title=args.title,
+            description=args.description,
+            iso_date=iso_date,
+            categories=categories,
+            hook=args.hook,
+            seed_code=seed_code,
+            is_pl=True,
+            is_bilingual=True,
+        )
+        (target_post_dir / "index-pl.qmd").write_text(
+            render_content(template_text, ctx_pl), encoding="utf-8"
+        )
 
-    # Output confirmation
     rel_post_dir = target_post_dir.relative_to(repo_root)
     print(f"✅ Successfully scaffolded post stub in '{rel_post_dir}':")
     print(f"   - Index file:  {rel_post_dir / 'index.qmd'}")
+    if args.bilingual:
+        print(f"   - Polish file: {rel_post_dir / 'index-pl.qmd'}")
     print(f"   - Cover image: {rel_post_dir / 'cover.jpg'} (900x600 placeholder)")
     print("   - Status:      draft: true")
-    print(f"   - Categories:  [{categories_formatted}]")
+    print(f"   - Categories:  [{', '.join(categories)}]")
 
 
 if __name__ == "__main__":
