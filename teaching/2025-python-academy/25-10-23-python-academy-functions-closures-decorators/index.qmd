@@ -72,6 +72,7 @@ function will test each one and see how they perform.
 # | code-fold: true
 # | code-summary: "Show the code"
 
+
 def fibonacci_iterative(n: int) -> int:
     """Calculate the nth Fibonacci number using an iterative approach."""
     if n < 0:
@@ -84,6 +85,7 @@ def fibonacci_iterative(n: int) -> int:
         a, b = b, a + b
     return b
 
+
 def fibonacci_recursive(n: int) -> int:
     """Calculate the nth Fibonacci number using a recursive approach."""
     if n < 0:
@@ -92,7 +94,9 @@ def fibonacci_recursive(n: int) -> int:
         return n
     return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
 
+
 FIBONACCI_CACHE: dict[int, int] = {}
+
 
 def fibonacci_recursive_cached(n: int) -> int:
     """Calculate the nth Fibonacci number using recursion with memoization."""
@@ -115,16 +119,15 @@ def fibonacci_recursive_cached(n: int) -> int:
 import time
 from typing import Callable
 
-def benchmark(
-    functions: list[Callable[[int], int]],
-    n: int
-) -> None:
+
+def benchmark(functions: list[Callable[[int], int]], n: int) -> None:
     """Benchmarks a list of functions."""
     for func in functions:
         start = time.perf_counter()
         func(n)
         end = time.perf_counter()
         print(f"Function {func.__name__} took {end - start:.6f} seconds.")
+
 
 fib_functions = [fibonacci_recursive, fibonacci_recursive_cached, fibonacci_iterative]
 benchmark(fib_functions, 30)
@@ -136,13 +139,14 @@ A closure is basically a function that remembers the environment in which it was
 created. Let's use our `get_greeter` function to see what that means.
 
 ```{python}
-def get_greeter(greeting: str) -> Callable[[str],str]:
+def get_greeter(greeting: str) -> Callable[[str], str]:
     """Returns a greeter function."""
 
     def greeter(name: str) -> str:
         return f"{greeting}, {name}!"
 
     return greeter
+
 
 good_morning_greeter = get_greeter("Good morning")
 print(good_morning_greeter("World"))
@@ -181,17 +185,19 @@ def polynomial_factory(coefficients: tuple[float, ...]) -> Callable:
     A factory that creates a polynomial function from a tuple of coefficients.
     The coefficients are ordered from the highest power to the lowest.
     """
+
     def polynomial(x: float) -> float:
         """
         Evaluates the polynomial for a given x.
         """
-        return sum(c * (x ** i) for i, c in enumerate(reversed(coefficients)))
+        return sum(c * (x**i) for i, c in enumerate(reversed(coefficients)))
 
     return polynomial
 
-p1 = polynomial_factory((2, 3, 5)) # <1>
 
-p2 = polynomial_factory((1, 0, 0, -8)) # <2>
+p1 = polynomial_factory((2, 3, 5))  # <1>
+
+p2 = polynomial_factory((1, 0, 0, -8))  # <2>
 
 print(p1(5))
 print(p2(5))
@@ -214,8 +220,7 @@ In the last post, we used the `@cache` decorator to speed up our recursive Fibon
 function. Let's try to build a simple version of that decorator ourselves.
 
 ```{python}
-
-def my_cache(func: Callable) -> Callable: # <1>
+def my_cache(func: Callable) -> Callable:  # <1>
     """A simple cache decorator."""
     _cache = {}
 
@@ -229,6 +234,7 @@ def my_cache(func: Callable) -> Callable: # <1>
 
     return wrapper
 
+
 @my_cache
 def fibonacci_cached_by_me(n: int) -> int:
     """Calculate the nth Fibonacci number using recursion with our own cache decorator."""
@@ -237,6 +243,7 @@ def fibonacci_cached_by_me(n: int) -> int:
     if n < 2:
         return n
     return fibonacci_cached_by_me(n - 1) + fibonacci_cached_by_me(n - 2)
+
 
 fibonacci_cached_by_me(30)
 ```
@@ -262,9 +269,11 @@ def repeat(times: int) -> Callable:
 
     return decorator
 
-@repeat(3) # <1>
+
+@repeat(3)  # <1>
 def say_hello(name: str):
     print(f"Hello, {name}!")
+
 
 say_hello("World")
 ```

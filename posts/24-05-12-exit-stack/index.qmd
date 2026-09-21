@@ -129,6 +129,7 @@ of the CM (ex. handle to an opened file), the `y` in `with x(*args) as y:`.
 from contextlib import contextmanager
 from typing import Generator
 
+
 @contextmanager
 def analysis(
     *,
@@ -147,7 +148,7 @@ def analysis(
     )
     analysis_uuid = mock_object(MockObject.ANALYSIS)
     yield analysis_uuid
-    mock_clean_up(analysis_uuid) # <1>
+    mock_clean_up(analysis_uuid)  # <1>
 ```
 
 1. Clean up after the analysis is complete.
@@ -175,7 +176,7 @@ def benchmark() -> Generator[str, None, None]:
     )
     benchmark_uuid = mock_object(MockObject.BENCHMARK)
     yield benchmark_uuid
-    mock_clean_up(benchmark_uuid) # <1>
+    mock_clean_up(benchmark_uuid)  # <1>
 
 
 @contextmanager
@@ -188,7 +189,7 @@ def otc_products() -> Generator[str, None, None]:
     mock_preparation(MockObject.OTC_PRODUCTS)
     otcs_uuid = mock_object(MockObject.OTC_PRODUCTS)
     yield otcs_uuid
-    mock_clean_up(otcs_uuid) # <2>
+    mock_clean_up(otcs_uuid)  # <2>
 
 
 @contextmanager
@@ -209,7 +210,7 @@ def portfolio(
     )
     portfolio_uuid = mock_object(MockObject.PORTFOLIO)
     yield portfolio_uuid
-    mock_clean_up(portfolio_uuid) # <3>
+    mock_clean_up(portfolio_uuid)  # <3>
 ```
 
 1. Clean up after the benchmark is complete.
@@ -223,6 +224,7 @@ run on which portfolio.
 
 ```{python}
 import pandas as pd
+
 
 def analysis_results(
     *,
@@ -253,6 +255,7 @@ from our flow chart.
 ```{python}
 PORTFOLIO = "portfolio_1"
 
+
 def run_analysis() -> pd.DataFrame:
     """Mock running the analysis using with clauses."""
     with otc_products() as otc_uuid:
@@ -279,6 +282,7 @@ run it either way, to see if at least works.
 def print_title(title: str) -> None:
     """Print a title padded, surrounded by dashes and empty lines."""
     print("\n" + title.center(60, "-") + "\n")
+
 
 print_title("Running analysis.")
 run_analysis()
@@ -319,6 +323,7 @@ So the flow is exactly the same as in our first attempt. Let's try it!
 
 ```{python}
 from contextlib import ExitStack
+
 
 def run_analysis_with_exit_stack() -> None:
     """Mock running the analysis using exit stack."""
@@ -414,6 +419,7 @@ same time? Easy, we just push to the stack in a loop or a list comprehension.
 ```{python}
 PORTFOLIOS = ["portfolio_1", "portfolio_2", "portfolio_3"]
 
+
 def run_analysis_with_exit_stack(clean_up: bool = True):
     """Mock running the analysis for multiple portfolios using exit stack.
 
@@ -449,6 +455,7 @@ def run_analysis_with_exit_stack(clean_up: bool = True):
         if not clean_up:
             _ = stack.pop_all()
     return results
+
 
 print_title("Running analysis with exit stack on multiple portfolios.")
 run_analysis_with_exit_stack(clean_up=True)

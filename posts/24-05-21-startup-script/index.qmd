@@ -63,6 +63,7 @@ as mocks, or just live with linting issues. This is what my desired usage is:
 ```{python}
 #| eval: false
 
+
 def run_startup_script() -> None:
     """Run the startup script."""
     logger.info(f" Welcome {os.getlogin()}! ".center(40, "*"))
@@ -107,15 +108,16 @@ from functools import wraps
 from collections.abc import Callable
 from typing import TypeVar
 
-T = TypeVar("T") # <1>
-Task = tuple[T, int] # <2>
-TaskList = list[Task[T]] # <3>
-TaskListOptionalDelay = list[Task[T] | T] # <4>
+T = TypeVar("T")  # <1>
+Task = tuple[T, int]  # <2>
+TaskList = list[Task[T]]  # <3>
+TaskListOptionalDelay = list[Task[T] | T]  # <4>
 
 
 DEFAULT_DELAY_SECONDS = 4
 
-def with_optional_delay( # <5>
+
+def with_optional_delay(  # <5>
     task_worker: Callable[[TaskList[T]], None],
 ) -> Callable[[TaskListOptionalDelay[T]], None]:
     """Add default delay to all non-tuple items.
@@ -238,7 +240,6 @@ def run_commands(
     for command, delay in commands:
         run_command(command, delay)
 
-
 ```
 
 ### List all files in list of directories
@@ -273,7 +274,6 @@ def filter_excluded(
     return (path.stem not in NAME_EXCLUDES) and (path.suffix not in EXT_EXCLUDES)
 
 
-
 def path_files(
     directory_tasks: TaskList[Path],
 ) -> Generator[tuple[Path, int], None, None]:
@@ -294,7 +294,6 @@ def path_files(
 
         for file in filtered:
             yield file, delay
-
 
 ```
 

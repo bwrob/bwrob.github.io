@@ -36,6 +36,7 @@ from collections.abc import Iterable
 from itertools import islice
 from sys import maxsize
 
+
 def batched[T](
     iterable: Iterable[T],
     n: int,
@@ -138,6 +139,7 @@ from typing import cast
 
 type NestedIterable[T] = Iterable[NestedIterable[T] | T]
 
+
 def flatten_iterable[T](iterable: NestedIterable[T]) -> list[T]:
     """Flatten an iterable of iterables."""
 
@@ -173,6 +175,7 @@ much easier to work with.
 from collections.abc import Mapping
 
 type NestedDict[T] = Mapping[str, NestedDict[T] | T]
+
 
 def flatten_string_key_dict[T](dictionary: NestedDict[T]) -> dict[str, T]:
     """Flatten a nested string-keyed dictionary."""
@@ -217,8 +220,10 @@ import itertools
 from collections.abc import Callable, Iterator
 from typing import Any, Protocol, Self
 
+
 class _SupportsLessThan(Protocol):
     def __lt__(self, other: Self) -> bool: ...
+
 
 def group_by_non_consecutive[T, SLT: _SupportsLessThan](
     iterable: Iterable[T],
@@ -245,7 +250,6 @@ def group_by_non_consecutive[T, SLT: _SupportsLessThan](
 ### Example
 
 ```{python}
-
 # | code-fold: true
 # | code-summary: "Show the code"
 

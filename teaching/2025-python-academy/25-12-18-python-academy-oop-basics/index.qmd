@@ -49,6 +49,7 @@ Python handles this with **Abstract Base Classes (ABCs)**.
 from abc import ABC, abstractmethod
 import math
 
+
 class YieldCurve(ABC):
     """
     Abstract base class for all yield curves.
@@ -108,11 +109,12 @@ spread to it. Instead of rewriting the curve logic, we create a `SpreadMixin`.
 class SpreadMixin:
     def __init__(self, spread: float, *args, **kwargs):
         self.spread = spread
-        super().__init__(*args, **kwargs) # <1>
+        super().__init__(*args, **kwargs)  # <1>
 
     def discount_factor(self, t: float) -> float:
-        base_df = super().discount_factor(t) # <2>
-        return base_df * math.exp(-self.spread * t) # <3>
+        base_df = super().discount_factor(t)  # <2>
+        return base_df * math.exp(-self.spread * t)  # <3>
+
 
 class ShiftedFlatCurve(SpreadMixin, FlatForwardCurve):
     pass
@@ -152,9 +154,11 @@ protocol and pass a concrete implementation (like `LinearInterpolator`) to the c
 ```{python}
 from typing import Protocol
 
+
 # 1. Define the Strategy Interface
 class Interpolator(Protocol):
     def interpolate(self, t: float, x: list[float], y: list[float]) -> float: ...
+
 
 # 2. Implement Concrete Strategy
 class LinearInterpolator:
@@ -173,6 +177,7 @@ class LinearInterpolator:
                 w = (t - t1) / (t2 - t1)
                 return (1 - w) * y1 + w * y2
         return y[-1]
+
 
 # 3. Use Composition in the Curve
 class InterpolatedZeroCurve(YieldCurve):
@@ -202,17 +207,21 @@ class LinearInterpolationMixin:
     """
     Mixin that provides linear interpolation capability.
     """
+
     def interpolate_linear(self, t: float, x: list[float], y: list[float]) -> float:
-        if t <= x[0]: return y[0]
-        if t >= x[-1]: return y[-1]
+        if t <= x[0]:
+            return y[0]
+        if t >= x[-1]:
+            return y[-1]
 
         for i in range(len(x) - 1):
-            if x[i] <= t <= x[i+1]:
-                t1, t2 = x[i], x[i+1]
-                y1, y2 = y[i], y[i+1]
+            if x[i] <= t <= x[i + 1]:
+                t1, t2 = x[i], x[i + 1]
+                y1, y2 = y[i], y[i + 1]
                 w = (t - t1) / (t2 - t1)
                 return (1 - w) * y1 + w * y2
         return y[-1]
+
 
 class MixinZeroCurve(LinearInterpolationMixin, YieldCurve):
     def __init__(self, times: list[float], rates: list[float]):
@@ -236,10 +245,12 @@ about any of the complexity above.
 ```{python}
 from dataclasses import dataclass
 
+
 @dataclass
 class CashFlow:
     amount: float
     time: float
+
 
 def price_bond(cashflows: list[CashFlow], curve: YieldCurve) -> float:
     price = 0.0
@@ -285,20 +296,25 @@ care who your parents are, as long as you have a `discount_factor` method."
 ```{python}
 from typing import runtime_checkable
 
+
 @runtime_checkable
 class Discountable(Protocol):
     def discount_factor(self, t: float) -> float: ...
+
 
 class SimpleDiscounter:
     """
     This class does NOT inherit from YieldCurve.
     It just happens to have the right method.
     """
+
     def discount_factor(self, t: float) -> float:
         return 1 / (1 + 0.05 * t)  # Simple capitalization
 
+
 def price_asset_structural(amount: float, t: float, model: Discountable) -> float:
     return amount * model.discount_factor(t)
+
 
 simple = SimpleDiscounter()
 print(f"Is compatible? {isinstance(simple, Discountable)}")
@@ -321,6 +337,6 @@ These patterns are what turn a collection of scripts into a proper library.
 ::: {.callout-note}
 
 You can find the complete code for this post here:
-[inheritance_polymorphism_and_protocols_in_python_oop.py](../../../assets/python/inheritance_polymorphism_and_protocols_in_python_oop.py).
+[inheritance_polymorphism_and_protocols_in_Python_oop.py](../../../assets/python/inheritance_polymorphism_and_protocols_in_python_oop.py).
 
 :::

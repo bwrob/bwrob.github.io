@@ -92,9 +92,11 @@ Here is an example of how to use the `CaseInsensitiveStrEnum` class:
 ```{python}
 from enum import auto
 
+
 class TestEnum(CaseInsensitiveStrEnum):
     test = auto()
     enumz = auto()
+
 
 print(f"List of members: {[member.name for member in TestEnum]}")
 print(f"List of values: {[member.value for member in TestEnum]}")
@@ -104,6 +106,7 @@ print(f'Accessing "ENUMZ": {TestEnum("ENUMZ")}')
 
 
 try:
+
     class TestEnum(CaseInsensitiveStrEnum):
         TEST = "TEST"  # This will raise a TypeError
 except TypeError as e:

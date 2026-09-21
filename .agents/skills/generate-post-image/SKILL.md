@@ -28,7 +28,7 @@ This skill guides the creation of blog post cover images (`cover.jpg`) for
 
 Review the visual guidelines in:
 
-* **[Style Guide](./references/style-guide.md)**: Highlights core aesthetics (dark mode,
+- **[Style Guide](./references/style-guide.md)**: Highlights core aesthetics (dark mode,
   text-free, tech-savvy minimalism, color flexibility).
 
 ---
@@ -39,12 +39,12 @@ Review the visual guidelines in:
 
 Review `posts/<post-slug>/index.qmd`:
 
-* Note the title, description, and core technical theme.
-* **Research Technology Inspirations**: Check the official branding, logo, mascot, or
+- Note the title, description, and core technical theme.
+- **Research Technology Inspirations**: Check the official branding, logo, mascot, or
   signature visual motif of the underlying technology (e.g. Marimo's green moss ball,
   Polars' low-poly polar bear, Python's curves). Brainstorm how to integrate a stylized,
   tech-savvy version of this motif into the scene.
-* Brainstorm an abstract or diagrammatic visual concept (e.g. modular systems, clean
+- Brainstorm an abstract or diagrammatic visual concept (e.g. modular systems, clean
   layout geometries, data pipelines, mathematical curves, or technical schematics).
 
 ### 2. Formulate the Prompt
@@ -70,10 +70,10 @@ Minimalist technical illustration of a distributed message pipeline, abstract mo
 
 Call `generate_image`:
 
-* `Prompt`: Your formulated prompt.
-* `ImageName`: Descriptive lowercase name with underscores (e.g.
+- `Prompt`: Your formulated prompt.
+- `ImageName`: Descriptive lowercase name with underscores (e.g.
   `message_pipeline_cover`).
-* `AspectRatio`: `"3:2"` (horizontal 3:2 format).
+- `AspectRatio`: `"3:2"` (horizontal 3:2 format).
 
 ### 4. Save and Optimize Image to the Post Directory
 

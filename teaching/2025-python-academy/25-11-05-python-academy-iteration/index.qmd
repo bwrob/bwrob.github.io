@@ -87,6 +87,7 @@ def number_generator(n):
     for i in range(n):
         yield i
 
+
 gen = number_generator(1_000_000)
 # No large list is created in memory here.
 # The generator object 'gen' is created, ready to produce numbers.
@@ -112,6 +113,7 @@ trades_cashflows = [
     110,  # Simple payment doesn't need to be in a list!
 ]
 
+
 def flatten(list_of_lists):
     for item in list_of_lists:
         if isinstance(item, list):
@@ -119,6 +121,7 @@ def flatten(list_of_lists):
                 yield subitem
         else:
             yield item
+
 
 # The generator does not hold all cashflows in memory
 all_cashflows_generator = flatten(trades_cashflows)
@@ -144,6 +147,7 @@ a generator.
 import tracemalloc
 from functools import wraps
 
+
 def profile_memory(func):
     """A decorator to profile the memory usage of a function."""
 
@@ -161,15 +165,18 @@ def profile_memory(func):
 
     return wrapper
 
+
 @profile_memory
 def create_list(n):
     """This function creates a list of n numbers."""
     return [i for i in range(n)]
 
+
 @profile_memory
 def create_generator(n):
     """This function creates a generator of n numbers."""
     return (i for i in range(n))
+
 
 n = 1_000_000
 print("Profiling memory for list creation...")
@@ -178,10 +185,12 @@ my_list = create_list(n)
 print("Profiling memory for generator creation...")
 my_generator = create_generator(n)
 
+
 # The generator itself is small. Let's profile consuming it.
 @profile_memory
 def consume_generator(gen):
     return list(gen)
+
 
 print("Profiling memory for generator consumption...")
 consumed_list = consume_generator(my_generator)
@@ -197,46 +206,48 @@ A few built-in functions that come up constantly:
 - **`enumerate(iterable, start=0)`**: When processing a series of cashflows, you might
   need to know the period number for each payment. `enumerate` is perfect for this.
 
-    ```{python}
-    cashflows = [100, 100, 100, 1100] # Coupon payments and principal
-    for period, cf in enumerate(cashflows, 1):
-        print(f"Period {period}: Cashflow = {cf}")
-    ```
+```{python}
+cashflows = [100, 100, 100, 1100]  # Coupon payments and principal
+for period, cf in enumerate(cashflows, 1):
+    print(f"Period {period}: Cashflow = {cf}")
+```
 
 - **`zip(*iterables)`**: This function is very useful for combining different streams of
   data. For example, you can pair trade dates with their corresponding notionals.
 
-    ```{python}
-    trade_dates = ['2025-11-05', '2025-11-06', '2025-11-07']
-    notionals = [1_000_000, 2_500_000, 500_000]
-    for date, notional in zip(trade_dates, notionals):
-        print(f"On {date}, we traded a notional of {notional:,}")
-    ```
+```{python}
+trade_dates = ["2025-11-05", "2025-11-06", "2025-11-07"]
+notionals = [1_000_000, 2_500_000, 500_000]
+for date, notional in zip(trade_dates, notionals):
+    print(f"On {date}, we traded a notional of {notional:,}")
+```
 
 - **`sorted(iterable, key=None, reverse=False)`**: Sorting is a common task. You might
   want to sort a list of trades by maturity date or notional.
 
-    ```{python}
-    from dataclasses import dataclass
-    from datetime import date
+```{python}
+from dataclasses import dataclass
+from datetime import date
 
-    @dataclass
-    class Trade:
-        trade_id: str
-        maturity: date
-        notional: float
 
-    trades = [
-        Trade('T1', date(2026, 12, 31), 10_000_000),
-        Trade('T2', date(2025, 12, 31), 5_000_000),
-        Trade('T3', date(2027, 12, 31), 15_000_000),
-    ]
+@dataclass
+class Trade:
+    trade_id: str
+    maturity: date
+    notional: float
 
-    # Sort trades by maturity date
-    sorted_by_maturity = sorted(trades, key=lambda t: t.maturity)
-    for trade in sorted_by_maturity:
-        print(trade)
-    ```
+
+trades = [
+    Trade("T1", date(2026, 12, 31), 10_000_000),
+    Trade("T2", date(2025, 12, 31), 5_000_000),
+    Trade("T3", date(2027, 12, 31), 15_000_000),
+]
+
+# Sort trades by maturity date
+sorted_by_maturity = sorted(trades, key=lambda t: t.maturity)
+for trade in sorted_by_maturity:
+    print(trade)
+```
 
 ## The `itertools` Module: A Treasure Trove for Financial Iteration
 
@@ -251,102 +262,109 @@ financial work.
 
   `chain.from_iterable` is a useful variant that takes a single iterable of iterables.
 
-    ```{python}
-    import itertools
-    import random
+```{python}
+import itertools
+import random
 
-    # First 2 years have fixed coupons
-    fixed_leg = [50, 50, 50, 50]
+# First 2 years have fixed coupons
+fixed_leg = [50, 50, 50, 50]
 
-    # Next 3 years have floating coupons (calculated for demonstration)
-    floating_leg = [50 + random.uniform(-5, 5) for _ in range(6)]
+# Next 3 years have floating coupons (calculated for demonstration)
+floating_leg = [50 + random.uniform(-5, 5) for _ in range(6)]
 
-    # We have a list of cashflow legs
-    bond_legs = [fixed_leg, floating_leg]
+# We have a list of cashflow legs
+bond_legs = [fixed_leg, floating_leg]
 
-    # We can use chain.from_iterable to chain them together
-    full_swap_leg = itertools.chain.from_iterable(bond_legs)
+# We can use chain.from_iterable to chain them together
+full_swap_leg = itertools.chain.from_iterable(bond_legs)
 
-    print("Full cashflow stream for the leg:")
-    for cf in full_swap_leg:
-        print(f"{cf:.2f}", end=' ')
-    ```
+print("Full cashflow stream for the leg:")
+for cf in full_swap_leg:
+    print(f"{cf:.2f}", end=" ")
+```
 
 - **`itertools.accumulate(iterable[, func])`**: This is ideal for calculating cumulative
   sums or running products. A common use case is to calculate the cumulative P&L of a
   trading strategy.
 
-    ```{python}
-    import itertools
-    daily_pnl = [150, -200, 50, 300, -100]
-    cumulative_pnl = itertools.accumulate(daily_pnl)
-    print(list(cumulative_pnl))
-    # Output: [150, -50, 0, 300, 200]
-    ```
+```{python}
+import itertools
+
+daily_pnl = [150, -200, 50, 300, -100]
+cumulative_pnl = itertools.accumulate(daily_pnl)
+print(list(cumulative_pnl))
+# Output: [150, -50, 0, 300, 200]
+```
 
   It can also model more complex recurrence relations, like the amortization of a loan.
   Let's calculate the outstanding balance of a fixed-payment annuity until it's paid
   off.
 
-    ```{python}
-    import itertools
+```{python}
+import itertools
 
-    def outstanding_balance(balance, payment, rate):
-        return balance * (1 + rate) - payment
 
-    initial_notional = 1_000
-    interest_rate = 0.01  # Monthly rate (around 12% annually)
-    monthly_payment = 50
+def outstanding_balance(balance, payment, rate):
+    return balance * (1 + rate) - payment
 
-    # Create an infinite stream of payments
-    payments = itertools.repeat(monthly_payment)
 
-    # The first argument to the lambda is the accumulated value (the balance)
-    # The second argument is the next item from the iterable (the payment)
-    balances = itertools.accumulate(
-        payments,
-        lambda balance, pmt: outstanding_balance(balance, pmt, interest_rate),
-        initial=initial_notional,
-    )
+initial_notional = 1_000
+interest_rate = 0.01  # Monthly rate (around 12% annually)
+monthly_payment = 50
 
-    # We can use takewhile to iterate until the loan is paid off (balance > 0)
-    # The +1 is to see the final payment that brings the balance to <= 0
-    amortization_schedule = itertools.takewhile(lambda balance: balance > 0, balances)
+# Create an infinite stream of payments
+payments = itertools.repeat(monthly_payment)
 
-    for i, balance in enumerate(amortization_schedule):
-        print(f"Month          {i+1}: {balance:,.2f}")
+# The first argument to the lambda is the accumulated value (the balance)
+# The second argument is the next item from the iterable (the payment)
+balances = itertools.accumulate(
+    payments,
+    lambda balance, pmt: outstanding_balance(balance, pmt, interest_rate),
+    initial=initial_notional,
+)
 
-    # Note: A proper amortization schedule would have a final smaller payment.
-    # This example is to demonstrate the power of itertools.
-    ```
+# We can use takewhile to iterate until the loan is paid off (balance > 0)
+# The +1 is to see the final payment that brings the balance to <= 0
+amortization_schedule = itertools.takewhile(lambda balance: balance > 0, balances)
+
+for i, balance in enumerate(amortization_schedule):
+    print(f"Month          {i + 1}: {balance:,.2f}")
+
+# Note: A proper amortization schedule would have a final smaller payment.
+# This example is to demonstrate the power of itertools.
+```
 
 - **`itertools.pairwise(iterable)`**: As we've seen, this is ideal for working with
   consecutive items in a sequence. Calculating year fractions for a swap leg is a
   prime example.
 
-    ```{python}
-    import itertools
-    from datetime import date
+```{python}
+import itertools
+from datetime import date
 
-    payment_dates = [date(2025, 1, 15), date(2025, 7, 15), date(2026, 1, 15)]
-    def year_fraction(start, end):
-        return (end - start).days / 365.25
+payment_dates = [date(2025, 1, 15), date(2025, 7, 15), date(2026, 1, 15)]
 
-    for start, end in itertools.pairwise(payment_dates):
-        yf = year_fraction(start, end)
-        print(f"Period: {start} to {end}, Year Fraction: {yf:.4f}")
-    ```
+
+def year_fraction(start, end):
+    return (end - start).days / 365.25
+
+
+for start, end in itertools.pairwise(payment_dates):
+    yf = year_fraction(start, end)
+    print(f"Period: {start} to {end}, Year Fraction: {yf:.4f}")
+```
 
 - **`itertools.cycle(iterable)`**: Repeats a sequence indefinitely. This can be used to
   cycle through a set of risk scenarios or apply a repeating pattern of market data
   shocks.
 
-    ```{python}
-    import itertools
-    scenarios = itertools.cycle(['Base', 'Rate Up', 'Rate Down'])
-    for _ in range(5):
-        print(f"Running scenario: {next(scenarios)}")
-    ```
+```{python}
+import itertools
+
+scenarios = itertools.cycle(["Base", "Rate Up", "Rate Down"])
+for _ in range(5):
+    print(f"Running scenario: {next(scenarios)}")
+```
 
 ## Conclusion
 

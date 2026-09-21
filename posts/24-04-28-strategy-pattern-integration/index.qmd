@@ -86,15 +86,16 @@ that all concrete schemes will inherit from.
 from abc import ABC, abstractmethod
 from typing import Callable
 
-class IntegrationScheme(ABC): # <1>
+
+class IntegrationScheme(ABC):  # <1>
     """Abstract base class for integration schemas."""
 
-    @abstractmethod # <2>
+    @abstractmethod  # <2>
     def integrate(
         self,
-        integrand: Callable[[float], float], # <3>
+        integrand: Callable[[float], float],  # <3>
         *,
-        start: float, # <4>
+        start: float,  # <4>
         end: float,
     ) -> float:
         """Abstract method for integrating a function."""
@@ -124,10 +125,11 @@ some syntactic sugar so the class is sweeter to work with.
 ```{python}
 import numpy as np
 
-class RectangleScheme(IntegrationScheme): # <1>
+
+class RectangleScheme(IntegrationScheme):  # <1>
     """Schema for rectangle integration."""
 
-    def __init__( # <2>
+    def __init__(  # <2>
         self,
         steps: int,
     ) -> None:
@@ -136,11 +138,11 @@ class RectangleScheme(IntegrationScheme): # <1>
             raise ValueError("Steps must be greater than 0.")
         self._steps = steps
 
-    def __str__(self) -> str: # <3>
+    def __str__(self) -> str:  # <3>
         """Returns the string representation of the schema."""
         return f"Rectangle schema with {self._steps} steps"
 
-    def integrate( # <4>
+    def integrate(  # <4>
         self,
         integrand: Callable[[float], float],
         *,
@@ -174,10 +176,11 @@ implementation is analogous to the `RectangleScheme`.
 ```{python}
 from typing import Optional
 
+
 class MonteCarloScheme(IntegrationScheme):
     """Schema for Monte Carlo integration."""
 
-    def __init__( # <1>
+    def __init__(  # <1>
         self,
         random_points: int,
         random_seed: Optional[int] = None,
@@ -225,13 +228,15 @@ What's left is to have a way of defining the problem to solve and define how our
 
 ```{python}
 """An integrator class that allows to perform integration using different schemas."""
+
 from typing import Callable
+
 
 class Integrator:
     """An integrator class that allows to perform integration using different
     schemas as strategies."""
 
-    def __init__( # <1>
+    def __init__(  # <1>
         self,
         integrand: Callable[[float], float],
         interval_start: float,
@@ -244,7 +249,7 @@ class Integrator:
         self.__interval_start = interval_start
         self.__interval_end = interval_end
 
-    def __call__( # <2>
+    def __call__(  # <2>
         self,
         schema: IntegrationScheme,
     ) -> float:
@@ -278,6 +283,7 @@ Ok, now to the integrating! Let's set up the stage:
 ```{python}
 start, end = 0, np.pi / 2.0
 
+
 def f(x: float) -> float:
     return np.sin(x) + np.cos(x)
 ```
@@ -305,7 +311,7 @@ integrator = Integrator(
     interval_end=end,
 )
 
-iterations = [2**i for i in range(0,21,5)]
+iterations = [2**i for i in range(0, 21, 5)]
 rectangle_results = [integrator(RectangleScheme(steps=i)) for i in iterations]
 mc_results = [integrator(MonteCarloScheme(random_points=i)) for i in iterations]
 

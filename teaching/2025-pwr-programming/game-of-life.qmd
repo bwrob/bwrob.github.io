@@ -104,10 +104,12 @@ GRID_WIDTH = WIDTH // CELL_SIZE
 GRID_HEIGHT = HEIGHT // CELL_SIZE
 DEFAULT_FPS = 10
 
+
 def create_random_grid() -> np.ndarray:
     """Tworzy losową siatkę złożoną z 0 i 1."""
     rng = np.random.default_rng()
     return rng.integers(0, 2, size=(GRID_HEIGHT, GRID_WIDTH), dtype=np.int8)
+
 
 def create_empty_grid() -> np.ndarray:
     """Tworzy pustą siatkę złożoną z 0."""
@@ -115,6 +117,7 @@ def create_empty_grid() -> np.ndarray:
         (GRID_HEIGHT, GRID_WIDTH),
         dtype=np.int8,
     )
+
 
 def get_next_generation(grid: np.ndarray) -> np.ndarray:
     """Oblicza następne pokolenie Gry w Życie."""
@@ -136,9 +139,11 @@ def get_next_generation(grid: np.ndarray) -> np.ndarray:
                 new_grid[r, c] = 1  # Ożywa
     return new_grid
 
+
 def draw_grid(screen: pygame.Surface, grid: np.ndarray) -> None:
     """Rysuje siatkę na ekranie Pygame."""
     pass
+
 
 def game_event_loop() -> None:
     """Obsługuje główną pętlę gry, w tym zdarzenia, aktualizacje i rysowanie."""
@@ -152,12 +157,14 @@ def game_event_loop() -> None:
     while running:
         pass
 
+
 def main() -> None:
     """Główna funkcja uruchamiająca Grę w Życie."""
     pygame.init()
     pygame.display.set_caption("Conway's Game of Life")
     game_event_loop()
     pygame.quit()
+
 
 if __name__ == "__main__":
     main()

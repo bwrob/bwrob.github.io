@@ -37,19 +37,19 @@ flowchart LR
 
 Determine or ask for:
 
-* **Topic / Working Title**: e.g., "Fast IPC with PyArrow"
-* **Slug**: kebab-case identifier (e.g., `fast-ipc-pyarrow`)
-* **Categories**: e.g., `[Dev Env]`, `[Python Recipes]`, `[Data Science]`, or
+- **Topic / Working Title**: e.g., "Fast IPC with PyArrow"
+- **Slug**: kebab-case identifier (e.g., `fast-ipc-pyarrow`)
+- **Categories**: e.g., `[Dev Env]`, `[Python Recipes]`, `[Data Science]`, or
   `[Financial Markets]`
-* **Brief Description**: 1–2 sentences summarizing the post.
+- **Brief Description**: 1–2 sentences summarizing the post.
 
 ### 2. Determine Folder Name & Date
 
 Follow the blog's date-prefixed folder naming convention:
 
-* Current ISO date: `YYYY-MM-DD` (e.g., `2026-09-21`)
-* Folder prefix: `YY-MM-DD-<slug>` (e.g., `26-09-21-fast-ipc-pyarrow`)
-* Destination: `posts/<YY-MM-DD-slug>/`
+- Current ISO date: `YYYY-MM-DD` (e.g., `2026-09-21`)
+- Folder prefix: `YY-MM-DD-<slug>` (e.g., `26-09-21-fast-ipc-pyarrow`)
+- Destination: `posts/<YY-MM-DD-slug>/`
 
 ```bash
 POST_DATE=$(date +%Y-%m-%d)
@@ -86,7 +86,7 @@ format-links: [html]
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Cover image](cover.jpg){width="98%" fig-align="center"}
 
 Opening hook paragraph introducing the problem, tool, or pattern. Explain why this
 matters to developers and what the post demonstrates.
@@ -111,9 +111,9 @@ Explain the code mechanics, key arguments, and non-obvious nuances.
 
 ## Key Takeaways
 
-* Core summary point 1.
-* Core summary point 2.
-* Relevant documentation or GitHub links.
+- Core summary point 1.
+- Core summary point 2.
+- Relevant documentation or GitHub links.
 
 ```text
 

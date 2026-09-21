@@ -21,20 +21,20 @@ from rich.logging import RichHandler
 logger = logging.getLogger("simple_example")
 logger.setLevel(logging.DEBUG)
 
-if not logger.hasHandlers(): # <1>
-    fh = logging.FileHandler("simple_example.log") # <2>
+if not logger.hasHandlers():  # <1>
+    fh = logging.FileHandler("simple_example.log")  # <2>
     fh.setLevel(logging.DEBUG)
-    formatter = logging.Formatter( # <3>
+    formatter = logging.Formatter(  # <3>
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
-    fh.setFormatter(formatter) # <4>
-    logger.addHandler(fh) # <5>
+    fh.setFormatter(formatter)  # <4>
+    logger.addHandler(fh)  # <5>
 
-    ch = RichHandler() # <6>
+    ch = RichHandler()  # <6>
     ch.setLevel(logging.INFO)
     logger.addHandler(ch)
 
-logger.debug("debug message") # <7>
+logger.debug("debug message")  # <7>
 logger.info("info message")
 logger.warning("warn message")
 logger.error("error message")

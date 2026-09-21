@@ -14,21 +14,27 @@ Nazwa pliku z rozwiązaniami listy `x` powinna być następująca
 `{nr_indeksu}_lista_{x}.py`. Struktura pliku poniższa:
 
 ```{python}
-# | eval: false
+#| eval: false
 
 # Funkcje pomocnicze do zadania 1
 
+
 def zadanie_1(): ...
+
 
 # Funkcje pomocnicze do zadania 2
 
+
 def zadanie_2(): ...
+
 
 # Funkcje pomocnicze do zadania 3
 
+
 def zadanie_3(): ...
 
-if __name__ == "__main__"":
+
+if __name__ == "__main__":
     zadanie_1()
     zadanie_2()
     zadanie_3()
@@ -48,9 +54,11 @@ def minimum(lista: list[int]) -> int:
     """Szukamy minimum."""
     return min(lista)
 
+
 def maksimum(lista: list[int]) -> int:
     """Szukamy maksimum."""
     return max(lista)
+
 
 for funkcja in [maksimum, minimum]:
     print(funkcja.__name__)
@@ -64,7 +72,10 @@ for funkcja in [maksimum, minimum]:
 
 ```{python}
 def generuj_liste_napisow_AB(dlugosc, dlugosc_napisu):
-    return [''.join(random.choices(['A', 'B'], weights=[95, 5], k=dlugosc_napisu)) for _ in range(dlugosc)]
+    return [
+        "".join(random.choices(["A", "B"], weights=[95, 5], k=dlugosc_napisu))
+        for _ in range(dlugosc)
+    ]
 ```
 
 Dostajemy:
@@ -119,12 +130,14 @@ from time import perf_counter_ns
 
 import matplotlib.pyplot as plt
 
+
 def measure_time(func, repeat=1):
     """Mierzy czas wykonania funkcji.
 
     Zwraca funkcję owiniętą w pętlę powtórzeń.
     Funkcja wynikowa zwraca listę czasów.
     """
+
     def worker(*args, **kwargs):
         times = []
         for _ in range(repeat):
@@ -135,6 +148,7 @@ def measure_time(func, repeat=1):
         return sorted(times)
 
     return worker
+
 
 def bisection(
     func, a: float, b: float, tol: float = 1e-6, max_iter: float = 1_000
@@ -159,8 +173,10 @@ Mierzymy czas:
 ```{python}
 import math
 
+
 def atan_minus_1(x):
     return math.atan(x) - 1
+
 
 n_max = 1_000
 repeat = 100
@@ -195,6 +211,7 @@ ax.plot(x, y, "o", color="blue")
 ```{python}
 def moja_funkcja(k):
     return k
+
 
 nazwa = "moja_funkcja"
 wynik = eval(nazwa)(1)
@@ -255,6 +272,7 @@ from math import *
 ```{python}
 # | eval: false
 
+
 def liczby_zaprzyjaźnione(N):
     liczby = []
     sumy_dzielników = [0] * (N + 1)
@@ -291,6 +309,7 @@ for licznik, litera in enumerate(lista):
 import numpy as np
 import time
 
+
 def sito_listowe(limit):
     """Implementacja sita Eratostenesa przy użyciu list."""
     if limit < 2:
@@ -307,6 +326,7 @@ def sito_listowe(limit):
             kandydaci[wielokrotnosc] = None
     return [liczba for liczba in kandydaci if liczba is not None]
 
+
 def sito_numpy(limit):
     """Implementacja sita Eratostenesa przy użyciu biblioteki NumPy."""
     if limit < 2:
@@ -318,6 +338,7 @@ def sito_numpy(limit):
         if czy_pierwsza[p]:
             czy_pierwsza[p * p :: p] = False
     return np.nonzero(czy_pierwsza)[0]
+
 
 def mierz_czas_sita(funkcja, limit, nazwa_funkcji, powtorzenia=10):
     """Mierzy czas wykonania danej funkcji sita Eratostenesa."""
@@ -332,6 +353,7 @@ def mierz_czas_sita(funkcja, limit, nazwa_funkcji, powtorzenia=10):
     print(f"{nazwa_funkcji} (limit={limit}):")
     print(f"  Minimalny czas ({powtorzenia} uruchomień): {minimalny_czas:.6f} sekund")
     print(f"  Liczba liczb pierwszych: {len(wynik)}")
+
 
 # Przykładowe użycie i pomiar czasu
 limit = 1_000_000
@@ -358,6 +380,7 @@ Python ma do tego wbudowaną funkcjonalność
 
 ```{python}
 from collections import Counter
+
 wystapienia = Counter(lista)
 print(wystapienia)
 ```
@@ -398,6 +421,7 @@ print(pozycje)
 from collections import defaultdict
 from itertools import chain
 
+
 def sortowanie_zliczanie(lista, klucze):
     wystapienia = defaultdict(list)
     for elem in lista:
@@ -407,6 +431,7 @@ def sortowanie_zliczanie(lista, klucze):
             (wystapienia[klucz] for klucz in klucze),
         )
     )
+
 
 print(
     sortowanie_zliczanie(

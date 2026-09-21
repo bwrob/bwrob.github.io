@@ -44,6 +44,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from collections.abc import Iterator
 
+
 @dataclass
 class Position:
     symbol: str
@@ -59,7 +60,12 @@ users to access data through the public interface.
 
 ```{python}
 class Portfolio:
-    def __init__(self, name: str, managers: tuple[str, ...], contents: list[Position] | None = None):
+    def __init__(
+        self,
+        name: str,
+        managers: tuple[str, ...],
+        contents: list[Position] | None = None,
+    ):
         self.name = name
         self.managers = managers
         # Store positions in a dictionary keyed by symbol for fast lookup
@@ -67,6 +73,7 @@ class Portfolio:
 
     def __repr__(self):
         return f"Portfolio(name={self.name!r}, managers={self.managers!r}, contents={list(self._contents.values())!r})"
+
 
 # Create some data
 pos1 = Position("AAPL", 15000.0)
@@ -94,9 +101,10 @@ To enable the `len()` function, we implement `__len__`.
 ### `__len__`
 
 ```{python}
-class Portfolio(Portfolio): # Inheriting to add methods incrementally for this post
+class Portfolio(Portfolio):  # Inheriting to add methods incrementally for this post
     def __len__(self):
         return len(self._contents)
+
 
 p = Portfolio("Tech Fund", ("Alice", "Bob"), [pos1, pos2])
 print(f"Portfolio size: {len(p)}")
@@ -114,9 +122,10 @@ class Portfolio(Portfolio):
     def __getitem__(self, symbol: str) -> Position | None:
         return self._contents.get(symbol)
 
+
 p = Portfolio("Tech Fund", ("Alice", "Bob"), [pos1, pos2])
 print(f"AAPL position: {p['AAPL']}")
-print(f"MSFT position: {p['MSFT']}") # Returns None
+print(f"MSFT position: {p['MSFT']}")  # Returns None
 ```
 
 With this, our `Portfolio` behaves like a mapping—an efficient way to access our assets.
@@ -132,6 +141,7 @@ by implementing `__iter__`.
 class Portfolio(Portfolio):
     def __iter__(self) -> Iterator[Position]:
         return iter(self._contents.values())
+
 
 p = Portfolio("Tech Fund", ("Alice", "Bob"), [pos1, pos2])
 
@@ -163,6 +173,7 @@ class Portfolio(Portfolio):
 
     def __bool__(self) -> bool:
         return bool(self._contents)
+
 
 p = Portfolio("Tech Fund", ("Alice", "Bob"), [pos1, pos2])
 
@@ -207,6 +218,7 @@ class Portfolio(Portfolio):
                 all_positions[pos.symbol] = Position(pos.symbol, pos.value_usd)
         return Portfolio(new_name, new_managers, list(all_positions.values()))
 
+
 # Example Usage
 p1 = Portfolio("Tech", ("Alice",), [Position("AAPL", 15000.0)])
 p2 = Portfolio(
@@ -235,6 +247,7 @@ summary.
 class Portfolio(Portfolio):
     def __str__(self):
         return f"Portfolio '{self.name}' with {len(self)} positions managed by {', '.join(self.managers)}"
+
 
 p = Portfolio("Tech Fund", ("Alice", "Bob"), [pos1, pos2])
 print(f"Str: {str(p)}")
