@@ -12,22 +12,13 @@ toc-depth: 2
 
 ![](cover.jpg){width="98%" fig-align="center"}
 
-In Python, functions are a lot more flexible than you might think. We're going to dive
-into what makes them "first-class citizens" and how that lets us do some really cool
-things with closures and decorators. If you've ever wondered how that `@something`
-syntax works, you're in the right place.
+Functions in Python are full-fledged objects. You can assign them to variables, store
+them in data structures, pass them into callers, or return them from outer scopes.
+Once you combine this first-class capability with closures and decorators, you unlock
+clean architectural patterns without polluting call sites.
 
-## Functions
-
-In Python, functions are "first-class citizens". This just means you can treat them like
-any other variable. You can:
-
-- assign them to variables,
-- pass them as arguments to other functions,
-- return them from functions.
-
-This "functional programming" trait of Python is a core for some powerful patterns that
-wouldn't work in some other (purely OOP) languages.
+Let's unpack what the `@decorator` syntax is actually doing under the hood by building
+our own caching and repetition wrappers from scratch.
 
 Let's use a function from our previous post on Fibonacci numbers to see this in action.
 
@@ -133,10 +124,12 @@ fib_functions = [fibonacci_recursive, fibonacci_recursive_cached, fibonacci_iter
 benchmark(fib_functions, 30)
 ```
 
-## Closures
+## Closures: The Scope Persistence Puzzle
 
-A closure is basically a function that remembers the environment in which it was
-created. Let's use our `get_greeter` function to see what that means.
+Here is a puzzle: when a Python function finishes executing, all its local variables
+and execution frames are popped off the call stack and garbage collected.
+
+Now look at `get_greeter`:
 
 ```{python}
 def get_greeter(greeting: str) -> Callable[[str], str]:
@@ -152,16 +145,19 @@ good_morning_greeter = get_greeter("Good morning")
 print(good_morning_greeter("World"))
 ```
 
-When we call `get_greeter("Good morning")`, we get a new `greeter` function back. This
-new function, which we've assigned to `good_morning_greeter`, "remembers" that the
-`greeting` variable was "Good morning".
+When `get_greeter("Good morning")` returns, its execution frame is finished. In theory,
+the `greeting` variable should be dead. Yet when you invoke
+`good_morning_greeter("World")` minutes later, it still greets you with
+`"Good morning"`.
 
-This is what a closure does: it "closes over" the variables from the scope where it was
-created. So even though the `get_greeter` function has finished running,
-`good_morning_greeter` still has access to the `greeting` variable.
+How does the inner function hold onto a variable whose enclosing scope was already
+destroyed?
 
-We can even peek inside the closure with the `__closure__` attribute, which shows us the
-variables it has captured.
+That is a **closure**. Python attaches a hidden tuple of `cell` objects to the returned
+function object (`__closure__`), freezing references to the outer variables it relies
+on.
+
+We can inspect this directly:
 
 ```{python}
 good_morning_greeter.__closure__[0].cell_contents
@@ -212,18 +208,19 @@ $2x^2 + 3x + 5$, and `p2` will always be $x^3 - 8$.
 
 ## Decorators
 
-Decorators are a neat way to add functionality to functions or classes without changing
-their code. Think of it as wrapping a function in another function to give it extra
-abilities.
-
-In the last post, we used the `@cache` decorator to speed up our recursive Fibonacci
-function. Let's try to build a simple version of that decorator ourselves.
+Decorators provide clean syntactic sugar for wrapping a function or method in another
+callable. In our previous post, we used `@cache` from `functools`. Let's build a caching
+decorator ourselves to see the mechanics.
 
 ```{python}
-def my_cache(func: Callable) -> Callable:  # <1>
+from functools import wraps
+
+
+def my_cache(func: Callable) -> Callable:
     """A simple cache decorator."""
     _cache = {}
 
+    @wraps(func)  # <1>
     def wrapper(*args):
         if args in _cache:
             return _cache[args]
@@ -248,18 +245,19 @@ def fibonacci_cached_by_me(n: int) -> int:
 fibonacci_cached_by_me(30)
 ```
 
-1. This is a cleaner way of writing
-   `fibonacci_cached_by_me = my_cache(fibonacci_cached_by_me)`. A decorator is just a
-   function that takes another function as input and returns a modified function.
+1. `@wraps(func)` copies `__name__`, `__doc__`, and module attributes from `func` to
+   `wrapper`. Without it, `fibonacci_cached_by_me.__name__` becomes `'wrapper'`,
+   breaking debuggers, loggers, and test suites.
 
-Decorators can also take arguments. To do this, we create a "decorator factory" - a
-function that returns a decorator. Here's one that repeats a function call a few times.
+Decorators can also accept arguments. To achieve this, we create a decorator factory—a
+function that returns the decorator itself:
 
 ```{python}
 def repeat(times: int) -> Callable:
     """A decorator that repeats a function call a given number of times."""
 
     def decorator(func: Callable) -> Callable:
+        @wraps(func)
         def wrapper(*args, **kwargs):
             for _ in range(times):
                 result = func(*args, **kwargs)
@@ -278,11 +276,10 @@ def say_hello(name: str):
 say_hello("World")
 ```
 
-1. the same as writing `say_hello = repeat(3)(say_hello)`.
+1. Equivalent to `say_hello = repeat(3)(say_hello)`.
 
-Decorators show up everywhere — Flask uses them for routing, `pytest` for fixtures. In
-the [next post](../25-11-05-python-academy-iteration/), we'll use one to profile memory
-usage of iterators and generators.
+In the [next post](../25-11-05-python-academy-iteration/), we will build a custom
+decorator to profile memory allocations of iterators and generators using `tracemalloc`.
 
 ::: callout-note
 

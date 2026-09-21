@@ -11,16 +11,54 @@ toc-depth: 2
 
 ![](cover.jpg){width="98%" fig-align="center"}
 
-If you've ever worked with complex Pydantic models, you know it can be tough to see how
-they're structured. This post shows you a Python script that can help by displaying your
-models as a tree in the console.
+When designing large data pipelines or REST APIs, Pydantic schemas rarely stay flat.
+Models nest inside models, which nest inside generic containers like `list[...]` or
+`dict[str, ...]`, often unioned with optional branches like `list[InnerNode |
+AnotherInnerNode]`.
 
-## The Script
+When you want to inspect or debug a complex model hierarchy, what do you usually do?
+You probably reach for `Model.model_fields`. But try printing that on a deeply nested
+schema, and you get a flat dictionary of `FieldInfo` objects with unreadable string
+representations. It tells you the immediate fields, but it won't traverse into generic
+arguments to tell you what sub-models are waiting inside container types.
 
-The script uses the `rich` library to make the output colorful and easy to read.
+How do we recursively unpack arbitrary type annotations at runtime and visualize the
+entire model schema as an intuitive tree?
+
+## The Challenge: Unpacking Generic Types
+
+To traverse nested models, we have to solve a tricky problem: how do you know what types
+are tucked inside a composite type hint like `list[Union[ModelA, ModelB]]`?
+
+Python's `typing` module gives us two key introspection tools:
+
+1. `get_origin(type_)`: Returns the unsubscripted container type (e.g.,
+   `get_origin(list[int])` returns `list`).
+2. `get_args(type_)`: Returns a tuple of generic type arguments (e.g.,
+   `get_args(list[int])` returns `(int,)`).
+
+By combining `get_args()` with recursion, we can extract every `BaseModel` subclass
+buried inside nested unions, lists, and dicts:
+
+```python
+def extract_model_types(type_: type) -> Generator[type[Any]]:
+    """Recursively extract model types from a composite type."""
+    if is_pydantic_model(type_):
+        yield type_
+
+    for arg in get_args(type_):
+        yield from extract_model_types(arg)
+```
+
+With this unwrapping utility in hand, we can build a full recursive tree generator using
+the `rich` library.
+
+## Building the Tree Walker
+
+Here is the complete implementation. It parses field annotations, formats generic types
+cleanly, and constructs a visual hierarchy using `rich.tree.Tree`:
 
 ```{python}
-# ruff: noqa: ANN401
 # pyright: reportAny=false, reportExplicitAny=false
 
 from collections.abc import Generator
@@ -46,11 +84,7 @@ def create_label(name: str, color: str, type_str: str | None = None) -> str:
 
 
 def is_pydantic_model(type_: Any) -> bool:
-    """Check if a type is a Pydantic model.
-
-    This is useful for introspection and for handling Pydantic models
-    differently from other types.
-    """
+    """Check if a type is a Pydantic model."""
     try:
         return issubclass(type_, BaseModel)
     except TypeError:
@@ -58,11 +92,7 @@ def is_pydantic_model(type_: Any) -> bool:
 
 
 def get_model_fields(type_: type[Any]) -> Generator[tuple[str, Any]]:
-    """Yield the fields and their types for a given model.
-
-    This function supports Pydantic models, making it a
-    key part of the model introspection process.
-    """
+    """Yield the fields and their types for a given model."""
     if is_pydantic_model(type_):
         for name, info in type_.model_fields.items():
             yield name, info.annotation
@@ -79,8 +109,7 @@ def get_type_name(type_: Any) -> str:
 def type_to_string(type_: type) -> str:
     """Convert a type to a string representation.
 
-    This function can handle generic types like `list[int]` and `Union[str, int]`,
-    which is essential for displaying complex type hints in a readable format.
+    Handles generic types like `list[int]` and `Union[str, int]`.
     """
     origin = get_origin(type_)
     if origin is None:
@@ -92,12 +121,7 @@ def type_to_string(type_: type) -> str:
 
 
 def extract_model_types(type_: type) -> Generator[type[Any]]:
-    """Recursively extract model types from a composite type.
-
-    For example, from `list[Union[ModelA, str, ModelB]]`, it will yield
-    `ModelA` and `ModelB`. This is crucial for traversing nested models
-    within generic containers.
-    """
+    """Recursively extract model types from a composite type."""
     if is_pydantic_model(type_):
         yield type_
 
@@ -106,12 +130,7 @@ def extract_model_types(type_: type) -> Generator[type[Any]]:
 
 
 def build_tree(model: type[Any], tree: Tree, level: int = 0) -> None:
-    """Recursively build a tree representation of a model.
-
-    This function traverses the model's fields, adding each field and its type
-    to the tree. It handles nested models and generic types, ensuring a comprehensive
-    representation of the model's structure.
-    """
+    """Recursively build a tree representation of a model."""
     for name, field_type in get_model_fields(model):
         color = COLORS[level % len(COLORS)]
         type_str = escape(type_to_string(field_type))
@@ -130,39 +149,29 @@ def build_tree(model: type[Any], tree: Tree, level: int = 0) -> None:
 
 
 def display_tree(model: type[Any]) -> None:
-    """Print a colorful, tree-like representation of a model to the console.
-
-    The indentation of each line indicates its depth in the model structure,
-    making it easy to visualize the model's composition.
-    """
+    """Print a colorful, tree-like representation of a model to the console."""
     tree = Tree(create_label(model.__name__, COLORS[0]))
     build_tree(model, tree)
     console.print(tree)
-
 ```
 
-## Example Usage
+## Putting It into Practice
 
-When you run the script, it will display the structure of the `Root` model as a tree:
+Let's test this with a realistic nested schema containing unions, lists, and
+dictionaries:
 
 ```{python}
 class InnerNode(BaseModel):
-    """Inner node model for testing."""
-
     name: str
     id_number: int
 
 
 class AnotherInnerNode(BaseModel):
-    """Another inner node model for testing."""
-
     age: int
     weight: float
 
 
 class Node(BaseModel):
-    """Node model for testing."""
-
     name: str
     inner: InnerNode
     many_inner: list[InnerNode]
@@ -171,8 +180,6 @@ class Node(BaseModel):
 
 
 class Root(BaseModel):
-    """Root model for testing."""
-
     name: str
     child: Node
 
@@ -180,37 +187,12 @@ class Root(BaseModel):
 display_tree(Root)
 ```
 
-## Code Explanation
-
-Let's look at the main parts of the script.
-
-### display_tree and build_tree
-
-`display_tree` is where it all starts. It creates a `rich.tree.Tree` and then calls
-`build_tree` to fill it up. `build_tree` goes through the model's fields, makes a label
-for each one, and then calls itself if it finds any nested models.
-
-### type_to_string
-
-This function turns a type hint into a string. It can handle generic types like `list`,
-`dict`, and `Union` by using `get_origin` and `get_args` from the `typing` module. It
-also escapes any square brackets in the type string so `rich` can render it correctly.
-
-### extract_model_types
-
-This function pulls out Pydantic model types from a composite type. For example, if you
-have `list[Union[ModelA, str, ModelB]]`, it will give you `ModelA` and `ModelB`. This is
-how the script explores nested models inside other types.
-
-## Conclusion
-
-This script is a simple way to see what your Pydantic models look like. The `rich`
-library helps make the output clear and colorful, which is a big help when you're
-dealing with complex data.
+When run in your terminal, `rich` renders the full model structure with color-coded
+nesting levels, making it immediately obvious how data flows through composite types.
 
 ::: callout-note
 
-Download the whole code
-[here](../../assets/python/pydantic_recursive_model_tree_walker_utility.py).
+Download the complete
+[Pydantic tree walker script](../../assets/python/pydantic_recursive_model_tree_walker_utility.py).
 
 :::

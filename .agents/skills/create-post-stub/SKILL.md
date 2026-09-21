@@ -31,25 +31,61 @@ flowchart LR
 
 ---
 
-## Workflow Steps
+## Blog Conventions & Taxonomy
 
-### 1. Gather Post Metadata
+### Folder & File Rules
 
-Determine or ask for:
+- **Directory Pattern**: `posts/<YY-MM-DD>-<slug>/` (two-digit year, month, day prefix).
+- **Slug**: Lowercase alphanumeric with hyphens (e.g. `fast-ipc-pyarrow`).
+- **Co-located Cover**: `posts/<YY-MM-DD>-<slug>/cover.jpg` (must **always** live
+  directly inside the post folder).
+- **Post Entrypoint**: `posts/<YY-MM-DD>-<slug>/index.qmd`.
 
-- **Topic / Working Title**: e.g., "Fast IPC with PyArrow"
-- **Slug**: kebab-case identifier (e.g., `fast-ipc-pyarrow`)
-- **Categories**: e.g., `[Dev Env]`, `[Python Recipes]`, `[Data Science]`, or
-  `[Financial Markets]`
-- **Brief Description**: 1–2 sentences summarizing the post.
+### Canonical Categories
 
-### 2. Determine Folder Name & Date
+Select one or more appropriate categories from the blog's standard taxonomy:
 
-Follow the blog's date-prefixed folder naming convention:
+| Category                    | Typical Topics                                                                             |
+| :-------------------------- | :----------------------------------------------------------------------------------------- |
+| **`Dev Env`**               | Terminal multiplexers (tmux), shell configuration, Linux/macOS workflows, editor setups.   |
+| **`Python Recipes`**        | Idiomatic Python patterns, standard library utilities, modern typing, clean code snippets. |
+| **`Data Science`**          | Polars, PyArrow, Marimo dashboards, Pandas workflows, data pipelines.                      |
+| **`Performance`**           | Profiling (Memray), memory optimization, Out-of-Memory debugging, native extensions.       |
+| **`Financial Markets`**     | Quantitative finance, merger arbitrage, market structure, risk modeling.                   |
+| **`Pythonic Distractions`** | Recreational math, algorithmic puzzles, creative coding.                                   |
+| **`Career`**                | Engineering reflections, developer growth, industry observations.                          |
 
-- Current ISO date: `YYYY-MM-DD` (e.g., `2026-09-21`)
-- Folder prefix: `YY-MM-DD-<slug>` (e.g., `26-09-21-fast-ipc-pyarrow`)
-- Destination: `posts/<YY-MM-DD-slug>/`
+---
+
+## Standardized Workflow
+
+### Primary Method: Automated Scaffolding Script
+
+Run the bundled scaffolding script to generate the folder, placeholder image, and
+initialized `index.qmd` in a single command:
+
+```bash
+uv run python .agents/skills/create-post-stub/scripts/scaffold.py \
+  --slug "<slug>" \
+  --title "<Post Title>" \
+  --category "<Category>" \
+  --description "<1-2 sentence description>"
+```
+
+**Common Options**:
+
+- Multi-category: Pass `--category` multiple times (e.g.
+  `--category "Dev Env" --category "Python Recipes"`).
+- Custom Date: Override default today's date with `--date "YYYY-MM-DD"`.
+- Custom Opening Hook: Pass `--hook "Opening introductory sentence..."`.
+
+---
+
+### Fallback Method: Manual Step-by-Step
+
+If running the script is not viable, follow these manual steps:
+
+#### 1. Compute Date & Folder Prefix
 
 ```bash
 POST_DATE=$(date +%Y-%m-%d)
@@ -58,20 +94,16 @@ POST_DIR="posts/${FOLDER_PREFIX}-${SLUG}"
 mkdir -p "$POST_DIR"
 ```
 
-### 3. Install Placeholder Cover Image
-
-Copy the bundled 900×600 Tokyo Night placeholder cover to the post directory:
+#### 2. Copy Placeholder Cover Image
 
 ```bash
 cp .agents/skills/create-post-stub/resources/placeholder-cover.jpg "$POST_DIR/cover.jpg"
 ```
 
-> **Rule**: The cover image must **always** live directly inside the post directory and
-> be named `cover.jpg`.
+#### 3. Render `index.qmd` from Template
 
-### 4. Create `index.qmd`
-
-Create `posts/<YY-MM-DD-slug>/index.qmd` with the following structure:
+Copy and substitute variables from
+`.agents/skills/create-post-stub/resources/post-template.qmd`:
 
 ```yaml
 ---
@@ -86,7 +118,7 @@ format-links: [html]
 toc-depth: 2
 ---
 
-![Cover image](cover.jpg){width="98%" fig-align="center"}
+![](cover.jpg){width="98%" fig-align="center"}
 
 Opening hook paragraph introducing the problem, tool, or pattern. Explain why this
 matters to developers and what the post demonstrates.
@@ -117,23 +149,30 @@ Explain the code mechanics, key arguments, and non-obvious nuances.
 
 ```text
 
-### 5. Verify the Stub
+---
 
-1. Check that `posts/<YY-MM-DD-slug>/cover.jpg` exists and is 900×600:
+## Verification
 
+After scaffolding, verify the stub:
+
+1. **Verify Placeholder Cover**:
    ```bash
-   file posts/<YY-MM-DD-slug>/cover.jpg
+   file posts/<YY-MM-DD>-<slug>/cover.jpg
    ```
 
-2. Verify `draft: true` and `image: cover.jpg` are present in `index.qmd`.
+   Confirm it exists and is a 900×600 JPEG.
+
+2. **Verify Frontmatter**: Check `posts/<YY-MM-DD>-<slug>/index.qmd` to ensure
+   `draft: true`, `image: cover.jpg`, and the captionless
+   `![](cover.jpg){width="98%" fig-align="center"}` embed are present.
 
 ---
 
 ## Finalization Handoff (When Ready to Publish)
 
-Once the user has authored the full content and is ready to finalize the post:
+Once the post content is fully authored and ready to publish:
 
 1. **Undraft the post**: Remove `draft: true` (or set `draft: false`) in `index.qmd`.
-2. **Update modified date**: Set `date-modified: "YYYY-MM-DD"`.
-3. **Generate Final Cover**: Invoke the **`generate-post-image`** skill to create the
-   bespoke 900×600 Tokyo Night cover, replacing `posts/<YY-MM-DD-slug>/cover.jpg`.
+2. **Update modified date**: Set `date-modified: "YYYY-MM-DD"` to the current date.
+3. **Generate Final Cover**: Invoke the **`generate-post-image`** skill to replace the
+   placeholder `cover.jpg` with bespoke cover artwork.

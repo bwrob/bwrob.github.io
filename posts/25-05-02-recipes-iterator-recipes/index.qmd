@@ -32,6 +32,7 @@ or just want a standalone version, here's how you can do it:
 
 ```{python}
 from __future__ import annotations
+
 from collections.abc import Iterable
 from itertools import islice
 from sys import maxsize
@@ -114,6 +115,17 @@ def unzip[T](iterable: Iterable[tuple[T, ...]]) -> tuple[Iterable[T], ...]:
     zipped = zip(*iterable, strict=True)
     return tuple(zipped)
 ```
+
+::: callout-warning
+### Memory Evaluation with `*iterable`
+
+Unlike Python's native `zip()`, which is evaluated lazily, the `*iterable`
+unpacking operator forces Python to expand the entire sequence into memory
+before passing positional arguments to `zip()`. If you pass a large generator or
+an unbounded stream into `unzip`, your process will eagerly load every tuple into
+RAM. For massive datasets, process streams lazily or split them through explicit
+generator pipelines instead of unpacking arguments.
+:::
 
 ### Example
 
@@ -218,7 +230,7 @@ convenience.
 ```{python}
 import itertools
 from collections.abc import Callable, Iterator
-from typing import Any, Protocol, Self
+from typing import Protocol, Self
 
 
 class _SupportsLessThan(Protocol):
@@ -271,6 +283,6 @@ they'll save you some time and keep your code a bit cleaner. You can grab the fu
 script with all these functions and examples below.
 
 ::: callout-note
-Download the whole code
-[here](../../assets/python/reusable_python_iterator_utilities_and_recipes.py).
+Download the complete
+[iterator utilities and recipes script](../../assets/python/reusable_python_iterator_utilities_and_recipes.py).
 :::

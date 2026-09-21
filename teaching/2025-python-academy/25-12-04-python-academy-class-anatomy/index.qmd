@@ -78,11 +78,10 @@ class EuropeanOption:
 euro_option = EuropeanOption(100.0, "2025-12-20", "Call")
 ```
 
-### `self`: The Secret Sauce
+### How `self` Works Under the Hood
 
-If you've looked at Python code before, you've seen `self` everywhere. It's a bit weird
-at first, but it's actually pretty straightforward: `self` is just a reference to the
-specific object you're currently working with.
+If you've looked at Python code before, you've seen `self` everywhere. It is simply an
+explicit reference to the specific instance currently executing the method:
 
 - **What it is:** `self` represents the "me" of the object. It's how the object talks to
   its own data and methods.
@@ -242,13 +241,19 @@ print(f"d1 value: {d1_val:.4f}")
 
 ## The Property Decorator: `@property`
 
-In finance, invalid data can lead to significant errors. A negative strike price or a
-negative volatility is nonsensical. In languages like Java or C++, you typically
-implement `getStrike()` and `setStrike()` methods to handle validation. Python offers a
-cleaner alternative: the `@property` decorator.
+In financial systems, invalid state corrupts models. A negative strike price or negative
+volatility produces nonsensical Black-Scholes valuations.
 
-This allows us to access a method as if it were an attribute, adding logic like
-validation seamlessly.
+If you were writing Java, you might write defensive boilerplate on day one:
+`getStrike()` and `setStrike()`. But in Python, we favor clean, direct attribute access:
+`option.strike`.
+
+What happens when your team has thousands of lines accessing `option.strike`, and sudden
+corrupt upstream data forces you to validate inputs? Do you rewrite every caller to
+invoke a getter function?
+
+This is where `@property` earns its keep. It allows an attribute to be backed by getter
+and setter validation functions without changing the public interface syntax:
 
 ```{python}
 class EuropeanOption:

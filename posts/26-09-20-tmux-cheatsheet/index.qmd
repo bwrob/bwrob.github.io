@@ -19,44 +19,37 @@ Connect directly into a persistent tmux session over SSH without opening an inte
 shell:
 
 ```bash
-ssh -t user@remote \ # <1>
-    "tmux new-session \ # <2>
-    -A \ # <3>
-    -s work" # <4>
+ssh -t user@remote "tmux new-session -A -s work"
 ```
 
-1. Force pseudo-terminal allocation (essential for interactive terminal multiplexers)
-2. Run the tmux binary on the remote host
-3. Attach to session if it already exists; create it if it does not
-4. Name of target session (`work`)
+- `-t`: Force pseudo-terminal allocation (essential for interactive multiplexers).
+- `tmux new-session`: Launch the tmux binary on the remote host.
+- `-A`: Attach to session if it already exists; create it if it does not.
+- `-s work`: Set the target session name to `work`.
 
 ## 2. Managing Sessions (CLI)
 
 ### Create a Session
 
 ```bash
-tmux new \ # <1>
-    -s <name> \ # <2>
-    -d \ # <3>
-    -- "<cmd>" # <4>
+tmux new -s <name> -d -- "<cmd>"
 ```
 
-1. Start a new session
-2. Name the session `<name>`
-3. Run detached in the background
-4. Execute initial command `<cmd>` upon startup (optional)
+- `new`: Start a new session (`new` or `new-session`).
+- `-s <name>`: Assign session name.
+- `-d`: Run detached in background.
+- `-- "<cmd>"`: Execute initial command upon startup (optional).
 
 ### Reconnect / Attach
 
 ```bash
-tmux a \ # <1>
-    -t <name> \ # <2>
-    -d # <3>
+tmux a -t <name> -d
 ```
 
-1. Attach to an existing session (`a` or `attach-session`)
-2. Target session name `<name>` (omit `-t` to attach to the most recent session)
-3. Detach other connected clients (forces session to resize to your display window)
+- `a`: Attach to an existing session (`a` or `attach-session`).
+- `-t <name>`: Target session name (omit to attach to the most recent session).
+- `-d`: Detach other connected clients (forces session to resize to your display
+  window).
 
 ### Quick Commands
 

@@ -12,20 +12,17 @@ toc-depth: 2
 
 ![](cover.jpg){width="98%" fig-align="center"}
 
-In this installment of
-[Python Academy](https://bwrob.github.io/#category=Python%20Academy), we're tackling
-something that trips up almost everyone starting with Python: **Environment
-Management**.
+You are about to deploy a pricing service that depends on `pandas==1.5.3`. You download
+a teammate's utility script, run `pip install`, and suddenly your core pricing model
+throws an `ImportError`. What happened? Your global Python environment just silently
+overwritten your production dependencies.
 
-We'll kick things off with the bread-and-butter tools—`venv` and `pip`—and then look at
-`uv`, a modern alternative that's rewriting the rules (and it's fast).
+When you first install Python, you get one shared global environment. Sharing that
+global site-packages across unrelated projects is an invitation to silent version
+conflicts.
 
-## The Classics: venv and pip
-
-### Why bother with virtual environments?
-
-When you first install Python, you get one global playground. It sounds convenient until
-you realize that sharing your toys leads to broken toys.
+Let's look at the classic workflow (`venv` + `pip`), why it breaks down as projects
+grow, and how `uv` replaces five disparate tools with a single, deterministic binary.
 
 1. **Version Nightmares:** Project A needs `pandas` version 1.0, but Project B demands
    version 2.0. You can't have both installed globally.
@@ -39,7 +36,7 @@ Virtual environments are the answer. They let you create isolated sandboxes for 
 project. Each sandbox gets its own Python executable and its own set of libraries, so
 they never fight over versions.
 
-### Creating and Activating
+## Creating and Activating
 
 The standard way to make a sandbox is with `venv`.
 
@@ -102,91 +99,64 @@ When your friend grabs your code, they just run:
 pip install -r requirements.txt
 ```
 
-And boom, their environment looks just like yours.
+Now their environment matches your exact pinned package state.
 
-### Generating requirements from code with pipreqs
+## The Modern Toolchain: uv
 
-`pip freeze` works well if you've been disciplined about your environment. But what if
-you inherit a folder of Python scripts with no documentation and no `requirements.txt`?
-Or what if you've just been installing packages globally for years?
+While `venv` and `pip` are standard library fixtures, managing multi-package dependency
+resolution, cross-platform lockfiles, and Python runtime versions creates constant
+developer friction.
 
-In these cases, `pip freeze` will give you a list of *everything* you've ever installed,
-which is often overkill and messy.
+`uv`, developed in Rust by Astral, replaces `pip`, `pip-tools`, `virtualenv`, and
+`pyenv` with a single, standalone binary that resolves dependencies 10 to 100 times
+faster.
 
-This is where `pipreqs` shines. It analyzes your source code imports to determine
-exactly what packages are needed. It's the perfect tool to bootstrap "good practices"
-for a project that started without them.
+### Initializing a Project with uv
 
-1. **Install it:**
-
-    ```bash
-    pip install pipreqs
-    ```
-
-1. **Run it:**
-
-    ```bash
-    pipreqs .
-    ```
-
-This scans your `.py` files and generates a clean, minimal `requirements.txt` based
-solely on the libraries you actually import. Now you have a solid foundation to create a
-fresh virtual environment!
-
-## The Modern Era: uv
-
-`venv` and `pip` are reliable, but let's be honest—they can be a bit clunky and slow.
-Enter `uv`. It's a Python package and project manager written in Rust, and it is fast.
-It aims to replace `pip`, `pip-tools`, and `virtualenv` with one single binary.
-
-### Setting up with uv
-
-Instead of manually creating folders and files, `uv` creates the project skeleton for
-you:
+Instead of manually creating folders, virtual environments, and requirement files, `uv`
+initializes standard project layouts in one step:
 
 ```bash
 uv init my-project
 cd my-project
 ```
 
-This sets up a standard structure, including a `pyproject.toml`. This file is the modern
-replacement for `requirements.txt` and `setup.py`.
+This generates a modern `pyproject.toml` configuration file (the PEP 517/621 standard
+that formally replaces legacy `setup.py` and loose `requirements.txt` files).
 
 ### Managing Dependencies
 
-With `uv`, the days of `pip install` followed by remembering to run `pip freeze` are
-over. You just tell `uv` what you want:
+With `uv`, you no longer manually run `pip install` and remember to update requirements
+files:
 
 ```bash
 uv add requests
 ```
 
-This one command does all the heavy lifting:
+In a single operation, `uv`:
 
-1. Finds the best version of `requests`.
-1. Installs it (creating a virtual environment automatically if you don't have one).
-1. Updates your `pyproject.toml`.
-1. Updates `uv.lock`, which locks down the exact versions of everything (like
-   `package-lock.json` in the JS world) so your builds are 100% reproducible.
+1. Resolves the optimal version of `requests`.
+2. Installs it (automatically creating a local `.venv` if one does not exist).
+3. Updates `pyproject.toml`.
+4. Updates `uv.lock`, generating a cryptographically verifiable lockfile for
+   reproducible production builds.
 
 ### Development Dependencies
 
-Sometimes you need tools just for development—like testing frameworks or linters—that
-shouldn't be shipped with your actual app. `uv` handles this cleanly:
+When you need tools purely for testing or formatting that should not ship with your
+runtime:
 
 ```bash
 uv add --dev pytest ruff
 ```
 
-Take `ruff` for example. It's a fast linter and formatter. You want it while you're
-coding to keep things tidy, but your users don't need it to run your app. Adding it with
-`--dev` puts it in a special `[tool.uv.dev-dependencies]` section, keeping your
-production environment lean.
+`uv` records these under `[dependency-groups]` in `pyproject.toml`, keeping production
+deployment images lean.
 
 ### Managing Python Versions
 
-This is where `uv` really shines. Need to test on Python 3.11 but you only have 3.12
-installed? `uv` can fetch it for you:
+Beyond library packages, `uv` also handles interpreter installation directly without
+requiring system-level package managers or `pyenv`:
 
 ```bash
 uv python install 3.11
@@ -292,7 +262,7 @@ folder. You can then upload these to PyPI or share them directly.
 | **Install**   | `pip install pkg`               | `uv add pkg`                  |
 | **Save Deps** | `pip freeze > requirements.txt` | Automatic in `pyproject.toml` |
 | **Dev Deps**  | Manual separation               | `uv add --dev pkg`            |
-| **Speed**     | Standard                        | Blazing Fast 🚀               |
+| **Speed**     | Standard                        | Sub-second (Rust resolver)    |
 
 Understanding `venv` and `pip` is useful background — it's how we did things for a long
 time. But once you try `uv`, you won't want to go back.

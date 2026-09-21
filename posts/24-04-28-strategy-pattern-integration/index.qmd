@@ -27,11 +27,8 @@ course/self-learning. But there are many other techniques, which we call schemes
 For quantitative analysts, the choice of the integration method matters. Different
 integration schemes offer varying levels of accuracy and efficiency. Unfortunately
 there's no *best technique*. Same algorithm can be a perfect fit for problems with
-certain characteristics, but unusable for others. And then there is the old as time
-performance vs. accuracy trade-off.
-
-As programmers working in finance, we need to be adaptable and leverage solutions that
-allow us to switch between these methods seamlessly.
+As quantitative developers, we need software architectures that let us swap
+between these numerical schemes without rewriting downstream caller code.
 
 ## Design patterns
 
@@ -315,26 +312,23 @@ iterations = [2**i for i in range(0, 21, 5)]
 rectangle_results = [integrator(RectangleScheme(steps=i)) for i in iterations]
 mc_results = [integrator(MonteCarloScheme(random_points=i)) for i in iterations]
 
-print(f"Rectangle schema results:\n{rectangle_results}.")
-print(f"Monte Carlo schema results:\n{mc_results}.")
+print(f"Rectangle scheme results:\n{rectangle_results}.")
+print(f"Monte Carlo scheme results:\n{mc_results}.")
 ```
 
-The performance and convergence of those schemes is terrible. Like anything in Python,
-if you want robust and performing code, you need to implement it with C or use any/all
-of the enhancement frameworks that Python provides (see Numba). Additionally, the simple
-methods we implemented are very naive. The standard numerical packages use sophisticated
-algorithms honed for many decades.
+The convergence of these simple numerical implementations is relatively slow. For
+production systems, intensive numerical integration is offloaded to vectorized C/Rust
+extensions or compiled with Numba. Furthermore, production libraries like SciPy employ
+adaptive quadrature algorithms refined over decades.
 
-But I was wrong! You *should* be excited! We just learned new approach for setting up
-extensible and readable code! Look how cleanly the problem statement is separated form
-different strategies to solve it.
+The real win here is architectural: look how cleanly the problem definition is decoupled
+from the specific algorithm used to solve it.
 
-If you are now wondering how much we could improve by using more advanced techniques
-(like [stratified Monte Carlo](http://proceedings.mlr.press/v28/carpentier13.pdf) or
-[adaptive quadrature](https://www.wikiwand.com/en/Adaptive_quadrature)) you just need to
-implement new subclass of \`IntegrationSchema' and you're done. No changes to the
-existing code are needed, just simple extension. And that's the idea behind strategy
-pattern.
+If you want to implement higher-order algorithms (such as
+[stratified Monte Carlo](http://proceedings.mlr.press/v28/carpentier13.pdf) or
+[adaptive quadrature](https://www.wikiwand.com/en/Adaptive_quadrature)), you simply
+subclass `IntegrationScheme`. No alterations to existing business logic or caller
+functions are required. That is the Strategy pattern at its best.
 
 ::: callout-note
 

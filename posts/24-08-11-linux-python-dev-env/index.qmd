@@ -11,16 +11,26 @@ toc-depth: 2
 
 ![](cover.jpg){width="98%" fig-align="center"}
 
-Installing Python dev tools on Linux is a bit of a pain, but it doesn't have to be. This
-post will show you how to set up a great Python dev environment on Linux using `brew`,
-`pipx`, and `poetry`.
+Installing Python development tools on Linux can easily pollute your system environment
+if done carelessly. This guide covers how to set up an isolated, reproducible Python
+development workstation on Linux using `brew`, `pipx`, and modern project tooling.
+
+## Installing Python Runtimes
+
+First, install the target Python interpreters via Homebrew:
 
 ```{bash}
 brew install python@3.12 python@3.13
 ```
 
-Dev tools should be accessable globally, but should't be in the defualt global Python
-env. Solution - `pipx`
+## Global CLI Tools with pipx
+
+Development CLI utilities (such as linters, formatters, and task runners) should be
+accessible globally across all terminal sessions, but should never be installed into
+your default system or global Python site-packages.
+
+The solution is `pipx`, which installs each CLI tool into its own isolated virtual
+environment while exposing its binary on your `$PATH`:
 
 ```{bash}
 brew install pipx
@@ -28,11 +38,9 @@ pipx ensurepath
 pipx install argcomplete --force
 ```
 
-Add pipix completions to config
+Add `pipx` shell completions to your `~/.zshrc`:
 
 ```{bash}
-nano  .zshrc
-
 autoload -U compinit && compinit
 eval "$(register-python-argcomplete pipx)"
 ```
@@ -40,7 +48,9 @@ eval "$(register-python-argcomplete pipx)"
 ![](../../assets/images/posts/24-08-11-linux-python-dev-env/1.png){width="90%"
 fig-align="center"}
 
-Install dev tools
+## Installing Core Developer Utilities
+
+Now install your everyday terminal development tools:
 
 ```{bash}
 pipx install --force ruff hapless poethepoet poetry pre-commit uv pytest basedpyright
@@ -49,6 +59,10 @@ pipx install --force ruff hapless poethepoet poetry pre-commit uv pytest basedpy
 ![](../../assets/images/posts/24-08-11-linux-python-dev-env/2.png){width="90%"
 fig-align="center"}
 
+### How pipx Manages Isolation
+
+Inspect the generated launcher for any installed tool:
+
 ```{bash}
 nano $(which poetry)
 ```
@@ -56,33 +70,35 @@ nano $(which poetry)
 ![](../../assets/images/posts/24-08-11-linux-python-dev-env/3.png){width="90%"
 fig-align="center"}
 
-Shebang Line (#!):
+Notice the shebang (`#!`) line points to an interpreter inside
+`~/.local/share/pipx/venvs/poetry/bin/python`. This launcher script sets up the
+execution environment before delegating to the underlying package.
 
-## !/home/bwrob/.local/share/pipx/venvs/poetry/bin/Python: This line specifies the interpreter used to run the script. In this case, it's a Python interpreter located in a specific virtual environment (poetry)
-
-This script acts as a launcher for the poetry command. It sets up the environment and
-handles potential script extensions before delegating the actual command execution to
-the poetry library.
-
-We can see that each of the toolos install with pipx is installed in its own venv, but
-is available globally
+Each tool installed with `pipx` lives in a dedicated, hermetic virtual environment:
 
 ```{bash}
-ls /home/bwrob/.local/share/pipx/venvs/ -la
+ls ~/.local/share/pipx/venvs/ -la
 ```
 
 ![](../../assets/images/posts/24-08-11-linux-python-dev-env/4.png){width="90%"
 fig-align="center"}
 
-Copy your
+## Initializing a Project Repository
+
+Clone or navigate into your project repository, install the dependencies, and configure
+pre-commit hooks:
 
 ```{bash}
-# Instal dependencies
+# Install project dependencies
 poetry install
-# Install pre-commit
+
+# Install and configure git pre-commit hooks
 pre-commit install --install-hooks --overwrite --allow-missing-config
-# Update pre-commit
 pre-commit autoupdate
-# Run pre-commit to test setup
+
+# Run checks across all files to verify environment integrity
 pre-commit run --all-files
 ```
+
+With this architecture, your global tools stay isolated, dependencies never conflict,
+and each repository manages its own hermetic virtual environment.

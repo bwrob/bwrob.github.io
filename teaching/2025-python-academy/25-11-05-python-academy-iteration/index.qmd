@@ -13,20 +13,22 @@ toc-depth: 2
 
 ![](cover.jpg){width="98%" fig-align="center"}
 
-## Introduction
+If you are parsing a 50 GB market data feed, what happens when you run
+`[parse_tick(line) for line in file]`? The Linux OOM killer terminates your process.
 
-In the finance world, we're always neck-deep in data. It's not just about how fast you
-can process it, but whether your code is going to crash your server by eating up all the
-memory.
+Ask yourself: does tick #49,999,999 need to sit in RAM while your algorithm is
+evaluating tick #12? Why allocate for the entire river when you only drink a glass at a
+time?
 
-This post is about iterators and generators — the "lazy" way to handle data that saves
-memory and avoids headaches.
+This post explores iterators and generators—the lazy computational model that processes
+continuous streams on demand, keeps memory footprints constant, and prevents
+Out-of-Memory crashes.
 
 ## Lists vs. Tuples: The Eager Iterables
 
-Lists and tuples are the most common sequence types in Python. They are *eager* in the
-sense that all their elements are stored in memory at once. When you create a list of a
-million numbers, Python allocates memory for all of them.
+Lists and tuples are eager sequences: Python allocates memory for every single element
+the moment the container is constructed. When you create a list of a million numbers,
+Python allocates the entire contiguous block of pointer references immediately:
 
 ```{python}
 my_list = [i for i in range(1_000_000)]
@@ -117,8 +119,7 @@ trades_cashflows = [
 def flatten(list_of_lists):
     for item in list_of_lists:
         if isinstance(item, list):
-            for subitem in item:
-                yield subitem
+            yield from item
         else:
             yield item
 
@@ -249,10 +250,11 @@ for trade in sorted_by_maturity:
     print(trade)
 ```
 
-## The `itertools` Module: A Treasure Trove for Financial Iteration
+## Production Recipes: `itertools` in Quantitative Workflows
 
-The `itertools` module is worth knowing well. Here are the ones I reach for most in
-financial work.
+You could write custom loops for rolling windows, cumulative risk balances, and pairwise
+date ranges. But Python's built-in `itertools` module implements these algorithms in
+highly optimized C. Here are the primitives I reach for most in quantitative workflows:
 
 - **`itertools.chain(*iterables)` and `itertools.chain.from_iterable(iterable)`**: Often
   you need to process items from several sequences in a row. `chain` lets you treat

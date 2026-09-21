@@ -26,10 +26,10 @@ import sys
 
 if sys.version_info >= (3, 11):
     from enum import StrEnum
-    from typing import Self, override
+    from typing import Any, Self, override
 else:
     from backports.strenum import StrEnum
-    from typing_extensions import Self, override
+    from typing_extensions import Any, Self, override
 
 
 class CaseInsensitiveStrEnum(StrEnum):
@@ -41,7 +41,7 @@ class CaseInsensitiveStrEnum(StrEnum):
     """
 
     @classmethod
-    def __init_subclass__(cls, **kwargs: dict[str, Any]) -> None:
+    def __init_subclass__(cls, **kwargs: Any) -> None:
         """Implement the special hook that is called when a class is subclassed.
 
         It allows us to customize the class creation process without using metaclasses.

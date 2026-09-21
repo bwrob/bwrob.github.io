@@ -11,24 +11,23 @@ toc-depth: 2
 
 ![](cover.jpg){width="98%" fig-align="center"}
 
-Finding memory leaks in Python gets complicated when using compiled extensions like
-NumPy, PyO3, or pybind11. When the system Out of Memory (OOM) killer runs, it terminates
-the process with a `SIGKILL` without leaving a stack trace.
+Your Python process crashes in production with an unceremonious `Killed`. No
+traceback, no log entry, no `MemoryError`.
 
-To debug an OOM, you need to find where the allocation occurred: in a Python object or
-inside a C/C++ backend.
+Why? Because the Linux Out-of-Memory (OOM) killer operates at the kernel level: it fires
+a `SIGKILL` (signal 9) directly at your PID. User-space applications cannot catch or
+intercept signal 9.
 
-**Memray** is a Python memory profiler that can track allocations down to the native
-level. Note that it only works on UNIX-based operating systems.
+Even worse: when the kernel pulls the trigger, memory profilers like **Memray** never
+get the chance to flush their trace buffers to disk. Your profile data simply
+evaporates.
 
-## Setting Memory Limits
+How do we force Python to blow up with a catchable exception *before* the OS terminates
+the process?
 
-If the Linux OOM killer terminates the process, Memray cannot write its profile data to
-disk, and the capture is lost.
-
-We can avoid this by setting a soft memory limit using Python's built-in `resource`
-module. This forces the interpreter to raise a `MemoryError` before the OS terminates
-the process, allowing Memray to save the profile data.
+By setting a virtual memory ceiling with Python's built-in POSIX `resource` module.
+This forces the runtime to raise a standard `MemoryError` when reaching the limit,
+allowing Memray to exit cleanly and preserve its profile dump.
 
 ## A Memory Leak Example
 
@@ -168,8 +167,8 @@ This will produce an HTML file that you can open in a browser.
 
 - **Python Allocation:** The graph will show a large block for `os.urandom`.
 - **NumPy Allocation:** The graph will show the call stack going from Python into
-  `numpy.core.multiarray.ones` and down to the C allocation function that blew the 1 GB
-  limit.
+  `numpy._core.multiarray.ones` (or `numpy.core` in pre-2.0 NumPy) and down to the C
+  allocation function that breached the 1 GB limit.
 
 ![Memray Flamegraph](../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.png){.lightbox
 group="memray" description="HTML flamegraph showing the call stack of the NumPy

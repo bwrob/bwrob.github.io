@@ -14,10 +14,13 @@ toc-depth: 2
 
 ![](cover.jpg){width="98%" fig-align="center"}
 
-Fibonacci numbers are a classic interview question and a great way to talk about
-optimization. In this post, we're going to see how many different ways there are to
-solve the same problem in Python—from the "obvious" way that's painfully slow, to a few
-clever tricks that make it fast.
+Everyone rolls their eyes at Fibonacci numbers because they’re the cliché interview
+question nobody uses on a trading desk. But as an autopsy on Python execution speed,
+nothing exposes the hidden costs of call-stack frames, object allocation, and
+algorithmic complexity quite like it.
+
+Let's take the textbook recursive definition, watch it bring our CPU to its knees for
+trivial inputs, and systematically re-engineer it until it runs at hardware limits.
 
 ## Naive Recursive Approach
 
@@ -38,8 +41,8 @@ def fibonacci_recursive(n: int) -> int:
 ```
 
 This approach is very intuitive, but it is also very slow. For `n=40`, it already takes
-a noticeable amount of time to compute. The reason for this is that the function calls
-itself twice for each `n`, leading to an exponential growth of the call stack.
+a noticeable amount of time to compute. The reason is that the function calls itself
+twice for each `n`, leading to an exponential explosion of stack frames ($O(2^n)$).
 
 ```{python}
 from time import perf_counter
@@ -48,7 +51,7 @@ start = perf_counter()
 _ = fibonacci_recursive(40)
 end = perf_counter()
 
-print(f"Execution taken {end - start:.2f} seconds")
+print(f"Execution took {end - start:.2f} seconds")
 ```
 
 ## Visualizing the Call Stack
@@ -85,14 +88,17 @@ For `n=6`, the call tree looks like this:
 _ = fibonacci_recursive_talkative(6)
 ```
 
-As you can see, many values are calculated multiple times. For example,
-`fibonacci_recursive(4)` is calculated twice, `fibonacci_recursive(3)` is calculated
-three times, and so on. This is the reason for the inefficiency.
+Look at that tree. To compute $F(6)$, our code evaluates $F(4)$ twice and $F(3)$ three
+times. By the time you ask for $F(40)$, Python evaluates over 300 million identical
+subtrees from scratch.
+
+What if our function had a memory? Before computing anything, what if it glanced at a
+simple lookup table to see if it already solved that exact subproblem?
 
 ## Memoization
 
-We can improve the performance by storing the results of the function calls in a cache
-(a dictionary). This technique is called memoization.
+Storing intermediate results in a dictionary cache transforms this exponential nightmare
+into linear execution ($O(n)$). This technique is called memoization:
 
 ```{python}
 FIBONACCI_CACHE: dict[int, int] = {}
@@ -169,8 +175,10 @@ def fibonacci_iterative(n: int) -> int:
     return b
 ```
 
-This is the most efficient way (we'll see) to calculate Fibonacci numbers in Python. It
-has a linear time complexity and constant space complexity.
+This is a clean, linear-time $O(n)$ solution with constant $O(1)$ space. As we will see
+in the benchmarks, while matrix exponentiation can reduce time complexity to
+$O(\log n)$, a tight iterative loop in Python or Numba is hard to beat for practical
+integer sizes.
 
 ## Performance Comparison
 
@@ -223,8 +231,8 @@ def fibonacci_linalg_numpy(n):
     return result_matrix[0, 0]
 ```
 
-1. Force compilation
-1. This is the line that cannot be compiled by Numba in nopython mode
+1. Warm-up call to trigger JIT compilation before benchmarking.
+2. Binary matrix exponentiation reduces theoretical time complexity to $O(\log n)$.
 
 ```{python}
 # | code-fold: true

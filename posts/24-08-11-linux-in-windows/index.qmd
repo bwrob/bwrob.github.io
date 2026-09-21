@@ -59,7 +59,7 @@ overall system performance. They are also hard to set up and maintain.
 
 WSL, on the other hand, is a more lightweight approach. It integrates Linux directly
 into the Windows kernel, allowing for faster boot times, better performance, and
-seamless file sharing between Windows and Linux environments.
+native bidirectional file sharing between Windows and Linux environments.
 
 ## Installing and setting up WSL
 
@@ -101,7 +101,7 @@ wsl --install -d 'Ubuntu-24.04'
 ![](../../assets/images/posts/24-08-11-linux-in-windows/3.png){width="90%"
 fig-align="center"}
 
-Reboot the Windows system and you'll see \`Ubuntu' among your applications.
+Reboot the Windows system and you'll see Ubuntu among your applications.
 
 ![](../../assets/images/posts/24-08-11-linux-in-windows/4.png){width="90%"
 fig-align="center"}
@@ -123,7 +123,7 @@ a secondary (to `apt-get`) package manager -- `brew`.
 
 ### Brewing starts
 
-Before we dive into installing Homebrew, we need to equip our system with the essential
+Before installing Homebrew, we need to equip our system with the essential
 tools. The build-essential package provides a collection of compilers and libraries
 necessary for building software from the source code. Git is a version control system
 used for managing code projects.
@@ -184,7 +184,7 @@ Add the brew initialization to `.zshrc` file as well. This way `brew` will alway
 your side!
 
 ```{bash}
-(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/bwrob/.zshrc
+(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> ~/.zshrc
 ```
 
 Check the default shell and set it to `zsh`:
@@ -232,7 +232,7 @@ Here's how:
   if it were running natively on Windows. Use the following command:
 
 ```{bash}
-code ~\repos\python_playground
+code ~/repos/python_playground
 ```
 
 ![](../../assets/images/posts/24-08-11-linux-in-windows/10.png){width="90%"

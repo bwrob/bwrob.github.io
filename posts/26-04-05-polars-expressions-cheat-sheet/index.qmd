@@ -157,12 +157,14 @@ use `LazyFrame` + streaming to process in batches.
 ```{python}
 #| eval: false
 
-df = pl.scan_ipc("large_dataset.arrow")
-.filter(pl.col("vol") > 0.3)
-.group_by("ticker")
-.agg(pl.col("ret").mean())
-.with_columns(pl.col("ticker").cast(pl.Categorical))  # <1>
-.collect(streaming=True)  # <2>
+df = (
+    pl.scan_ipc("large_dataset.arrow")
+    .filter(pl.col("vol") > 0.3)
+    .group_by("ticker")
+    .agg(pl.col("ret").mean())
+    .with_columns(pl.col("ticker").cast(pl.Categorical))  # <1>
+    .collect(streaming=True)  # <2>
+)
 ```
 
 1. Tickers as `Categorical` — integers under the hood, much less memory.

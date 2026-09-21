@@ -11,29 +11,24 @@ toc-depth: 2
 
 ![](cover.jpg){width="98%" fig-align="center"}
 
-## Working with risk managment systems
+## Working with Risk Management Systems
 
-As a quantitative finance professional you'll often find yourself with risk management
-systems (RMS). RMS's are extensive frameworks that let you properly define a book
-(portfolio) of your financial transactions and run varia of pricing and risk analysis on
-it. For big financial players, like investment banks, the RMS will be internal
-proprietary codbase that is run in-house. For smaller enterprises or second-line
-reporting it's not feasable to tackle creating such vast infrastructure. Hence, where
-there's a need, someone will try to make money on it. This leads us to third-party (or
-vendor) RMS, of which there are plenty (ex. Murex, Acadia).
+As a quantitative finance professional you'll often find yourself working with risk
+management systems (RMS). RMS's are extensive frameworks that let you define a book
+(portfolio) of financial transactions and run a variety of pricing and risk calculations
+on it. For big financial players, like investment banks, the RMS is an internal
+proprietary codebase run in-house. For smaller enterprises or second-line reporting,
+building such vast infrastructure from scratch is not feasible. This leads us to vendor
+RMS platforms (e.g., Murex, Acadia).
 
-Working with vendor RMS, especially one that covers computations for you, entails
-juggling multiple resources to obtain your risk metrics. Defining OTC products,
-benchmarks, portfolios, and running risk analysis can involve numerous API calls, each
-requiring proper setup and cleanup. This can lead to messy code and potential errors or
-performance bottlenecks if resources aren't handled correctly.
+Working with vendor RMS platforms entails juggling multiple stateful resources: defining
+OTC products, benchmarks, portfolios, and running simulations across dozens of API
+calls. Each step requires rigorous setup and guaranteed cleanup.
 
-Thankfully, Python provides a powerful concept called context managers (**CM**) that
-streamline resource managment. True to the language's 'batteries included' philosophy,
-there's also a `contextlib` library that contains variety of tools for easing up your
-work with CMs. Today we'll look at a (mock-up) usage of `ExitStack` class in real-life
-scenario of running risk analysis on RMS. If you need a refresher on CMs, check out this
-[tutorial](https://realpython.com/python-with-statement/) by RealPython.
+Thankfully, Python provides context managers (`with` statements) to manage resource
+lifecycles reliably. Standard library's `contextlib` module offers `ExitStack`, a
+powerful tool designed specifically for dynamic, multi-resource contexts. Today we will
+explore `ExitStack` in a realistic quantitative RMS workflow.
 
 ## Setting the stage
 
@@ -215,7 +210,7 @@ def portfolio(
 
 1. Clean up after the benchmark is complete.
 1. Clean up after the OTC products definition is complete.
-1. Clean up after the portfolio definition is complśete.
+1. Clean up after the portfolio definition is complete.
 
 ### Analysis results
 
@@ -231,9 +226,7 @@ def analysis_results(
     analysis_uuid: str,
     portfolio_uuid: str,
 ) -> pd.DataFrame:
-    """Mock running the analysis on a given portfolio.
-
-    Returns empty dataframe.
+    """Mock running the analysis.
 
     Args:
         analysis_uuid: Uuid of the analysis.
@@ -243,7 +236,7 @@ def analysis_results(
     return pd.DataFrame()
 ```
 
-##
+## Running Mock Risk Analysis
 
 Finally, we can run some (mock) risk analysis!
 
@@ -256,36 +249,29 @@ from our flow chart.
 PORTFOLIO = "portfolio_1"
 
 
-def run_analysis() -> pd.DataFrame:
-    """Mock running the analysis using with clauses."""
-    with otc_products() as otc_uuid:
-        with benchmark() as benchmark_uuid:
-            with portfolio(
-                portfolio_name=PORTFOLIO,
-                otc_products_uuid=otc_uuid,
-            ) as portfolio_uuid:
-                with analysis(
-                    benchmark_uuid=benchmark_uuid,
-                ) as analysis_uuid:
-                    results = analysis_results(
-                        analysis_uuid=analysis_uuid,
-                        portfolio_uuid=portfolio_uuid,
-                    )
-    return results
-```
-
-This is terrible! I am already getting lost, needed few tries to get it right. We ended
-up with **6** levels of indentation, the code is confusing, the flow is obtuse. Let's
-run it either way, to see if at least works.
-
-```{python}
 def print_title(title: str) -> None:
     """Print a title padded, surrounded by dashes and empty lines."""
     print("\n" + title.center(60, "-") + "\n")
 
 
-print_title("Running analysis.")
-run_analysis()
+# | code-fold: true
+# | code-summary: "Show the code"
+
+print_title("Running analysis using contexts directly.")
+
+with otc_products() as otc_uuid:
+    with benchmark() as benchmark_uuid:
+        with portfolio(
+            portfolio_name=PORTFOLIO,
+            otc_products_uuid=otc_uuid,
+        ) as portfolio_uuid:
+            with analysis(
+                benchmark_uuid=benchmark_uuid,
+            ) as analysis_uuid:
+                results = analysis_results(
+                    analysis_uuid=analysis_uuid,
+                    portfolio_uuid=portfolio_uuid,
+                )
 ```
 
 Great, the behaviour is as expected, everything is cleaned after nicely. We achieved the
@@ -293,17 +279,16 @@ goal but the code is unmaintainable. Looks like a subject of the joke *"good cod
 your job safe for a day, but terrible code in production makes it safe for a lifetime"*.
 Being reckless and with no regard to job security as we are, we'll fix it.
 
-*I can clearly recall the most unamanagable and unreadable code I've seen in my career
+*I can clearly recall the most unmanageable and unreadable code I've seen in my career
 and the culprit was fired in the end. Different reasons, long time later, but still. So
-the joke is just a joke, don't rely on a bad code as your job insurance.*
+the joke is just a joke, don't rely on bad code as job insurance.*
 
 ## The ExitStack
 
-Here comes in the MVP --- `ExitStack` from `contextlib`, made for streamlining complex
-context managment situationships. Conceptually it's just a First-In-Last-Out (FILO)
-stack. You put CMs on top, one by one. When CM is pushed to stack, its `__enter__`
-method is called and you can intercept the result. ExitStack is a CM itself, it's
-`__exit__` method is just calling the exits of CMs in reverse order.
+This is where `ExitStack` from `contextlib` shines: managing complex, dynamic context
+lifecycles without deep nesting. Conceptually it's a First-In-Last-Out (FILO) stack.
+You push context managers onto the stack dynamically; when the stack exits, it unwinds
+and closes them in reverse order.
 
 ```{mermaid}
 flowchart LR
@@ -361,12 +346,10 @@ It works as well! We also get a package of benefits for free.
 
 ### Disabling the clean up
 
-Working with API is tricky and debugging could be a painful experience. If we notice
-something iffy with the results we are reciving, it could be due to a bug at any of the
-stages. In such case disabling the artifact clean up and examining them is a good way to
-investigate. How do we do that? Comment out the exit code in our resource CMs? Nope, now
-we know better. With exit stack approach we just need to clean up the stack before
-exiting its context.
+Working with APIs is tricky and debugging can be painful. If we notice something
+unexpected with the results we are receiving, it could be due to an issue at any stage.
+In such cases, disabling artifact cleanup and examining intermediate state is valuable.
+With the `ExitStack` approach, we simply detach the contexts before the stack exits:
 
 ```{python}
 def run_analysis_with_exit_stack(
@@ -412,9 +395,9 @@ run_analysis_with_exit_stack(clean_up=False)
 
 ### Multiple portfolios
 
-Benefit #2 --- what do we do if we have multiple managers and many portfolios to re-run
-for? Or --- outside of the example scope --- we want to held multiple files open at the
-same time? Easy, we just push to the stack in a loop or a list comprehension.
+Benefit #2: what do we do if we have multiple managers and many portfolios to re-run
+for? Or—outside of the example scope—we want to hold multiple files open at the same
+time? Easy: we push to the stack dynamically in a loop.
 
 ```{python}
 PORTFOLIOS = ["portfolio_1", "portfolio_2", "portfolio_3"]

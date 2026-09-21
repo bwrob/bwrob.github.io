@@ -13,41 +13,52 @@ toc-depth: 2
 
 ![](cover.jpg){width="98%" fig-align="center"}
 
-`marimo` is a fantastic tool for collecting and analyzing data, in many ways more
-powerful than Jupyter. One of the selling points for me is it's reactive data flow
-model. No more worrying about running cells in the right order or dealing with stale
-data. With `marimo`, your data is always up to date and your analysis is always
-accurate. This design, combined with it's app view (layouts) makes it an efficient
-vehicle for creating interactive dashboards.
+`marimo` is a modern Python notebook alternative that solves Jupyter's biggest pain
+point: hidden out-of-order state. Its reactive dataflow graph tracks dependencies
+between cells: updating a parameter automatically recalculates all dependent variables,
+eliminating stale state bugs.
 
-If you're new to `marimo`, you can get started with the tutorials shiped with the
-library. Just run in your shell of choice:
+Combined with built-in layout views, `marimo` turns Python scripts into interactive web
+applications without requiring dedicated web frameworks.
+
+If you are new to `marimo`, explore its bundled interactive walkthrough:
 
 ```bash
 uv run marimo tutorial
 ```
 
-Setting up a dashboard to convey an important analysis (like convincing your partner to
-buy new gaming PC) can be a 10x solution. But paying for hosting and maintaining a
-server for a this can eat up valuable cash resources for those RAM sticks. That's where
-`webasembly` and `pyodide` come in. You can run fully fledged Python applications
-directly in the browser. The scope of packages supported is not as wide as a regular
-Python environment, but it's still pretty good and growing. You can check out the
-[pyodide documentation](https://pyodide.org/en/stable/) for more details on what's
-available.
+## Anatomy of a Reactive Marimo App
 
-Here is how you can create a serverless Marimo dashboard:
+A basic reactive dashboard pairs interactive UI widgets directly with data
+transformations:
 
-1. Create a simple dashboard using `marimo`. Set the layout to create an interactive
-   experience. Beware, not all Python libraries are supported, but you can still do a
-   lot with the ones that are - `pandas`, `matplotlib`, `plotly`, `polars` and more.
+```python
+import marimo as mo
 
-1. Use `marimo` to export your dashbooard to webassembly. Marimo has built-in support
-   for exporting to webassembly, so you can easily create a standalone dashboard that
-   can be hosted anywhere.
+# Cell 1: Interactive slider
+slider = mo.ui.slider(start=10, stop=100, step=5, value=25, label="Sample Size")
+slider
+
+# Cell 2: Reactive downstream consumer
+mo.md(f"Current sample size is: **{slider.value}**")
+```
+
+When a user drags `slider`, Cell 2 updates automatically.
+
+### Compiling to Serverless WebAssembly
+
+Paying for a cloud VM just to serve an internal analytical dashboard is unnecessary
+overhead. Through **Pyodide** and **WebAssembly (WASM)**, `marimo` can compile and
+execute entire Python data science stacks (`polars`, `pandas`, `matplotlib`, `plotly`)
+client-side inside the browser.
+
+Here is how to compile and export a serverless Marimo dashboard:
+
+1. **Build your interactive notebook**: Author your script using `marimo edit app.py`.
+2. **Export to standalone WASM HTML**:
 
 ```bash
-uv run marimo export html-wasm assets/python/serverless_marimo_dashboard_example.py --output assets/marimo-dashboard --mode run
+uv run marimo export html-wasm app.py --output dist/marimo-dashboard --mode run
 ```
 
 3. To check if your dashboard works, you can use a simple HTTP server to serve the files

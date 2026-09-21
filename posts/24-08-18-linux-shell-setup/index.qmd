@@ -18,8 +18,8 @@ customize your terminal prompt with themes and segments.
 
 ```{bash}
 brew install jandedobbeleer/oh-my-posh/oh-my-posh
-echo 'eval "$(oh-my-posh init zsh)"' >> .zshrc
-echo 'OH_MY_POSH_THEME="kali"' >> .zshrc
+echo 'eval "$(oh-my-posh init zsh)"' >> ~/.zshrc
+echo 'OH_MY_POSH_THEME="kali"' >> ~/.zshrc
 ```
 
 ## autosuggestions
@@ -29,19 +29,18 @@ enhancing your command line experience.
 
 ```{bash}
 brew install zsh-autosuggestions
-# To activate the autosuggestions, add the following at the end of your .zshrc:
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+# To activate the autosuggestions, add the following at the end of your ~/.zshrc:
+echo "source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ~/.zshrc
 ```
 
 ## Aliases
 
-Create a file `~/.bash_aliases` and add your aliases there, or directly in `.zshrc`.
+Create a file `~/.bash_aliases` and add your aliases there, or directly in `~/.zshrc`.
 
 ```{bash}
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
@@ -60,7 +59,7 @@ Fuzzy finder for command line, useful for searching files, history, etc.
 ```{bash}
 brew install fzf
 # Set up fzf key bindings and fuzzy completion
-echo 'source <(fzf --zsh)' >> .zshrc
+echo 'source <(fzf --zsh)' >> ~/.zshrc
 ```
 
 ### eza
@@ -69,7 +68,7 @@ Better alternative to `ls` with icons and better defaults.
 
 ```{bash}
 brew install eza
-echo 'alias ls='eza -la --group-directories-first --icons'' >> .zshrc
+echo 'alias ls="eza -la --group-directories-first --icons"' >> ~/.zshrc
 ```
 
 ### thefuck
@@ -78,7 +77,7 @@ A tool to correct mistyped commands in the terminal.
 
 ```{bash}
 brew install thefuck
-echo 'eval $(thefuck --alias)' >> .zshrc
+echo 'eval $(thefuck --alias)' >> ~/.zshrc
 ```
 
 ### tmux
@@ -88,7 +87,7 @@ single window.
 
 ```{bash}
 brew install tmux
-echo 'alias tmux="tmux -2"' >> .zshrc
+echo 'alias tmux="tmux -2"' >> ~/.zshrc
 ```
 
 ### fastfetch
@@ -97,6 +96,6 @@ A tool to display system information in the terminal, similar to neofetch but fa
 
 ```{bash}
 brew install fastfetch
-echo 'alias ff="fastfetch"' >> .zshrc
-echo 'ff' >> .zshrc
+echo 'alias ff="fastfetch"' >> ~/.zshrc
+echo 'ff' >> ~/.zshrc
 ```

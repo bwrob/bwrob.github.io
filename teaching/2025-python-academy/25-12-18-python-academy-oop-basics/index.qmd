@@ -124,9 +124,11 @@ class ShiftedFlatCurve(SpreadMixin, FlatForwardCurve):
 1. Get base discount factor from the parent curve
 1. Apply spread: D_new(t) = D_old(t) *exp(-spread* t)
 
-When we create `ShiftedFlatCurve`, Python's **Method Resolution Order (MRO)** ensures
-that `SpreadMixin` runs first. Its `super().discount_factor` call then hops over to
-`FlatForwardCurve`.
+When we define `class ShiftedFlatCurve(SpreadMixin, FlatForwardCurve)`, Python builds
+a **Method Resolution Order (MRO)** chain using C3 linearization. Because `SpreadMixin`
+is listed first, its `super().discount_factor` call hops over to `FlatForwardCurve`.
+If you reversed the order (`FlatForwardCurve, SpreadMixin`), Python would call
+`FlatForwardCurve` directly and completely bypass the spread adjustment!
 
 ```{python}
 shifted = ShiftedFlatCurve(rate=0.05, spread=0.02)
@@ -327,10 +329,12 @@ This lets you build loosely coupled systems that play nice with code you don't o
 
 OOP gives us some powerful ways to keep our code organized and flexible.
 
-- **ABCs** set the rules for what an object must do.
-- **Mixins** let us stack features on top of each other like Lego blocks.
-- **Polymorphism** lets our models swap in and out seamlessly.
-- **Protocols** let us stay flexible without forcing a rigid hierarchy.
+- **ABCs** formalize runtime and subclassing contracts.
+- **Mixins** compose reusable behavior cooperatively via MRO.
+- **Polymorphism** allows pricing engines to consume arbitrary yield curves without
+  branching logic.
+- **Protocols** enforce structural subtyping (duck typing) checked statically by
+  Mypy/Pyright.
 
 These patterns are what turn a collection of scripts into a proper library.
 
