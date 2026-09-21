@@ -120,11 +120,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="../../css/styles.css">
 <meta property="og:title" content="bwrob.dev">
 <meta property="og:description" content="bwrob personal and professional blog">
-<meta property="og:image" content="https://bwrob.dev/assets/images/posts/26-07-02-oom-python/image.jpg">
+<meta property="og:image" content="https://bwrob.dev/posts/26-07-02-oom-python/cover.jpg">
 <meta property="og:site_name" content="bwrob.dev">
 <meta name="twitter:title" content="bwrob.dev">
 <meta name="twitter:description" content="bwrob personal and professional blog">
-<meta name="twitter:image" content="https://bwrob.dev/assets/images/posts/26-07-02-oom-python/image.jpg">
+<meta name="twitter:image" content="https://bwrob.dev/posts/26-07-02-oom-python/cover.jpg">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -389,6 +389,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </div>
     </div>
     
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">July 2, 2026</p>
+      </div>
+    </div>
       
     </div>
     
@@ -400,23 +406,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
-  <ul>
+  <ul class="collapse">
   <li><a href="#setting-memory-limits" id="toc-setting-memory-limits" class="nav-link active" data-scroll-target="#setting-memory-limits">Setting Memory Limits</a></li>
-  <li><a href="#a-memory-leak-example" id="toc-a-memory-leak-example" class="nav-link" data-scroll-target="#a-memory-leak-example">A Memory Leak Example</a>
-  <ul class="collapse">
-  <li><a href="#setting-the-limit" id="toc-setting-the-limit" class="nav-link" data-scroll-target="#setting-the-limit">Setting the Limit</a></li>
-  <li><a href="#pure-python-allocation" id="toc-pure-python-allocation" class="nav-link" data-scroll-target="#pure-python-allocation">Pure Python Allocation</a></li>
-  <li><a href="#numpy-allocation" id="toc-numpy-allocation" class="nav-link" data-scroll-target="#numpy-allocation">NumPy Allocation</a></li>
-  <li><a href="#running-the-simulator" id="toc-running-the-simulator" class="nav-link" data-scroll-target="#running-the-simulator">Running the Simulator</a></li>
-  </ul></li>
+  <li><a href="#a-memory-leak-example" id="toc-a-memory-leak-example" class="nav-link" data-scroll-target="#a-memory-leak-example">A Memory Leak Example</a></li>
   <li><a href="#running-the-profiler" id="toc-running-the-profiler" class="nav-link" data-scroll-target="#running-the-profiler">Running the Profiler</a></li>
-  <li><a href="#analyzing-the-results" id="toc-analyzing-the-results" class="nav-link" data-scroll-target="#analyzing-the-results">Analyzing the Results</a>
-  <ul class="collapse">
-  <li><a href="#html-flamegraph" id="toc-html-flamegraph" class="nav-link" data-scroll-target="#html-flamegraph">HTML Flamegraph</a></li>
-  <li><a href="#live-terminal-ui" id="toc-live-terminal-ui" class="nav-link" data-scroll-target="#live-terminal-ui">Live Terminal UI</a></li>
-  <li><a href="#statistics-summary" id="toc-statistics-summary" class="nav-link" data-scroll-target="#statistics-summary">Statistics Summary</a></li>
-  <li><a href="#terminal-tree-view" id="toc-terminal-tree-view" class="nav-link" data-scroll-target="#terminal-tree-view">Terminal Tree View</a></li>
-  </ul></li>
+  <li><a href="#analyzing-the-results" id="toc-analyzing-the-results" class="nav-link" data-scroll-target="#analyzing-the-results">Analyzing the Results</a></li>
   </ul>
 </nav>
     </div>
@@ -430,7 +424,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../../assets/images/posts/26-07-02-oom-python/image.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="../../assets/images/posts/26-07-02-oom-python/image.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%"></a></p>
+<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
 </figure>
 </div>
 <p>Finding memory leaks in Python gets complicated when using compiled extensions like NumPy, PyO3, or pybind11. When the system Out of Memory (OOM) killer runs, it terminates the process with a <code>SIGKILL</code> without leaving a stack trace.</p>
@@ -447,7 +441,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="setting-the-limit" class="level3">
 <h3 class="anchored" data-anchor-id="setting-the-limit">Setting the Limit</h3>
 <p>First, we define a utility function to set the virtual memory limit.</p>
-<div id="c2e36d8e" class="cell" data-execution_count="1">
+<div id="0c121eca" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-label="1"></a><span class="im">import</span> os</span>
@@ -472,7 +466,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="pure-python-allocation" class="level3">
 <h3 class="anchored" data-anchor-id="pure-python-allocation">Pure Python Allocation</h3>
 <p>Next, we define a function that allocates memory using Python bytes.</p>
-<div id="d71d4014" class="cell" data-execution_count="2">
+<div id="d05c8abc" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-label="1"></a><span class="kw">def</span> leak_python() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
@@ -510,7 +504,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="numpy-allocation" class="level3">
 <h3 class="anchored" data-anchor-id="numpy-allocation">NumPy Allocation</h3>
 <p>We also define a function that allocates memory via NumPy.</p>
-<div id="619a21c8" class="cell" data-execution_count="3">
+<div id="5d992e0b" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-label="1"></a><span class="kw">def</span> leak_numpy() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
@@ -547,7 +541,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="running-the-simulator" class="level3">
 <h3 class="anchored" data-anchor-id="running-the-simulator">Running the Simulator</h3>
 <p>The entry point sets the memory limit and runs one of the allocation functions.</p>
-<div id="1c80697f" class="cell" data-execution_count="4">
+<div id="59cbd94a" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-label="1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
@@ -596,7 +590,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.png" class="lightbox" data-glightbox="description: .lightbox-desc-2;title:Memray Flamegraph;" data-gallery="memray" title="Memray Flamegraph"><img src="../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.png" class="img-fluid figure-img" alt="Memray Flamegraph"></a></p>
+<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.png" class="lightbox" data-gallery="memray" data-glightbox="description: .lightbox-desc-2;title:Memray Flamegraph;" title="Memray Flamegraph"><img src="../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.png" class="img-fluid figure-img" alt="Memray Flamegraph"></a></p>
 <figcaption>Memray Flamegraph</figcaption>
 </figure>
 </div>
@@ -608,7 +602,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This shows real-time memory spikes, top allocating files, and a running plot of heap usage. It is useful for monitoring background services over SSH.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-live.png" class="lightbox" data-glightbox="description: .lightbox-desc-3;title:Memray Live TUI;" data-gallery="memray" title="Memray Live TUI"><img src="../../assets/images/posts/26-07-02-oom-python/memray-live.png" class="img-fluid figure-img" alt="Memray Live TUI"></a></p>
+<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-live.png" class="lightbox" data-gallery="memray" data-glightbox="description: .lightbox-desc-3;title:Memray Live TUI;" title="Memray Live TUI"><img src="../../assets/images/posts/26-07-02-oom-python/memray-live.png" class="img-fluid figure-img" alt="Memray Live TUI"></a></p>
 <figcaption>Memray Live TUI</figcaption>
 </figure>
 </div>
@@ -625,7 +619,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-stats.png" class="lightbox" data-glightbox="description: .lightbox-desc-4;title:Memray Stats;" data-gallery="memray" title="Memray Stats"><img src="../../assets/images/posts/26-07-02-oom-python/memray-stats.png" class="img-fluid figure-img" alt="Memray Stats"></a></p>
+<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-stats.png" class="lightbox" data-gallery="memray" data-glightbox="description: .lightbox-desc-4;title:Memray Stats;" title="Memray Stats"><img src="../../assets/images/posts/26-07-02-oom-python/memray-stats.png" class="img-fluid figure-img" alt="Memray Stats"></a></p>
 <figcaption>Memray Stats</figcaption>
 </figure>
 </div>
@@ -637,7 +631,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This visualizes the call relationships of functions that consumed memory. It helps trace a memory leak straight to the source.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-tree.png" class="lightbox" data-glightbox="description: .lightbox-desc-5;title:Memray Tree;" data-gallery="memray" title="Memray Tree"><img src="../../assets/images/posts/26-07-02-oom-python/memray-tree.png" class="img-fluid figure-img" alt="Memray Tree"></a></p>
+<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-tree.png" class="lightbox" data-gallery="memray" data-glightbox="description: .lightbox-desc-5;title:Memray Tree;" title="Memray Tree"><img src="../../assets/images/posts/26-07-02-oom-python/memray-tree.png" class="img-fluid figure-img" alt="Memray Tree"></a></p>
 <figcaption>Memray Tree</figcaption>
 </figure>
 </div>

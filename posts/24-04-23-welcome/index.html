@@ -50,6 +50,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap-7bfeea53925769016531d82be4f8a906.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-7ebe754634c09e163cb13976304e8d4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -82,11 +85,11 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="../../css/styles.css">
 <meta property="og:title" content="bwrob.dev">
 <meta property="og:description" content="bwrob personal and professional blog">
-<meta property="og:image" content="https://bwrob.dev/assets/logo/python_mug.webp">
+<meta property="og:image" content="https://bwrob.dev/posts/24-04-23-welcome/cover.jpg">
 <meta property="og:site_name" content="bwrob.dev">
 <meta name="twitter:title" content="bwrob.dev">
 <meta name="twitter:description" content="bwrob personal and professional blog">
-<meta name="twitter:image" content="https://bwrob.dev/assets/logo/python_mug.webp">
+<meta name="twitter:image" content="https://bwrob.dev/posts/24-04-23-welcome/cover.jpg">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -334,7 +337,10 @@ ul.task-list li input[type="checkbox"] {
           An introduction to the blog and topics.
         </div>
       </div>
-                </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Pythonic Distractions</div>
+              </div>
+                  </div>
   </div>
     
   
@@ -372,6 +378,11 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
+</figure>
+</div>
 <p>This is the first post in the bwrob blog. Welcome!</p>
 <p>This blog is a battleground of sorts, but instead of swords and shields, we wield the weapons of Python and C++. I’m a mathematician turned quantitative analyst turned software engineer. You can expect high standard deviation of topics here.</p>
 <p>Here, I’ll document my coding conquests, from building practical and impractical tools, exploring financial concepts, to playing around with physics simulations.</p>
@@ -839,6 +850,38 @@ ul.task-list li input[type="checkbox"] {
     </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

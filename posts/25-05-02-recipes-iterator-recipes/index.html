@@ -85,6 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap-7bfeea53925769016531d82be4f8a906.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-7ebe754634c09e163cb13976304e8d4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -421,13 +424,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
+</figure>
+</div>
 <p>We’re always looping through something in Python. Whether it’s processing lines in a file or streaming data from an API, iterables are everywhere.</p>
 <p>Python’s built-in <code>itertools</code> is great, but every now and then you hit a problem that it doesn’t quite cover out of the box. Over time, I’ve put together a small collection of helper functions to handle those “I wish <code>itertools</code> had this” moments. Here are a few of my favorites, complete with some type-safe implementations you can drop into your own projects.</p>
 <section id="batched" class="level2">
 <h2 class="anchored" data-anchor-id="batched">batched</h2>
 <p>This one’s a classic: you have a long list and you want to slice it up into chunks. Maybe you’re feeding data into a neural network or just trying not to hit a rate limit on an API.</p>
 <p>Python 3.12 actually added this to <code>itertools</code>, but if you’re stuck on an older version or just want a standalone version, here’s how you can do it:</p>
-<div id="7c71367d" class="cell" data-execution_count="1">
+<div id="12c33548" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="im">from</span> __future__ <span class="im">import</span> annotations</span>
@@ -456,7 +464,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="example" class="level3">
 <h3 class="anchored" data-anchor-id="example">Example</h3>
-<div id="d2e4cf16" class="cell" data-execution_count="2">
+<div id="bba1d7d2" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="bu">print</span>(<span class="ss">f"batched(range(10), 3): </span><span class="sc">{</span><span class="bu">list</span>(batched(<span class="bu">range</span>(<span class="dv">10</span>), <span class="dv">3</span>))<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -471,7 +479,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="unbox">unbox</h2>
 <p>Ever have a list that <em>should</em> only have one thing in it? Maybe it’s a filtered database result or a unique ID. Instead of doing <code>results[0]</code> and hoping for the best, <code>unbox</code> makes sure your assumption is actually right.</p>
 <p>It grabs that one item and throws a <code>ValueError</code> if it finds more than one (or zero). It’s a great way to catch bugs early.</p>
-<div id="101c2233" class="cell" data-execution_count="3">
+<div id="cb036fcd" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="kw">def</span> unbox[T](iterable: Iterable[T]) <span class="op">-&gt;</span> T:</span>
@@ -488,7 +496,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="example-1" class="level3">
 <h3 class="anchored" data-anchor-id="example-1">Example</h3>
-<div id="ff472d6c" class="cell" data-execution_count="4">
+<div id="6696e07b" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="bu">print</span>(<span class="ss">f"unbox([42]): </span><span class="sc">{</span>unbox([<span class="dv">42</span>])<span class="sc">}</span><span class="ss">"</span>)</span>
@@ -508,7 +516,7 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 <section id="unzip" class="level2">
 <h2 class="anchored" data-anchor-id="unzip">unzip</h2>
 <p>If you’ve ever used Python’s <code>zip</code> function, you know it’s a lifesaver for pairing up data. But what about the other way around? If you have a list of pairs and you want two separate lists, <code>unzip</code> is the tool for the job.</p>
-<div id="4bbf4129" class="cell" data-execution_count="5">
+<div id="94615262" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="kw">def</span> unzip[T](iterable: Iterable[<span class="bu">tuple</span>[T, ...]]) <span class="op">-&gt;</span> <span class="bu">tuple</span>[Iterable[T], ...]:</span>
@@ -519,7 +527,7 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 </div>
 <section id="example-2" class="level3">
 <h3 class="anchored" data-anchor-id="example-2">Example</h3>
-<div id="403dd57f" class="cell" data-execution_count="6">
+<div id="bd1a9378" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-label="1"></a>zipped_data <span class="op">=</span> [(<span class="dv">1</span>, <span class="st">"a"</span>), (<span class="dv">2</span>, <span class="st">"b"</span>), (<span class="dv">3</span>, <span class="st">"c"</span>)]</span>
@@ -535,7 +543,7 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 <section id="flatten_iterable" class="level2">
 <h2 class="anchored" data-anchor-id="flatten_iterable">flatten_iterable</h2>
 <p>Nested lists are a headache. <code>flatten_iterable</code> lets you turn a messy, deeply nested structure into a single, clean list. It’s smart enough to leave strings and bytes alone, so you don’t end up with a list of individual characters when you didn’t mean to.</p>
-<div id="65730899" class="cell" data-execution_count="7">
+<div id="49848c44" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-label="1"></a><span class="im">from</span> collections.abc <span class="im">import</span> Generator</span>
@@ -558,7 +566,7 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 </div>
 <section id="example-3" class="level3">
 <h3 class="anchored" data-anchor-id="example-3">Example</h3>
-<div id="6d4ce949" class="cell" data-execution_count="8">
+<div id="49bd4594" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a>nested_list <span class="op">=</span> [<span class="dv">1</span>, [<span class="dv">2</span>, <span class="st">"a"</span>, [<span class="dv">3</span>]], <span class="st">"b"</span>]</span>
@@ -573,7 +581,7 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 <section id="flatten_string_key_dict" class="level2">
 <h2 class="anchored" data-anchor-id="flatten_string_key_dict">flatten_string_key_dict</h2>
 <p>Nested dictionaries are great for structure, but they can be a pain to access. This function flattens them into a single level, using dots to join the keys (like <code>parent.child.grandchild</code>). It’s perfect for turning complex config files into something much easier to work with.</p>
-<div id="3c844870" class="cell" data-execution_count="9">
+<div id="5ec51272" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a><span class="im">from</span> collections.abc <span class="im">import</span> Mapping</span>
@@ -597,7 +605,7 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 </div>
 <section id="example-4" class="level3">
 <h3 class="anchored" data-anchor-id="example-4">Example</h3>
-<div id="4f9843a5" class="cell" data-execution_count="10">
+<div id="4bc98681" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-label="1"></a>nested_dict <span class="op">=</span> {<span class="st">"a"</span>: <span class="dv">1</span>, <span class="st">"b"</span>: {<span class="st">"c"</span>: <span class="dv">2</span>, <span class="st">"d"</span>: {<span class="st">"e"</span>: <span class="dv">3</span>}}, <span class="st">"f"</span>: <span class="dv">4</span>}</span>
@@ -615,7 +623,7 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 <section id="group_by_non_consecutive" class="level2">
 <h2 class="anchored" data-anchor-id="group_by_non_consecutive">group_by_non_consecutive</h2>
 <p>If you’ve ever used <code>itertools.groupby</code>, you know the catch: your data <em>must</em> be sorted first, or it won’t work as expected. This helper function takes care of that for you by sorting the data before grouping it. It’s a bit more memory-heavy because it has to hold the whole list in memory to sort it, but for most everyday tasks, it’s a huge convenience.</p>
-<div id="823abb05" class="cell" data-execution_count="11">
+<div id="0739a54e" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-label="1"></a><span class="im">import</span> itertools</span>
@@ -649,7 +657,7 @@ unbox([1, 2]): Iterable contains more than one element.</code></pre>
 </div>
 <section id="example-5" class="level3">
 <h3 class="anchored" data-anchor-id="example-5">Example</h3>
-<div id="f4b8e0e5" class="cell" data-execution_count="12">
+<div id="7069ef2c" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-label="1"></a><span class="co"># With key function</span></span>
@@ -1153,6 +1161,38 @@ Note
     </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
