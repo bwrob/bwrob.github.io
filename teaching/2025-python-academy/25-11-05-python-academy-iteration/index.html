@@ -439,7 +439,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="lists-vs.-tuples-the-eager-iterables" class="level2">
 <h2 class="anchored" data-anchor-id="lists-vs.-tuples-the-eager-iterables">Lists vs.&nbsp;Tuples: The Eager Iterables</h2>
 <p>Lists and tuples are the most common sequence types in Python. They are <em>eager</em> in the sense that all their elements are stored in memory at once. When you create a list of a million numbers, Python allocates memory for all of them.</p>
-<div id="0cde2c0d" class="cell" data-execution_count="1">
+<div id="bd430dbb" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a>my_list <span class="op">=</span> [i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1_000_000</span>)]</span>
@@ -465,7 +465,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>__next__()</code>: Returns the next item from the stream. When there are no more items, it raises a <code>StopIteration</code> exception.</li>
 </ul>
 <p>You can get an iterator from any iterable (like a list) using the <code>iter()</code> function.</p>
-<div id="8200bdcd" class="cell" data-execution_count="2">
+<div id="02f55ea1" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>my_list <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span>
@@ -487,7 +487,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="generators-simplified-iterators">Generators: Simplified Iterators</h2>
 <p>Generators are a simpler way to create iterators. Instead of writing a class with <code>__iter__</code> and <code>__next__</code>, you write a function that uses <code>yield</code>.</p>
 <p>Here’s a simple generator that produces a sequence of numbers:</p>
-<div id="034a7d57" class="cell" data-execution_count="3">
+<div id="66ffb890" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="kw">def</span> number_generator(n):</span>
@@ -504,7 +504,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="example-flattening-a-list-of-lists">Example: Flattening a List of Lists</h3>
 <p>A common task is to flatten a list of lists into a single list. A generator is a perfect tool for this, especially when dealing with large datasets, as it avoids creating a new, large list in memory.</p>
 <p>Imagine you have a list of trades, where each trade has a list of associated cashflows. You want to process all cashflows from all trades.</p>
-<div id="34353277" class="cell" data-execution_count="4">
+<div id="098ba221" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a>trades_cashflows <span class="op">=</span> [</span>
@@ -540,7 +540,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="memory-efficiency-in-action">Memory Efficiency in Action</h2>
 <p>To make our memory analysis cleaner, we can define a decorator. This is a more Pythonic way to wrap functions with common boilerplate code, like starting and stopping <code>tracemalloc</code>.</p>
 <p>Let’s demonstrate the memory difference using a decorator with the standard library’s <code>tracemalloc</code> module. We’ll compare the memory usage of creating a list versus creating a generator.</p>
-<div id="04998c4b" class="cell" data-execution_count="5">
+<div id="44d53e77" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="im">import</span> tracemalloc</span>
@@ -591,13 +591,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>Profiling memory for list creation...
 Function: create_list
-Current memory usage is 40.441231MB; Peak was 40.441271MB
+Current memory usage is 40.441278MB; Peak was 40.441318MB
 Profiling memory for generator creation...
 Function: create_generator
 Current memory usage is 0.000392MB; Peak was 0.000392MB
 Profiling memory for generator consumption...
 Function: consume_generator
-Current memory usage is 40.441272MB; Peak was 40.441272MB</code></pre>
+Current memory usage is 40.441240MB; Peak was 40.441240MB</code></pre>
 </div>
 </div>
 <p>The output speaks for itself: creating the generator uses almost no memory. The cost only shows up when you actually consume it into a list.</p>
@@ -607,13 +607,13 @@ Current memory usage is 40.441272MB; Peak was 40.441272MB</code></pre>
 <p>A few built-in functions that come up constantly:</p>
 <ul>
 <li><p><strong><code>enumerate(iterable, start=0)</code></strong>: When processing a series of cashflows, you might need to know the period number for each payment. <code>enumerate</code> is perfect for this.</p>
-<p>::: {#8e5b3d27 .cell execution_count=6} <code>{.python .cell-code}   cashflows = [100, 100, 100, 1100] # Coupon payments and principal   for period, cf in enumerate(cashflows, 1):       print(f"Period {period}: Cashflow = {cf}")</code></p>
+<p>::: {#f28d0cb5 .cell execution_count=6} <code>{.python .cell-code}   cashflows = [100, 100, 100, 1100] # Coupon payments and principal   for period, cf in enumerate(cashflows, 1):       print(f"Period {period}: Cashflow = {cf}")</code></p>
 <p>::: {.cell-output .cell-output-stdout} <code>Period 1: Cashflow = 100   Period 2: Cashflow = 100   Period 3: Cashflow = 100   Period 4: Cashflow = 1100</code> ::: :::</p></li>
 <li><p><strong><code>zip(*iterables)</code></strong>: This function is very useful for combining different streams of data. For example, you can pair trade dates with their corresponding notionals.</p>
-<p>::: {#1637bda7 .cell execution_count=7} <code>{.python .cell-code}   trade_dates = ['2025-11-05', '2025-11-06', '2025-11-07']   notionals = [1_000_000, 2_500_000, 500_000]   for date, notional in zip(trade_dates, notionals):       print(f"On {date}, we traded a notional of {notional:,}")</code></p>
+<p>::: {#093a947d .cell execution_count=7} <code>{.python .cell-code}   trade_dates = ['2025-11-05', '2025-11-06', '2025-11-07']   notionals = [1_000_000, 2_500_000, 500_000]   for date, notional in zip(trade_dates, notionals):       print(f"On {date}, we traded a notional of {notional:,}")</code></p>
 <p>::: {.cell-output .cell-output-stdout} <code>On 2025-11-05, we traded a notional of 1,000,000   On 2025-11-06, we traded a notional of 2,500,000   On 2025-11-07, we traded a notional of 500,000</code> ::: :::</p></li>
 <li><p><strong><code>sorted(iterable, key=None, reverse=False)</code></strong>: Sorting is a common task. You might want to sort a list of trades by maturity date or notional.</p>
-<p>::: {#b3c4635b .cell execution_count=8} ``` {.python .cell-code} from dataclasses import dataclass from datetime import date</p>
+<p>::: {#20ae1466 .cell execution_count=8} ``` {.python .cell-code} from dataclasses import dataclass from datetime import date</p>
 <p><span class="citation" data-cites="dataclass">@dataclass</span> class Trade: trade_id: str maturity: date notional: float</p>
 <p>trades = [ Trade(‘T1’, date(2026, 12, 31), 10_000_000), Trade(‘T2’, date(2025, 12, 31), 5_000_000), Trade(‘T3’, date(2027, 12, 31), 15_000_000), ]</p>
 <p># Sort trades by maturity date sorted_by_maturity = sorted(trades, key=lambda t: t.maturity) for trade in sorted_by_maturity: print(trade) ```</p>
@@ -626,18 +626,18 @@ Current memory usage is 40.441272MB; Peak was 40.441272MB</code></pre>
 <ul>
 <li><p><strong><code>itertools.chain(*iterables)</code> and <code>itertools.chain.from_iterable(iterable)</code></strong>: Often you need to process items from several sequences in a row. <code>chain</code> lets you treat them as a single, continuous stream without merging them in memory. A great example is pricing a fixed-to-float swap leg, where initial coupon payments are fixed, and later ones are floating.</p>
 <p><code>chain.from_iterable</code> is a useful variant that takes a single iterable of iterables.</p>
-<p>::: {#38ec1741 .cell execution_count=9} ``` {.python .cell-code} import itertools import random</p>
+<p>::: {#854e57d9 .cell execution_count=9} ``` {.python .cell-code} import itertools import random</p>
 <p># First 2 years have fixed coupons fixed_leg = [50, 50, 50, 50]</p>
 <p># Next 3 years have floating coupons (calculated for demonstration) floating_leg = [50 + random.uniform(-5, 5) for _ in range(6)]</p>
 <p># We have a list of cashflow legs bond_legs = [fixed_leg, floating_leg]</p>
 <p># We can use chain.from_iterable to chain them together full_swap_leg = itertools.chain.from_iterable(bond_legs)</p>
 <p>print(“Full cashflow stream for the leg:”) for cf in full_swap_leg: print(f”{cf:.2f}“, end=’ ’) ```</p>
-<p>::: {.cell-output .cell-output-stdout} <code>Full cashflow stream for the leg:   50.00 50.00 50.00 50.00 49.50 53.09 54.04 50.00 53.20 52.22</code> ::: :::</p></li>
+<p>::: {.cell-output .cell-output-stdout} <code>Full cashflow stream for the leg:   50.00 50.00 50.00 50.00 45.42 50.92 54.91 54.41 50.72 45.29</code> ::: :::</p></li>
 <li><p><strong><code>itertools.accumulate(iterable[, func])</code></strong>: This is ideal for calculating cumulative sums or running products. A common use case is to calculate the cumulative P&amp;L of a trading strategy.</p>
-<p>::: {#8fb66b8b .cell execution_count=10} <code>{.python .cell-code}   import itertools   daily_pnl = [150, -200, 50, 300, -100]   cumulative_pnl = itertools.accumulate(daily_pnl)   print(list(cumulative_pnl))   # Output: [150, -50, 0, 300, 200]</code></p>
+<p>::: {#c7d66267 .cell execution_count=10} <code>{.python .cell-code}   import itertools   daily_pnl = [150, -200, 50, 300, -100]   cumulative_pnl = itertools.accumulate(daily_pnl)   print(list(cumulative_pnl))   # Output: [150, -50, 0, 300, 200]</code></p>
 <p>::: {.cell-output .cell-output-stdout} <code>[150, -50, 0, 300, 200]</code> ::: :::</p>
 <p>It can also model more complex recurrence relations, like the amortization of a loan. Let’s calculate the outstanding balance of a fixed-payment annuity until it’s paid off.</p>
-<p>::: {#fc7924de .cell execution_count=11} ``` {.python .cell-code} import itertools</p>
+<p>::: {#a2e49c89 .cell execution_count=11} ``` {.python .cell-code} import itertools</p>
 <p>def outstanding_balance(balance, payment, rate): return balance * (1 + rate) - payment</p>
 <p>initial_notional = 1_000 interest_rate = 0.01 # Monthly rate (around 12% annually) monthly_payment = 50</p>
 <p># Create an infinite stream of payments payments = itertools.repeat(monthly_payment)</p>
@@ -647,12 +647,12 @@ Current memory usage is 40.441272MB; Peak was 40.441272MB</code></pre>
 <p># Note: A proper amortization schedule would have a final smaller payment. # This example is to demonstrate the power of itertools. ```</p>
 <p>::: {.cell-output .cell-output-stdout} <code>Month          1: 1,000.00   Month          2: 960.00   Month          3: 919.60   Month          4: 878.80   Month          5: 837.58   Month          6: 795.96   Month          7: 753.92   Month          8: 711.46   Month          9: 668.57   Month          10: 625.26   Month          11: 581.51   Month          12: 537.33   Month          13: 492.70   Month          14: 447.63   Month          15: 402.10   Month          16: 356.12   Month          17: 309.69   Month          18: 262.78   Month          19: 215.41   Month          20: 167.56   Month          21: 119.24   Month          22: 70.43   Month          23: 21.14</code> ::: :::</p></li>
 <li><p><strong><code>itertools.pairwise(iterable)</code></strong>: As we’ve seen, this is ideal for working with consecutive items in a sequence. Calculating year fractions for a swap leg is a prime example.</p>
-<p>::: {#24ed1c55 .cell execution_count=12} ``` {.python .cell-code} import itertools from datetime import date</p>
+<p>::: {#5df71a9b .cell execution_count=12} ``` {.python .cell-code} import itertools from datetime import date</p>
 <p>payment_dates = [date(2025, 1, 15), date(2025, 7, 15), date(2026, 1, 15)] def year_fraction(start, end): return (end - start).days / 365.25</p>
 <p>for start, end in itertools.pairwise(payment_dates): yf = year_fraction(start, end) print(f”Period: {start} to {end}, Year Fraction: {yf:.4f}“) ```</p>
 <p>::: {.cell-output .cell-output-stdout} <code>Period: 2025-01-15 to 2025-07-15, Year Fraction: 0.4956   Period: 2025-07-15 to 2026-01-15, Year Fraction: 0.5038</code> ::: :::</p></li>
 <li><p><strong><code>itertools.cycle(iterable)</code></strong>: Repeats a sequence indefinitely. This can be used to cycle through a set of risk scenarios or apply a repeating pattern of market data shocks.</p>
-<p>::: {#4b9516d1 .cell execution_count=13} <code>{.python .cell-code}   import itertools   scenarios = itertools.cycle(['Base', 'Rate Up', 'Rate Down'])   for _ in range(5):       print(f"Running scenario: {next(scenarios)}")</code></p>
+<p>::: {#0cfcfe8f .cell execution_count=13} <code>{.python .cell-code}   import itertools   scenarios = itertools.cycle(['Base', 'Rate Up', 'Rate Down'])   for _ in range(5):       print(f"Running scenario: {next(scenarios)}")</code></p>
 <p>::: {.cell-output .cell-output-stdout} <code>Running scenario: Base   Running scenario: Rate Up   Running scenario: Rate Down   Running scenario: Base   Running scenario: Rate Up</code> ::: :::</p></li>
 </ul>
 </section>
