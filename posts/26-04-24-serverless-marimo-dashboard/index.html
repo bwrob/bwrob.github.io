@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-7bfeea53925769016531d82be4f8a906.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-d2f8a27639f4fc2bf7bba3056eca9a55.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-7ebe754634c09e163cb13976304e8d4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
@@ -403,8 +403,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#anatomy-of-a-reactive-marimo-app" id="toc-anatomy-of-a-reactive-marimo-app" class="nav-link active" data-scroll-target="#anatomy-of-a-reactive-marimo-app">Anatomy of a Reactive Marimo App</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
@@ -419,20 +425,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
 </figure>
 </div>
-<p><code>marimo</code> is a fantastic tool for collecting and analyzing data, in many ways more powerful than Jupyter. One of the selling points for me is it’s reactive data flow model. No more worrying about running cells in the right order or dealing with stale data. With <code>marimo</code>, your data is always up to date and your analysis is always accurate. This design, combined with it’s app view (layouts) makes it an efficient vehicle for creating interactive dashboards.</p>
-<p>If you’re new to <code>marimo</code>, you can get started with the tutorials shiped with the library. Just run in your shell of choice:</p>
+<p><code>marimo</code> is a modern Python notebook alternative that solves Jupyter’s biggest pain point: hidden out-of-order state. Its reactive dataflow graph tracks dependencies between cells: updating a parameter automatically recalculates all dependent variables, eliminating stale state bugs.</p>
+<p>Combined with built-in layout views, <code>marimo</code> turns Python scripts into interactive web applications without requiring dedicated web frameworks.</p>
+<p>If you are new to <code>marimo</code>, explore its bundled interactive walkthrough:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="ex">uv</span> run marimo tutorial</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Setting up a dashboard to convey an important analysis (like convincing your partner to buy new gaming PC) can be a 10x solution. But paying for hosting and maintaining a server for a this can eat up valuable cash resources for those RAM sticks. That’s where <code>webasembly</code> and <code>pyodide</code> come in. You can run fully fledged Python applications directly in the browser. The scope of packages supported is not as wide as a regular Python environment, but it’s still pretty good and growing. You can check out the <a href="https://pyodide.org/en/stable/">pyodide documentation</a> for more details on what’s available.</p>
-<p>Here is how you can create a serverless Marimo dashboard:</p>
+<section id="anatomy-of-a-reactive-marimo-app" class="level2">
+<h2 class="anchored" data-anchor-id="anatomy-of-a-reactive-marimo-app">Anatomy of a Reactive Marimo App</h2>
+<p>A basic reactive dashboard pairs interactive UI widgets directly with data transformations:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="im">import</span> marimo <span class="im">as</span> mo</span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a><span class="co"># Cell 1: Interactive slider</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>slider <span class="op">=</span> mo.ui.slider(start<span class="op">=</span><span class="dv">10</span>, stop<span class="op">=</span><span class="dv">100</span>, step<span class="op">=</span><span class="dv">5</span>, value<span class="op">=</span><span class="dv">25</span>, label<span class="op">=</span><span class="st">"Sample Size"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>slider</span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a><span class="co"># Cell 2: Reactive downstream consumer</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a>mo.md(<span class="ss">f"Current sample size is: **</span><span class="sc">{</span>slider<span class="sc">.</span>value<span class="sc">}</span><span class="ss">**"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>When a user drags <code>slider</code>, Cell 2 updates automatically.</p>
+<section id="compiling-to-serverless-webassembly" class="level3">
+<h3 class="anchored" data-anchor-id="compiling-to-serverless-webassembly">Compiling to Serverless WebAssembly</h3>
+<p>Paying for a cloud VM just to serve an internal analytical dashboard is unnecessary overhead. Through <strong>Pyodide</strong> and <strong>WebAssembly (WASM)</strong>, <code>marimo</code> can compile and execute entire Python data science stacks (<code>polars</code>, <code>pandas</code>, <code>matplotlib</code>, <code>plotly</code>) client-side inside the browser.</p>
+<p>Here is how to compile and export a serverless Marimo dashboard:</p>
 <ol type="1">
-<li><p>Create a simple dashboard using <code>marimo</code>. Set the layout to create an interactive experience. Beware, not all python libraries are supported, but you can still do a lot with the ones that are - <code>pandas</code>, <code>matplotlib</code>, <code>plotly</code>, <code>polars</code> and more.</p></li>
-<li><p>Use <code>marimo</code> to export your dashbooard to webassembly. Marimo has built-in support for exporting to webassembly, so you can easily create a standalone dashboard that can be hosted anywhere.</p></li>
+<li><strong>Build your interactive notebook</strong>: Author your script using <code>marimo edit app.py</code>.</li>
+<li><strong>Export to standalone WASM HTML</strong>:</li>
 </ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="ex">uv</span> run marimo export html-wasm assets/python/serverless_marimo_dashboard_example.py <span class="at">--output</span> assets/marimo-dashboard <span class="at">--mode</span> run</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="ex">uv</span> run marimo export html-wasm app.py <span class="at">--output</span> dist/marimo-dashboard <span class="at">--mode</span> run</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ol start="3" type="1">
 <li>To check if your dashboard works, you can use a simple HTTP server to serve the files locally. For example, you can use Python’s built-in HTTP server module:</li>
 </ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="ex">python</span> <span class="at">-m</span> http.server <span class="at">--directory</span> assets/marimo-dashboard</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="ex">python</span> <span class="at">-m</span> http.server <span class="at">--directory</span> assets/marimo-dashboard</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ol start="4" type="1">
 <li><p>Host your dashboard on a static site hosting service like GitHub Pages, Netlify, or Vercel. Since the dashboard is just a static file, you don’t need to worry about server maintenance or costs.</p></li>
 <li><p>When you open the dashboard in your browser, it will load the webassembly module and run your Python code to display the data. You can interact with the dashboard just like you would with any other web application. The compute is done locally in the browser using pyodide, the user is paying for it with their CPU cycles.</p></li>
@@ -453,6 +474,8 @@ Note
 </div>
 
 
+</section>
+</section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

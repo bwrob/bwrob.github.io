@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-7bfeea53925769016531d82be4f8a906.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-d2f8a27639f4fc2bf7bba3056eca9a55.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-7ebe754634c09e163cb13976304e8d4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
@@ -431,30 +431,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="oh-my-posh">Oh my posh</h2>
 <p>Oh My Posh is a prompt theme engine for any shell, including Zsh. It allows you to customize your terminal prompt with themes and segments.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a>brew install jandedobbeleer/oh-my-posh/oh-my-posh</span>
-<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a>echo 'eval "$(oh-my-posh init zsh)"' &gt;&gt; .zshrc</span>
-<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a>echo 'OH_MY_POSH_THEME="kali"' &gt;&gt; .zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a>echo 'eval "$(oh-my-posh init zsh)"' &gt;&gt; ~/.zshrc</span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a>echo 'OH_MY_POSH_THEME="kali"' &gt;&gt; ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="autosuggestions" class="level2">
 <h2 class="anchored" data-anchor-id="autosuggestions">autosuggestions</h2>
 <p>Zsh autosuggestions provide command suggestions based on your history and current input, enhancing your command line experience.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>brew install zsh-autosuggestions</span>
-<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a># To activate the autosuggestions, add the following at the end of your .zshrc:</span>
-<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a># To activate the autosuggestions, add the following at the end of your ~/.zshrc:</span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>echo "source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" &gt;&gt; ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="aliases" class="level2">
 <h2 class="anchored" data-anchor-id="aliases">Aliases</h2>
-<p>Create a file <code>~/.bash_aliases</code> and add your aliases there, or directly in <code>.zshrc</code>.</p>
+<p>Create a file <code>~/.bash_aliases</code> and add your aliases there, or directly in <code>~/.zshrc</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a># Alias definitions.</span>
 <span id="cb3-2"><a href="#cb3-2" aria-label="2"></a># You may want to put all your additions into a separate file like</span>
 <span id="cb3-3"><a href="#cb3-3" aria-label="3"></a># ~/.bash_aliases, instead of adding them here directly.</span>
-<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a># See /usr/share/doc/bash-doc/examples in the bash-doc package.</span>
-<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a>if [ -f ~/.bash_aliases ]; then</span>
-<span id="cb3-7"><a href="#cb3-7" aria-label="7"></a>    . ~/.bash_aliases</span>
-<span id="cb3-8"><a href="#cb3-8" aria-label="8"></a>fi</span>
-<span id="cb3-9"><a href="#cb3-9" aria-label="9"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-label="10"></a>alias zshconfig='nano ~/.zshrc'</span>
-<span id="cb3-11"><a href="#cb3-11" aria-label="11"></a>alias ls='eza -la --group-directories-first --icons'</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a>if [ -f ~/.bash_aliases ]; then</span>
+<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a>    . ~/.bash_aliases</span>
+<span id="cb3-7"><a href="#cb3-7" aria-label="7"></a>fi</span>
+<span id="cb3-8"><a href="#cb3-8" aria-label="8"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-label="9"></a>alias zshconfig='nano ~/.zshrc'</span>
+<span id="cb3-10"><a href="#cb3-10" aria-label="10"></a>alias ls='eza -la --group-directories-first --icons'</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="minor-packages" class="level2">
 <h2 class="anchored" data-anchor-id="minor-packages">Minor packages</h2>
@@ -463,32 +462,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Fuzzy finder for command line, useful for searching files, history, etc.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a>brew install fzf</span>
 <span id="cb4-2"><a href="#cb4-2" aria-label="2"></a># Set up fzf key bindings and fuzzy completion</span>
-<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a>echo 'source &lt;(fzf --zsh)' &gt;&gt; .zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a>echo 'source &lt;(fzf --zsh)' &gt;&gt; ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="eza" class="level3">
 <h3 class="anchored" data-anchor-id="eza">eza</h3>
 <p>Better alternative to <code>ls</code> with icons and better defaults.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a>brew install eza</span>
-<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a>echo 'alias ls='eza -la --group-directories-first --icons'' &gt;&gt; .zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a>echo 'alias ls="eza -la --group-directories-first --icons"' &gt;&gt; ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="thefuck" class="level3">
 <h3 class="anchored" data-anchor-id="thefuck">thefuck</h3>
 <p>A tool to correct mistyped commands in the terminal.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a>brew install thefuck</span>
-<span id="cb6-2"><a href="#cb6-2" aria-label="2"></a>echo 'eval $(thefuck --alias)' &gt;&gt; .zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-2"><a href="#cb6-2" aria-label="2"></a>echo 'eval $(thefuck --alias)' &gt;&gt; ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="tmux" class="level3">
 <h3 class="anchored" data-anchor-id="tmux">tmux</h3>
 <p>A terminal multiplexer that allows you to manage multiple terminal sessions from a single window.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a>brew install tmux</span>
-<span id="cb7-2"><a href="#cb7-2" aria-label="2"></a>echo 'alias tmux="tmux -2"' &gt;&gt; .zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-2"><a href="#cb7-2" aria-label="2"></a>echo 'alias tmux="tmux -2"' &gt;&gt; ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="fastfetch" class="level3">
 <h3 class="anchored" data-anchor-id="fastfetch">fastfetch</h3>
 <p>A tool to display system information in the terminal, similar to neofetch but faster.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1"><a href="#cb8-1" aria-label="1"></a>brew install fastfetch</span>
-<span id="cb8-2"><a href="#cb8-2" aria-label="2"></a>echo 'alias ff="fastfetch"' &gt;&gt; .zshrc</span>
-<span id="cb8-3"><a href="#cb8-3" aria-label="3"></a>echo 'ff' &gt;&gt; .zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-2"><a href="#cb8-2" aria-label="2"></a>echo 'alias ff="fastfetch"' &gt;&gt; ~/.zshrc</span>
+<span id="cb8-3"><a href="#cb8-3" aria-label="3"></a>echo 'ff' &gt;&gt; ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-7bfeea53925769016531d82be4f8a906.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-d2f8a27639f4fc2bf7bba3056eca9a55.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-7ebe754634c09e163cb13976304e8d4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
@@ -457,7 +457,7 @@ Note
 <section id="wsl-vs.-virtual-machines-whats-the-difference" class="level3">
 <h3 class="anchored" data-anchor-id="wsl-vs.-virtual-machines-whats-the-difference">WSL vs.&nbsp;Virtual Machines: What’s the Difference?</h3>
 <p>You might be wondering how WSL differs from a traditional virtual machine (VM). While both provide a way to run Linux on Windows, they operate in different ways. A VM emulates a virtual computer within your computer, complete with its own operating system and make-belive hardware resources. This makes VMs resource-intensive and can impact overall system performance. They are also hard to set up and maintain.</p>
-<p>WSL, on the other hand, is a more lightweight approach. It integrates Linux directly into the Windows kernel, allowing for faster boot times, better performance, and seamless file sharing between Windows and Linux environments.</p>
+<p>WSL, on the other hand, is a more lightweight approach. It integrates Linux directly into the Windows kernel, allowing for faster boot times, better performance, and native bidirectional file sharing between Windows and Linux environments.</p>
 </section>
 </section>
 <section id="installing-and-setting-up-wsl" class="level2">
@@ -486,7 +486,7 @@ Note
 <p><a href="../../assets/images/posts/24-08-11-linux-in-windows/3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="../../assets/images/posts/24-08-11-linux-in-windows/3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></a></p>
 </figure>
 </div>
-<p>Reboot the Windows system and you’ll see `Ubuntu’ among your applications.</p>
+<p>Reboot the Windows system and you’ll see Ubuntu among your applications.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><a href="../../assets/images/posts/24-08-11-linux-in-windows/4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="../../assets/images/posts/24-08-11-linux-in-windows/4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></a></p>
@@ -503,7 +503,7 @@ Note
 <p>There is an additional benefit we can reap with just a bit of more work — a fully system-agnostic setup. By having Linux kernel run on Windows, we unified 2 out of 3 giants. The only pillar that is missing is the Mac OS. But wait, it’s based on Unix as well! It just uses different default shell and lacks a package manager, as Apple doesn’t trust its clients. <code>zsh</code> offers a more interactive and customizable shell experience compared to the default bash. Homebrew, often referred to as the “missing package manager for macOS”, provides a convenient way to install additional software on Linux systems. Let’s change the terminal shell to <code>zsh</code> in our Ubuntu installation and compile a secondary (to <code>apt-get</code>) package manager – <code>brew</code>.</p>
 <section id="brewing-starts" class="level3">
 <h3 class="anchored" data-anchor-id="brewing-starts">Brewing starts</h3>
-<p>Before we dive into installing Homebrew, we need to equip our system with the essential tools. The build-essential package provides a collection of compilers and libraries necessary for building software from the source code. Git is a version control system used for managing code projects.</p>
+<p>Before installing Homebrew, we need to equip our system with the essential tools. The build-essential package provides a collection of compilers and libraries necessary for building software from the source code. Git is a version control system used for managing code projects.</p>
 <p>Let’s install these prerequisites using the following command:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a>sudo apt-get upgrade -y</span>
 <span id="cb4-2"><a href="#cb4-2" aria-label="2"></a>sudo apt-get install build-essential git -y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -540,7 +540,7 @@ Note
 </figure>
 </div>
 <p>Add the brew initialization to <code>.zshrc</code> file as well. This way <code>brew</code> will always be by your side!</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a>(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') &gt;&gt; /home/bwrob/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a>(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') &gt;&gt; ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Check the default shell and set it to <code>zsh</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb10-1"><a href="#cb10-1" aria-label="1"></a>echo $SHELL</span>
 <span id="cb10-2"><a href="#cb10-2" aria-label="2"></a>sudo chsh -s $(which zsh)</span>
@@ -548,7 +548,7 @@ Note
 </section>
 <section id="github-command-line-tool" class="level2">
 <h2 class="anchored" data-anchor-id="github-command-line-tool">GitHub command line tool</h2>
-<p>Remember <code>git != GitHub</code>, we need a way to authenticate and use Github from CLI. There’s a tool for that!</p>
+<p>Remember <code>git != GitHub</code>, we need a way to authenticate and use GitHub from CLI. There’s a tool for that!</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a>brew install gh</span>
 <span id="cb11-2"><a href="#cb11-2" aria-label="2"></a>gh auth login</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="quarto-figure quarto-figure-center">
@@ -568,7 +568,7 @@ Note
 <li><p><strong>Install the WSL Extension in VSC</strong>: Fire up VSC on your Windows machine and head over to the Extensions tab. Search for “WSL” and install the official extension by Microsoft: <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl">WSL extension</a>.</p></li>
 <li><p><strong>Launching VSC from WSL</strong>: Within your WSL terminal, you can directly invoke VSC as if it were running natively on Windows. Use the following command:</p></li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a>code ~\repos\python_playground</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a>code ~/repos/python_playground</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><a href="../../assets/images/posts/24-08-11-linux-in-windows/10.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="../../assets/images/posts/24-08-11-linux-in-windows/10.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></a></p>

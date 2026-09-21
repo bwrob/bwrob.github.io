@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../site_libs/bootstrap/bootstrap-7bfeea53925769016531d82be4f8a906.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-d2f8a27639f4fc2bf7bba3056eca9a55.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../../site_libs/bootstrap/bootstrap-dark-7ebe754634c09e163cb13976304e8d4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
@@ -481,31 +481,32 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="abstract-base-classes-abcs">Abstract Base Classes (ABCs)</h2>
 <p>To keep things sane, we need rules. We need a contract that says: “If you want to be a Yield Curve, you <em>must</em> provide a discount factor.”</p>
 <p>Python handles this with <strong>Abstract Base Classes (ABCs)</strong>.</p>
-<div id="5d9788bb" class="cell" data-execution_count="1">
+<div id="eead8977" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
 <span id="cb1-2"><a href="#cb1-2" aria-label="2"></a><span class="im">import</span> math</span>
 <span id="cb1-3"><a href="#cb1-3" aria-label="3"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a><span class="kw">class</span> YieldCurve(ABC):</span>
-<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a>    <span class="co">"""</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a><span class="co">    Abstract base class for all yield curves.</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a><span class="co">    """</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a>    <span class="at">@abstractmethod</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a>        <span class="co">"""Calculate discount factor D(t) for time t."""</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a>        <span class="cf">pass</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-label="14"></a>    <span class="kw">def</span> zero_rate(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb1-15"><a href="#cb1-15" aria-label="15"></a>        <span class="co">"""</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-label="16"></a><span class="co">        Concrete method shared by all curves.</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-label="17"></a><span class="co">        Z(t) = -ln(D(t)) / t</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-label="18"></a><span class="co">        """</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-label="19"></a>        <span class="cf">if</span> t <span class="op">&lt;=</span> <span class="fl">1e-9</span>:</span>
-<span id="cb1-20"><a href="#cb1-20" aria-label="20"></a>            <span class="cf">return</span> <span class="fl">0.0</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-label="21"></a>        df <span class="op">=</span> <span class="va">self</span>.discount_factor(t)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-label="22"></a>        <span class="cf">return</span> <span class="op">-</span>math.log(df) <span class="op">/</span> t</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a><span class="kw">class</span> YieldCurve(ABC):</span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a>    <span class="co">"""</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a><span class="co">    Abstract base class for all yield curves.</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a><span class="co">    """</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a>        <span class="co">"""Calculate discount factor D(t) for time t."""</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a>        <span class="cf">pass</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-label="14"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-label="15"></a>    <span class="kw">def</span> zero_rate(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb1-16"><a href="#cb1-16" aria-label="16"></a>        <span class="co">"""</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-label="17"></a><span class="co">        Concrete method shared by all curves.</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-label="18"></a><span class="co">        Z(t) = -ln(D(t)) / t</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-label="19"></a><span class="co">        """</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-label="20"></a>        <span class="cf">if</span> t <span class="op">&lt;=</span> <span class="fl">1e-9</span>:</span>
+<span id="cb1-21"><a href="#cb1-21" aria-label="21"></a>            <span class="cf">return</span> <span class="fl">0.0</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-label="22"></a>        df <span class="op">=</span> <span class="va">self</span>.discount_factor(t)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-label="23"></a>        <span class="cf">return</span> <span class="op">-</span>math.log(df) <span class="op">/</span> t</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Inheriting from <code>ABC</code> prevents anyone from creating a “plain” <code>YieldCurve</code>—it’s just a template. The <code>@abstractmethod</code> decorator is the enforcer: if a subclass doesn’t implement <code>discount_factor</code>, Python won’t let you instantiate it.</p>
@@ -514,7 +515,7 @@ window.Quarto = {
 <section id="concrete-implementations" class="level2">
 <h2 class="anchored" data-anchor-id="concrete-implementations">Concrete Implementations</h2>
 <p>With the ground rules established, let’s build something real. The simplest case is a <strong>Flat Forward Curve</strong>, where the rate is constant forever.</p>
-<div id="97f946e7" class="cell" data-execution_count="2">
+<div id="0fcbae17" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="kw">class</span> FlatForwardCurve(YieldCurve):</span>
@@ -531,7 +532,7 @@ window.Quarto = {
 <p>Before we get to complex curves, let’s talk about one of Python’s superpowers: <strong>Multiple Inheritance</strong>. In many languages, a class can only have one parent. In Python, it can have many.</p>
 <p>While this can get messy (the infamous “Diamond Problem”), it’s perfect for <strong>Mixins</strong>. A Mixin is a small class designed to “mix in” specific functionality to other classes.</p>
 <p>Suppose we want to take our <code>FlatForwardCurve</code> (or <em>any</em> curve) and add a constant spread to it. Instead of rewriting the curve logic, we create a <code>SpreadMixin</code>.</p>
-<div id="1db557dc" class="cell" data-execution_count="3">
+<div id="536b970d" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-label="1"></a><span class="kw">class</span> SpreadMixin:</span>
@@ -543,8 +544,9 @@ window.Quarto = {
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-7" class="code-annotation-target"><a href="#annotated-cell-3-7" aria-label="7"></a>        base_df <span class="op">=</span> <span class="bu">super</span>().discount_factor(t)</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-3-8" class="code-annotation-target"><a href="#annotated-cell-3-8" aria-label="8"></a>        <span class="cf">return</span> base_df <span class="op">*</span> math.exp(<span class="op">-</span><span class="va">self</span>.spread <span class="op">*</span> t)</span>
 <span id="annotated-cell-3-9"><a href="#annotated-cell-3-9" aria-label="9"></a></span>
-<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10" aria-label="10"></a><span class="kw">class</span> ShiftedFlatCurve(SpreadMixin, FlatForwardCurve):</span>
-<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11" aria-label="11"></a>    <span class="cf">pass</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10" aria-label="10"></a></span>
+<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11" aria-label="11"></a><span class="kw">class</span> ShiftedFlatCurve(SpreadMixin, FlatForwardCurve):</span>
+<span id="annotated-cell-3-12"><a href="#annotated-cell-3-12" aria-label="12"></a>    <span class="cf">pass</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -563,8 +565,8 @@ window.Quarto = {
 </dl>
 </div>
 </div>
-<p>When we create <code>ShiftedFlatCurve</code>, Python’s <strong>Method Resolution Order (MRO)</strong> ensures that <code>SpreadMixin</code> runs first. Its <code>super().discount_factor</code> call then hops over to <code>FlatForwardCurve</code>.</p>
-<div id="97f4786b" class="cell" data-execution_count="4">
+<p>When we define <code>class ShiftedFlatCurve(SpreadMixin, FlatForwardCurve)</code>, Python builds a <strong>Method Resolution Order (MRO)</strong> chain using C3 linearization. Because <code>SpreadMixin</code> is listed first, its <code>super().discount_factor</code> call hops over to <code>FlatForwardCurve</code>. If you reversed the order (<code>FlatForwardCurve, SpreadMixin</code>), Python would call <code>FlatForwardCurve</code> directly and completely bypass the spread adjustment!</p>
+<div id="d46af8bc" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a>shifted <span class="op">=</span> ShiftedFlatCurve(rate<span class="op">=</span><span class="fl">0.05</span>, spread<span class="op">=</span><span class="fl">0.02</span>)</span>
@@ -584,46 +586,52 @@ window.Quarto = {
 <section id="approach-a-composition-the-strategy-pattern" class="level3">
 <h3 class="anchored" data-anchor-id="approach-a-composition-the-strategy-pattern">Approach A: Composition (The Strategy Pattern)</h3>
 <p>Here, we treat interpolation as a tool the curve <em>uses</em>. We define an <code>Interpolator</code> protocol and pass a concrete implementation (like <code>LinearInterpolator</code>) to the curve.</p>
-<div id="5a2fdbe8" class="cell" data-execution_count="5">
+<div id="a556c8b2" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="im">from</span> typing <span class="im">import</span> Protocol</span>
 <span id="cb5-2"><a href="#cb5-2" aria-label="2"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-label="3"></a><span class="co"># 1. Define the Strategy Interface</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-label="4"></a><span class="kw">class</span> Interpolator(Protocol):</span>
-<span id="cb5-5"><a href="#cb5-5" aria-label="5"></a>    <span class="kw">def</span> interpolate(<span class="va">self</span>, t: <span class="bu">float</span>, x: <span class="bu">list</span>[<span class="bu">float</span>], y: <span class="bu">list</span>[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">float</span>: ...</span>
-<span id="cb5-6"><a href="#cb5-6" aria-label="6"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-label="7"></a><span class="co"># 2. Implement Concrete Strategy</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-label="8"></a><span class="kw">class</span> LinearInterpolator:</span>
-<span id="cb5-9"><a href="#cb5-9" aria-label="9"></a>    <span class="kw">def</span> interpolate(<span class="va">self</span>, t: <span class="bu">float</span>, x: <span class="bu">list</span>[<span class="bu">float</span>], y: <span class="bu">list</span>[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb5-10"><a href="#cb5-10" aria-label="10"></a>        <span class="co"># Simple flat extrapolation for endpoints</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-label="11"></a>        <span class="cf">if</span> t <span class="op">&lt;=</span> x[<span class="dv">0</span>]:</span>
-<span id="cb5-12"><a href="#cb5-12" aria-label="12"></a>            <span class="cf">return</span> y[<span class="dv">0</span>]</span>
-<span id="cb5-13"><a href="#cb5-13" aria-label="13"></a>        <span class="cf">if</span> t <span class="op">&gt;=</span> x[<span class="op">-</span><span class="dv">1</span>]:</span>
-<span id="cb5-14"><a href="#cb5-14" aria-label="14"></a>            <span class="cf">return</span> y[<span class="op">-</span><span class="dv">1</span>]</span>
-<span id="cb5-15"><a href="#cb5-15" aria-label="15"></a></span>
-<span id="cb5-16"><a href="#cb5-16" aria-label="16"></a>        <span class="co"># Linear search (simplified)</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-label="17"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(x) <span class="op">-</span> <span class="dv">1</span>):</span>
-<span id="cb5-18"><a href="#cb5-18" aria-label="18"></a>            <span class="cf">if</span> x[i] <span class="op">&lt;=</span> t <span class="op">&lt;=</span> x[i <span class="op">+</span> <span class="dv">1</span>]:</span>
-<span id="cb5-19"><a href="#cb5-19" aria-label="19"></a>                t1, t2 <span class="op">=</span> x[i], x[i <span class="op">+</span> <span class="dv">1</span>]</span>
-<span id="cb5-20"><a href="#cb5-20" aria-label="20"></a>                y1, y2 <span class="op">=</span> y[i], y[i <span class="op">+</span> <span class="dv">1</span>]</span>
-<span id="cb5-21"><a href="#cb5-21" aria-label="21"></a>                w <span class="op">=</span> (t <span class="op">-</span> t1) <span class="op">/</span> (t2 <span class="op">-</span> t1)</span>
-<span id="cb5-22"><a href="#cb5-22" aria-label="22"></a>                <span class="cf">return</span> (<span class="dv">1</span> <span class="op">-</span> w) <span class="op">*</span> y1 <span class="op">+</span> w <span class="op">*</span> y2</span>
-<span id="cb5-23"><a href="#cb5-23" aria-label="23"></a>        <span class="cf">return</span> y[<span class="op">-</span><span class="dv">1</span>]</span>
-<span id="cb5-24"><a href="#cb5-24" aria-label="24"></a></span>
-<span id="cb5-25"><a href="#cb5-25" aria-label="25"></a><span class="co"># 3. Use Composition in the Curve</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-label="26"></a><span class="kw">class</span> InterpolatedZeroCurve(YieldCurve):</span>
-<span id="cb5-27"><a href="#cb5-27" aria-label="27"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
-<span id="cb5-28"><a href="#cb5-28" aria-label="28"></a>        <span class="va">self</span>, times: <span class="bu">list</span>[<span class="bu">float</span>], rates: <span class="bu">list</span>[<span class="bu">float</span>], interpolator: Interpolator</span>
-<span id="cb5-29"><a href="#cb5-29" aria-label="29"></a>    ):</span>
-<span id="cb5-30"><a href="#cb5-30" aria-label="30"></a>        <span class="va">self</span>.times <span class="op">=</span> <span class="bu">sorted</span>(times)</span>
-<span id="cb5-31"><a href="#cb5-31" aria-label="31"></a>        <span class="va">self</span>.rates <span class="op">=</span> [r <span class="cf">for</span> _, r <span class="kw">in</span> <span class="bu">sorted</span>(<span class="bu">zip</span>(times, rates))]</span>
-<span id="cb5-32"><a href="#cb5-32" aria-label="32"></a>        <span class="va">self</span>.interpolator <span class="op">=</span> interpolator  <span class="co"># Composition</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-label="33"></a></span>
-<span id="cb5-34"><a href="#cb5-34" aria-label="34"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb5-35"><a href="#cb5-35" aria-label="35"></a>        <span class="co"># Delegate the math to the strategy</span></span>
-<span id="cb5-36"><a href="#cb5-36" aria-label="36"></a>        r <span class="op">=</span> <span class="va">self</span>.interpolator.interpolate(t, <span class="va">self</span>.times, <span class="va">self</span>.rates)</span>
-<span id="cb5-37"><a href="#cb5-37" aria-label="37"></a>        <span class="cf">return</span> math.exp(<span class="op">-</span>r <span class="op">*</span> t)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-3"><a href="#cb5-3" aria-label="3"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-label="4"></a><span class="co"># 1. Define the Strategy Interface</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-label="5"></a><span class="kw">class</span> Interpolator(Protocol):</span>
+<span id="cb5-6"><a href="#cb5-6" aria-label="6"></a>    <span class="kw">def</span> interpolate(<span class="va">self</span>, t: <span class="bu">float</span>, x: <span class="bu">list</span>[<span class="bu">float</span>], y: <span class="bu">list</span>[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">float</span>: ...</span>
+<span id="cb5-7"><a href="#cb5-7" aria-label="7"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-label="8"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-label="9"></a><span class="co"># 2. Implement Concrete Strategy</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-label="10"></a><span class="kw">class</span> LinearInterpolator:</span>
+<span id="cb5-11"><a href="#cb5-11" aria-label="11"></a>    <span class="kw">def</span> interpolate(<span class="va">self</span>, t: <span class="bu">float</span>, x: <span class="bu">list</span>[<span class="bu">float</span>], y: <span class="bu">list</span>[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb5-12"><a href="#cb5-12" aria-label="12"></a>        <span class="co"># Simple flat extrapolation for endpoints</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-label="13"></a>        <span class="cf">if</span> t <span class="op">&lt;=</span> x[<span class="dv">0</span>]:</span>
+<span id="cb5-14"><a href="#cb5-14" aria-label="14"></a>            <span class="cf">return</span> y[<span class="dv">0</span>]</span>
+<span id="cb5-15"><a href="#cb5-15" aria-label="15"></a>        <span class="cf">if</span> t <span class="op">&gt;=</span> x[<span class="op">-</span><span class="dv">1</span>]:</span>
+<span id="cb5-16"><a href="#cb5-16" aria-label="16"></a>            <span class="cf">return</span> y[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb5-17"><a href="#cb5-17" aria-label="17"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-label="18"></a>        <span class="co"># Linear search (simplified)</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-label="19"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(x) <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb5-20"><a href="#cb5-20" aria-label="20"></a>            <span class="cf">if</span> x[i] <span class="op">&lt;=</span> t <span class="op">&lt;=</span> x[i <span class="op">+</span> <span class="dv">1</span>]:</span>
+<span id="cb5-21"><a href="#cb5-21" aria-label="21"></a>                t1, t2 <span class="op">=</span> x[i], x[i <span class="op">+</span> <span class="dv">1</span>]</span>
+<span id="cb5-22"><a href="#cb5-22" aria-label="22"></a>                y1, y2 <span class="op">=</span> y[i], y[i <span class="op">+</span> <span class="dv">1</span>]</span>
+<span id="cb5-23"><a href="#cb5-23" aria-label="23"></a>                w <span class="op">=</span> (t <span class="op">-</span> t1) <span class="op">/</span> (t2 <span class="op">-</span> t1)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-label="24"></a>                <span class="cf">return</span> (<span class="dv">1</span> <span class="op">-</span> w) <span class="op">*</span> y1 <span class="op">+</span> w <span class="op">*</span> y2</span>
+<span id="cb5-25"><a href="#cb5-25" aria-label="25"></a>        <span class="cf">return</span> y[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb5-26"><a href="#cb5-26" aria-label="26"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-label="27"></a></span>
+<span id="cb5-28"><a href="#cb5-28" aria-label="28"></a><span class="co"># 3. Use Composition in the Curve</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-label="29"></a><span class="kw">class</span> InterpolatedZeroCurve(YieldCurve):</span>
+<span id="cb5-30"><a href="#cb5-30" aria-label="30"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb5-31"><a href="#cb5-31" aria-label="31"></a>        <span class="va">self</span>,</span>
+<span id="cb5-32"><a href="#cb5-32" aria-label="32"></a>        times: <span class="bu">list</span>[<span class="bu">float</span>],</span>
+<span id="cb5-33"><a href="#cb5-33" aria-label="33"></a>        rates: <span class="bu">list</span>[<span class="bu">float</span>],</span>
+<span id="cb5-34"><a href="#cb5-34" aria-label="34"></a>        interpolator: Interpolator,</span>
+<span id="cb5-35"><a href="#cb5-35" aria-label="35"></a>    ):</span>
+<span id="cb5-36"><a href="#cb5-36" aria-label="36"></a>        <span class="va">self</span>.times <span class="op">=</span> <span class="bu">sorted</span>(times)</span>
+<span id="cb5-37"><a href="#cb5-37" aria-label="37"></a>        <span class="va">self</span>.rates <span class="op">=</span> [r <span class="cf">for</span> _, r <span class="kw">in</span> <span class="bu">sorted</span>(<span class="bu">zip</span>(times, rates))]</span>
+<span id="cb5-38"><a href="#cb5-38" aria-label="38"></a>        <span class="va">self</span>.interpolator <span class="op">=</span> interpolator  <span class="co"># Composition</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-label="39"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-label="40"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb5-41"><a href="#cb5-41" aria-label="41"></a>        <span class="co"># Delegate the math to the strategy</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-label="42"></a>        r <span class="op">=</span> <span class="va">self</span>.interpolator.interpolate(t, <span class="va">self</span>.times, <span class="va">self</span>.rates)</span>
+<span id="cb5-43"><a href="#cb5-43" aria-label="43"></a>        <span class="cf">return</span> math.exp(<span class="op">-</span>r <span class="op">*</span> t)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>This is flexible. Want to switch to Cubic Splines? Just pass a different interpolator. The curve class itself doesn’t need to change.</p>
@@ -631,34 +639,38 @@ window.Quarto = {
 <section id="approach-b-inheritance-mixins" class="level3">
 <h3 class="anchored" data-anchor-id="approach-b-inheritance-mixins">Approach B: Inheritance (Mixins)</h3>
 <p>Alternatively, we can “mix in” the ability to interpolate, just like we mixed in the spread logic.</p>
-<div id="e982590a" class="cell" data-execution_count="6">
+<div id="8ed15926" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a><span class="kw">class</span> LinearInterpolationMixin:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-label="2"></a>    <span class="co">"""</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-label="3"></a><span class="co">    Mixin that provides linear interpolation capability.</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-label="4"></a><span class="co">    """</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-label="5"></a>    <span class="kw">def</span> interpolate_linear(<span class="va">self</span>, t: <span class="bu">float</span>, x: <span class="bu">list</span>[<span class="bu">float</span>], y: <span class="bu">list</span>[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb6-6"><a href="#cb6-6" aria-label="6"></a>        <span class="cf">if</span> t <span class="op">&lt;=</span> x[<span class="dv">0</span>]: <span class="cf">return</span> y[<span class="dv">0</span>]</span>
-<span id="cb6-7"><a href="#cb6-7" aria-label="7"></a>        <span class="cf">if</span> t <span class="op">&gt;=</span> x[<span class="op">-</span><span class="dv">1</span>]: <span class="cf">return</span> y[<span class="op">-</span><span class="dv">1</span>]</span>
-<span id="cb6-8"><a href="#cb6-8" aria-label="8"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-label="9"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(x) <span class="op">-</span> <span class="dv">1</span>):</span>
-<span id="cb6-10"><a href="#cb6-10" aria-label="10"></a>            <span class="cf">if</span> x[i] <span class="op">&lt;=</span> t <span class="op">&lt;=</span> x[i<span class="op">+</span><span class="dv">1</span>]:</span>
-<span id="cb6-11"><a href="#cb6-11" aria-label="11"></a>                t1, t2 <span class="op">=</span> x[i], x[i<span class="op">+</span><span class="dv">1</span>]</span>
-<span id="cb6-12"><a href="#cb6-12" aria-label="12"></a>                y1, y2 <span class="op">=</span> y[i], y[i<span class="op">+</span><span class="dv">1</span>]</span>
-<span id="cb6-13"><a href="#cb6-13" aria-label="13"></a>                w <span class="op">=</span> (t <span class="op">-</span> t1) <span class="op">/</span> (t2 <span class="op">-</span> t1)</span>
-<span id="cb6-14"><a href="#cb6-14" aria-label="14"></a>                <span class="cf">return</span> (<span class="dv">1</span> <span class="op">-</span> w) <span class="op">*</span> y1 <span class="op">+</span> w <span class="op">*</span> y2</span>
-<span id="cb6-15"><a href="#cb6-15" aria-label="15"></a>        <span class="cf">return</span> y[<span class="op">-</span><span class="dv">1</span>]</span>
-<span id="cb6-16"><a href="#cb6-16" aria-label="16"></a></span>
-<span id="cb6-17"><a href="#cb6-17" aria-label="17"></a><span class="kw">class</span> MixinZeroCurve(LinearInterpolationMixin, YieldCurve):</span>
-<span id="cb6-18"><a href="#cb6-18" aria-label="18"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, times: <span class="bu">list</span>[<span class="bu">float</span>], rates: <span class="bu">list</span>[<span class="bu">float</span>]):</span>
-<span id="cb6-19"><a href="#cb6-19" aria-label="19"></a>        <span class="va">self</span>.times <span class="op">=</span> <span class="bu">sorted</span>(times)</span>
-<span id="cb6-20"><a href="#cb6-20" aria-label="20"></a>        <span class="va">self</span>.rates <span class="op">=</span> [r <span class="cf">for</span> _, r <span class="kw">in</span> <span class="bu">sorted</span>(<span class="bu">zip</span>(times, rates))]</span>
-<span id="cb6-21"><a href="#cb6-21" aria-label="21"></a></span>
-<span id="cb6-22"><a href="#cb6-22" aria-label="22"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb6-23"><a href="#cb6-23" aria-label="23"></a>        <span class="co"># Use the inherited method</span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-label="24"></a>        r <span class="op">=</span> <span class="va">self</span>.interpolate_linear(t, <span class="va">self</span>.times, <span class="va">self</span>.rates)</span>
-<span id="cb6-25"><a href="#cb6-25" aria-label="25"></a>        <span class="cf">return</span> math.exp(<span class="op">-</span>r <span class="op">*</span> t)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-5"><a href="#cb6-5" aria-label="5"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-label="6"></a>    <span class="kw">def</span> interpolate_linear(<span class="va">self</span>, t: <span class="bu">float</span>, x: <span class="bu">list</span>[<span class="bu">float</span>], y: <span class="bu">list</span>[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb6-7"><a href="#cb6-7" aria-label="7"></a>        <span class="cf">if</span> t <span class="op">&lt;=</span> x[<span class="dv">0</span>]:</span>
+<span id="cb6-8"><a href="#cb6-8" aria-label="8"></a>            <span class="cf">return</span> y[<span class="dv">0</span>]</span>
+<span id="cb6-9"><a href="#cb6-9" aria-label="9"></a>        <span class="cf">if</span> t <span class="op">&gt;=</span> x[<span class="op">-</span><span class="dv">1</span>]:</span>
+<span id="cb6-10"><a href="#cb6-10" aria-label="10"></a>            <span class="cf">return</span> y[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb6-11"><a href="#cb6-11" aria-label="11"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-label="12"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(x) <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb6-13"><a href="#cb6-13" aria-label="13"></a>            <span class="cf">if</span> x[i] <span class="op">&lt;=</span> t <span class="op">&lt;=</span> x[i <span class="op">+</span> <span class="dv">1</span>]:</span>
+<span id="cb6-14"><a href="#cb6-14" aria-label="14"></a>                t1, t2 <span class="op">=</span> x[i], x[i <span class="op">+</span> <span class="dv">1</span>]</span>
+<span id="cb6-15"><a href="#cb6-15" aria-label="15"></a>                y1, y2 <span class="op">=</span> y[i], y[i <span class="op">+</span> <span class="dv">1</span>]</span>
+<span id="cb6-16"><a href="#cb6-16" aria-label="16"></a>                w <span class="op">=</span> (t <span class="op">-</span> t1) <span class="op">/</span> (t2 <span class="op">-</span> t1)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-label="17"></a>                <span class="cf">return</span> (<span class="dv">1</span> <span class="op">-</span> w) <span class="op">*</span> y1 <span class="op">+</span> w <span class="op">*</span> y2</span>
+<span id="cb6-18"><a href="#cb6-18" aria-label="18"></a>        <span class="cf">return</span> y[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb6-19"><a href="#cb6-19" aria-label="19"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-label="20"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-label="21"></a><span class="kw">class</span> MixinZeroCurve(LinearInterpolationMixin, YieldCurve):</span>
+<span id="cb6-22"><a href="#cb6-22" aria-label="22"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, times: <span class="bu">list</span>[<span class="bu">float</span>], rates: <span class="bu">list</span>[<span class="bu">float</span>]):</span>
+<span id="cb6-23"><a href="#cb6-23" aria-label="23"></a>        <span class="va">self</span>.times <span class="op">=</span> <span class="bu">sorted</span>(times)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-label="24"></a>        <span class="va">self</span>.rates <span class="op">=</span> [r <span class="cf">for</span> _, r <span class="kw">in</span> <span class="bu">sorted</span>(<span class="bu">zip</span>(times, rates))]</span>
+<span id="cb6-25"><a href="#cb6-25" aria-label="25"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-label="26"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb6-27"><a href="#cb6-27" aria-label="27"></a>        <span class="co"># Use the inherited method</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-label="28"></a>        r <span class="op">=</span> <span class="va">self</span>.interpolate_linear(t, <span class="va">self</span>.times, <span class="va">self</span>.rates)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-label="29"></a>        <span class="cf">return</span> math.exp(<span class="op">-</span>r <span class="op">*</span> t)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>This feels more integrated, but it’s static. You can’t change the interpolation method at runtime as easily as with composition.</p>
@@ -667,27 +679,29 @@ window.Quarto = {
 <section id="the-payoff-polymorphism" class="level2">
 <h2 class="anchored" data-anchor-id="the-payoff-polymorphism">The Payoff: Polymorphism</h2>
 <p>Because we stuck to the <code>YieldCurve</code> contract, the pricing function doesn’t need to know about any of the complexity above.</p>
-<div id="57c1c021" class="cell" data-execution_count="7">
+<div id="00451f73" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
 <span id="cb7-2"><a href="#cb7-2" aria-label="2"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-label="3"></a><span class="at">@dataclass</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-label="4"></a><span class="kw">class</span> CashFlow:</span>
-<span id="cb7-5"><a href="#cb7-5" aria-label="5"></a>    amount: <span class="bu">float</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-label="6"></a>    time: <span class="bu">float</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-label="7"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-label="8"></a><span class="kw">def</span> price_bond(cashflows: <span class="bu">list</span>[CashFlow], curve: YieldCurve) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb7-9"><a href="#cb7-9" aria-label="9"></a>    price <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-label="10"></a>    <span class="cf">for</span> cf <span class="kw">in</span> cashflows:</span>
-<span id="cb7-11"><a href="#cb7-11" aria-label="11"></a>        <span class="co"># Polymorphic call: Python decides at runtime which</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-label="12"></a>        <span class="co"># discount_factor method to run!</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-label="13"></a>        price <span class="op">+=</span> cf.amount <span class="op">*</span> curve.discount_factor(cf.time)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-label="14"></a>    <span class="cf">return</span> price</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-3"><a href="#cb7-3" aria-label="3"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-label="4"></a><span class="at">@dataclass</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-label="5"></a><span class="kw">class</span> CashFlow:</span>
+<span id="cb7-6"><a href="#cb7-6" aria-label="6"></a>    amount: <span class="bu">float</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-label="7"></a>    time: <span class="bu">float</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-label="8"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-label="9"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-label="10"></a><span class="kw">def</span> price_bond(cashflows: <span class="bu">list</span>[CashFlow], curve: YieldCurve) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb7-11"><a href="#cb7-11" aria-label="11"></a>    price <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-label="12"></a>    <span class="cf">for</span> cf <span class="kw">in</span> cashflows:</span>
+<span id="cb7-13"><a href="#cb7-13" aria-label="13"></a>        <span class="co"># Polymorphic call: Python decides at runtime which</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-label="14"></a>        <span class="co"># discount_factor method to run!</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-label="15"></a>        price <span class="op">+=</span> cf.amount <span class="op">*</span> curve.discount_factor(cf.time)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-label="16"></a>    <span class="cf">return</span> price</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Let’s test it:</p>
-<div id="9c173ce7" class="cell" data-execution_count="8">
+<div id="0f046eaf" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-label="1"></a><span class="co"># Define a bond: coupon of 5 at t=1, principal 105 at t=2</span></span>
@@ -718,29 +732,34 @@ Price (Mixin): 97.90</code></pre>
 <h2 class="anchored" data-anchor-id="protocols-when-inheritance-feels-heavy">Protocols: When Inheritance Feels Heavy</h2>
 <p>Inheritance is a commitment. Sometimes you want to use a class from a third-party library that <em>looks</em> like a yield curve but doesn’t inherit from your specific <code>YieldCurve</code> ABC.</p>
 <p><strong>Protocols</strong> (structural subtyping) solve this. A Protocol defines a shape: “I don’t care who your parents are, as long as you have a <code>discount_factor</code> method.”</p>
-<div id="c8a549ec" class="cell" data-execution_count="9">
+<div id="99a7c251" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-label="1"></a><span class="im">from</span> typing <span class="im">import</span> runtime_checkable</span>
 <span id="cb10-2"><a href="#cb10-2" aria-label="2"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-label="3"></a><span class="at">@runtime_checkable</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-label="4"></a><span class="kw">class</span> Discountable(Protocol):</span>
-<span id="cb10-5"><a href="#cb10-5" aria-label="5"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>: ...</span>
-<span id="cb10-6"><a href="#cb10-6" aria-label="6"></a></span>
-<span id="cb10-7"><a href="#cb10-7" aria-label="7"></a><span class="kw">class</span> SimpleDiscounter:</span>
-<span id="cb10-8"><a href="#cb10-8" aria-label="8"></a>    <span class="co">"""</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-label="9"></a><span class="co">    This class does NOT inherit from YieldCurve.</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-label="10"></a><span class="co">    It just happens to have the right method.</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-label="11"></a><span class="co">    """</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-label="12"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb10-13"><a href="#cb10-13" aria-label="13"></a>        <span class="cf">return</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.05</span> <span class="op">*</span> t)  <span class="co"># Simple capitalization</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-label="3"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-label="4"></a><span class="at">@runtime_checkable</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-label="5"></a><span class="kw">class</span> Discountable(Protocol):</span>
+<span id="cb10-6"><a href="#cb10-6" aria-label="6"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>: ...</span>
+<span id="cb10-7"><a href="#cb10-7" aria-label="7"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-label="8"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-label="9"></a><span class="kw">class</span> SimpleDiscounter:</span>
+<span id="cb10-10"><a href="#cb10-10" aria-label="10"></a>    <span class="co">"""</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-label="11"></a><span class="co">    This class does NOT inherit from YieldCurve.</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-label="12"></a><span class="co">    It just happens to have the right method.</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-label="13"></a><span class="co">    """</span></span>
 <span id="cb10-14"><a href="#cb10-14" aria-label="14"></a></span>
-<span id="cb10-15"><a href="#cb10-15" aria-label="15"></a><span class="kw">def</span> price_asset_structural(amount: <span class="bu">float</span>, t: <span class="bu">float</span>, model: Discountable) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb10-16"><a href="#cb10-16" aria-label="16"></a>    <span class="cf">return</span> amount <span class="op">*</span> model.discount_factor(t)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-label="15"></a>    <span class="kw">def</span> discount_factor(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb10-16"><a href="#cb10-16" aria-label="16"></a>        <span class="cf">return</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.05</span> <span class="op">*</span> t)  <span class="co"># Simple capitalization</span></span>
 <span id="cb10-17"><a href="#cb10-17" aria-label="17"></a></span>
-<span id="cb10-18"><a href="#cb10-18" aria-label="18"></a>simple <span class="op">=</span> SimpleDiscounter()</span>
-<span id="cb10-19"><a href="#cb10-19" aria-label="19"></a><span class="bu">print</span>(<span class="ss">f"Is compatible? </span><span class="sc">{</span><span class="bu">isinstance</span>(simple, Discountable)<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb10-20"><a href="#cb10-20" aria-label="20"></a><span class="bu">print</span>(<span class="ss">f"Price: </span><span class="sc">{</span>price_asset_structural(<span class="dv">100</span>, <span class="fl">1.0</span>, simple)<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-18"><a href="#cb10-18" aria-label="18"></a></span>
+<span id="cb10-19"><a href="#cb10-19" aria-label="19"></a><span class="kw">def</span> price_asset_structural(amount: <span class="bu">float</span>, t: <span class="bu">float</span>, model: Discountable) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb10-20"><a href="#cb10-20" aria-label="20"></a>    <span class="cf">return</span> amount <span class="op">*</span> model.discount_factor(t)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-label="21"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-label="22"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-label="23"></a>simple <span class="op">=</span> SimpleDiscounter()</span>
+<span id="cb10-24"><a href="#cb10-24" aria-label="24"></a><span class="bu">print</span>(<span class="ss">f"Is compatible? </span><span class="sc">{</span><span class="bu">isinstance</span>(simple, Discountable)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-label="25"></a><span class="bu">print</span>(<span class="ss">f"Price: </span><span class="sc">{</span>price_asset_structural(<span class="dv">100</span>, <span class="fl">1.0</span>, simple)<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Is compatible? True
@@ -753,10 +772,10 @@ Price: 95.24</code></pre>
 <h2 class="anchored" data-anchor-id="wrapping-up">Wrapping Up</h2>
 <p>OOP gives us some powerful ways to keep our code organized and flexible.</p>
 <ul>
-<li><strong>ABCs</strong> set the rules for what an object must do.</li>
-<li><strong>Mixins</strong> let us stack features on top of each other like Lego blocks.</li>
-<li><strong>Polymorphism</strong> lets our models swap in and out seamlessly.</li>
-<li><strong>Protocols</strong> let us stay flexible without forcing a rigid hierarchy.</li>
+<li><strong>ABCs</strong> formalize runtime and subclassing contracts.</li>
+<li><strong>Mixins</strong> compose reusable behavior cooperatively via MRO.</li>
+<li><strong>Polymorphism</strong> allows pricing engines to consume arbitrary yield curves without branching logic.</li>
+<li><strong>Protocols</strong> enforce structural subtyping (duck typing) checked statically by Mypy/Pyright.</li>
 </ul>
 <p>These patterns are what turn a collection of scripts into a proper library.</p>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -769,7 +788,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>You can find the complete code for this post here: <a href="../../../assets/python/inheritance_polymorphism_and_protocols_in_python_oop.py">inheritance_polymorphism_and_protocols_in_python_oop.py</a>.</p>
+<p>You can find the complete code for this post here: <a href="../../../assets/python/inheritance_polymorphism_and_protocols_in_python_oop.py">inheritance_polymorphism_and_protocols_in_Python_oop.py</a>.</p>
 </div>
 </div>
 

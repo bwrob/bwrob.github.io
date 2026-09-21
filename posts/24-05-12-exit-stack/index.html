@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-7bfeea53925769016531d82be4f8a906.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-d2f8a27639f4fc2bf7bba3056eca9a55.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-7ebe754634c09e163cb13976304e8d4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
@@ -413,9 +413,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#working-with-risk-managment-systems" id="toc-working-with-risk-managment-systems" class="nav-link active" data-scroll-target="#working-with-risk-managment-systems">Working with risk managment systems</a></li>
+  <li><a href="#working-with-risk-management-systems" id="toc-working-with-risk-management-systems" class="nav-link active" data-scroll-target="#working-with-risk-management-systems">Working with Risk Management Systems</a></li>
   <li><a href="#setting-the-stage" id="toc-setting-the-stage" class="nav-link" data-scroll-target="#setting-the-stage">Setting the stage</a></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  <li><a href="#running-mock-risk-analysis" id="toc-running-mock-risk-analysis" class="nav-link" data-scroll-target="#running-mock-risk-analysis">Running Mock Risk Analysis</a></li>
   <li><a href="#the-exitstack" id="toc-the-exitstack" class="nav-link" data-scroll-target="#the-exitstack">The ExitStack</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
@@ -434,11 +434,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
 </figure>
 </div>
-<section id="working-with-risk-managment-systems" class="level2">
-<h2 class="anchored" data-anchor-id="working-with-risk-managment-systems">Working with risk managment systems</h2>
-<p>As a quantitative finance professional you’ll often find yourself with risk management systems (RMS). RMS’s are extensive frameworks that let you properly define a book (portfolio) of your financial transactions and run varia of pricing and risk analysis on it. For big financial players, like investment banks, the RMS will be internal proprietary codbase that is run in-house. For smaller enterprises or second-line reporting it’s not feasable to tackle creating such vast infrastructure. Hence, where there’s a need, someone will try to make money on it. This leads us to third-party (or vendor) RMS, of which there are plenty (ex. Murex, Acadia).</p>
-<p>Working with vendor RMS, especially one that covers computations for you, entails juggling multiple resources to obtain your risk metrics. Defining OTC products, benchmarks, portfolios, and running risk analysis can involve numerous API calls, each requiring proper setup and cleanup. This can lead to messy code and potential errors or performance bottlenecks if resources aren’t handled correctly.</p>
-<p>Thankfully, Python provides a powerful concept called context managers (<strong>CM</strong>) that streamline resource managment. True to the language’s ‘batteries included’ philosophy, there’s also a <code>contextlib</code> library that contains variety of tools for easing up your work with CMs. Today we’ll look at a (mock-up) usage of <code>ExitStack</code> class in real-life scenario of running risk analysis on RMS. If you need a refresher on CMs, check out this <a href="https://realpython.com/python-with-statement/">tutorial</a> by RealPython.</p>
+<section id="working-with-risk-management-systems" class="level2">
+<h2 class="anchored" data-anchor-id="working-with-risk-management-systems">Working with Risk Management Systems</h2>
+<p>As a quantitative finance professional you’ll often find yourself working with risk management systems (RMS). RMS’s are extensive frameworks that let you define a book (portfolio) of financial transactions and run a variety of pricing and risk calculations on it. For big financial players, like investment banks, the RMS is an internal proprietary codebase run in-house. For smaller enterprises or second-line reporting, building such vast infrastructure from scratch is not feasible. This leads us to vendor RMS platforms (e.g., Murex, Acadia).</p>
+<p>Working with vendor RMS platforms entails juggling multiple stateful resources: defining OTC products, benchmarks, portfolios, and running simulations across dozens of API calls. Each step requires rigorous setup and guaranteed cleanup.</p>
+<p>Thankfully, Python provides context managers (<code>with</code> statements) to manage resource lifecycles reliably. Standard library’s <code>contextlib</code> module offers <code>ExitStack</code>, a powerful tool designed specifically for dynamic, multi-resource contexts. Today we will explore <code>ExitStack</code> in a realistic quantitative RMS workflow.</p>
 </section>
 <section id="setting-the-stage" class="level2">
 <h2 class="anchored" data-anchor-id="setting-the-stage">Setting the stage</h2>
@@ -466,7 +466,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="mock-functions" class="level3">
 <h3 class="anchored" data-anchor-id="mock-functions">Mock functions</h3>
 <p>The setup described above comes from a real-life situation I worked through. I can’t show you the actual API usage or data (or even the name of RMS itself), so we need to define some mocker functions. Mocks like this are actually not an uncommon thing — such approach is prevalent in testing API client code. In our case it would look like this:</p>
-<div id="81143705" class="cell" data-execution_count="1">
+<div id="bf02e40f" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-label="1"></a><span class="im">from</span> enum <span class="im">import</span> StrEnum</span>
@@ -522,44 +522,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-managers" class="level3">
 <h3 class="anchored" data-anchor-id="context-managers">Context managers</h3>
 <p>Easiest way to define a CM is through <code>contextlib.contextmanager</code> decorator. To use it, you need a function that returns a generator. Code executed on enter should come before <code>yield</code> statement and the one for the exit afterwards. The generator yields the result of the CM (ex. handle to an opened file), the <code>y</code> in <code>with x(*args) as y:</code>.</p>
-<div id="67ec1dca" class="cell" data-execution_count="2">
+<div id="dfc74d07" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-label="1"></a><span class="im">from</span> contextlib <span class="im">import</span> contextmanager</span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-label="2"></a><span class="im">from</span> typing <span class="im">import</span> Generator</span>
 <span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-label="3"></a></span>
-<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-label="4"></a><span class="at">@contextmanager</span></span>
-<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-label="5"></a><span class="kw">def</span> analysis(</span>
-<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-label="6"></a>    <span class="op">*</span>,</span>
-<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-label="7"></a>    benchmark_uuid: <span class="bu">str</span>,</span>
-<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-label="8"></a>) <span class="op">-&gt;</span> Generator[<span class="bu">str</span>, <span class="va">None</span>, <span class="va">None</span>]:</span>
-<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-label="9"></a>    <span class="co">"""Mock definition of an analysis.</span></span>
-<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-label="10"></a></span>
-<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-label="11"></a><span class="co">    Example: equity delta and correlation with benchmark.</span></span>
-<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12" aria-label="12"></a></span>
-<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13" aria-label="13"></a><span class="co">    Args:</span></span>
-<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14" aria-label="14"></a><span class="co">        benchmark_uuid: Uuid of the benchmark.</span></span>
-<span id="annotated-cell-2-15"><a href="#annotated-cell-2-15" aria-label="15"></a><span class="co">    """</span></span>
-<span id="annotated-cell-2-16"><a href="#annotated-cell-2-16" aria-label="16"></a>    mock_preparation(</span>
-<span id="annotated-cell-2-17"><a href="#annotated-cell-2-17" aria-label="17"></a>        MockObject.ANALYSIS,</span>
-<span id="annotated-cell-2-18"><a href="#annotated-cell-2-18" aria-label="18"></a>        benchmark_name<span class="op">=</span>benchmark_uuid,</span>
-<span id="annotated-cell-2-19"><a href="#annotated-cell-2-19" aria-label="19"></a>    )</span>
-<span id="annotated-cell-2-20"><a href="#annotated-cell-2-20" aria-label="20"></a>    analysis_uuid <span class="op">=</span> mock_object(MockObject.ANALYSIS)</span>
-<span id="annotated-cell-2-21"><a href="#annotated-cell-2-21" aria-label="21"></a>    <span class="cf">yield</span> analysis_uuid</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-22" class="code-annotation-target"><a href="#annotated-cell-2-22" aria-label="22"></a>    mock_clean_up(analysis_uuid)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-label="4"></a></span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-label="5"></a><span class="at">@contextmanager</span></span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-label="6"></a><span class="kw">def</span> analysis(</span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-label="7"></a>    <span class="op">*</span>,</span>
+<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-label="8"></a>    benchmark_uuid: <span class="bu">str</span>,</span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-label="9"></a>) <span class="op">-&gt;</span> Generator[<span class="bu">str</span>, <span class="va">None</span>, <span class="va">None</span>]:</span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-label="10"></a>    <span class="co">"""Mock definition of an analysis.</span></span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-label="11"></a></span>
+<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12" aria-label="12"></a><span class="co">    Example: equity delta and correlation with benchmark.</span></span>
+<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13" aria-label="13"></a></span>
+<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14" aria-label="14"></a><span class="co">    Args:</span></span>
+<span id="annotated-cell-2-15"><a href="#annotated-cell-2-15" aria-label="15"></a><span class="co">        benchmark_uuid: Uuid of the benchmark.</span></span>
+<span id="annotated-cell-2-16"><a href="#annotated-cell-2-16" aria-label="16"></a><span class="co">    """</span></span>
+<span id="annotated-cell-2-17"><a href="#annotated-cell-2-17" aria-label="17"></a>    mock_preparation(</span>
+<span id="annotated-cell-2-18"><a href="#annotated-cell-2-18" aria-label="18"></a>        MockObject.ANALYSIS,</span>
+<span id="annotated-cell-2-19"><a href="#annotated-cell-2-19" aria-label="19"></a>        benchmark_name<span class="op">=</span>benchmark_uuid,</span>
+<span id="annotated-cell-2-20"><a href="#annotated-cell-2-20" aria-label="20"></a>    )</span>
+<span id="annotated-cell-2-21"><a href="#annotated-cell-2-21" aria-label="21"></a>    analysis_uuid <span class="op">=</span> mock_object(MockObject.ANALYSIS)</span>
+<span id="annotated-cell-2-22"><a href="#annotated-cell-2-22" aria-label="22"></a>    <span class="cf">yield</span> analysis_uuid</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-23" class="code-annotation-target"><a href="#annotated-cell-2-23" aria-label="23"></a>    mock_clean_up(analysis_uuid)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="22" data-code-annotation="1">Clean up after the analysis is complete.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="23" data-code-annotation="1">Clean up after the analysis is complete.</span>
 </dd>
 </dl>
 </div>
 </div>
 <p>Modern approach to Python development leans heavily towards type annotations. Dynamical typing is powerful but can lead to unwieldy code. To properly annotate the <code>analysis</code> function we need to import <code>Generator</code> from <code>typing</code> module. Remember, the <code>@contextmanager</code> decorator takes the function and turns it into CM — a class with <code>__enter__</code> and <code>__exit__</code> methods. The <code>Generator</code> needs three inputs but in our case only the first one is important — <code>YieldType</code>, here <code>str</code> (<a href="https://docs.python.org/3/library/typing.html#typing.Generator">see</a> for more).</p>
 <p>With this done implementing the 3 remaining CMs is easy, just remember our flow chart.</p>
-<div id="318cfa84" class="cell" data-execution_count="3">
+<div id="df4102da" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-label="1"></a><span class="at">@contextmanager</span></span>
@@ -622,7 +623,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 <dt data-target-cell="annotated-cell-3" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="47" data-code-annotation="3">Clean up after the portfolio definition is complśete.</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="47" data-code-annotation="3">Clean up after the portfolio definition is complete.</span>
 </dd>
 </dl>
 </div>
@@ -631,108 +632,87 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="analysis-results" class="level3">
 <h3 class="anchored" data-anchor-id="analysis-results">Analysis results</h3>
 <p>No stress or complexity here, to run the analysis we need to specify which analysis to run on which portfolio.</p>
-<div id="3d9c4b70" class="cell" data-execution_count="4">
+<div id="48c92caf" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-label="2"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a><span class="kw">def</span> analysis_results(</span>
-<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a>    <span class="op">*</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a>    analysis_uuid: <span class="bu">str</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a>    portfolio_uuid: <span class="bu">str</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a>) <span class="op">-&gt;</span> pd.DataFrame:</span>
-<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a>    <span class="co">"""Mock running the analysis on a given portfolio.</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a><span class="co">    Returns empty dataframe.</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a><span class="co">    Args:</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a><span class="co">        analysis_uuid: Uuid of the analysis.</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-label="14"></a><span class="co">        portfolio_uuid: Uuid of the portfolio.</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-label="15"></a><span class="co">    """</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-label="16"></a>    <span class="bu">print</span>(<span class="ss">f"Running analysis </span><span class="sc">{</span>analysis_uuid<span class="sc">}</span><span class="ss"> on portfolio </span><span class="sc">{</span>portfolio_uuid<span class="sc">}</span><span class="ss">."</span>)</span>
-<span id="cb1-17"><a href="#cb1-17" aria-label="17"></a>    <span class="cf">return</span> pd.DataFrame()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a><span class="kw">def</span> analysis_results(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a>    <span class="op">*</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a>    analysis_uuid: <span class="bu">str</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a>    portfolio_uuid: <span class="bu">str</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a>) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a>    <span class="co">"""Mock running the analysis.</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a><span class="co">    Args:</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a><span class="co">        analysis_uuid: Uuid of the analysis.</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a><span class="co">        portfolio_uuid: Uuid of the portfolio.</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-label="14"></a><span class="co">    """</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-label="15"></a>    <span class="bu">print</span>(<span class="ss">f"Running analysis </span><span class="sc">{</span>analysis_uuid<span class="sc">}</span><span class="ss"> on portfolio </span><span class="sc">{</span>portfolio_uuid<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-label="16"></a>    <span class="cf">return</span> pd.DataFrame()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
 </section>
-<section id="section" class="level2">
-<h2 class="anchored" data-anchor-id="section"></h2>
+<section id="running-mock-risk-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="running-mock-risk-analysis">Running Mock Risk Analysis</h2>
 <p>Finally, we can run some (mock) risk analysis!</p>
 <section id="using-contexts-directly" class="level3">
 <h3 class="anchored" data-anchor-id="using-contexts-directly">Using contexts directly</h3>
 <p>First, we use the managers directly through <code>with</code> clause, remembering the dependencies from our flow chart.</p>
-<div id="67737461" class="cell" data-execution_count="5">
+<div id="a1511c4f" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>PORTFOLIO <span class="op">=</span> <span class="st">"portfolio_1"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-label="2"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a><span class="kw">def</span> run_analysis() <span class="op">-&gt;</span> pd.DataFrame:</span>
-<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>    <span class="co">"""Mock running the analysis using with clauses."""</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>    <span class="cf">with</span> otc_products() <span class="im">as</span> otc_uuid:</span>
-<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a>        <span class="cf">with</span> benchmark() <span class="im">as</span> benchmark_uuid:</span>
-<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a>            <span class="cf">with</span> portfolio(</span>
-<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a>                portfolio_name<span class="op">=</span>PORTFOLIO,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-label="9"></a>                otc_products_uuid<span class="op">=</span>otc_uuid,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-label="10"></a>            ) <span class="im">as</span> portfolio_uuid:</span>
-<span id="cb2-11"><a href="#cb2-11" aria-label="11"></a>                <span class="cf">with</span> analysis(</span>
-<span id="cb2-12"><a href="#cb2-12" aria-label="12"></a>                    benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
-<span id="cb2-13"><a href="#cb2-13" aria-label="13"></a>                ) <span class="im">as</span> analysis_uuid:</span>
-<span id="cb2-14"><a href="#cb2-14" aria-label="14"></a>                    results <span class="op">=</span> analysis_results(</span>
-<span id="cb2-15"><a href="#cb2-15" aria-label="15"></a>                        analysis_uuid<span class="op">=</span>analysis_uuid,</span>
-<span id="cb2-16"><a href="#cb2-16" aria-label="16"></a>                        portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
-<span id="cb2-17"><a href="#cb2-17" aria-label="17"></a>                    )</span>
-<span id="cb2-18"><a href="#cb2-18" aria-label="18"></a>    <span class="cf">return</span> results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<p>This is terrible! I am already getting lost, needed few tries to get it right. We ended up with <strong>6</strong> levels of indentation, the code is confusing, the flow is obtuse. Let’s run it either way, to see if at least works.</p>
-<div id="895f0490" class="cell" data-execution_count="6">
-<details open="" class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="kw">def</span> print_title(title: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a>    <span class="co">"""Print a title padded, surrounded by dashes and empty lines."""</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span> <span class="op">+</span> title.center(<span class="dv">60</span>, <span class="st">"-"</span>) <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a>print_title(<span class="st">"Running analysis."</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a>run_analysis()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a><span class="kw">def</span> print_title(title: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>    <span class="co">"""Print a title padded, surrounded by dashes and empty lines."""</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span> <span class="op">+</span> title.center(<span class="dv">60</span>, <span class="st">"-"</span>) <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-label="9"></a><span class="co"># | code-fold: true</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-label="10"></a><span class="co"># | code-summary: "Show the code"</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-label="11"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-label="12"></a>print_title(<span class="st">"Running analysis using contexts directly."</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-label="13"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-label="14"></a><span class="cf">with</span> otc_products() <span class="im">as</span> otc_uuid:</span>
+<span id="cb2-15"><a href="#cb2-15" aria-label="15"></a>    <span class="cf">with</span> benchmark() <span class="im">as</span> benchmark_uuid:</span>
+<span id="cb2-16"><a href="#cb2-16" aria-label="16"></a>        <span class="cf">with</span> portfolio(</span>
+<span id="cb2-17"><a href="#cb2-17" aria-label="17"></a>            portfolio_name<span class="op">=</span>PORTFOLIO,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-label="18"></a>            otc_products_uuid<span class="op">=</span>otc_uuid,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-label="19"></a>        ) <span class="im">as</span> portfolio_uuid:</span>
+<span id="cb2-20"><a href="#cb2-20" aria-label="20"></a>            <span class="cf">with</span> analysis(</span>
+<span id="cb2-21"><a href="#cb2-21" aria-label="21"></a>                benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-label="22"></a>            ) <span class="im">as</span> analysis_uuid:</span>
+<span id="cb2-23"><a href="#cb2-23" aria-label="23"></a>                results <span class="op">=</span> analysis_results(</span>
+<span id="cb2-24"><a href="#cb2-24" aria-label="24"></a>                    analysis_uuid<span class="op">=</span>analysis_uuid,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-label="25"></a>                    portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-label="26"></a>                )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
----------------------Running analysis.----------------------
+---------Running analysis using contexts directly.----------
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_2da5b4db-e240-450e-a24c-24337f2ab65f'}
-Preparing analysis using {'benchmark_name': 'benchmark_940c3c4d-c4c6-4ad3-912d-6e2b8579d390'}
-Running analysis analysis_a2b4a793-1edd-4485-a643-214b478f6b06 on portfolio portfolio_46fa202e-de58-4e84-aa5f-d0ba9a907528.
-Cleaning up after analysis_a2b4a793-1edd-4485-a643-214b478f6b06.
-Cleaning up after portfolio_46fa202e-de58-4e84-aa5f-d0ba9a907528.
-Cleaning up after benchmark_940c3c4d-c4c6-4ad3-912d-6e2b8579d390.
-Cleaning up after otc_products_2da5b4db-e240-450e-a24c-24337f2ab65f.</code></pre>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="6">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
-
-</div>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_1cee82af-243c-4b8b-85b7-7c2969302d32'}
+Preparing analysis using {'benchmark_name': 'benchmark_8d92682e-59d0-48f0-af9a-9de9522a8e09'}
+Running analysis analysis_d2d2abd7-bfe7-4c8c-bd20-7610b11ff2c8 on portfolio portfolio_349cebcb-45d2-4773-9716-ec59e65cfa02.
+Cleaning up after analysis_d2d2abd7-bfe7-4c8c-bd20-7610b11ff2c8.
+Cleaning up after portfolio_349cebcb-45d2-4773-9716-ec59e65cfa02.
+Cleaning up after benchmark_8d92682e-59d0-48f0-af9a-9de9522a8e09.
+Cleaning up after otc_products_1cee82af-243c-4b8b-85b7-7c2969302d32.</code></pre>
 </div>
 </div>
 <p>Great, the behaviour is as expected, everything is cleaned after nicely. We achieved the goal but the code is unmaintainable. Looks like a subject of the joke <em>“good code makes your job safe for a day, but terrible code in production makes it safe for a lifetime”</em>. Being reckless and with no regard to job security as we are, we’ll fix it.</p>
-<p><em>I can clearly recall the most unamanagable and unreadable code I’ve seen in my career and the culprit was fired in the end. Different reasons, long time later, but still. So the joke is just a joke, don’t rely on a bad code as your job insurance.</em></p>
+<p><em>I can clearly recall the most unmanageable and unreadable code I’ve seen in my career and the culprit was fired in the end. Different reasons, long time later, but still. So the joke is just a joke, don’t rely on bad code as job insurance.</em></p>
 </section>
 </section>
 <section id="the-exitstack" class="level2">
 <h2 class="anchored" data-anchor-id="the-exitstack">The ExitStack</h2>
-<p>Here comes in the MVP — <code>ExitStack</code> from <code>contextlib</code>, made for streamlining complex context managment situationships. Conceptually it’s just a First-In-Last-Out (FILO) stack. You put CMs on top, one by one. When CM is pushed to stack, its <code>__enter__</code> method is called and you can intercept the result. ExitStack is a CM itself, it’s <code>__exit__</code> method is just calling the exits of CMs in reverse order.</p>
+<p>This is where <code>ExitStack</code> from <code>contextlib</code> shines: managing complex, dynamic context lifecycles without deep nesting. Conceptually it’s a First-In-Last-Out (FILO) stack. You push context managers onto the stack dynamically; when the stack exits, it unwinds and closes them in reverse order.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -756,39 +736,40 @@ Cleaning up after otc_products_2da5b4db-e240-450e-a24c-24337f2ab65f.</code></pre
 </div>
 </div>
 <p>So the flow is exactly the same as in our first attempt. Let’s try it!</p>
-<div id="37db3350" class="cell" data-execution_count="7">
+<div id="5c974a1e" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="im">from</span> contextlib <span class="im">import</span> ExitStack</span>
-<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-label="3"></a><span class="kw">def</span> run_analysis_with_exit_stack() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb5-4"><a href="#cb5-4" aria-label="4"></a>    <span class="co">"""Mock running the analysis using exit stack."""</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-label="5"></a>    <span class="cf">with</span> ExitStack() <span class="im">as</span> stack:</span>
-<span id="cb5-6"><a href="#cb5-6" aria-label="6"></a>        otc_uuid <span class="op">=</span> stack.enter_context(otc_products())</span>
-<span id="cb5-7"><a href="#cb5-7" aria-label="7"></a>        benchmark_uuid <span class="op">=</span> stack.enter_context(benchmark())</span>
-<span id="cb5-8"><a href="#cb5-8" aria-label="8"></a>        portfolio_uuid <span class="op">=</span> stack.enter_context(</span>
-<span id="cb5-9"><a href="#cb5-9" aria-label="9"></a>            portfolio(</span>
-<span id="cb5-10"><a href="#cb5-10" aria-label="10"></a>                portfolio_name<span class="op">=</span>PORTFOLIO,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-label="11"></a>                otc_products_uuid<span class="op">=</span>otc_uuid,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-label="12"></a>            )</span>
-<span id="cb5-13"><a href="#cb5-13" aria-label="13"></a>        )</span>
-<span id="cb5-14"><a href="#cb5-14" aria-label="14"></a>        analysis_uuid <span class="op">=</span> stack.enter_context(</span>
-<span id="cb5-15"><a href="#cb5-15" aria-label="15"></a>            analysis(</span>
-<span id="cb5-16"><a href="#cb5-16" aria-label="16"></a>                benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
-<span id="cb5-17"><a href="#cb5-17" aria-label="17"></a>            )</span>
-<span id="cb5-18"><a href="#cb5-18" aria-label="18"></a>        )</span>
-<span id="cb5-19"><a href="#cb5-19" aria-label="19"></a>        results <span class="op">=</span> analysis_results(</span>
-<span id="cb5-20"><a href="#cb5-20" aria-label="20"></a>            analysis_uuid<span class="op">=</span>analysis_uuid,</span>
-<span id="cb5-21"><a href="#cb5-21" aria-label="21"></a>            portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
-<span id="cb5-22"><a href="#cb5-22" aria-label="22"></a>        )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="im">from</span> contextlib <span class="im">import</span> ExitStack</span>
+<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-label="4"></a><span class="kw">def</span> run_analysis_with_exit_stack() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb4-5"><a href="#cb4-5" aria-label="5"></a>    <span class="co">"""Mock running the analysis using exit stack."""</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-label="6"></a>    <span class="cf">with</span> ExitStack() <span class="im">as</span> stack:</span>
+<span id="cb4-7"><a href="#cb4-7" aria-label="7"></a>        otc_uuid <span class="op">=</span> stack.enter_context(otc_products())</span>
+<span id="cb4-8"><a href="#cb4-8" aria-label="8"></a>        benchmark_uuid <span class="op">=</span> stack.enter_context(benchmark())</span>
+<span id="cb4-9"><a href="#cb4-9" aria-label="9"></a>        portfolio_uuid <span class="op">=</span> stack.enter_context(</span>
+<span id="cb4-10"><a href="#cb4-10" aria-label="10"></a>            portfolio(</span>
+<span id="cb4-11"><a href="#cb4-11" aria-label="11"></a>                portfolio_name<span class="op">=</span>PORTFOLIO,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-label="12"></a>                otc_products_uuid<span class="op">=</span>otc_uuid,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-label="13"></a>            )</span>
+<span id="cb4-14"><a href="#cb4-14" aria-label="14"></a>        )</span>
+<span id="cb4-15"><a href="#cb4-15" aria-label="15"></a>        analysis_uuid <span class="op">=</span> stack.enter_context(</span>
+<span id="cb4-16"><a href="#cb4-16" aria-label="16"></a>            analysis(</span>
+<span id="cb4-17"><a href="#cb4-17" aria-label="17"></a>                benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-label="18"></a>            )</span>
+<span id="cb4-19"><a href="#cb4-19" aria-label="19"></a>        )</span>
+<span id="cb4-20"><a href="#cb4-20" aria-label="20"></a>        results <span class="op">=</span> analysis_results(</span>
+<span id="cb4-21"><a href="#cb4-21" aria-label="21"></a>            analysis_uuid<span class="op">=</span>analysis_uuid,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-label="22"></a>            portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-label="23"></a>        )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>That’s amazing (if the approach works)! In our code we end up with only single <code>with</code> clause and the outputs of CMs are defined just like the regular variables. We just need to wrap the CM calls in <code>stack.enter_context</code> method that pushes each CM to the stack.</p>
-<div id="dbb1ff84" class="cell" data-execution_count="8">
+<div id="f6fe4a56" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a>print_title(<span class="st">"Running analysis with exit stack."</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-label="2"></a>run_analysis_with_exit_stack()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a>print_title(<span class="st">"Running analysis with exit stack."</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a>run_analysis_with_exit_stack()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -796,67 +777,67 @@ Cleaning up after otc_products_2da5b4db-e240-450e-a24c-24337f2ab65f.</code></pre
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_13294d74-cc26-4867-8807-9e5cd4776052'}
-Preparing analysis using {'benchmark_name': 'benchmark_918a67c2-3549-4a64-93dd-2a156f455214'}
-Running analysis analysis_c5ab9f56-def7-4376-96a5-5b917d067ca5 on portfolio portfolio_246ffabc-e0a8-4fc8-aa68-8501900f7644.
-Cleaning up after analysis_c5ab9f56-def7-4376-96a5-5b917d067ca5.
-Cleaning up after portfolio_246ffabc-e0a8-4fc8-aa68-8501900f7644.
-Cleaning up after benchmark_918a67c2-3549-4a64-93dd-2a156f455214.
-Cleaning up after otc_products_13294d74-cc26-4867-8807-9e5cd4776052.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_d2d3372a-456a-43ee-b9cc-092ea2070518'}
+Preparing analysis using {'benchmark_name': 'benchmark_de487772-4ea3-49d3-a9b7-a7afc77b3416'}
+Running analysis analysis_b1c70c1d-c61b-43ea-8c49-e625108b9b16 on portfolio portfolio_d657346a-1ef0-4fa5-b397-bfdf5da32452.
+Cleaning up after analysis_b1c70c1d-c61b-43ea-8c49-e625108b9b16.
+Cleaning up after portfolio_d657346a-1ef0-4fa5-b397-bfdf5da32452.
+Cleaning up after benchmark_de487772-4ea3-49d3-a9b7-a7afc77b3416.
+Cleaning up after otc_products_d2d3372a-456a-43ee-b9cc-092ea2070518.</code></pre>
 </div>
 </div>
 <p>It works as well! We also get a package of benefits for free.</p>
 <section id="disabling-the-clean-up" class="level3">
 <h3 class="anchored" data-anchor-id="disabling-the-clean-up">Disabling the clean up</h3>
-<p>Working with API is tricky and debugging could be a painful experience. If we notice something iffy with the results we are reciving, it could be due to a bug at any of the stages. In such case disabling the artifact clean up and examining them is a good way to investigate. How do we do that? Comment out the exit code in our resource CMs? Nope, now we know better. With exit stack approach we just need to clean up the stack before exiting its context.</p>
-<div id="582e31cb" class="cell" data-execution_count="9">
+<p>Working with APIs is tricky and debugging can be painful. If we notice something unexpected with the results we are receiving, it could be due to an issue at any stage. In such cases, disabling artifact cleanup and examining intermediate state is valuable. With the <code>ExitStack</code> approach, we simply detach the contexts before the stack exits:</p>
+<div id="68f0a1d8" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-label="1"></a><span class="kw">def</span> run_analysis_with_exit_stack(</span>
-<span id="annotated-cell-9-2"><a href="#annotated-cell-9-2" aria-label="2"></a>    clean_up: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>,</span>
-<span id="annotated-cell-9-3"><a href="#annotated-cell-9-3" aria-label="3"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="annotated-cell-9-4"><a href="#annotated-cell-9-4" aria-label="4"></a>    <span class="co">"""Mock running the analysis using exit stack.</span></span>
-<span id="annotated-cell-9-5"><a href="#annotated-cell-9-5" aria-label="5"></a></span>
-<span id="annotated-cell-9-6"><a href="#annotated-cell-9-6" aria-label="6"></a><span class="co">    Args:</span></span>
-<span id="annotated-cell-9-7"><a href="#annotated-cell-9-7" aria-label="7"></a><span class="co">        clean_up: Whether to clean up after the objects.</span></span>
-<span id="annotated-cell-9-8"><a href="#annotated-cell-9-8" aria-label="8"></a><span class="co">    """</span></span>
-<span id="annotated-cell-9-9"><a href="#annotated-cell-9-9" aria-label="9"></a></span>
-<span id="annotated-cell-9-10"><a href="#annotated-cell-9-10" aria-label="10"></a>    <span class="cf">with</span> ExitStack() <span class="im">as</span> stack:</span>
-<span id="annotated-cell-9-11"><a href="#annotated-cell-9-11" aria-label="11"></a>        otc_uuid <span class="op">=</span> stack.enter_context(otc_products())</span>
-<span id="annotated-cell-9-12"><a href="#annotated-cell-9-12" aria-label="12"></a>        benchmark_uuid <span class="op">=</span> stack.enter_context(benchmark())</span>
-<span id="annotated-cell-9-13"><a href="#annotated-cell-9-13" aria-label="13"></a>        portfolio_uuid <span class="op">=</span> stack.enter_context(</span>
-<span id="annotated-cell-9-14"><a href="#annotated-cell-9-14" aria-label="14"></a>            portfolio(</span>
-<span id="annotated-cell-9-15"><a href="#annotated-cell-9-15" aria-label="15"></a>                portfolio_name<span class="op">=</span>PORTFOLIO,</span>
-<span id="annotated-cell-9-16"><a href="#annotated-cell-9-16" aria-label="16"></a>                otc_products_uuid<span class="op">=</span>otc_uuid,</span>
-<span id="annotated-cell-9-17"><a href="#annotated-cell-9-17" aria-label="17"></a>            )</span>
-<span id="annotated-cell-9-18"><a href="#annotated-cell-9-18" aria-label="18"></a>        )</span>
-<span id="annotated-cell-9-19"><a href="#annotated-cell-9-19" aria-label="19"></a>        analysis_uuid <span class="op">=</span> stack.enter_context(</span>
-<span id="annotated-cell-9-20"><a href="#annotated-cell-9-20" aria-label="20"></a>            analysis(</span>
-<span id="annotated-cell-9-21"><a href="#annotated-cell-9-21" aria-label="21"></a>                benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
-<span id="annotated-cell-9-22"><a href="#annotated-cell-9-22" aria-label="22"></a>            )</span>
-<span id="annotated-cell-9-23"><a href="#annotated-cell-9-23" aria-label="23"></a>        )</span>
-<span id="annotated-cell-9-24"><a href="#annotated-cell-9-24" aria-label="24"></a>        results <span class="op">=</span> analysis_results(</span>
-<span id="annotated-cell-9-25"><a href="#annotated-cell-9-25" aria-label="25"></a>            analysis_uuid<span class="op">=</span>analysis_uuid,</span>
-<span id="annotated-cell-9-26"><a href="#annotated-cell-9-26" aria-label="26"></a>            portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
-<span id="annotated-cell-9-27"><a href="#annotated-cell-9-27" aria-label="27"></a>        )</span>
-<span id="annotated-cell-9-28"><a href="#annotated-cell-9-28" aria-label="28"></a>        <span class="cf">if</span> <span class="kw">not</span> clean_up:</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-9-29" class="code-annotation-target"><a href="#annotated-cell-9-29" aria-label="29"></a>            _ <span class="op">=</span> stack.pop_all()</span>
-<span id="annotated-cell-9-30"><a href="#annotated-cell-9-30" aria-label="30"></a>    <span class="cf">return</span> results</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1" aria-label="1"></a><span class="kw">def</span> run_analysis_with_exit_stack(</span>
+<span id="annotated-cell-8-2"><a href="#annotated-cell-8-2" aria-label="2"></a>    clean_up: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>,</span>
+<span id="annotated-cell-8-3"><a href="#annotated-cell-8-3" aria-label="3"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="annotated-cell-8-4"><a href="#annotated-cell-8-4" aria-label="4"></a>    <span class="co">"""Mock running the analysis using exit stack.</span></span>
+<span id="annotated-cell-8-5"><a href="#annotated-cell-8-5" aria-label="5"></a></span>
+<span id="annotated-cell-8-6"><a href="#annotated-cell-8-6" aria-label="6"></a><span class="co">    Args:</span></span>
+<span id="annotated-cell-8-7"><a href="#annotated-cell-8-7" aria-label="7"></a><span class="co">        clean_up: Whether to clean up after the objects.</span></span>
+<span id="annotated-cell-8-8"><a href="#annotated-cell-8-8" aria-label="8"></a><span class="co">    """</span></span>
+<span id="annotated-cell-8-9"><a href="#annotated-cell-8-9" aria-label="9"></a></span>
+<span id="annotated-cell-8-10"><a href="#annotated-cell-8-10" aria-label="10"></a>    <span class="cf">with</span> ExitStack() <span class="im">as</span> stack:</span>
+<span id="annotated-cell-8-11"><a href="#annotated-cell-8-11" aria-label="11"></a>        otc_uuid <span class="op">=</span> stack.enter_context(otc_products())</span>
+<span id="annotated-cell-8-12"><a href="#annotated-cell-8-12" aria-label="12"></a>        benchmark_uuid <span class="op">=</span> stack.enter_context(benchmark())</span>
+<span id="annotated-cell-8-13"><a href="#annotated-cell-8-13" aria-label="13"></a>        portfolio_uuid <span class="op">=</span> stack.enter_context(</span>
+<span id="annotated-cell-8-14"><a href="#annotated-cell-8-14" aria-label="14"></a>            portfolio(</span>
+<span id="annotated-cell-8-15"><a href="#annotated-cell-8-15" aria-label="15"></a>                portfolio_name<span class="op">=</span>PORTFOLIO,</span>
+<span id="annotated-cell-8-16"><a href="#annotated-cell-8-16" aria-label="16"></a>                otc_products_uuid<span class="op">=</span>otc_uuid,</span>
+<span id="annotated-cell-8-17"><a href="#annotated-cell-8-17" aria-label="17"></a>            )</span>
+<span id="annotated-cell-8-18"><a href="#annotated-cell-8-18" aria-label="18"></a>        )</span>
+<span id="annotated-cell-8-19"><a href="#annotated-cell-8-19" aria-label="19"></a>        analysis_uuid <span class="op">=</span> stack.enter_context(</span>
+<span id="annotated-cell-8-20"><a href="#annotated-cell-8-20" aria-label="20"></a>            analysis(</span>
+<span id="annotated-cell-8-21"><a href="#annotated-cell-8-21" aria-label="21"></a>                benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
+<span id="annotated-cell-8-22"><a href="#annotated-cell-8-22" aria-label="22"></a>            )</span>
+<span id="annotated-cell-8-23"><a href="#annotated-cell-8-23" aria-label="23"></a>        )</span>
+<span id="annotated-cell-8-24"><a href="#annotated-cell-8-24" aria-label="24"></a>        results <span class="op">=</span> analysis_results(</span>
+<span id="annotated-cell-8-25"><a href="#annotated-cell-8-25" aria-label="25"></a>            analysis_uuid<span class="op">=</span>analysis_uuid,</span>
+<span id="annotated-cell-8-26"><a href="#annotated-cell-8-26" aria-label="26"></a>            portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
+<span id="annotated-cell-8-27"><a href="#annotated-cell-8-27" aria-label="27"></a>        )</span>
+<span id="annotated-cell-8-28"><a href="#annotated-cell-8-28" aria-label="28"></a>        <span class="cf">if</span> <span class="kw">not</span> clean_up:</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-8-29" class="code-annotation-target"><a href="#annotated-cell-8-29" aria-label="29"></a>            _ <span class="op">=</span> stack.pop_all()</span>
+<span id="annotated-cell-8-30"><a href="#annotated-cell-8-30" aria-label="30"></a>    <span class="cf">return</span> results</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-9" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-9" data-code-lines="29" data-code-annotation="1">This is a Pythonic way of disregarding outputs of <code>some_function</code>. Method <code>pop_all</code> actually moves the stack contents to a new stack, but we don’t care about that. We just want to get rid of them from our current one.</span>
+<span data-code-cell="annotated-cell-8" data-code-lines="29" data-code-annotation="1">This is a Pythonic way of disregarding outputs of <code>some_function</code>. Method <code>pop_all</code> actually moves the stack contents to a new stack, but we don’t care about that. We just want to get rid of them from our current one.</span>
 </dd>
 </dl>
 </div>
 </div>
-<div id="54729990" class="cell" data-execution_count="10">
+<div id="d5b713cf" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-label="1"></a>print_title(<span class="st">"Running analysis with exit stack and no clean up."</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-label="2"></a>run_analysis_with_exit_stack(clean_up<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a>print_title(<span class="st">"Running analysis with exit stack and no clean up."</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-label="2"></a>run_analysis_with_exit_stack(clean_up<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -864,11 +845,11 @@ Cleaning up after otc_products_13294d74-cc26-4867-8807-9e5cd4776052.</code></pre
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_a90d0d8f-c6e0-4eb8-ba2f-2db1bca0ba0b'}
-Preparing analysis using {'benchmark_name': 'benchmark_10762741-f071-4a86-9450-71de59fa9b76'}
-Running analysis analysis_b6eb002e-5f03-46ca-92bc-b54fd559ac80 on portfolio portfolio_cd3f6af6-9017-4a47-a251-4b5978c696b5.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_3dcece58-da99-403f-b99d-c12b46c23687'}
+Preparing analysis using {'benchmark_name': 'benchmark_c31d8781-d35a-4e8f-93b3-8ee513ac8dc4'}
+Running analysis analysis_2861c2e1-5db0-474b-bdfd-1dbd10514867 on portfolio portfolio_cee9ca73-2065-4e8a-bd11-d74085e18c1c.</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="9">
 <div>
 
 
@@ -888,50 +869,52 @@ Running analysis analysis_b6eb002e-5f03-46ca-92bc-b54fd559ac80 on portfolio port
 </section>
 <section id="multiple-portfolios" class="level3">
 <h3 class="anchored" data-anchor-id="multiple-portfolios">Multiple portfolios</h3>
-<p>Benefit #2 — what do we do if we have multiple managers and many portfolios to re-run for? Or — outside of the example scope — we want to held multiple files open at the same time? Easy, we just push to the stack in a loop or a list comprehension.</p>
-<div id="02895b4b" class="cell" data-execution_count="11">
+<p>Benefit #2: what do we do if we have multiple managers and many portfolios to re-run for? Or—outside of the example scope—we want to hold multiple files open at the same time? Easy: we push to the stack dynamically in a loop.</p>
+<div id="fac446d1" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-label="1"></a>PORTFOLIOS <span class="op">=</span> [<span class="st">"portfolio_1"</span>, <span class="st">"portfolio_2"</span>, <span class="st">"portfolio_3"</span>]</span>
-<span id="cb10-2"><a href="#cb10-2" aria-label="2"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-label="3"></a><span class="kw">def</span> run_analysis_with_exit_stack(clean_up: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>):</span>
-<span id="cb10-4"><a href="#cb10-4" aria-label="4"></a>    <span class="co">"""Mock running the analysis for multiple portfolios using exit stack.</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-label="5"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-label="6"></a><span class="co">    Args:</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-label="7"></a><span class="co">        clean_up: Whether to clean up after the objects.</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-label="8"></a><span class="co">    """</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-label="9"></a>    <span class="cf">with</span> ExitStack() <span class="im">as</span> stack:</span>
-<span id="cb10-10"><a href="#cb10-10" aria-label="10"></a>        otc_uuid <span class="op">=</span> stack.enter_context(otc_products())</span>
-<span id="cb10-11"><a href="#cb10-11" aria-label="11"></a>        benchmark_uuid <span class="op">=</span> stack.enter_context(benchmark())</span>
-<span id="cb10-12"><a href="#cb10-12" aria-label="12"></a>        portfolio_uuids <span class="op">=</span> [</span>
-<span id="cb10-13"><a href="#cb10-13" aria-label="13"></a>            stack.enter_context(</span>
-<span id="cb10-14"><a href="#cb10-14" aria-label="14"></a>                portfolio(</span>
-<span id="cb10-15"><a href="#cb10-15" aria-label="15"></a>                    portfolio_name<span class="op">=</span>portfolio_name,</span>
-<span id="cb10-16"><a href="#cb10-16" aria-label="16"></a>                    otc_products_uuid<span class="op">=</span>otc_uuid,</span>
-<span id="cb10-17"><a href="#cb10-17" aria-label="17"></a>                )</span>
-<span id="cb10-18"><a href="#cb10-18" aria-label="18"></a>            )</span>
-<span id="cb10-19"><a href="#cb10-19" aria-label="19"></a>            <span class="cf">for</span> portfolio_name <span class="kw">in</span> PORTFOLIOS</span>
-<span id="cb10-20"><a href="#cb10-20" aria-label="20"></a>        ]</span>
-<span id="cb10-21"><a href="#cb10-21" aria-label="21"></a>        analysis_uuid <span class="op">=</span> stack.enter_context(</span>
-<span id="cb10-22"><a href="#cb10-22" aria-label="22"></a>            analysis(</span>
-<span id="cb10-23"><a href="#cb10-23" aria-label="23"></a>                benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
-<span id="cb10-24"><a href="#cb10-24" aria-label="24"></a>            )</span>
-<span id="cb10-25"><a href="#cb10-25" aria-label="25"></a>        )</span>
-<span id="cb10-26"><a href="#cb10-26" aria-label="26"></a>        result_parts <span class="op">=</span> [</span>
-<span id="cb10-27"><a href="#cb10-27" aria-label="27"></a>            analysis_results(</span>
-<span id="cb10-28"><a href="#cb10-28" aria-label="28"></a>                analysis_uuid<span class="op">=</span>analysis_uuid,</span>
-<span id="cb10-29"><a href="#cb10-29" aria-label="29"></a>                portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
-<span id="cb10-30"><a href="#cb10-30" aria-label="30"></a>            )</span>
-<span id="cb10-31"><a href="#cb10-31" aria-label="31"></a>            <span class="cf">for</span> portfolio_uuid <span class="kw">in</span> portfolio_uuids</span>
-<span id="cb10-32"><a href="#cb10-32" aria-label="32"></a>        ]</span>
-<span id="cb10-33"><a href="#cb10-33" aria-label="33"></a>        results <span class="op">=</span> pd.concat(result_parts)</span>
-<span id="cb10-34"><a href="#cb10-34" aria-label="34"></a></span>
-<span id="cb10-35"><a href="#cb10-35" aria-label="35"></a>        <span class="cf">if</span> <span class="kw">not</span> clean_up:</span>
-<span id="cb10-36"><a href="#cb10-36" aria-label="36"></a>            _ <span class="op">=</span> stack.pop_all()</span>
-<span id="cb10-37"><a href="#cb10-37" aria-label="37"></a>    <span class="cf">return</span> results</span>
-<span id="cb10-38"><a href="#cb10-38" aria-label="38"></a></span>
-<span id="cb10-39"><a href="#cb10-39" aria-label="39"></a>print_title(<span class="st">"Running analysis with exit stack on multiple portfolios."</span>)</span>
-<span id="cb10-40"><a href="#cb10-40" aria-label="40"></a>run_analysis_with_exit_stack(clean_up<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a>PORTFOLIOS <span class="op">=</span> [<span class="st">"portfolio_1"</span>, <span class="st">"portfolio_2"</span>, <span class="st">"portfolio_3"</span>]</span>
+<span id="cb9-2"><a href="#cb9-2" aria-label="2"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-label="3"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-label="4"></a><span class="kw">def</span> run_analysis_with_exit_stack(clean_up: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>):</span>
+<span id="cb9-5"><a href="#cb9-5" aria-label="5"></a>    <span class="co">"""Mock running the analysis for multiple portfolios using exit stack.</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-label="6"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-label="7"></a><span class="co">    Args:</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-label="8"></a><span class="co">        clean_up: Whether to clean up after the objects.</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-label="9"></a><span class="co">    """</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-label="10"></a>    <span class="cf">with</span> ExitStack() <span class="im">as</span> stack:</span>
+<span id="cb9-11"><a href="#cb9-11" aria-label="11"></a>        otc_uuid <span class="op">=</span> stack.enter_context(otc_products())</span>
+<span id="cb9-12"><a href="#cb9-12" aria-label="12"></a>        benchmark_uuid <span class="op">=</span> stack.enter_context(benchmark())</span>
+<span id="cb9-13"><a href="#cb9-13" aria-label="13"></a>        portfolio_uuids <span class="op">=</span> [</span>
+<span id="cb9-14"><a href="#cb9-14" aria-label="14"></a>            stack.enter_context(</span>
+<span id="cb9-15"><a href="#cb9-15" aria-label="15"></a>                portfolio(</span>
+<span id="cb9-16"><a href="#cb9-16" aria-label="16"></a>                    portfolio_name<span class="op">=</span>portfolio_name,</span>
+<span id="cb9-17"><a href="#cb9-17" aria-label="17"></a>                    otc_products_uuid<span class="op">=</span>otc_uuid,</span>
+<span id="cb9-18"><a href="#cb9-18" aria-label="18"></a>                )</span>
+<span id="cb9-19"><a href="#cb9-19" aria-label="19"></a>            )</span>
+<span id="cb9-20"><a href="#cb9-20" aria-label="20"></a>            <span class="cf">for</span> portfolio_name <span class="kw">in</span> PORTFOLIOS</span>
+<span id="cb9-21"><a href="#cb9-21" aria-label="21"></a>        ]</span>
+<span id="cb9-22"><a href="#cb9-22" aria-label="22"></a>        analysis_uuid <span class="op">=</span> stack.enter_context(</span>
+<span id="cb9-23"><a href="#cb9-23" aria-label="23"></a>            analysis(</span>
+<span id="cb9-24"><a href="#cb9-24" aria-label="24"></a>                benchmark_uuid<span class="op">=</span>benchmark_uuid,</span>
+<span id="cb9-25"><a href="#cb9-25" aria-label="25"></a>            )</span>
+<span id="cb9-26"><a href="#cb9-26" aria-label="26"></a>        )</span>
+<span id="cb9-27"><a href="#cb9-27" aria-label="27"></a>        result_parts <span class="op">=</span> [</span>
+<span id="cb9-28"><a href="#cb9-28" aria-label="28"></a>            analysis_results(</span>
+<span id="cb9-29"><a href="#cb9-29" aria-label="29"></a>                analysis_uuid<span class="op">=</span>analysis_uuid,</span>
+<span id="cb9-30"><a href="#cb9-30" aria-label="30"></a>                portfolio_uuid<span class="op">=</span>portfolio_uuid,</span>
+<span id="cb9-31"><a href="#cb9-31" aria-label="31"></a>            )</span>
+<span id="cb9-32"><a href="#cb9-32" aria-label="32"></a>            <span class="cf">for</span> portfolio_uuid <span class="kw">in</span> portfolio_uuids</span>
+<span id="cb9-33"><a href="#cb9-33" aria-label="33"></a>        ]</span>
+<span id="cb9-34"><a href="#cb9-34" aria-label="34"></a>        results <span class="op">=</span> pd.concat(result_parts)</span>
+<span id="cb9-35"><a href="#cb9-35" aria-label="35"></a></span>
+<span id="cb9-36"><a href="#cb9-36" aria-label="36"></a>        <span class="cf">if</span> <span class="kw">not</span> clean_up:</span>
+<span id="cb9-37"><a href="#cb9-37" aria-label="37"></a>            _ <span class="op">=</span> stack.pop_all()</span>
+<span id="cb9-38"><a href="#cb9-38" aria-label="38"></a>    <span class="cf">return</span> results</span>
+<span id="cb9-39"><a href="#cb9-39" aria-label="39"></a></span>
+<span id="cb9-40"><a href="#cb9-40" aria-label="40"></a></span>
+<span id="cb9-41"><a href="#cb9-41" aria-label="41"></a>print_title(<span class="st">"Running analysis with exit stack on multiple portfolios."</span>)</span>
+<span id="cb9-42"><a href="#cb9-42" aria-label="42"></a>run_analysis_with_exit_stack(clean_up<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -939,21 +922,21 @@ Running analysis analysis_b6eb002e-5f03-46ca-92bc-b54fd559ac80 on portfolio port
 
 Preparing otc_products.
 Preparing benchmark.
-Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_4f6eed92-d9c5-495d-a1eb-d2173a6b3324'}
-Preparing portfolio using {'portfolio_name': 'portfolio_2', 'otc_products_uuid': 'otc_products_4f6eed92-d9c5-495d-a1eb-d2173a6b3324'}
-Preparing portfolio using {'portfolio_name': 'portfolio_3', 'otc_products_uuid': 'otc_products_4f6eed92-d9c5-495d-a1eb-d2173a6b3324'}
-Preparing analysis using {'benchmark_name': 'benchmark_4998d3ef-e09e-4702-8e85-782de5b1c48c'}
-Running analysis analysis_9cd336a3-cfd9-46bc-b431-0e7ee90fce12 on portfolio portfolio_4214a1dc-76e4-48ba-94ee-b6baa6806b58.
-Running analysis analysis_9cd336a3-cfd9-46bc-b431-0e7ee90fce12 on portfolio portfolio_bc5c34aa-3074-4c00-b3b0-1ad745e5f698.
-Running analysis analysis_9cd336a3-cfd9-46bc-b431-0e7ee90fce12 on portfolio portfolio_5d636e7b-38b2-497f-b00a-c67988173ff9.
-Cleaning up after analysis_9cd336a3-cfd9-46bc-b431-0e7ee90fce12.
-Cleaning up after portfolio_5d636e7b-38b2-497f-b00a-c67988173ff9.
-Cleaning up after portfolio_bc5c34aa-3074-4c00-b3b0-1ad745e5f698.
-Cleaning up after portfolio_4214a1dc-76e4-48ba-94ee-b6baa6806b58.
-Cleaning up after benchmark_4998d3ef-e09e-4702-8e85-782de5b1c48c.
-Cleaning up after otc_products_4f6eed92-d9c5-495d-a1eb-d2173a6b3324.</code></pre>
+Preparing portfolio using {'portfolio_name': 'portfolio_1', 'otc_products_uuid': 'otc_products_c9123d53-99ea-4963-ac07-6d7cd9cf1fc2'}
+Preparing portfolio using {'portfolio_name': 'portfolio_2', 'otc_products_uuid': 'otc_products_c9123d53-99ea-4963-ac07-6d7cd9cf1fc2'}
+Preparing portfolio using {'portfolio_name': 'portfolio_3', 'otc_products_uuid': 'otc_products_c9123d53-99ea-4963-ac07-6d7cd9cf1fc2'}
+Preparing analysis using {'benchmark_name': 'benchmark_3e07ee63-3cf9-4648-89fb-0e624b0fc069'}
+Running analysis analysis_f057e81d-49d4-4e08-a3b8-709fb4aff348 on portfolio portfolio_3ef5b1e3-2385-4704-a84e-333dd122d0d2.
+Running analysis analysis_f057e81d-49d4-4e08-a3b8-709fb4aff348 on portfolio portfolio_b5b801e2-659b-4dd3-b363-a9befce38029.
+Running analysis analysis_f057e81d-49d4-4e08-a3b8-709fb4aff348 on portfolio portfolio_1fb8a884-1149-44f2-b0f2-363349e9f46c.
+Cleaning up after analysis_f057e81d-49d4-4e08-a3b8-709fb4aff348.
+Cleaning up after portfolio_1fb8a884-1149-44f2-b0f2-363349e9f46c.
+Cleaning up after portfolio_b5b801e2-659b-4dd3-b363-a9befce38029.
+Cleaning up after portfolio_3ef5b1e3-2385-4704-a84e-333dd122d0d2.
+Cleaning up after benchmark_3e07ee63-3cf9-4648-89fb-0e624b0fc069.
+Cleaning up after otc_products_c9123d53-99ea-4963-ac07-6d7cd9cf1fc2.</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <div>
 
 

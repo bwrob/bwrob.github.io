@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-7bfeea53925769016531d82be4f8a906.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-d2f8a27639f4fc2bf7bba3056eca9a55.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-7ebe754634c09e163cb13976304e8d4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
@@ -407,8 +407,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#setting-memory-limits" id="toc-setting-memory-limits" class="nav-link active" data-scroll-target="#setting-memory-limits">Setting Memory Limits</a></li>
-  <li><a href="#a-memory-leak-example" id="toc-a-memory-leak-example" class="nav-link" data-scroll-target="#a-memory-leak-example">A Memory Leak Example</a></li>
+  <li><a href="#a-memory-leak-example" id="toc-a-memory-leak-example" class="nav-link active" data-scroll-target="#a-memory-leak-example">A Memory Leak Example</a></li>
   <li><a href="#running-the-profiler" id="toc-running-the-profiler" class="nav-link" data-scroll-target="#running-the-profiler">Running the Profiler</a></li>
   <li><a href="#analyzing-the-results" id="toc-analyzing-the-results" class="nav-link" data-scroll-target="#analyzing-the-results">Analyzing the Results</a></li>
   </ul>
@@ -427,21 +426,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
 </figure>
 </div>
-<p>Finding memory leaks in Python gets complicated when using compiled extensions like NumPy, PyO3, or pybind11. When the system Out of Memory (OOM) killer runs, it terminates the process with a <code>SIGKILL</code> without leaving a stack trace.</p>
-<p>To debug an OOM, you need to find where the allocation occurred: in a Python object or inside a C/C++ backend.</p>
-<p><strong>Memray</strong> is a Python memory profiler that can track allocations down to the native level. Note that it only works on UNIX-based operating systems.</p>
-<section id="setting-memory-limits" class="level2">
-<h2 class="anchored" data-anchor-id="setting-memory-limits">Setting Memory Limits</h2>
-<p>If the Linux OOM killer terminates the process, Memray cannot write its profile data to disk, and the capture is lost.</p>
-<p>We can avoid this by setting a soft memory limit using Python’s built-in <code>resource</code> module. This forces the interpreter to raise a <code>MemoryError</code> before the OS terminates the process, allowing Memray to save the profile data.</p>
-</section>
+<p>Your Python process crashes in production with an unceremonious <code>Killed</code>. No traceback, no log entry, no <code>MemoryError</code>.</p>
+<p>Why? Because the Linux Out-of-Memory (OOM) killer operates at the kernel level: it fires a <code>SIGKILL</code> (signal 9) directly at your PID. User-space applications cannot catch or intercept signal 9.</p>
+<p>Even worse: when the kernel pulls the trigger, memory profilers like <strong>Memray</strong> never get the chance to flush their trace buffers to disk. Your profile data simply evaporates.</p>
+<p>How do we force Python to blow up with a catchable exception <em>before</em> the OS terminates the process?</p>
+<p>By setting a virtual memory ceiling with Python’s built-in POSIX <code>resource</code> module. This forces the runtime to raise a standard <code>MemoryError</code> when reaching the limit, allowing Memray to exit cleanly and preserve its profile dump.</p>
 <section id="a-memory-leak-example" class="level2">
 <h2 class="anchored" data-anchor-id="a-memory-leak-example">A Memory Leak Example</h2>
 <p>Below is an example script that triggers an OOM using either a Python bytes object or a NumPy array.</p>
 <section id="setting-the-limit" class="level3">
 <h3 class="anchored" data-anchor-id="setting-the-limit">Setting the Limit</h3>
 <p>First, we define a utility function to set the virtual memory limit.</p>
-<div id="9d3fa704" class="cell" data-execution_count="1">
+<div id="d24ef215" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-label="1"></a><span class="im">import</span> os</span>
@@ -449,15 +445,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-label="3"></a><span class="im">import</span> secrets</span>
 <span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-label="4"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="annotated-cell-1-5"><a href="#annotated-cell-1-5" aria-label="5"></a></span>
-<span id="annotated-cell-1-6"><a href="#annotated-cell-1-6" aria-label="6"></a><span class="kw">def</span> limit_memory(max_bytes: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7" aria-label="7"></a>    <span class="co">"""Set a virtual memory limit to trigger a Python MemoryError before OS SIGKILL."""</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-8" class="code-annotation-target"><a href="#annotated-cell-1-8" aria-label="8"></a>    resource.setrlimit(resource.RLIMIT_AS, (max_bytes, max_bytes))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-1-6"><a href="#annotated-cell-1-6" aria-label="6"></a></span>
+<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7" aria-label="7"></a><span class="kw">def</span> limit_memory(max_bytes: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="annotated-cell-1-8"><a href="#annotated-cell-1-8" aria-label="8"></a>    <span class="co">"""Set a virtual memory limit to trigger a Python MemoryError before OS SIGKILL."""</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-9" class="code-annotation-target"><a href="#annotated-cell-1-9" aria-label="9"></a>    resource.setrlimit(resource.RLIMIT_AS, (max_bytes, max_bytes))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="8" data-code-annotation="1">The <code>resource.setrlimit</code> function caps the virtual memory (<code>RLIMIT_AS</code>) available to the process. When memory usage exceeds this limit, the OS denies further allocations, raising a <code>MemoryError</code> instead of terminating the process.</span>
+<span data-code-cell="annotated-cell-1" data-code-lines="9" data-code-annotation="1">The <code>resource.setrlimit</code> function caps the virtual memory (<code>RLIMIT_AS</code>) available to the process. When memory usage exceeds this limit, the OS denies further allocations, raising a <code>MemoryError</code> instead of terminating the process.</span>
 </dd>
 </dl>
 </div>
@@ -466,7 +463,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="pure-python-allocation" class="level3">
 <h3 class="anchored" data-anchor-id="pure-python-allocation">Pure Python Allocation</h3>
 <p>Next, we define a function that allocates memory using Python bytes.</p>
-<div id="87b9655c" class="cell" data-execution_count="2">
+<div id="c0a3b2e9" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-label="1"></a><span class="kw">def</span> leak_python() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
@@ -504,7 +501,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="numpy-allocation" class="level3">
 <h3 class="anchored" data-anchor-id="numpy-allocation">NumPy Allocation</h3>
 <p>We also define a function that allocates memory via NumPy.</p>
-<div id="21d1ad6d" class="cell" data-execution_count="3">
+<div id="9791ba2d" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-label="1"></a><span class="kw">def</span> leak_numpy() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
@@ -541,7 +538,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="running-the-simulator" class="level3">
 <h3 class="anchored" data-anchor-id="running-the-simulator">Running the Simulator</h3>
 <p>The entry point sets the memory limit and runs one of the allocation functions.</p>
-<div id="47bab94f" class="cell" data-execution_count="4">
+<div id="c8fbca2f" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-label="1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
@@ -553,7 +550,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="annotated-cell-4-7"><a href="#annotated-cell-4-7" aria-label="7"></a>        <span class="cf">else</span>:</span>
 <span id="annotated-cell-4-8"><a href="#annotated-cell-4-8" aria-label="8"></a>            leak_numpy()</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-9" class="code-annotation-target"><a href="#annotated-cell-4-9" aria-label="9"></a>    <span class="cf">except</span> <span class="pp">MemoryError</span>:</span>
-<span id="annotated-cell-4-10"><a href="#annotated-cell-4-10" aria-label="10"></a>        <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[!] MemoryError caught. Memray can now flush the capture file to disk."</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-4-10"><a href="#annotated-cell-4-10" aria-label="10"></a>        <span class="bu">print</span>(</span>
+<span id="annotated-cell-4-11"><a href="#annotated-cell-4-11" aria-label="11"></a>            <span class="st">"</span><span class="ch">\n</span><span class="st">[!] MemoryError caught. Memray can now flush the capture file to disk."</span></span>
+<span id="annotated-cell-4-12"><a href="#annotated-cell-4-12" aria-label="12"></a>        )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -586,7 +585,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This will produce an HTML file that you can open in a browser.</p>
 <ul>
 <li><strong>Python Allocation:</strong> The graph will show a large block for <code>os.urandom</code>.</li>
-<li><strong>NumPy Allocation:</strong> The graph will show the call stack going from Python into <code>numpy.core.multiarray.ones</code> and down to the C allocation function that blew the 1 GB limit.</li>
+<li><strong>NumPy Allocation:</strong> The graph will show the call stack going from Python into <code>numpy._core.multiarray.ones</code> (or <code>numpy.core</code> in pre-2.0 NumPy) and down to the C allocation function that breached the 1 GB limit.</li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">

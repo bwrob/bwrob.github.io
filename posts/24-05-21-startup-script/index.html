@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-7bfeea53925769016531d82be4f8a906.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-d2f8a27639f4fc2bf7bba3056eca9a55.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-7ebe754634c09e163cb13976304e8d4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
@@ -446,7 +446,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>the public interface that integrates with the rest of the codebase or is called at the top level, <strong>the manager</strong>.</li>
 </ul>
 <p>We can start by creating the public interface, see what we want to achieve and later deal with filling in a working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:</p>
-<div id="942d0bcb" class="cell" data-execution_count="1">
+<div id="8fcbf0fb" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">def</span> run_startup_script() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
@@ -470,7 +470,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Now we can start the implementation. We want the workers to be called with a list of tasks, but a task can be either a command or a tuple including the delay. Let’s not include some complicated conditionals in each of the workers — that would be annoying and potentially get out of sync at some point.</p>
 <p>Other way to do this is to add a default delay to all non-tuple items. We can implement that as a separate defaulting function, which we would call in each worker. But — being more clever! — we could also use a decorator that changes the workers’s signature.</p>
 <p>First, for convenience, let’s define a template type annotation.</p>
-<div id="7801336d" class="cell" data-execution_count="2">
+<div id="f8c5e0c0" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-label="1"></a><span class="im">from</span> functools <span class="im">import</span> wraps</span>
@@ -485,33 +485,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-label="10"></a></span>
 <span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-label="11"></a>DEFAULT_DELAY_SECONDS <span class="op">=</span> <span class="dv">4</span></span>
 <span id="annotated-cell-2-12"><a href="#annotated-cell-2-12" aria-label="12"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-2-13" class="code-annotation-target"><a href="#annotated-cell-2-13" aria-label="13"></a><span class="kw">def</span> with_optional_delay(</span>
-<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14" aria-label="14"></a>    task_worker: Callable[[TaskList[T]], <span class="va">None</span>],</span>
-<span id="annotated-cell-2-15"><a href="#annotated-cell-2-15" aria-label="15"></a>) <span class="op">-&gt;</span> Callable[[TaskListOptionalDelay[T]], <span class="va">None</span>]:</span>
-<span id="annotated-cell-2-16"><a href="#annotated-cell-2-16" aria-label="16"></a>    <span class="co">"""Add default delay to all non-tuple items.</span></span>
-<span id="annotated-cell-2-17"><a href="#annotated-cell-2-17" aria-label="17"></a></span>
-<span id="annotated-cell-2-18"><a href="#annotated-cell-2-18" aria-label="18"></a><span class="co">    Args:</span></span>
-<span id="annotated-cell-2-19"><a href="#annotated-cell-2-19" aria-label="19"></a><span class="co">    ----</span></span>
-<span id="annotated-cell-2-20"><a href="#annotated-cell-2-20" aria-label="20"></a><span class="co">        task_worker: A function that takes a list of tasks.</span></span>
-<span id="annotated-cell-2-21"><a href="#annotated-cell-2-21" aria-label="21"></a></span>
-<span id="annotated-cell-2-22"><a href="#annotated-cell-2-22" aria-label="22"></a><span class="co">    """</span></span>
-<span id="annotated-cell-2-23"><a href="#annotated-cell-2-23" aria-label="23"></a></span>
-<span id="annotated-cell-2-24"><a href="#annotated-cell-2-24" aria-label="24"></a>    <span class="at">@wraps</span>(task_worker)</span>
-<span id="annotated-cell-2-25"><a href="#annotated-cell-2-25" aria-label="25"></a>    <span class="kw">def</span> task_defaulted_worker(task_list: TaskListOptionalDelay[T]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="annotated-cell-2-26"><a href="#annotated-cell-2-26" aria-label="26"></a>        <span class="co">"""Add a default delay to tasks in a task list if no delay is specified.</span></span>
-<span id="annotated-cell-2-27"><a href="#annotated-cell-2-27" aria-label="27"></a></span>
-<span id="annotated-cell-2-28"><a href="#annotated-cell-2-28" aria-label="28"></a><span class="co">        Args:</span></span>
-<span id="annotated-cell-2-29"><a href="#annotated-cell-2-29" aria-label="29"></a><span class="co">        ----</span></span>
-<span id="annotated-cell-2-30"><a href="#annotated-cell-2-30" aria-label="30"></a><span class="co">            task_list: A list of tasks with optional delays.</span></span>
-<span id="annotated-cell-2-31"><a href="#annotated-cell-2-31" aria-label="31"></a></span>
-<span id="annotated-cell-2-32"><a href="#annotated-cell-2-32" aria-label="32"></a><span class="co">        """</span></span>
-<span id="annotated-cell-2-33"><a href="#annotated-cell-2-33" aria-label="33"></a>        tasks_with_defaulted_delays: TaskList[T] <span class="op">=</span> [</span>
-<span id="annotated-cell-2-34"><a href="#annotated-cell-2-34" aria-label="34"></a>            item <span class="cf">if</span> <span class="bu">isinstance</span>(item, <span class="bu">tuple</span>) <span class="cf">else</span> (item, DEFAULT_DELAY_SECONDS)</span>
-<span id="annotated-cell-2-35"><a href="#annotated-cell-2-35" aria-label="35"></a>            <span class="cf">for</span> item <span class="kw">in</span> task_list</span>
-<span id="annotated-cell-2-36"><a href="#annotated-cell-2-36" aria-label="36"></a>        ]</span>
-<span id="annotated-cell-2-37"><a href="#annotated-cell-2-37" aria-label="37"></a>        <span class="cf">return</span> task_worker(tasks_with_defaulted_delays)</span>
-<span id="annotated-cell-2-38"><a href="#annotated-cell-2-38" aria-label="38"></a></span>
-<span id="annotated-cell-2-39"><a href="#annotated-cell-2-39" aria-label="39"></a>    <span class="cf">return</span> task_defaulted_worker</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13" aria-label="13"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-2-14" class="code-annotation-target"><a href="#annotated-cell-2-14" aria-label="14"></a><span class="kw">def</span> with_optional_delay(</span>
+<span id="annotated-cell-2-15"><a href="#annotated-cell-2-15" aria-label="15"></a>    task_worker: Callable[[TaskList[T]], <span class="va">None</span>],</span>
+<span id="annotated-cell-2-16"><a href="#annotated-cell-2-16" aria-label="16"></a>) <span class="op">-&gt;</span> Callable[[TaskListOptionalDelay[T]], <span class="va">None</span>]:</span>
+<span id="annotated-cell-2-17"><a href="#annotated-cell-2-17" aria-label="17"></a>    <span class="co">"""Add default delay to all non-tuple items.</span></span>
+<span id="annotated-cell-2-18"><a href="#annotated-cell-2-18" aria-label="18"></a></span>
+<span id="annotated-cell-2-19"><a href="#annotated-cell-2-19" aria-label="19"></a><span class="co">    Args:</span></span>
+<span id="annotated-cell-2-20"><a href="#annotated-cell-2-20" aria-label="20"></a><span class="co">    ----</span></span>
+<span id="annotated-cell-2-21"><a href="#annotated-cell-2-21" aria-label="21"></a><span class="co">        task_worker: A function that takes a list of tasks.</span></span>
+<span id="annotated-cell-2-22"><a href="#annotated-cell-2-22" aria-label="22"></a></span>
+<span id="annotated-cell-2-23"><a href="#annotated-cell-2-23" aria-label="23"></a><span class="co">    """</span></span>
+<span id="annotated-cell-2-24"><a href="#annotated-cell-2-24" aria-label="24"></a></span>
+<span id="annotated-cell-2-25"><a href="#annotated-cell-2-25" aria-label="25"></a>    <span class="at">@wraps</span>(task_worker)</span>
+<span id="annotated-cell-2-26"><a href="#annotated-cell-2-26" aria-label="26"></a>    <span class="kw">def</span> task_defaulted_worker(task_list: TaskListOptionalDelay[T]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="annotated-cell-2-27"><a href="#annotated-cell-2-27" aria-label="27"></a>        <span class="co">"""Add a default delay to tasks in a task list if no delay is specified.</span></span>
+<span id="annotated-cell-2-28"><a href="#annotated-cell-2-28" aria-label="28"></a></span>
+<span id="annotated-cell-2-29"><a href="#annotated-cell-2-29" aria-label="29"></a><span class="co">        Args:</span></span>
+<span id="annotated-cell-2-30"><a href="#annotated-cell-2-30" aria-label="30"></a><span class="co">        ----</span></span>
+<span id="annotated-cell-2-31"><a href="#annotated-cell-2-31" aria-label="31"></a><span class="co">            task_list: A list of tasks with optional delays.</span></span>
+<span id="annotated-cell-2-32"><a href="#annotated-cell-2-32" aria-label="32"></a></span>
+<span id="annotated-cell-2-33"><a href="#annotated-cell-2-33" aria-label="33"></a><span class="co">        """</span></span>
+<span id="annotated-cell-2-34"><a href="#annotated-cell-2-34" aria-label="34"></a>        tasks_with_defaulted_delays: TaskList[T] <span class="op">=</span> [</span>
+<span id="annotated-cell-2-35"><a href="#annotated-cell-2-35" aria-label="35"></a>            item <span class="cf">if</span> <span class="bu">isinstance</span>(item, <span class="bu">tuple</span>) <span class="cf">else</span> (item, DEFAULT_DELAY_SECONDS)</span>
+<span id="annotated-cell-2-36"><a href="#annotated-cell-2-36" aria-label="36"></a>            <span class="cf">for</span> item <span class="kw">in</span> task_list</span>
+<span id="annotated-cell-2-37"><a href="#annotated-cell-2-37" aria-label="37"></a>        ]</span>
+<span id="annotated-cell-2-38"><a href="#annotated-cell-2-38" aria-label="38"></a>        <span class="cf">return</span> task_worker(tasks_with_defaulted_delays)</span>
+<span id="annotated-cell-2-39"><a href="#annotated-cell-2-39" aria-label="39"></a></span>
+<span id="annotated-cell-2-40"><a href="#annotated-cell-2-40" aria-label="40"></a>    <span class="cf">return</span> task_defaulted_worker</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -533,7 +534,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="13" data-code-annotation="5">The decorator <code>with_optional_delay</code> adds a default delay of 4 seconds to all non-tuple items. Its input is a worker function that already expects a <code>TaskList</code>. It fills in the missing delay with the default value and passes it to the decorated function.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="14" data-code-annotation="5">The decorator <code>with_optional_delay</code> adds a default delay of 4 seconds to all non-tuple items. Its input is a worker function that already expects a <code>TaskList</code>. It fills in the missing delay with the default value and passes it to the decorated function.</span>
 </dd>
 </dl>
 </div>
@@ -542,7 +543,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="main-workers" class="level3">
 <h3 class="anchored" data-anchor-id="main-workers">Main workers</h3>
 <p>With the preparation done, we can start with the workers. For the programs we will be launching, we need to look up the exact paths of the executables. Let’s define a <code>Program</code> enum that would wrap those up in readable nice names. For working with system paths we will use <code>pathlib.Path</code> that provides high-level interface.</p>
-<div id="44fb1df4" class="cell" data-execution_count="3">
+<div id="750d8888" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="im">from</span> enum <span class="im">import</span> Enum</span>
@@ -558,7 +559,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Other than that, the main workers <code>start_programs</code>, <code>start_work_files</code>, and <code>run_commands</code> are simple. They just iterate over the provided <code>TaskList</code> and do the respective action for a given <code>Task</code>.</p>
-<div id="3e4dd4b9" class="cell" data-execution_count="4">
+<div id="f78a617e" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="at">@with_optional_delay</span></span>
@@ -626,7 +627,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>filter the iteration (ex. <em>for path in directory if filter(path)</em>).</li>
 </ul>
 <p>Here we’ll have all three of them combined!</p>
-<div id="38e2f250" class="cell" data-execution_count="5">
+<div id="80b69cf7" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a>NAME_EXCLUDES <span class="op">=</span> (<span class="st">"$"</span>, <span class="st">"tmp"</span>)</span>
@@ -646,27 +647,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-15"><a href="#cb4-15" aria-label="15"></a>    <span class="cf">return</span> (path.stem <span class="kw">not</span> <span class="kw">in</span> NAME_EXCLUDES) <span class="kw">and</span> (path.suffix <span class="kw">not</span> <span class="kw">in</span> EXT_EXCLUDES)</span>
 <span id="cb4-16"><a href="#cb4-16" aria-label="16"></a></span>
 <span id="cb4-17"><a href="#cb4-17" aria-label="17"></a></span>
-<span id="cb4-18"><a href="#cb4-18" aria-label="18"></a></span>
-<span id="cb4-19"><a href="#cb4-19" aria-label="19"></a><span class="kw">def</span> path_files(</span>
-<span id="cb4-20"><a href="#cb4-20" aria-label="20"></a>    directory_tasks: TaskList[Path],</span>
-<span id="cb4-21"><a href="#cb4-21" aria-label="21"></a>) <span class="op">-&gt;</span> Generator[<span class="bu">tuple</span>[Path, <span class="bu">int</span>], <span class="va">None</span>, <span class="va">None</span>]:</span>
-<span id="cb4-22"><a href="#cb4-22" aria-label="22"></a>    <span class="co">"""Generate all files in the work folder that are not excluded.</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-label="23"></a></span>
-<span id="cb4-24"><a href="#cb4-24" aria-label="24"></a><span class="co">    Yields the folder path at beginning of the generator.</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-label="25"></a></span>
-<span id="cb4-26"><a href="#cb4-26" aria-label="26"></a><span class="co">    Args:</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-label="27"></a><span class="co">    ----</span></span>
-<span id="cb4-28"><a href="#cb4-28" aria-label="28"></a><span class="co">        directory_tasks: List of tasks with paths to work folders.</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-label="29"></a></span>
-<span id="cb4-30"><a href="#cb4-30" aria-label="30"></a><span class="co">    """</span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-label="31"></a>    <span class="cf">for</span> folder, delay <span class="kw">in</span> directory_tasks:</span>
-<span id="cb4-32"><a href="#cb4-32" aria-label="32"></a>        <span class="cf">yield</span> folder, delay</span>
-<span id="cb4-33"><a href="#cb4-33" aria-label="33"></a></span>
-<span id="cb4-34"><a href="#cb4-34" aria-label="34"></a>        all_files <span class="op">=</span> folder.glob(FILES_IN_TREE_PATTERN)</span>
-<span id="cb4-35"><a href="#cb4-35" aria-label="35"></a>        filtered <span class="op">=</span> <span class="bu">filter</span>(filter_excluded, all_files)</span>
-<span id="cb4-36"><a href="#cb4-36" aria-label="36"></a></span>
-<span id="cb4-37"><a href="#cb4-37" aria-label="37"></a>        <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> filtered:</span>
-<span id="cb4-38"><a href="#cb4-38" aria-label="38"></a>            <span class="cf">yield</span> <span class="bu">file</span>, delay</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-18"><a href="#cb4-18" aria-label="18"></a><span class="kw">def</span> path_files(</span>
+<span id="cb4-19"><a href="#cb4-19" aria-label="19"></a>    directory_tasks: TaskList[Path],</span>
+<span id="cb4-20"><a href="#cb4-20" aria-label="20"></a>) <span class="op">-&gt;</span> Generator[<span class="bu">tuple</span>[Path, <span class="bu">int</span>], <span class="va">None</span>, <span class="va">None</span>]:</span>
+<span id="cb4-21"><a href="#cb4-21" aria-label="21"></a>    <span class="co">"""Generate all files in the work folder that are not excluded.</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-label="22"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-label="23"></a><span class="co">    Yields the folder path at beginning of the generator.</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-label="24"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-label="25"></a><span class="co">    Args:</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-label="26"></a><span class="co">    ----</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-label="27"></a><span class="co">        directory_tasks: List of tasks with paths to work folders.</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-label="28"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-label="29"></a><span class="co">    """</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-label="30"></a>    <span class="cf">for</span> folder, delay <span class="kw">in</span> directory_tasks:</span>
+<span id="cb4-31"><a href="#cb4-31" aria-label="31"></a>        <span class="cf">yield</span> folder, delay</span>
+<span id="cb4-32"><a href="#cb4-32" aria-label="32"></a></span>
+<span id="cb4-33"><a href="#cb4-33" aria-label="33"></a>        all_files <span class="op">=</span> folder.glob(FILES_IN_TREE_PATTERN)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-label="34"></a>        filtered <span class="op">=</span> <span class="bu">filter</span>(filter_excluded, all_files)</span>
+<span id="cb4-35"><a href="#cb4-35" aria-label="35"></a></span>
+<span id="cb4-36"><a href="#cb4-36" aria-label="36"></a>        <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> filtered:</span>
+<span id="cb4-37"><a href="#cb4-37" aria-label="37"></a>            <span class="cf">yield</span> <span class="bu">file</span>, delay</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>The <code>filter_excluded</code> function filters out files based on exclusions in name and extension lists. <code>Path.stem</code> and <code>Path.suffix</code> are used to check if the file name or extension is in the lists respectively.</p>
@@ -674,7 +674,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="interacting-with-the-os" class="level3">
 <h3 class="anchored" data-anchor-id="interacting-with-the-os">Interacting with the OS</h3>
 <p>With all of the framework prepared, the next step is to interact with the OS. To open a file, folder or run an app, we can use the <code>os.startfile</code> function. All the rest of the <code>start_process</code> function is just utility logging. For running a shell command we can use the <code>subprocess</code> module, calling powershell with the <code>powershell.exe</code> and adding the command to run.</p>
-<div id="57b352aa" class="cell" data-execution_count="6">
+<div id="8d97d395" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="im">import</span> os</span>
@@ -739,7 +739,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="the-last-bit-of-convenience" class="level2">
 <h2 class="anchored" data-anchor-id="the-last-bit-of-convenience">The last bit of convenience</h2>
-<p>We got it, friends, the script works and the job is done. But… do you recall the last time you googled a shortcut for a semi-frequently used functionality? Do you still remember the shortcut, or use it each time you need the functionality? Convenience needs to be convenient (obviously). So let’s make the usage of our script as seamless as possible.</p>
+<p>We got it, friends, the script works and the job is done. But… do you recall the last time you googled a shortcut for a semi-frequently used functionality? Do you still remember the shortcut, or use it each time you need the functionality? Convenience needs to be convenient (obviously). So let’s make running our script truly effortless.</p>
 <p>In Windows OS the best way for me would be to have a shortcut that would run it with one click. We could pin it to the taskbar and start menu. To create one:</p>
 <ul>
 <li>Go to any folder, right-click and select <code>New &gt; Shortcut</code>.</li>
@@ -752,7 +752,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><a href="../../assets/images/posts/24-05-21-startup-script/startup_shortcut.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="../../assets/images/posts/24-05-21-startup-script/startup_shortcut.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></a></p>
 </figure>
 </div>
-<p>That’s a good enough reminder and convenience tool for me. You might need some different setup, especially for another OS. For Linux, you might try to leverage <code>activate</code> or <code>bashrc</code> scripts in your working setup.</p>
+<p>That’s a good enough reminder and convenience tool for me. You might need some different setup, especially for another OS. On Linux, you can hook the script directly into your <code>.bashrc</code> or virtual environment <code>activate</code> scripts.</p>
 </section>
 <section id="further-extensions" class="level2">
 <h2 class="anchored" data-anchor-id="further-extensions">Further extensions</h2>
