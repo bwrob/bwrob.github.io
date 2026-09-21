@@ -85,6 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../../site_libs/bootstrap/bootstrap-7bfeea53925769016531d82be4f8a906.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../../site_libs/bootstrap/bootstrap-dark-7ebe754634c09e163cb13976304e8d4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -448,6 +451,11 @@ window.Quarto = {
 
 
 
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
+</figure>
+</div>
 <p>In Python, functions are a lot more flexible than you might think. We’re going to dive into what makes them “first-class citizens” and how that lets us do some really cool things with closures and decorators. If you’ve ever wondered how that <code>@something</code> syntax works, you’re in the right place.</p>
 <section id="functions" class="level2">
 <h2 class="anchored" data-anchor-id="functions">Functions</h2>
@@ -459,7 +467,7 @@ window.Quarto = {
 </ul>
 <p>This “functional programming” trait of Python is a core for some powerful patterns that wouldn’t work in some other (purely OOP) languages.</p>
 <p>Let’s use a function from our previous post on Fibonacci numbers to see this in action.</p>
-<div id="c6328f6b" class="cell" data-execution_count="1">
+<div id="f4f74194" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">def</span> fibonacci_iterative(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
@@ -476,7 +484,7 @@ window.Quarto = {
 </details>
 </div>
 <p>Because functions are objects, they come with some handy attributes. For instance, you can get the docstring with <code>__doc__</code> and the function’s name with <code>__name__</code>.</p>
-<div id="c2ce0efd" class="cell" data-execution_count="2">
+<div id="39f9753f" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="bu">print</span>(fibonacci_iterative.__doc__)</span>
@@ -488,7 +496,7 @@ fibonacci_iterative</code></pre>
 </div>
 </div>
 <p>And just like other objects, functions inherit from the <code>object</code> base class.</p>
-<div id="7503fef7" class="cell" data-execution_count="3">
+<div id="dd34148a" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="bu">isinstance</span>(fibonacci_iterative, <span class="bu">object</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -502,7 +510,7 @@ fibonacci_iterative</code></pre>
 <section id="benchmarking-fibonacci-implementations" class="level2">
 <h2 class="anchored" data-anchor-id="benchmarking-fibonacci-implementations">Benchmarking Fibonacci Implementations</h2>
 <p>To really drive home the point that functions are first-class citizens, let’s put a few of our Fibonacci functions into a list and pass them to a benchmarking function. This function will test each one and see how they perform.</p>
-<div id="45c08593" class="cell" data-execution_count="4">
+<div id="46514ab6" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a><span class="kw">def</span> fibonacci_iterative(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
@@ -543,7 +551,7 @@ fibonacci_iterative</code></pre>
 <span id="cb6-36"><a href="#cb6-36" aria-label="36"></a>    <span class="cf">return</span> result</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="032a55a0" class="cell" data-execution_count="5">
+<div id="3c13c7fa" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="im">import</span> time</span>
@@ -564,16 +572,16 @@ fibonacci_iterative</code></pre>
 <span id="cb7-16"><a href="#cb7-16" aria-label="16"></a>benchmark(fib_functions, <span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Function fibonacci_recursive took 0.131393 seconds.
+<pre><code>Function fibonacci_recursive took 0.119168 seconds.
 Function fibonacci_recursive_cached took 0.000014 seconds.
-Function fibonacci_iterative took 0.000004 seconds.</code></pre>
+Function fibonacci_iterative took 0.000005 seconds.</code></pre>
 </div>
 </div>
 </section>
 <section id="closures" class="level2">
 <h2 class="anchored" data-anchor-id="closures">Closures</h2>
 <p>A closure is basically a function that remembers the environment in which it was created. Let’s use our <code>get_greeter</code> function to see what that means.</p>
-<div id="f81f1dd4" class="cell" data-execution_count="6">
+<div id="2785b7e6" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a><span class="kw">def</span> get_greeter(greeting: <span class="bu">str</span>) <span class="op">-&gt;</span> Callable[[<span class="bu">str</span>],<span class="bu">str</span>]:</span>
@@ -594,7 +602,7 @@ Function fibonacci_iterative took 0.000004 seconds.</code></pre>
 <p>When we call <code>get_greeter("Good morning")</code>, we get a new <code>greeter</code> function back. This new function, which we’ve assigned to <code>good_morning_greeter</code>, “remembers” that the <code>greeting</code> variable was “Good morning”.</p>
 <p>This is what a closure does: it “closes over” the variables from the scope where it was created. So even though the <code>get_greeter</code> function has finished running, <code>good_morning_greeter</code> still has access to the <code>greeting</code> variable.</p>
 <p>We can even peek inside the closure with the <code>__closure__</code> attribute, which shows us the variables it has captured.</p>
-<div id="c1f03db5" class="cell" data-execution_count="7">
+<div id="ea0819f1" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a>good_morning_greeter.__closure__[<span class="dv">0</span>].cell_contents</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -607,7 +615,7 @@ Function fibonacci_iterative took 0.000004 seconds.</code></pre>
 <p>Closures are a key ingredient for decorators, which we’ll get to next. They also let us create “function factories” that can produce specialized functions.</p>
 <p>For a more mathematical example, let’s create a function factory that builds a polynomial function from a tuple of coefficients.</p>
 <p>A polynomial is defined as <span class="math inline">\(P(x) = \sum_{i=0}^{n} a_i x^i = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0\)</span>.</p>
-<div id="6ab09d6a" class="cell" data-execution_count="8">
+<div id="cee599b0" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1" aria-label="1"></a><span class="kw">def</span> polynomial_factory(coefficients: <span class="bu">tuple</span>[<span class="bu">float</span>, ...]) <span class="op">-&gt;</span> Callable:</span>
@@ -653,7 +661,7 @@ Function fibonacci_iterative took 0.000004 seconds.</code></pre>
 <h2 class="anchored" data-anchor-id="decorators">Decorators</h2>
 <p>Decorators are a neat way to add functionality to functions or classes without changing their code. Think of it as wrapping a function in another function to give it extra abilities.</p>
 <p>In the last post, we used the <code>@cache</code> decorator to speed up our recursive Fibonacci function. Let’s try to build a simple version of that decorator ourselves.</p>
-<div id="ad2822e6" class="cell" data-execution_count="9">
+<div id="427b7845" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-9-1" class="code-annotation-target"><a href="#annotated-cell-9-1" aria-label="1"></a><span class="kw">def</span> my_cache(func: Callable) <span class="op">-&gt;</span> Callable:</span>
@@ -694,7 +702,7 @@ Function fibonacci_iterative took 0.000004 seconds.</code></pre>
 </div>
 </div>
 <p>Decorators can also take arguments. To do this, we create a “decorator factory” - a function that returns a decorator. Here’s one that repeats a function call a few times.</p>
-<div id="22551496" class="cell" data-execution_count="10">
+<div id="7dc5232e" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1" aria-label="1"></a><span class="kw">def</span> repeat(times: <span class="bu">int</span>) <span class="op">-&gt;</span> Callable:</span>
@@ -1208,6 +1216,38 @@ Note
     </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

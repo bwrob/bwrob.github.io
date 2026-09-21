@@ -436,18 +436,18 @@ window.Quarto = {
 <p><a href="https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_1.ipynb">Lista zadań</a></p>
 <ul>
 <li><p>Zamiast</p>
-<p>::: {#dc5a684c .cell execution_count=1} <code>{.python .cell-code}   import math   pole = math.pi * 10**2</code> :::</p>
+<p>::: {#22c64e6d .cell execution_count=1} <code>{.python .cell-code}   import math   pole = math.pi * 10**2</code> :::</p>
 <p>warto użyć</p>
-<p>::: {#d3c11ca9 .cell execution_count=2} <code>{.python .cell-code}   from math import pi   pole = pi * 10**2</code> :::</p>
+<p>::: {#75cd9744 .cell execution_count=2} <code>{.python .cell-code}   from math import pi   pole = pi * 10**2</code> :::</p>
 <p>Zmniejszamy ilość pisania przy wielokrotnym użyciu, a sam import jest wydajniejszy co może mieć znaczenie przy bardziej zaawansowanych zadaniach.</p></li>
 <li><p>Funkcje pierwiastka kwadratowego i podnoszenia do potęgi <span class="math inline">\(1/2\)</span> są oczywiście równoważne, natomiast polecana jest <code>math.sqrt</code>. Mniej ogólne algorytmy są zazwyczaj lepiej zoptymalizowane (przy naszych zastosowaniach nie ma to jednak znaczenia).</p>
-<p>::: {#77de6666 .cell execution_count=3} <code>{.python .cell-code}   from math import sqrt   x = 2   y = sqrt(x)   z = x**0.5   print(y, z, y == z)</code></p>
+<p>::: {#b6d5a31e .cell execution_count=3} <code>{.python .cell-code}   from math import sqrt   x = 2   y = sqrt(x)   z = x**0.5   print(y, z, y == z)</code></p>
 <p>::: {.cell-output .cell-output-stdout} <code>1.4142135623730951 1.4142135623730951 True</code> ::: :::</p></li>
 <li><p>W <em>zadaniu 4</em> występuje funkcja podłoga $ \lfloor x \rfloor $. Jest to największa liczba całkowita mniejsza niż <span class="math inline">\(x\)</span>. W Pythonie można używać funkcji <code>math.floor</code>.</p>
-<p>::: {#5fe8eab2 .cell execution_count=4} <code>{.python .cell-code}   from math import floor   x = 2.5   y = 2.9   z = -3.1   print(floor(x), floor(y), floor(z))</code></p>
+<p>::: {#26df214f .cell execution_count=4} <code>{.python .cell-code}   from math import floor   x = 2.5   y = 2.9   z = -3.1   print(floor(x), floor(y), floor(z))</code></p>
 <p>::: {.cell-output .cell-output-stdout} <code>2 2 -4</code> ::: :::</p></li>
 <li><p><em>Zadanie 5</em> pokazuje, jak ważne jest umiejętne korzystanie ze zmiennych pomocniczych.</p>
-<p>::: {#a816b2b5 .cell execution_count=5} ``` {.python .cell-code} from math import sqrt, pi</p>
+<p>::: {#9aaea9f5 .cell execution_count=5} ``` {.python .cell-code} from math import sqrt, pi</p>
 <p>suma_w_nawiasie = 5 ** 4 + 53 * sqrt(89)</p>
 <p>mianownik = 80 * sqrt(15) * suma_w_nawiasie ** (3/2) licznik = 3308 * suma_w_nawiasie - 3 * sqrt(89) pi_przyblizenie = mianownik / licznik</p>
 <p>print(round(pi_przyblizenie, 10)) print(round(pi_przyblizenie, 10) == round(pi, 10)) ```</p>
@@ -461,7 +461,7 @@ window.Quarto = {
 <p><a href="https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_2.ipynb">Lista zadań</a></p>
 <ul>
 <li><p>W razie gdy chcemy sprawdzić, gdzie w systemie zapisany jest dany plik Python albo zeszyt Jupyter poniższe drukuje obecna ścieżkę roboczą (Current Working Directory).</p>
-<p>::: {#d8ba573b .cell execution_count=6} <code>{.python .cell-code}   import os   print(os.getcwd())</code></p>
+<p>::: {#4cf8860b .cell execution_count=6} <code>{.python .cell-code}   import os   print(os.getcwd())</code></p>
 <p>::: {.cell-output .cell-output-stdout} <code>/home/runner/work/bwrob.github.io/bwrob.github.io/teaching/2024-pwr-intro-to-cs</code> ::: :::</p></li>
 </ul>
 </section>
@@ -474,7 +474,7 @@ window.Quarto = {
 <p>Kluczem do pisania szybkiego kodu w Pythonie jest jak najczęstsze korzystanie z wbudowanych funkcji, które wykonywane są bezpośrednio w języku niskopoziomowym.</p>
 <p>Przykładowo, to zadanie można elegancko rozwiązać za pomocą wbudowaniej biblioteki <code>itertools</code>. Składają się na nią pomocnicze funkcje rozwiązujące często potrzebne funkcjonalności dookoła iteratorów:</p>
 <p>Stosujemy tu potrójne złożenie generatorów. Generatory to obiekty, po których możemy iterować, a zwracają wartości pojedynczo. Często wykonywane jest to leniwie, dopiero kiedy są o to zapytane.</p>
-<div id="f9c4d535" class="cell" data-execution_count="7">
+<div id="23c61871" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-label="1"></a><span class="im">from</span> itertools <span class="im">import</span> accumulate</span>
@@ -511,7 +511,7 @@ window.Quarto = {
 </div>
 <p><strong>Zadanie 5</strong></p>
 <p>Iterowanie się po wszystkich elementach zbioru często da się zastąpić za pomocą matematycznych operacji na zbiorach, które są dobrze zoptymalizowane.</p>
-<div id="127fcb17" class="cell" data-execution_count="8">
+<div id="fd00bd2f" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>S <span class="op">=</span> {<span class="st">"dolnośląskie"</span>, <span class="st">"lubuskie"</span>, <span class="st">"wielkopolskie"</span>}</span>
@@ -539,13 +539,13 @@ window.Quarto = {
 <span id="cb2-23"><a href="#cb2-23" aria-label="23"></a><span class="bu">print</span>({key <span class="cf">for</span> key, value <span class="kw">in</span> D.items() <span class="cf">if</span> value.intersection(M)})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>{'Wrocław', 'Rzeszów', 'Opole', 'Bydgoszcz', 'Gorzów Wielkopolski', 'Toruń', 'Poznań', 'Warszawa', 'Katowice', 'Białystok', 'Kielce', 'Olsztyn', 'Lublin', 'Szczecin', 'Gdańsk', 'Łódź', 'Kraków', 'Zielona Góra'}
-{'lubuskie', 'opolskie', 'dolnośląskie'}</code></pre>
+<pre><code>{'Kraków', 'Łódź', 'Olsztyn', 'Lublin', 'Toruń', 'Rzeszów', 'Opole', 'Poznań', 'Gdańsk', 'Szczecin', 'Białystok', 'Gorzów Wielkopolski', 'Katowice', 'Warszawa', 'Kielce', 'Wrocław', 'Zielona Góra', 'Bydgoszcz'}
+{'dolnośląskie', 'lubuskie', 'opolskie'}</code></pre>
 </div>
 </div>
 <p><strong>Zadanie 6</strong></p>
 <p>W Pythonie 3.8+ jest to możliwe za pomocą operatora <code>:=</code> (walrus operator). Pozwala na tworzenie zmiennych pomocniczych wewnątrz wyrażeń języka.</p>
-<div id="2ba86072" class="cell" data-execution_count="9">
+<div id="7d8de719" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="im">from</span> math <span class="im">import</span> sin, cos, radians</span>
@@ -562,7 +562,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a>Inna metoda jest użycie generatora wewnątrz listy składanej.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div id="b5fbd5ac" class="cell" data-execution_count="10">
+<div id="0f66ee43" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a>punkty <span class="op">=</span> {</span>
@@ -583,11 +583,11 @@ window.Quarto = {
 <p><a href="https://alfa.im.pwr.edu.pl/~giniew/lib/exe/fetch.php?media=rok2425:zimowy:wstep_-_lista_4.ipynb">Lista zadań</a></p>
 <ul>
 <li><p>Na zajęciach zobaczyliśmy jak zapisać zadanie Fizz Buzz bez porównania modulo 15:</p>
-<p>::: {#ee27846e .cell execution_count=11} ``` {.python .cell-code} def fizz_buzz( liczba: int, ) -&gt; str: “““Wyznacz FizzBuzz dla liczby.”“” msg = “” if liczba % 3 == 0: msg += “Fizz” if liczba % 5 == 0: msg += “Buzz” return msg or str(liczba)</p>
+<p>::: {#a9633152 .cell execution_count=11} ``` {.python .cell-code} def fizz_buzz( liczba: int, ) -&gt; str: “““Wyznacz FizzBuzz dla liczby.”“” msg = “” if liczba % 3 == 0: msg += “Fizz” if liczba % 5 == 0: msg += “Buzz” return msg or str(liczba)</p>
 <p>print([fizz_buzz(i) for i in range(1, 16)]) ```</p>
 <p>::: {.cell-output .cell-output-stdout} <code>['1', '2', 'Fizz', '4', 'Buzz', 'Fizz', '7', '8', 'Fizz', 'Buzz', '11', 'Fizz', '13', '14', 'FizzBuzz']</code> ::: :::</p>
 <p>Jest to szczególnie istotne, jeżeli dodamy dodatkowo <code>Mizz</code> dla liczb podzielnych przez 7 i <code>Duzz</code> dla liczb podzielnych przez 8. Funkcję można wtedy jeszcze bardziej uprościć za pomocą słownika i listy składanej:</p>
-<p>::: {#c316b99b .cell execution_count=12} ``` {.python .cell-code} def fizz_buzz( liczba: int, ) -&gt; str: “““Wyznacz FizzBuzz dla liczby.”“” msg = “” mapa = { 3: “Fizz”, 5: “Buzz”, 7: “Mizz”, 8: “Duzz”, } lista_slow = [mapa[i] for i in mapa if liczba % i == 0] msg = ““.join(lista_slow) return msg or str(liczba)</p>
+<p>::: {#c91f7791 .cell execution_count=12} ``` {.python .cell-code} def fizz_buzz( liczba: int, ) -&gt; str: “““Wyznacz FizzBuzz dla liczby.”“” msg = “” mapa = { 3: “Fizz”, 5: “Buzz”, 7: “Mizz”, 8: “Duzz”, } lista_slow = [mapa[i] for i in mapa if liczba % i == 0] msg = ““.join(lista_slow) return msg or str(liczba)</p>
 <p>print([fizz_buzz(i) for i in range(1, 16)]) ```</p>
 <p>::: {.cell-output .cell-output-stdout} <code>['1', '2', 'Fizz', '4', 'Buzz', 'Fizz', 'Mizz', 'Duzz', 'Fizz', 'Buzz', '11', 'Fizz', '13', 'Mizz', 'FizzBuzz']</code> ::: :::</p>
 <p>Sprawdzanie wszystkich podzielności miesznych byłoby bardzo niekomfortowe.</p></li>

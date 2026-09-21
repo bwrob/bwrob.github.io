@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2026-09-20">
-<meta name="description" content="Bare-bones tmux command reference for SSH and remote sessions.">
+<meta name="description" content="Condensed, high-utility tmux reference for local development and SSH sessions.">
 
 <title>Tmux Cheat Sheet – bwrob.dev</title>
 <style>
@@ -369,7 +369,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <h1 class="title">Tmux Cheat Sheet</h1>
                   <div>
         <div class="description">
-          Bare-bones tmux command reference for SSH and remote sessions.
+          Condensed, high-utility tmux reference for local development and SSH sessions.
         </div>
       </div>
                           <div class="quarto-categories">
@@ -392,7 +392,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">September 20, 2026</p>
+        <p class="date-modified">September 21, 2026</p>
       </div>
     </div>
       
@@ -406,23 +406,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
-  <ul>
-  <li><a href="#ssh-remote-workflow" id="toc-ssh-remote-workflow" class="nav-link active" data-scroll-target="#ssh-remote-workflow">SSH Remote Workflow</a></li>
-  <li><a href="#sessions-shell-commands" id="toc-sessions-shell-commands" class="nav-link" data-scroll-target="#sessions-shell-commands">Sessions (Shell Commands)</a></li>
-  <li><a href="#inside-tmux-session-controls" id="toc-inside-tmux-session-controls" class="nav-link" data-scroll-target="#inside-tmux-session-controls">Inside tmux: Session Controls</a></li>
-  <li><a href="#panes" id="toc-panes" class="nav-link" data-scroll-target="#panes">Panes</a>
   <ul class="collapse">
-  <li><a href="#splitting" id="toc-splitting" class="nav-link" data-scroll-target="#splitting">Splitting</a></li>
-  <li><a href="#navigating" id="toc-navigating" class="nav-link" data-scroll-target="#navigating">Navigating</a></li>
-  <li><a href="#managing" id="toc-managing" class="nav-link" data-scroll-target="#managing">Managing</a></li>
-  </ul></li>
-  <li><a href="#windows" id="toc-windows" class="nav-link" data-scroll-target="#windows">Windows</a></li>
-  <li><a href="#scrolling-copy-mode" id="toc-scrolling-copy-mode" class="nav-link" data-scroll-target="#scrolling-copy-mode">Scrolling &amp; Copy Mode</a></li>
-  <li><a href="#useful-remote-extras" id="toc-useful-remote-extras" class="nav-link" data-scroll-target="#useful-remote-extras">Useful Remote Extras</a>
-  <ul class="collapse">
-  <li><a href="#enable-mouse-on-the-fly" id="toc-enable-mouse-on-the-fly" class="nav-link" data-scroll-target="#enable-mouse-on-the-fly">Enable Mouse on the Fly</a></li>
-  <li><a href="#minimal-.tmux.conf" id="toc-minimal-.tmux.conf" class="nav-link" data-scroll-target="#minimal-.tmux.conf">Minimal <code>~/.tmux.conf</code></a></li>
-  </ul></li>
+  <li><a href="#remote-ssh-workflow" id="toc-remote-ssh-workflow" class="nav-link active" data-scroll-target="#remote-ssh-workflow">1. Remote SSH Workflow</a></li>
+  <li><a href="#managing-sessions-cli" id="toc-managing-sessions-cli" class="nav-link" data-scroll-target="#managing-sessions-cli">2. Managing Sessions (CLI)</a></li>
+  <li><a href="#panes-splits" id="toc-panes-splits" class="nav-link" data-scroll-target="#panes-splits">3. Panes (Splits)</a></li>
+  <li><a href="#windows-session-controls" id="toc-windows-session-controls" class="nav-link" data-scroll-target="#windows-session-controls">4. Windows &amp; Session Controls</a></li>
+  <li><a href="#scrollback-copy-mode" id="toc-scrollback-copy-mode" class="nav-link" data-scroll-target="#scrollback-copy-mode">5. Scrollback &amp; Copy Mode</a></li>
+  <li><a href="#essential-.tmux.conf" id="toc-essential-.tmux.conf" class="nav-link" data-scroll-target="#essential-.tmux.conf">6. Essential <code>~/.tmux.conf</code></a></li>
   </ul>
 </nav>
     </div>
@@ -440,294 +430,256 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 <blockquote class="blockquote">
-<p><strong>Prefix key:</strong> <code>Ctrl + b</code> (press prefix, release, then press shortcut key).</p>
+<p><strong>Prefix Key:</strong> <code>Ctrl + b</code> (press prefix, release, then press shortcut key).</p>
 </blockquote>
-<section id="ssh-remote-workflow" class="level2">
-<h2 class="anchored" data-anchor-id="ssh-remote-workflow">SSH Remote Workflow</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="co"># Connect and attach to session 'work' (creates session if it doesn't exist)</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a><span class="fu">ssh</span> <span class="at">-t</span> user@remote <span class="st">"tmux new-session -A -s work"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="remote-ssh-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="remote-ssh-workflow">1. Remote SSH Workflow</h2>
+<p>Connect directly into a persistent tmux session over SSH without opening an intermediate shell:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1"><pre class="sourceCode numberSource bash code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode bash"><a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-1" class="code-annotation-target"><a href="#annotated-cell-1-1" aria-label="1"></a><span class="fu">ssh</span> <span class="at">-t</span> user@remote <span class="dt">\</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-label="2"></a>    <span class="st">"tmux new-session </span><span class="dt">\</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-1-3" class="code-annotation-target"><a href="#annotated-cell-1-3" aria-label="3"></a><span class="st">    -A </span><span class="dt">\</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-1-4" class="code-annotation-target"><a href="#annotated-cell-1-4" aria-label="4"></a><span class="st">    -s work"</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="1" data-code-annotation="1">Force pseudo-terminal allocation (essential for interactive terminal multiplexers)</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="2" data-code-annotation="2">Run the tmux binary on the remote host</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="3" data-code-annotation="3">Attach to session if it already exists; create it if it does not</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="4" data-code-annotation="4">Name of target session (<code>work</code>)</span>
+</dd>
+</dl>
 </section>
-<section id="sessions-shell-commands" class="level2">
-<h2 class="anchored" data-anchor-id="sessions-shell-commands">Sessions (Shell Commands)</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Action</th>
-<th>Command</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Start unnamed session</td>
-<td><code>tmux</code></td>
-</tr>
-<tr class="even">
-<td>Start named session</td>
-<td><code>tmux new -s &lt;name&gt;</code></td>
-</tr>
-<tr class="odd">
-<td>Start detached session</td>
-<td><code>tmux new -d -s &lt;name&gt;</code></td>
-</tr>
-<tr class="even">
-<td>Start session running command</td>
-<td><code>tmux new -d -s &lt;name&gt; '&lt;cmd&gt;'</code></td>
-</tr>
-<tr class="odd">
-<td>List active sessions</td>
-<td><code>tmux ls</code></td>
-</tr>
-<tr class="even">
-<td>Attach to last session</td>
-<td><code>tmux a</code></td>
-</tr>
-<tr class="odd">
-<td>Attach to named session</td>
-<td><code>tmux a -t &lt;name&gt;</code></td>
-</tr>
-<tr class="even">
-<td>Attach and detach other clients</td>
-<td><code>tmux a -d -t &lt;name&gt;</code></td>
-</tr>
-<tr class="odd">
-<td>Kill named session</td>
-<td><code>tmux kill-session -t &lt;name&gt;</code></td>
-</tr>
-<tr class="even">
-<td>Kill all sessions except current</td>
-<td><code>tmux kill-session -a</code></td>
-</tr>
-<tr class="odd">
-<td>Kill tmux server (all sessions)</td>
-<td><code>tmux kill-server</code></td>
-</tr>
-</tbody>
-</table>
+<section id="managing-sessions-cli" class="level2">
+<h2 class="anchored" data-anchor-id="managing-sessions-cli">2. Managing Sessions (CLI)</h2>
+<section id="create-a-session" class="level3">
+<h3 class="anchored" data-anchor-id="create-a-session">Create a Session</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2"><pre class="sourceCode numberSource bash code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode bash"><a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-label="1"></a><span class="ex">tmux</span> new <span class="dt">\</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-2" class="code-annotation-target"><a href="#annotated-cell-2-2" aria-label="2"></a>    <span class="at">-s</span> <span class="op">&lt;</span>name<span class="op">&gt;</span> <span class="dt">\</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-label="3"></a>    <span class="at">-d</span> <span class="dt">\</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4" aria-label="4"></a>    <span class="at">--</span> <span class="st">"&lt;cmd&gt;"</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="1" data-code-annotation="1">Start a new session</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="2" data-code-annotation="2">Name the session <code>&lt;name&gt;</code></span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="3">Run detached in the background</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="4" data-code-annotation="4">Execute initial command <code>&lt;cmd&gt;</code> upon startup (optional)</span>
+</dd>
+</dl>
 </section>
-<section id="inside-tmux-session-controls" class="level2">
-<h2 class="anchored" data-anchor-id="inside-tmux-session-controls">Inside tmux: Session Controls</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Action</th>
-<th>Shortcut</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Detach from current session</td>
-<td><code>Ctrl+b</code> <code>d</code></td>
-</tr>
-<tr class="even">
-<td>Detach other clients from current session</td>
-<td><code>Ctrl+b</code> <code>D</code></td>
-</tr>
-<tr class="odd">
-<td>Rename current session</td>
-<td><code>Ctrl+b</code> <code>$</code></td>
-</tr>
-<tr class="even">
-<td>Interactive session switcher</td>
-<td><code>Ctrl+b</code> <code>s</code></td>
-</tr>
-<tr class="odd">
-<td>Open tmux command prompt</td>
-<td><code>Ctrl+b</code> <code>:</code></td>
-</tr>
-</tbody>
-</table>
+<section id="reconnect-attach" class="level3">
+<h3 class="anchored" data-anchor-id="reconnect-attach">Reconnect / Attach</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3"><pre class="sourceCode numberSource bash code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode bash"><a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1" aria-label="1"></a><span class="ex">tmux</span> a <span class="dt">\</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2" aria-label="2"></a>    <span class="at">-t</span> <span class="op">&lt;</span>name<span class="op">&gt;</span> <span class="dt">\</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-3-3" class="code-annotation-target"><a href="#annotated-cell-3-3" aria-label="3"></a>    <span class="at">-d</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="1" data-code-annotation="1">Attach to an existing session (<code>a</code> or <code>attach-session</code>)</span>
+</dd>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="2">Target session name <code>&lt;name&gt;</code> (omit <code>-t</code> to attach to the most recent session)</span>
+</dd>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="3" data-code-annotation="3">Detach other connected clients (forces session to resize to your display window)</span>
+</dd>
+</dl>
 </section>
-<section id="panes" class="level2">
-<h2 class="anchored" data-anchor-id="panes">Panes</h2>
-<section id="splitting" class="level3">
-<h3 class="anchored" data-anchor-id="splitting">Splitting</h3>
+<section id="quick-commands" class="level3">
+<h3 class="anchored" data-anchor-id="quick-commands">Quick Commands</h3>
+<ul>
+<li><code>tmux ls</code> — List all active sessions.</li>
+<li><code>tmux kill-session -t &lt;name&gt;</code> — Kill session <code>&lt;name&gt;</code> (add <code>-a</code> to kill all <em>except</em> <code>&lt;name&gt;</code>).</li>
+<li><code>tmux kill-server</code> — Terminate all sessions and shutdown tmux daemon.</li>
+</ul>
+</section>
+</section>
+<section id="panes-splits" class="level2">
+<h2 class="anchored" data-anchor-id="panes-splits">3. Panes (Splits)</h2>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Action</th>
 <th>Shortcut</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Split vertically (left / right)</td>
+<td>Split vertically (side-by-side)</td>
 <td><code>Ctrl+b</code> <code>%</code></td>
+<td>Divides pane with vertical border</td>
 </tr>
 <tr class="even">
 <td>Split horizontally (top / bottom)</td>
 <td><code>Ctrl+b</code> <code>"</code></td>
+<td>Divides pane with horizontal border</td>
 </tr>
-</tbody>
-</table>
-</section>
-<section id="navigating" class="level3">
-<h3 class="anchored" data-anchor-id="navigating">Navigating</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Action</th>
-<th>Shortcut</th>
-</tr>
-</thead>
-<tbody>
 <tr class="odd">
-<td>Move focus to pane</td>
+<td>Navigate panes</td>
 <td><code>Ctrl+b</code> <code>Arrow Keys</code></td>
+<td>Moves focus in direction of arrow</td>
 </tr>
 <tr class="even">
-<td>Cycle through panes</td>
-<td><code>Ctrl+b</code> <code>o</code></td>
-</tr>
-<tr class="odd">
-<td>Toggle to last active pane</td>
-<td><code>Ctrl+b</code> <code>;</code></td>
-</tr>
-<tr class="even">
-<td>Show pane numbers (press number to jump)</td>
-<td><code>Ctrl+b</code> <code>q</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="managing" class="level3">
-<h3 class="anchored" data-anchor-id="managing">Managing</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Action</th>
-<th>Shortcut</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Toggle pane zoom (maximize / restore)</td>
+<td>Toggle zoom (fullscreen)</td>
 <td><code>Ctrl+b</code> <code>z</code></td>
-</tr>
-<tr class="even">
-<td>Close / kill current pane</td>
-<td><code>Ctrl+b</code> <code>x</code></td>
+<td>Maximizes pane to full window; press again to restore</td>
 </tr>
 <tr class="odd">
-<td>Convert pane into separate window</td>
+<td>Break pane into new window</td>
 <td><code>Ctrl+b</code> <code>!</code></td>
+<td>Promotes current pane into its own separate tab</td>
 </tr>
 <tr class="even">
-<td>Cycle pane layouts</td>
-<td><code>Ctrl+b</code> <code>Space</code></td>
-</tr>
-<tr class="odd">
-<td>Swap current pane with next / previous</td>
-<td><code>Ctrl+b</code> <code>}</code> / <code>Ctrl+b</code> <code>{</code></td>
-</tr>
-<tr class="even">
-<td>Resize pane</td>
-<td><code>Ctrl+b</code> <code>Ctrl+Arrow</code> / <code>Alt+Arrow</code></td>
+<td>Close current pane</td>
+<td><code>Ctrl+b</code> <code>x</code></td>
+<td>Closes pane (prompts <code>y/n</code> confirmation)</td>
 </tr>
 </tbody>
 </table>
 </section>
-</section>
-<section id="windows" class="level2">
-<h2 class="anchored" data-anchor-id="windows">Windows</h2>
+<section id="windows-session-controls" class="level2">
+<h2 class="anchored" data-anchor-id="windows-session-controls">4. Windows &amp; Session Controls</h2>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Action</th>
 <th>Shortcut</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Create new window</td>
-<td><code>Ctrl+b</code> <code>c</code></td>
+<td>Detach from session</td>
+<td><code>Ctrl+b</code> <code>d</code></td>
+<td>Leaves programs running safely in background</td>
 </tr>
 <tr class="even">
+<td>Switch session / window tree</td>
+<td><code>Ctrl+b</code> <code>s</code> / <code>w</code></td>
+<td>Interactive menu; navigate with <code>↑</code>/<code>↓</code>, <code>Enter</code> to switch</td>
+</tr>
+<tr class="odd">
+<td>Rename current session</td>
+<td><code>Ctrl+b</code> <code>$</code></td>
+<td>Prompts for new session name</td>
+</tr>
+<tr class="even">
+<td>Create new window (tab)</td>
+<td><code>Ctrl+b</code> <code>c</code></td>
+<td>Opens a new shell tab</td>
+</tr>
+<tr class="odd">
 <td>Rename current window</td>
 <td><code>Ctrl+b</code> <code>,</code></td>
-</tr>
-<tr class="odd">
-<td>Next / previous window</td>
-<td><code>Ctrl+b</code> <code>n</code> / <code>Ctrl+b</code> <code>p</code></td>
+<td>Prompts for new window name</td>
 </tr>
 <tr class="even">
-<td>Switch to window by number</td>
+<td>Next / Previous window</td>
+<td><code>Ctrl+b</code> <code>n</code> / <code>p</code></td>
+<td>Step through tabs sequentially</td>
+</tr>
+<tr class="odd">
+<td>Jump to window by index</td>
 <td><code>Ctrl+b</code> <code>0</code>..<code>9</code></td>
-</tr>
-<tr class="odd">
-<td>Interactive window and session tree</td>
-<td><code>Ctrl+b</code> <code>w</code></td>
-</tr>
-<tr class="even">
-<td>Close / kill current window</td>
-<td><code>Ctrl+b</code> <code>&amp;</code></td>
+<td>Direct switch to window number</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="scrolling-copy-mode" class="level2">
-<h2 class="anchored" data-anchor-id="scrolling-copy-mode">Scrolling &amp; Copy Mode</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Action</th>
-<th>Shortcut</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Enter scroll / copy mode</td>
-<td><code>Ctrl+b</code> <code>[</code></td>
-</tr>
-<tr class="even">
-<td>Scroll page up / page down</td>
-<td><code>PageUp</code> / <code>PageDown</code></td>
-</tr>
-<tr class="odd">
-<td>Start text selection</td>
-<td><code>Space</code></td>
-</tr>
-<tr class="even">
-<td>Copy selection and exit mode</td>
-<td><code>Enter</code></td>
-</tr>
-<tr class="odd">
-<td>Paste copied buffer</td>
-<td><code>Ctrl+b</code> <code>]</code></td>
-</tr>
-<tr class="even">
-<td>Exit copy mode</td>
-<td><code>q</code></td>
-</tr>
-</tbody>
-</table>
+<section id="scrollback-copy-mode" class="level2">
+<h2 class="anchored" data-anchor-id="scrollback-copy-mode">5. Scrollback &amp; Copy Mode</h2>
+<p>With mouse mode enabled (see config below), you can scroll and select text directly with your mouse.</p>
+<p>For keyboard-only navigation:</p>
+<ul>
+<li>Press <strong><code>Ctrl+b [</code></strong> to enter copy mode.</li>
+<li>Navigate with Arrow keys or <code>PageUp</code> / <code>PageDown</code>.</li>
+<li>Press <strong><code>Space</code></strong> to start selection, <strong><code>Enter</code></strong> to copy, and <strong><code>q</code></strong> to cancel.</li>
+<li>Paste copied text with <strong><code>Ctrl+b ]</code></strong>.</li>
+</ul>
 </section>
-<section id="useful-remote-extras" class="level2">
-<h2 class="anchored" data-anchor-id="useful-remote-extras">Useful Remote Extras</h2>
-<section id="enable-mouse-on-the-fly" class="level3">
-<h3 class="anchored" data-anchor-id="enable-mouse-on-the-fly">Enable Mouse on the Fly</h3>
-<p>From tmux command prompt (<code>Ctrl+b</code> <code>:</code>):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource tmux number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>set -g mouse on</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="minimal-.tmux.conf" class="level3">
-<h3 class="anchored" data-anchor-id="minimal-.tmux.conf">Minimal <code>~/.tmux.conf</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource tmux number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a># Enable mouse mode (scrolling, selecting, resizing)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a>set -g mouse on</span>
-<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a># Increase scrollback history limit</span>
-<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a>set -g history-limit 50000</span>
-<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-label="7"></a># Fix terminal colors</span>
-<span id="cb3-8"><a href="#cb3-8" aria-label="8"></a>set -g default-terminal "screen-256color"</span>
-<span id="cb3-9"><a href="#cb3-9" aria-label="9"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-label="10"></a># Intuitive split commands (open in current pane directory)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-label="11"></a>bind | split-window -h -c "#{pane_current_path}"</span>
-<span id="cb3-12"><a href="#cb3-12" aria-label="12"></a>bind - split-window -v -c "#{pane_current_path}"</span>
-<span id="cb3-13"><a href="#cb3-13" aria-label="13"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-label="14"></a># Reload config file</span>
-<span id="cb3-15"><a href="#cb3-15" aria-label="15"></a>bind r source-file ~/.tmux.conf \; display "Config reloaded!"</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="essential-.tmux.conf" class="level2">
+<h2 class="anchored" data-anchor-id="essential-.tmux.conf">6. Essential <code>~/.tmux.conf</code></h2>
+<p>Add these defaults to <code>~/.tmux.conf</code> for a modern, responsive terminal experience:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-4"><pre class="sourceCode numberSource tmux code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode"><a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-1" class="code-annotation-target"><a href="#annotated-cell-4-1" aria-label="1"></a>set -g mouse on</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-2" class="code-annotation-target"><a href="#annotated-cell-4-2" aria-label="2"></a>set -g base-index 1</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3" aria-label="3"></a>set -g pane-base-index 1</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4" aria-label="4"></a>set -g history-limit 50000</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-4-5" class="code-annotation-target"><a href="#annotated-cell-4-5" aria-label="5"></a>set -g default-terminal "tmux-256color"</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="6" onclick="event.preventDefault();">6</a><span id="annotated-cell-4-6" class="code-annotation-target"><a href="#annotated-cell-4-6" aria-label="6"></a>set -s escape-time 0</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="7" onclick="event.preventDefault();">7</a><span id="annotated-cell-4-7" class="code-annotation-target"><a href="#annotated-cell-4-7" aria-label="7"></a>bind | split-window -h -c "#{pane_current_path}"</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="8" onclick="event.preventDefault();">8</a><span id="annotated-cell-4-8" class="code-annotation-target"><a href="#annotated-cell-4-8" aria-label="8"></a>bind - split-window -v -c "#{pane_current_path}"</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="9" onclick="event.preventDefault();">9</a><span id="annotated-cell-4-9" class="code-annotation-target"><a href="#annotated-cell-4-9" aria-label="9"></a>bind r source-file ~/.tmux.conf \; display "Reloaded ~/.tmux.conf"</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="1" data-code-annotation="1"><strong>Mouse mode</strong>: Click to focus panes, scroll with mouse wheel, and drag borders to resize.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="2" data-code-annotation="2"><strong>1-based window indexing</strong>: Starts windows at 1 instead of 0, matching the number row on your keyboard (<code>Ctrl+b 1</code> for first tab).</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="3" data-code-annotation="3"><strong>1-based pane indexing</strong>: Starts pane indices at 1 for consistency with windows.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="4" data-code-annotation="4"><strong>History buffer</strong>: Expands scrollback from default 2,000 to 50,000 lines.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="5" data-code-annotation="5"><strong>256-color &amp; true color</strong>: Ensures syntax highlighting in Neovim and modern TUIs looks rich and accurate.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="6">6</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="6" data-code-annotation="6"><strong>Zero escape delay</strong>: Eliminates the delay when pressing <code>Esc</code> inside Vim / Neovim.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="7">7</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="7" data-code-annotation="7"><strong>Intuitive vertical split</strong>: Uses <code>Ctrl+b |</code> to split side-by-side, opening inside the current directory.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="8">8</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="8" data-code-annotation="8"><strong>Intuitive horizontal split</strong>: Uses <code>Ctrl+b -</code> to split top/bottom, opening inside the current directory.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="9">9</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="9" data-code-annotation="9"><strong>Fast reload</strong>: Reloads configuration instantly via <code>Ctrl+b r</code> without restarting active sessions.</span>
+</dd>
+</dl>
 
 
-</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
