@@ -10,7 +10,7 @@ description: >-
 # Create Post Stub
 
 This skill scaffolds a new blog post draft on [bwrob.dev](https://bwrob.dev) with proper
-naming conventions, draft status, structured outline, and an 800×600 placeholder cover
+naming conventions, draft status, structured outline, and a 900×600 placeholder cover
 image.
 
 ---
@@ -60,7 +60,7 @@ mkdir -p "$POST_DIR"
 
 ### 3. Install Placeholder Cover Image
 
-Copy the bundled 800×600 Tokyo Night placeholder cover to the post directory:
+Copy the bundled 900×600 Tokyo Night placeholder cover to the post directory:
 
 ```bash
 cp .agents/skills/create-post-stub/resources/placeholder-cover.jpg "$POST_DIR/cover.jpg"
@@ -85,6 +85,8 @@ image: cover.jpg
 format-links: [html]
 toc-depth: 2
 ---
+
+![](cover.jpg){width="98%" fig-align="center"}
 
 Opening hook paragraph introducing the problem, tool, or pattern. Explain why this
 matters to developers and what the post demonstrates.
@@ -116,7 +118,9 @@ Explain the code mechanics, key arguments, and non-obvious nuances.
 ```text
 
 ### 5. Verify the Stub
-1. Check that `posts/<YY-MM-DD-slug>/cover.jpg` exists and is 800×600:
+
+1. Check that `posts/<YY-MM-DD-slug>/cover.jpg` exists and is 900×600:
+
    ```bash
    file posts/<YY-MM-DD-slug>/cover.jpg
    ```
@@ -132,4 +136,4 @@ Once the user has authored the full content and is ready to finalize the post:
 1. **Undraft the post**: Remove `draft: true` (or set `draft: false`) in `index.qmd`.
 2. **Update modified date**: Set `date-modified: "YYYY-MM-DD"`.
 3. **Generate Final Cover**: Invoke the **`generate-post-image`** skill to create the
-   bespoke 800×600 Tokyo Night cover, replacing `posts/<YY-MM-DD-slug>/cover.jpg`.
+   bespoke 900×600 Tokyo Night cover, replacing `posts/<YY-MM-DD-slug>/cover.jpg`.

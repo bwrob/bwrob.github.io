@@ -69,17 +69,18 @@ Call `generate_image`:
 * `Prompt`: Your formulated prompt.
 * `ImageName`: Descriptive lowercase name with underscores (e.g.
   `message_pipeline_cover`).
-* `AspectRatio`: `"4:3"` (horizontal 4:3 format).
+* `AspectRatio`: `"3:2"` (horizontal 3:2 format).
 
 ### 4. Save and Optimize Image to the Post Directory
 
-Generated images are saved in the conversation artifact directory as `.png`. Convert and
-resize the image to an 800×600 JPEG at `posts/<post-slug>/cover.jpg`:
+Generated images are saved in the conversation artifact directory as `.png` or `.jpg`.
+Convert and resize the image to an optimized 900×600 JPEG at
+`posts/<post-slug>/cover.jpg`:
 
 Using macOS `sips`:
 
 ```bash
-sips -s format jpeg -z 600 800 -s formatOptions 85 "<artifact_image_path>" --out "posts/<post-slug>/cover.jpg"
+sips -s format jpeg -z 600 900 -s formatOptions 85 "<artifact_image_path>" --out "posts/<post-slug>/cover.jpg"
 ```
 
 Or using Python:
@@ -88,14 +89,15 @@ Or using Python:
 uv run python -c "
 from PIL import Image
 im = Image.open('<artifact_image_path>')
-im = im.resize((800, 600), Image.Resampling.LANCZOS)
+im = im.resize((900, 600), Image.Resampling.LANCZOS)
 im.convert('RGB').save('posts/<post-slug>/cover.jpg', 'JPEG', quality=85, optimize=True)
 "
 ```
 
-### 5. Update Post Frontmatter
+### 5. Update Post Frontmatter & Embed at Top
 
-Ensure `posts/<post-slug>/index.qmd` points to `cover.jpg`:
+Ensure `posts/<post-slug>/index.qmd` points to `cover.jpg` in the frontmatter and
+embeds it at the very top of the body at 98% width:
 
 ```yaml
 ---
@@ -104,11 +106,13 @@ description: "Your Post Description"
 categories: [...]
 image: cover.jpg
 ---
+
+![](cover.jpg){width="98%" fig-align="center"}
 ```
 
 ### 6. Verify
 
-1. Verify the file is 800×600 and lightweight:
+1. Verify the file is 900×600 and lightweight:
 
    ```bash
    file posts/<post-slug>/cover.jpg
