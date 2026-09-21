@@ -19,7 +19,7 @@
         "seaborn>=0.13.2",
         "sympy>=1.14.0,<2",
         "yfinance>=1.3.0",
-]
+    ]
     name = "bwrob-github-io"
     requires-python = ">=3.13"
     version = "0.1.0"
@@ -45,162 +45,162 @@
 
 
 [tool.rumdl]
-flavor = "quarto"
-line-length = 88
-exclude = [
-    ".git",
-    ".github",
-    ".venv",
-    ".ruff_cache",
-    ".rumdl_cache",
-    ".temp",
-    "_not_posted",
-    "_site",
-    "_freeze",
-]
-respect-gitignore = true
+    exclude = [
+        ".git",
+        ".github",
+        ".venv",
+        ".ruff_cache",
+        ".rumdl_cache",
+        ".temp",
+        "_not_posted",
+        "_site",
+        "_freeze",
+    ]
+    flavor = "quarto"
+    line-length = 88
+    respect-gitignore = true
 
-# --- Code Block Tools (Format & Lint Python & JSON in QMD) ---
-[tool.rumdl.code-block-tools]
-enabled = true
-on-error = "warn"
-on-missing-tool-binary = "warn"
+    # --- Code Block Tools (Format & Lint Python & JSON in QMD) ---
+    [tool.rumdl.code-block-tools]
+        enabled                = true
+        on-error               = "warn"
+        on-missing-tool-binary = "warn"
 
-[tool.rumdl.code-block-tools.language-aliases]
-"{python}" = "python"
-"python3" = "python"
-"{bash}" = "shell"
-"bash" = "shell"
-"{json}" = "json"
+        [tool.rumdl.code-block-tools.language-aliases]
+            "bash"     = "shell"
+            "python3"  = "python"
+            "{bash}"   = "shell"
+            "{json}"   = "json"
+            "{python}" = "python"
 
-[tool.rumdl.code-block-tools.languages.python]
-format = ["ruff:format"]
-lint = ["ruff:check"]
+        [tool.rumdl.code-block-tools.languages.python]
+            format = ["ruff:format"]
+            lint   = ["ruff:check"]
 
-[tool.rumdl.code-block-tools.languages.json]
-format = ["jq"]
+        [tool.rumdl.code-block-tools.languages.json]
+            format = ["jq"]
 
-[tool.rumdl.code-block-tools.tools."ruff:check"]
-command = [
-    "ruff",
-    "check",
-    "--output-format=concise",
-    "--ignore=INP001,F821,D,ANN,FBT,E402,B018,S101",
-    "-",
-]
+        [tool.rumdl.code-block-tools.tools."ruff:check"]
+            command = [
+                "ruff",
+                "check",
+                "--output-format=concise",
+                "--ignore=INP001,F821,D,ANN,FBT,E402,B018,S101",
+                "-",
+            ]
 
-# --- Rigid Markdown Rules ---
-[tool.rumdl.MD001]
-front-matter-title = true
+    # --- Rigid Markdown Rules ---
+    [tool.rumdl.MD001]
+        front-matter-title = true
 
-[tool.rumdl.MD003]
-style = "atx"
+    [tool.rumdl.MD003]
+        style = "atx"
 
-[tool.rumdl.MD004]
-style = "dash"
+    [tool.rumdl.MD004]
+        style = "dash"
 
-[tool.rumdl.MD007]
-indent = 2
+    [tool.rumdl.MD007]
+        indent = 2
 
-[tool.rumdl.MD009]
-strict = true
+    [tool.rumdl.MD009]
+        strict = true
 
-[tool.rumdl.MD010]
-code-blocks = true
+    [tool.rumdl.MD010]
+        code-blocks = true
 
-[tool.rumdl.MD012]
-maximum = 1
+    [tool.rumdl.MD012]
+        maximum = 1
 
-[tool.rumdl.MD013]
-line-length = 88
-reflow = true
-code-blocks = false
-tables = false
-headings = false
-math-blocks = false
+    [tool.rumdl.MD013]
+        code-blocks = false
+        headings    = false
+        line-length = 88
+        math-blocks = false
+        reflow      = true
+        tables      = false
 
-[tool.rumdl.MD022]
-lines-above = 1
-lines-below = 1
+    [tool.rumdl.MD022]
+        lines-above = 1
+        lines-below = 1
 
-[tool.rumdl.MD026]
-punctuation = ".,;:!"
+    [tool.rumdl.MD026]
+        punctuation = ".,;:!"
 
-[tool.rumdl.MD031]
-list-items = true
+    [tool.rumdl.MD031]
+        list-items = true
 
-[tool.rumdl.MD033]
-allowed-elements = [
-    "a",
-    "audio",
-    "br",
-    "details",
-    "div",
-    "i",
-    "iframe",
-    "img",
-    "kbd",
-    "span",
-    "sub",
-    "summary",
-    "sup",
-    "table",
-    "tbody",
-    "td",
-    "th",
-    "thead",
-    "tr",
-    "video",
-]
+    [tool.rumdl.MD033]
+        allowed-elements = [
+            "a",
+            "audio",
+            "br",
+            "details",
+            "div",
+            "i",
+            "iframe",
+            "img",
+            "kbd",
+            "span",
+            "sub",
+            "summary",
+            "sup",
+            "table",
+            "tbody",
+            "td",
+            "th",
+            "thead",
+            "tr",
+            "video",
+        ]
 
-[tool.rumdl.MD035]
-style = "---"
+    [tool.rumdl.MD035]
+        style = "---"
 
-[tool.rumdl.MD044]
-names = [
-    "AWS",
-    "Docker",
-    "GitHub",
-    "JavaScript",
-    "Jupyter",
-    "Linux",
-    "Pandas",
-    "Polars",
-    "Python",
-    "Quarto",
-    "Ruff",
-    "macOS",
-    "rumdl",
-]
-code-blocks = false
+    [tool.rumdl.MD044]
+        code-blocks = false
+        names = [
+            "AWS",
+            "Docker",
+            "GitHub",
+            "JavaScript",
+            "Jupyter",
+            "Linux",
+            "Pandas",
+            "Polars",
+            "Python",
+            "Quarto",
+            "Ruff",
+            "macOS",
+            "rumdl",
+        ]
 
-[tool.rumdl.MD046]
-style = "fenced"
+    [tool.rumdl.MD046]
+        style = "fenced"
 
-[tool.rumdl.MD048]
-style = "backtick"
+    [tool.rumdl.MD048]
+        style = "backtick"
 
-[tool.rumdl.MD049]
-style = "asterisk"
+    [tool.rumdl.MD049]
+        style = "asterisk"
 
-[tool.rumdl.MD050]
-style = "asterisk"
+    [tool.rumdl.MD050]
+        style = "asterisk"
 
-[tool.rumdl.MD058]
-minimum-before = 1
-minimum-after = 1
+    [tool.rumdl.MD058]
+        minimum-after  = 1
+        minimum-before = 1
 
-[tool.rumdl.MD059]
-prohibited-texts = ["click here", "here", "link", "read more"]
+    [tool.rumdl.MD059]
+        prohibited-texts = ["click here", "here", "link", "read more"]
 
-[tool.rumdl.MD060]
-enabled = true
-style = "aligned"
+    [tool.rumdl.MD060]
+        enabled = true
+        style   = "aligned"
 
-# --- Per-file rule ignores for landing/utility pages & templates ---
-[tool.rumdl.per-file-ignores]
-".agents/skills/create-post-stub/resources/post-template.qmd" = ["MD057"]
-"404.qmd" = ["MD041"]
-"hobbies/index.qmd" = ["MD041"]
-"index.qmd" = ["MD041"]
-"resume/index.qmd" = ["MD036"]
+    # --- Per-file rule ignores for landing/utility pages & templates ---
+    [tool.rumdl.per-file-ignores]
+        ".agents/skills/create-post-stub/resources/post-template.qmd" = ["MD057"]
+        "404.qmd"                                                     = ["MD041"]
+        "hobbies/index.qmd"                                           = ["MD041"]
+        "index.qmd"                                                   = ["MD041"]
+        "resume/index.qmd"                                            = ["MD036"]

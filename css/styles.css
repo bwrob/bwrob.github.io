@@ -14,7 +14,6 @@ body {
 /* --- Hero Section System (Homepage, Resume, Hobbies, Teaching) --- */
 
 /* Align Hero with Navbar */
-body.homepage.nav-fixed,
 body.resume-page.nav-fixed,
 body.hobbies-page.nav-fixed,
 body.teaching-page.nav-fixed {
@@ -22,26 +21,28 @@ body.teaching-page.nav-fixed {
   margin-top: 0 !important;
 }
 
+/* Homepage Listing Spacing: clear navbar comfortably */
+body.homepage #quarto-content {
+  padding-top: 0rem;
+}
+
 /* Ensure enough space in standard Quarto title banners */
 .quarto-title-block .quarto-title-banner {
   padding-bottom: 2.5rem !important;
 }
 
-body.homepage #quarto-header,
 body.resume-page #quarto-header,
 body.hobbies-page #quarto-header,
 body.teaching-page #quarto-header {
   background-color: var(--brand-blue) !important;
 }
 
-body.homepage #quarto-content,
 body.resume-page #quarto-content,
 body.hobbies-page #quarto-content,
 body.teaching-page #quarto-content {
   padding-top: 0 !important;
 }
 
-body.homepage .quarto-secondary-nav,
 body.resume-page .quarto-secondary-nav,
 body.hobbies-page .quarto-secondary-nav,
 body.teaching-page .quarto-secondary-nav {
@@ -107,7 +108,7 @@ img.hero-img-profile {
 
 img.hero-img-profile {
   border-radius: 50%;
-  border: 3px solid rgba(255,255,255,0.2);
+  border: 3px solid rgba(255, 255, 255, 0.2);
   object-fit: cover;
 }
 
@@ -131,7 +132,7 @@ img.hero-img-profile {
   font-size: 0.9rem;
   font-weight: 500;
   padding: 0.5rem 1.25rem;
-  border: 1px solid rgba(255,255,255,0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 25px;
   transition: all 0.2s ease;
   display: flex;
@@ -140,7 +141,7 @@ img.hero-img-profile {
 }
 
 .hero-link:hover {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   border-color: white;
   transform: translateY(-3px);
 }
@@ -157,7 +158,7 @@ img.hero-img-profile {
 
 .quarto-dark .quarto-listing-grid .quarto-grid-item {
   background: #2a2a2a !important;
-  border-color: rgba(255,255,255,0.08) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 .quarto-listing-grid .quarto-grid-item:hover {
@@ -175,14 +176,15 @@ img.hero-img-profile {
   align-self: flex-start !important;
 }
 
-#TOC, .quarto-listing-categories {
+#TOC,
+.quarto-listing-categories {
   position: sticky !important;
   top: 6rem !important;
 }
 
 /* Hero pages alignment: Sidebars now stick to top */
 @media (min-width: 992px) {
-  .homepage #quarto-margin-sidebar,
+
   .hobbies-page #quarto-margin-sidebar,
   .teaching-page #quarto-margin-sidebar,
   .resume-page #quarto-margin-sidebar,
@@ -285,7 +287,7 @@ img.hero-img-profile {
 
 .quarto-dark .hobby-card {
   background: #2a2a2a;
-  border-color: rgba(255,255,255,0.08);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .hobby-card img {
@@ -333,16 +335,16 @@ img.hero-img-profile {
   background: white;
   border-color: rgba(44, 62, 80, 0.1);
   transform: translateX(5px);
-  box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .quarto-dark .course-link {
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .quarto-dark .course-link:hover {
-  background: rgba(255,255,255,0.05);
-  border-color: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Course Page Enhancements */
@@ -410,7 +412,7 @@ img.hero-img-profile {
   border-top-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-.bottom-meta-block > div {
+.bottom-meta-block>div {
   flex: 0 1 auto;
 }
 
@@ -435,15 +437,16 @@ img.hero-img-profile {
   margin: 0;
 }
 
-footer, .nav-footer {
+footer,
+.nav-footer {
   margin-top: 0 !important;
   padding: 1rem 0 !important;
-  border-top: 1px solid rgba(0,0,0,0.05);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
   opacity: 0.7;
 }
 
 #quarto-content,
-#quarto-content > main,
+#quarto-content>main,
 .page-columns,
 #quarto-document-content,
 #quarto-main-content,
@@ -453,7 +456,8 @@ footer, .nav-footer {
 }
 
 /* MASTER FIX: Clear potential right-side gaps without breaking sticky */
-html, body {
+html,
+body {
   width: 100%;
   margin: 0;
   padding: 0;
@@ -465,7 +469,8 @@ html, body {
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
-  margin-top: -2.2rem; /* Reduces the gap from the title banner */
+  margin-top: -2.2rem;
+  /* Reduces the gap from the title banner */
   margin-bottom: 1.8rem;
   font-size: 0.85rem;
 }
