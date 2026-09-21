@@ -40,6 +40,10 @@ Review the visual guidelines in:
 Review `posts/<post-slug>/index.qmd`:
 
 * Note the title, description, and core technical theme.
+* **Research Technology Inspirations**: Check the official branding, logo, mascot, or
+  signature visual motif of the underlying technology (e.g. Marimo's green moss ball,
+  Polars' low-poly polar bear, Python's curves). Brainstorm how to integrate a stylized,
+  tech-savvy version of this motif into the scene.
 * Brainstorm an abstract or diagrammatic visual concept (e.g. modular systems, clean
   layout geometries, data pipelines, mathematical curves, or technical schematics).
 

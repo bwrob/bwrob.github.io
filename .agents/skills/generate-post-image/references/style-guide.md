@@ -19,6 +19,12 @@ Guidelines for generating cover images for [bwrob.dev](https://bwrob.dev).
 * **Purposeful Micro-Structure**: Populate panels and nodes with stylized, abstract
   structure—such as syntax-colored code bars, prompt chips, metric grids, or routing
   paths—rather than leaving containers flat and bare.
+* **Incorporate Technology Inspirations**: Tastefully weave in recognizable visual
+  motifs, logos, or mascots from the underlying technology (e.g. Polars' faceted
+  geometric polar bear, Marimo's velvety green moss ball, Python's curves). Reimagine
+  them as sleek, modern, tech-savvy elements—such as low-poly 3D sculptures, matte
+  emblems, or tactile components—integrated seamlessly into the workspace rather than
+  literal childish cartoon characters.
 
 ---
 
