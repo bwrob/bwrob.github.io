@@ -116,12 +116,30 @@ image: cover.jpg
 
 ### 6. Verify
 
-1. Verify the file is 900×600 and lightweight:
+1. Verify the file is 900×600 and lightweight (~40–85 KB):
 
    ```bash
    file posts/<post-slug>/cover.jpg
    ls -lh posts/<post-slug>/cover.jpg
    ```
 
-2. Check with `view_file` that the image is clean, dark-mode themed, properly composed,
-   and completely text-free.
+2. Check that the image is clean, dark-mode themed, properly composed, and completely
+   text-free.
+
+> [!TIP]
+> **Cleaning Accidental Text**: If the model generates faint text or labels, inpaint
+> them cleanly using OpenCV Telea:
+>
+> ```bash
+> uv run --with opencv-python python -c "
+> import cv2, numpy as np
+> img = cv2.imread('<path>')
+> mask = np.zeros(img.shape[:2], dtype=np.uint8)
+> mask[y1:y2, x1:x2] = 255
+> cv2.imwrite('<path>', cv2.inpaint(img, mask, 3, cv2.INPAINT_TELEA))
+> "
+> ```
+
+> [!NOTE]
+> **Quarto Rendering**: If a live Quarto preview server is running in the background,
+> manual re-rendering is unnecessary as it hot-reloads automatically.
