@@ -1,0 +1,126 @@
+---
+title: "Tmux Cheat Sheet"
+description: "Bare-bones tmux command reference for SSH and remote sessions."
+date: "2026-09-20"
+date-modified: "2026-09-20"
+categories: [Dev Env]
+image: cover.jpg
+format-links: [html]
+toc-depth: 3
+---
+
+> **Prefix key:** `Ctrl + b` (press prefix, release, then press shortcut key).
+
+## SSH Remote Workflow
+
+```bash
+# Connect and attach to session 'work' (creates session if it doesn't exist)
+ssh -t user@remote "tmux new-session -A -s work"
+```
+
+## Sessions (Shell Commands)
+
+| Action | Command |
+|---|---|
+| Start unnamed session | `tmux` |
+| Start named session | `tmux new -s <name>` |
+| Start detached session | `tmux new -d -s <name>` |
+| Start session running command | `tmux new -d -s <name> '<cmd>'` |
+| List active sessions | `tmux ls` |
+| Attach to last session | `tmux a` |
+| Attach to named session | `tmux a -t <name>` |
+| Attach and detach other clients | `tmux a -d -t <name>` |
+| Kill named session | `tmux kill-session -t <name>` |
+| Kill all sessions except current | `tmux kill-session -a` |
+| Kill tmux server (all sessions) | `tmux kill-server` |
+
+## Inside tmux: Session Controls
+
+| Action | Shortcut |
+|---|---|
+| Detach from current session | `Ctrl+b` `d` |
+| Detach other clients from current session | `Ctrl+b` `D` |
+| Rename current session | `Ctrl+b` `$` |
+| Interactive session switcher | `Ctrl+b` `s` |
+| Open tmux command prompt | `Ctrl+b` `:` |
+
+## Panes
+
+### Splitting
+
+| Action | Shortcut |
+|---|---|
+| Split vertically (left / right) | `Ctrl+b` `%` |
+| Split horizontally (top / bottom) | `Ctrl+b` `"` |
+
+### Navigating
+
+| Action | Shortcut |
+|---|---|
+| Move focus to pane | `Ctrl+b` `Arrow Keys` |
+| Cycle through panes | `Ctrl+b` `o` |
+| Toggle to last active pane | `Ctrl+b` `;` |
+| Show pane numbers (press number to jump) | `Ctrl+b` `q` |
+
+### Managing
+
+| Action | Shortcut |
+|---|---|
+| Toggle pane zoom (maximize / restore) | `Ctrl+b` `z` |
+| Close / kill current pane | `Ctrl+b` `x` |
+| Convert pane into separate window | `Ctrl+b` `!` |
+| Cycle pane layouts | `Ctrl+b` `Space` |
+| Swap current pane with next / previous | `Ctrl+b` `}` / `Ctrl+b` `{` |
+| Resize pane | `Ctrl+b` `Ctrl+Arrow` / `Alt+Arrow` |
+
+## Windows
+
+| Action | Shortcut |
+|---|---|
+| Create new window | `Ctrl+b` `c` |
+| Rename current window | `Ctrl+b` `,` |
+| Next / previous window | `Ctrl+b` `n` / `Ctrl+b` `p` |
+| Switch to window by number | `Ctrl+b` `0`..`9` |
+| Interactive window and session tree | `Ctrl+b` `w` |
+| Close / kill current window | `Ctrl+b` `&` |
+
+## Scrolling & Copy Mode
+
+| Action | Shortcut |
+|---|---|
+| Enter scroll / copy mode | `Ctrl+b` `[` |
+| Scroll page up / page down | `PageUp` / `PageDown` |
+| Start text selection | `Space` |
+| Copy selection and exit mode | `Enter` |
+| Paste copied buffer | `Ctrl+b` `]` |
+| Exit copy mode | `q` |
+
+## Useful Remote Extras
+
+### Enable Mouse on the Fly
+
+From tmux command prompt (`Ctrl+b` `:`):
+
+```tmux
+set -g mouse on
+```
+
+### Minimal `~/.tmux.conf`
+
+```tmux
+# Enable mouse mode (scrolling, selecting, resizing)
+set -g mouse on
+
+# Increase scrollback history limit
+set -g history-limit 50000
+
+# Fix terminal colors
+set -g default-terminal "screen-256color"
+
+# Intuitive split commands (open in current pane directory)
+bind | split-window -h -c "#{pane_current_path}"
+bind - split-window -v -c "#{pane_current_path}"
+
+# Reload config file
+bind r source-file ~/.tmux.conf \; display "Config reloaded!"
+```
