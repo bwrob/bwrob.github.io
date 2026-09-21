@@ -37,13 +37,17 @@ cmd  = "echo 'http://localhost:3333/'"
 help = "Run static type checking with pyrefly"
 cmd  = "pyrefly check"
 
+[tasks._check_cname]
+help = "Verify CNAME file exists and contains bwrob.dev"
+cmd  = "sh -c 'test -f CNAME && [ \"$(cat CNAME | tr -d \"[:space:]\")\" = \"bwrob.dev\" ]'"
+
 [tasks.clean_tree]
 help = "Clean up active git worktrees (except quarto-main)"
 cmd  = "git worktree list | grep -v quarto-main | awk '{print $1}' | xargs git worktree remove"
 
 [tasks.code-quality]
 help     = "Run formatters, linters, and type checkers"
-sequence = ["_format", "_format_md", "_fix_lint", "_check", "_type_check"]
+sequence = ["_check_cname", "_format", "_format_md", "_fix_lint", "_check", "_type_check"]
 
 [tasks.preview]
 help     = "Preview quarto site locally and report local host URL"
@@ -51,4 +55,4 @@ sequence = ["_hap_preview", "_report_host"]
 
 [tasks.publish]
 help     = "Run pre-commit checks and publish to gh-pages"
-sequence = ["_pre_commit", "_hap_publish"]
+sequence = ["_check_cname", "_pre_commit", "_hap_publish"]

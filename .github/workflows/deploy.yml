@@ -41,6 +41,10 @@ jobs:
       - name: Type check (pyrefly)
         run: uv run pyrefly check
 
+      - name: Verify CNAME
+        run: |
+          test -f CNAME && [ "$(cat CNAME | tr -d '[:space:]')" = "bwrob.dev" ]
+
   publish:
     name: Publish to GitHub Pages
     needs: lint
@@ -67,6 +71,13 @@ jobs:
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Verify CNAME configuration
+        run: |
+          if [ ! -f CNAME ] || [ "$(cat CNAME | tr -d '[:space:]')" != "bwrob.dev" ]; then
+            echo "ERROR: CNAME file missing or invalid! Expected bwrob.dev"
+            exit 1
+          fi
 
       - name: Publish to GitHub Pages
         uses: quarto-dev/quarto-actions/publish@v2
