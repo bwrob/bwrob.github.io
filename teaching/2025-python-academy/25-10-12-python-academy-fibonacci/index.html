@@ -9,7 +9,7 @@
 <meta name="dcterms.date" content="2025-10-12">
 <meta name="description" content="How to efficiently calculate Fibonacci numbers in Python.">
 
-<title>Fibonacci Numbers Case Study – bwrob blog</title>
+<title>Fibonacci Numbers Case Study – bwrob.dev</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -151,13 +151,13 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../../../css/styles.css">
-<meta property="og:title" content="bwrob blog">
+<meta property="og:title" content="bwrob.dev">
 <meta property="og:description" content="bwrob personal and professional blog">
-<meta property="og:image" content="https://bwrob.github.io/teaching/2025-python-academy/25-10-12-python-academy-fibonacci/cover.jpg">
-<meta property="og:site_name" content="bwrob blog">
-<meta name="twitter:title" content="bwrob blog">
+<meta property="og:image" content="https://bwrob.dev/teaching/2025-python-academy/25-10-12-python-academy-fibonacci/cover.jpg">
+<meta property="og:site_name" content="bwrob.dev">
+<meta name="twitter:title" content="bwrob.dev">
 <meta name="twitter:description" content="bwrob personal and professional blog">
-<meta name="twitter:image" content="https://bwrob.github.io/teaching/2025-python-academy/25-10-12-python-academy-fibonacci/cover.jpg">
+<meta name="twitter:image" content="https://bwrob.dev/teaching/2025-python-academy/25-10-12-python-academy-fibonacci/cover.jpg">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -333,7 +333,7 @@ window.Quarto = {
     <img src="../../../assets/logo/logo_full.png" alt="" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../../../index.html">
-    <span class="navbar-title">bwrob blog</span>
+    <span class="navbar-title">bwrob.dev</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -462,7 +462,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="naive-recursive-approach">Naive Recursive Approach</h2>
 <p>The Fibonacci sequence is defined by the recurrence relation: <span class="math inline">\(F_n = F_{n-1} + F_{n-2}\)</span> with seed values <span class="math inline">\(F_0=0\)</span> and <span class="math inline">\(F_1=1\)</span>.</p>
 <p>A naive implementation of this in Python is a direct translation of the mathematical formula:</p>
-<div id="fcb82a6b" class="cell" data-execution_count="1">
+<div id="4d314275" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">def</span> fibonacci_recursive(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
@@ -475,7 +475,7 @@ window.Quarto = {
 </details>
 </div>
 <p>This approach is very intuitive, but it is also very slow. For <code>n=40</code>, it already takes a noticeable amount of time to compute. The reason for this is that the function calls itself twice for each <code>n</code>, leading to an exponential growth of the call stack.</p>
-<div id="d3a1bbbc" class="cell" data-execution_count="2">
+<div id="e360167e" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="im">from</span> time <span class="im">import</span> perf_counter</span>
@@ -487,14 +487,14 @@ window.Quarto = {
 <span id="cb2-7"><a href="#cb2-7" aria-label="7"></a><span class="bu">print</span>(<span class="ss">f"Execution taken </span><span class="sc">{</span>end <span class="op">-</span> start<span class="sc">:.2f}</span><span class="ss"> seconds"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Execution taken 15.75 seconds</code></pre>
+<pre><code>Execution taken 16.13 seconds</code></pre>
 </div>
 </div>
 </section>
 <section id="visualizing-the-call-stack" class="level2">
 <h2 class="anchored" data-anchor-id="visualizing-the-call-stack">Visualizing the Call Stack</h2>
 <p>To better understand the problem, let’s visualize the call stack. We can create a “talkative” version of our function that logs every call.</p>
-<div id="ba1713b4" class="cell" data-execution_count="3">
+<div id="1385122d" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="im">from</span> rich.console <span class="im">import</span> Console</span>
@@ -519,7 +519,7 @@ window.Quarto = {
 </details>
 </div>
 <p>For <code>n=6</code>, the call tree looks like this:</p>
-<div id="9f81e22e" class="cell" data-execution_count="4">
+<div id="11ce4922" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a>_ <span class="op">=</span> fibonacci_recursive_talkative(<span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -559,7 +559,7 @@ window.Quarto = {
 <section id="memoization" class="level2">
 <h2 class="anchored" data-anchor-id="memoization">Memoization</h2>
 <p>We can improve the performance by storing the results of the function calls in a cache (a dictionary). This technique is called memoization.</p>
-<div id="1d09262a" class="cell" data-execution_count="5">
+<div id="dbd75c21" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a>FIBONACCI_CACHE: <span class="bu">dict</span>[<span class="bu">int</span>, <span class="bu">int</span>] <span class="op">=</span> {}</span>
@@ -581,7 +581,7 @@ window.Quarto = {
 </details>
 </div>
 <p>This version is much faster. However, it will fail for large <code>n</code> (e.g., <code>n=8_000</code>) because of Python’s recursion depth limit.</p>
-<div id="232dfd84" class="cell" data-execution_count="6">
+<div id="5a741ee1" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="cf">try</span>:</span>
@@ -597,7 +597,7 @@ window.Quarto = {
 <section id="decorators-for-caching" class="level2">
 <h2 class="anchored" data-anchor-id="decorators-for-caching">Decorators for Caching</h2>
 <p>A more elegant way to implement memoization is by using a decorator. A decorator is a function that takes another function and extends its behavior without explicitly modifying it. Python’s <code>functools</code> module provides a built-in decorator <code>lru_cache</code> that does exactly what we need.</p>
-<div id="76342303" class="cell" data-execution_count="7">
+<div id="20741030" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a><span class="im">from</span> functools <span class="im">import</span> cache</span>
@@ -619,7 +619,7 @@ window.Quarto = {
 <section id="iterative-approach" class="level2">
 <h2 class="anchored" data-anchor-id="iterative-approach">Iterative Approach</h2>
 <p>Another way to solve the problem is to use an iterative approach. This is equivalent to tail recursion optimization.</p>
-<div id="f964a19c" class="cell" data-execution_count="8">
+<div id="4c42fa4d" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-label="1"></a><span class="kw">def</span> fibonacci_iterative(n: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
@@ -640,7 +640,7 @@ window.Quarto = {
 <section id="performance-comparison" class="level2">
 <h2 class="anchored" data-anchor-id="performance-comparison">Performance Comparison</h2>
 <p>To compare the performance of these implementations, we can use the <code>perfplot</code> library. It allows us to easily benchmark different functions over a range of input sizes.</p>
-<div id="6c2bf773" class="cell" data-execution_count="9">
+<div id="cb01e707" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-label="1"></a><span class="im">import</span> numba</span>
@@ -694,7 +694,7 @@ window.Quarto = {
 </dl>
 </div>
 </div>
-<div id="cb3425a7" class="cell" data-execution_count="10">
+<div id="43380d66" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a>perfplot.show(</span>
@@ -720,7 +720,7 @@ window.Quarto = {
 </details>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"d5310aa937024f9b917c04d2e27908cd","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"86f32d0efb0e4cd0ae4d190ddbfa8de5","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 <div class="cell-output cell-output-display">
@@ -735,7 +735,7 @@ window.Quarto = {
 </div>
 </div>
 <p>There are more advanced techniques and algorithms to compute Fibonacci numbers, below is a sneak peek for the future at two more efficient methods: using Numba’s JIT compilation and matrix exponentiation with NumPy.</p>
-<div id="6e296b78" class="cell" data-execution_count="11">
+<div id="37c49674" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-label="1"></a>perfplot.show(</span>
@@ -760,7 +760,7 @@ window.Quarto = {
 </details>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"e1e1de21b9584a7bb8f36ad02a8b86f0","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"92e5c9f2f19d48cbabd4ddbdae4c9d8c","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 <div class="cell-output cell-output-display">
@@ -769,7 +769,7 @@ window.Quarto = {
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><a href="index_files/figure-html/cell-12-output-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="index_files/figure-html/cell-12-output-3.png" width="866" height="475" class="figure-img"></a></p>
+<p><a href="index_files/figure-html/cell-12-output-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="index_files/figure-html/cell-12-output-3.png" width="866" height="474" class="figure-img"></a></p>
 </figure>
 </div>
 </div>
@@ -794,7 +794,7 @@ Note
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script type="application/vnd.jupyter.widget-state+json">
-{"state":{"6f6d1601d10c41ca8935c514e0789c82":{"model_module":"@jupyter-widgets/base","model_module_version":"2.0.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"2.0.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border_bottom":null,"border_left":null,"border_right":null,"border_top":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"bb288609b8ac456fb4e4d796b0fb5bea":{"model_module":"@jupyter-widgets/base","model_module_version":"2.0.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"2.0.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border_bottom":null,"border_left":null,"border_right":null,"border_top":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"d5310aa937024f9b917c04d2e27908cd":{"model_module":"@jupyter-widgets/output","model_module_version":"1.0.0","model_name":"OutputModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/output","_model_module_version":"1.0.0","_model_name":"OutputModel","_view_count":null,"_view_module":"@jupyter-widgets/output","_view_module_version":"1.0.0","_view_name":"OutputView","layout":"IPY_MODEL_6f6d1601d10c41ca8935c514e0789c82","msg_id":"","outputs":[{"data":{"text/html":"<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\"></pre>\n","text/plain":""},"metadata":{},"output_type":"display_data"}],"tabbable":null,"tooltip":null}},"e1e1de21b9584a7bb8f36ad02a8b86f0":{"model_module":"@jupyter-widgets/output","model_module_version":"1.0.0","model_name":"OutputModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/output","_model_module_version":"1.0.0","_model_name":"OutputModel","_view_count":null,"_view_module":"@jupyter-widgets/output","_view_module_version":"1.0.0","_view_name":"OutputView","layout":"IPY_MODEL_bb288609b8ac456fb4e4d796b0fb5bea","msg_id":"","outputs":[{"data":{"text/html":"<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\"></pre>\n","text/plain":""},"metadata":{},"output_type":"display_data"}],"tabbable":null,"tooltip":null}}},"version_major":2,"version_minor":0}
+{"state":{"1ac5fc8f8455423f84d829bc1562e3bc":{"model_module":"@jupyter-widgets/base","model_module_version":"2.0.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"2.0.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border_bottom":null,"border_left":null,"border_right":null,"border_top":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"86f32d0efb0e4cd0ae4d190ddbfa8de5":{"model_module":"@jupyter-widgets/output","model_module_version":"1.0.0","model_name":"OutputModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/output","_model_module_version":"1.0.0","_model_name":"OutputModel","_view_count":null,"_view_module":"@jupyter-widgets/output","_view_module_version":"1.0.0","_view_name":"OutputView","layout":"IPY_MODEL_e2f455b9df84400c8b820a6d91a3d27a","msg_id":"","outputs":[{"data":{"text/html":"<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\"></pre>\n","text/plain":""},"metadata":{},"output_type":"display_data"}],"tabbable":null,"tooltip":null}},"92e5c9f2f19d48cbabd4ddbdae4c9d8c":{"model_module":"@jupyter-widgets/output","model_module_version":"1.0.0","model_name":"OutputModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/output","_model_module_version":"1.0.0","_model_name":"OutputModel","_view_count":null,"_view_module":"@jupyter-widgets/output","_view_module_version":"1.0.0","_view_name":"OutputView","layout":"IPY_MODEL_1ac5fc8f8455423f84d829bc1562e3bc","msg_id":"","outputs":[{"data":{"text/html":"<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\"></pre>\n","text/plain":""},"metadata":{},"output_type":"display_data"}],"tabbable":null,"tooltip":null}},"e2f455b9df84400c8b820a6d91a3d27a":{"model_module":"@jupyter-widgets/base","model_module_version":"2.0.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"2.0.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border_bottom":null,"border_left":null,"border_right":null,"border_top":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}}},"version_major":2,"version_minor":0}
 </script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -882,7 +882,7 @@ Note
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/bwrob\.github\.io\/");
+        var filterRegex = new RegExp("https:\/\/bwrob\.dev\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
