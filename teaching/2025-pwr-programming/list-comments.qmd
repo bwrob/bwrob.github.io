@@ -1,14 +1,14 @@
 ---
-title: "Programowanie (PWr Lato 2025) Komentarze do list"
-
 about:
   template: marquee
 
 execute:
   freeze: true  # never re-render during project render
+title: "Programowanie (PWr Lato 2025) Komentarze do list"
+
 ---
 
-## Format rozwiązań
+## Format Rozwiązań
 
 Nazwa pliku z rozwiązaniami listy `x` powinna być następująca
 `{nr_indeksu}_lista_{x}.py`. Struktura pliku poniższa:
@@ -182,7 +182,9 @@ n_max = 1_000
 repeat = 100
 ns = list(range(1, n_max + 1))
 measure_bisection_time = measure_time(bisection, repeat=repeat)
-time_lists = [(n, measure_bisection_time(atan_minus_1, 0.0, 10.0 * n)) for n in ns]
+time_lists = [
+    (n, measure_bisection_time(atan_minus_1, 0.0, 10.0 * n)) for n in ns
+]
 time_points = [
     (float(n), time)
     for n, times in time_lists
@@ -351,7 +353,9 @@ def mierz_czas_sita(funkcja, limit, nazwa_funkcji, powtorzenia=10):
 
     minimalny_czas = min(czasy)
     print(f"{nazwa_funkcji} (limit={limit}):")
-    print(f"  Minimalny czas ({powtorzenia} uruchomień): {minimalny_czas:.6f} sekund")
+    print(
+        f"  Minimalny czas ({powtorzenia} uruchomień): {minimalny_czas:.6f} sekund"
+    )
     print(f"  Liczba liczb pierwszych: {len(wynik)}")
 
 

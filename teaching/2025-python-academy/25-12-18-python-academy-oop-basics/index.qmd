@@ -1,16 +1,16 @@
 ---
-title: "Inheritance, Polymorphism & Protocols"
-
+categories: [Python Academy]
 date: "2025-12-18"
 date-modified: "2026-02-20"
 description: "How to design flexible financial models using inheritance, ABCs, and protocols."
-categories: [Python Academy]
-image: cover.jpg
 format-links: [html]
+image: cover.jpg
+title: "Inheritance, Polymorphism & Protocols"
+
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![OOP Basics cover](cover.jpg){width="98%" fig-align="center"}
 
 ## Introduction
 
@@ -25,7 +25,7 @@ needing a massive "if-else" mess.
 
 Today, we'll build a yield curve hierarchy to see how this works in practice.
 
-## The Scenario: A Bond Pricer
+## The Scenario: a Bond Pricer
 
 Picture this: you're writing a function to price bonds. You know you need to discount
 cashflows, so you need a yield curve. But "Yield Curve" is just an abstract idea. In
@@ -139,7 +139,7 @@ print(f"Shifted DF(1.0): {shifted.discount_factor(1.0):.4f}")
 We just composed a new financial model on the fly without rewriting the flat curve
 logic.
 
-## Interpolation: A Fork in the Road
+## Interpolation: a Fork in the Road
 
 Now, let's tackle curves built from market data. We have points (tenors and rates), but
 we need values *between* those points. We need interpolation.
@@ -159,7 +159,9 @@ from typing import Protocol
 
 # 1. Define the Strategy Interface
 class Interpolator(Protocol):
-    def interpolate(self, t: float, x: list[float], y: list[float]) -> float: ...
+    def interpolate(
+        self, t: float, x: list[float], y: list[float]
+    ) -> float: ...
 
 
 # 2. Implement Concrete Strategy
@@ -213,7 +215,9 @@ class LinearInterpolationMixin:
     Mixin that provides linear interpolation capability.
     """
 
-    def interpolate_linear(self, t: float, x: list[float], y: list[float]) -> float:
+    def interpolate_linear(
+        self, t: float, x: list[float], y: list[float]
+    ) -> float:
         if t <= x[0]:
             return y[0]
         if t >= x[-1]:
@@ -317,7 +321,9 @@ class SimpleDiscounter:
         return 1 / (1 + 0.05 * t)  # Simple capitalization
 
 
-def price_asset_structural(amount: float, t: float, model: Discountable) -> float:
+def price_asset_structural(
+    amount: float, t: float, model: Discountable
+) -> float:
     return amount * model.discount_factor(t)
 
 

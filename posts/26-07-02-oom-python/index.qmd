@@ -1,15 +1,15 @@
 ---
-title: "Profiling Python OOMs"
-description: "Using Memray and resource limits to profile memory leaks and Out of Memory (OOM) errors in Python and compiled extensions."
+categories: [Performance]
 date: "2026-07-02"
 date-modified: "2026-07-02"
-categories: [Performance]
-image: cover.jpg
+description: "Using Memray and resource limits to profile memory leaks and Out of Memory (OOM) errors in Python and compiled extensions."
 format-links: [html]
+image: cover.jpg
+title: "Profiling Python OOMs"
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Debugging Out-of-Memory Errors cover](cover.jpg){width="98%" fig-align="center"}
 
 Your Python process crashes in production with an unceremonious `Killed`. No
 traceback, no log entry, no `MemoryError`.
@@ -72,9 +72,13 @@ def leak_python() -> None:
 
     while True:
         if data is not None:
-            del data  # Explicitly free memory before the next allocation  # <1>
+            del (
+                data
+            )  # Explicitly free memory before the next allocation  # <1>
 
-        print(f"Attempting to allocate {current_size // (1024**2)} MB bytes object...")
+        print(
+            f"Attempting to allocate {current_size // (1024**2)} MB bytes object..."
+        )
         data = os.urandom(current_size)  # <2>
         current_size = int(current_size * 1.5)  # <3>
 ```
@@ -132,9 +136,11 @@ if __name__ == "__main__":
         else:
             leak_numpy()
     except MemoryError:  # <2>
-        print(
-            "\n[!] MemoryError caught. Memray can now flush the capture file to disk."
+        msg = (
+            "\n[!] MemoryError caught. "
+            "Memray can now flush the capture file to disk."
         )
+        print(msg)
 ```
 
 1. Restricts the process to exactly 1 GB of virtual memory.
@@ -222,6 +228,7 @@ group="memray" description="Call graph tree showing allocation hierarchy."}
 
 ::: callout-note
 
-Download the companion script [here](../../assets/python/oom_simulator.py).
+Download the companion script from
+[oom_simulator.py](../../assets/python/oom_simulator.py).
 
 :::

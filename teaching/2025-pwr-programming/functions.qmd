@@ -1,11 +1,11 @@
 ---
-title: "Hierarchia Funkcji"
-
 about:
   template: marquee
 
 execute:
   freeze: true  # never re-render during project render
+title: "Hierarchia Funkcji"
+
 ---
 
 ## Zadanie
@@ -172,7 +172,7 @@ def f(x):
 df = DifferentiableFunction(f, name="Funkcja kwadratowa")
 print(df(3))  # Wypisze 16
 pochodna_df = df.derivative()
-print(pochodna_df(3))  # Wypisze przybliżoną wartość pochodnej f(x) w x=3, czyli 8
+print(pochodna_df(3))  # Przybliżona wartość pochodnej f'(3), czyli 8
 ```
 
 ## Rozwiązanie
@@ -190,7 +190,9 @@ from collections.abc import Callable
 class RealFunction:
     """Klasa bazowa reprezentująca funkcję rzeczywistą."""
 
-    def __init__(self, func: Callable[[float], float], name: str | None = None):
+    def __init__(
+        self, func: Callable[[float], float], name: str | None = None
+    ):
         self.func = func
         self.name = name
 
@@ -204,7 +206,9 @@ class RealFunction:
 class DifferentiableFunction(RealFunction):
     """Klasa reprezentująca funkcję różniczkowalną."""
 
-    def __init__(self, func: Callable[[float], float], name: str | None = None):
+    def __init__(
+        self, func: Callable[[float], float], name: str | None = None
+    ):
         super().__init__(func, name)
 
     def derivative(self, h: float = 1e-7) -> "RealFunction":
@@ -219,7 +223,10 @@ class PolynomialFunction(DifferentiableFunction):
     """Klasa reprezentująca funkcję wielomianową."""
 
     def __init__(self, coefficients: list[float], name: str | None = None):
-        super().__init__(lambda x: self._evaluate_polynomial(x, coefficients), name)
+        super().__init__(
+            lambda x: self._evaluate_polynomial(x, coefficients),
+            name,
+        )
         self.coefficients = coefficients
 
     def _evaluate_polynomial(self, x: float, coeffs: list[float]) -> float:
@@ -234,9 +241,9 @@ class PolynomialFunction(DifferentiableFunction):
         for i, coeff in enumerate(self.coefficients):
             power = len(self.coefficients) - 1 - i
             if coeff:
-                term = (
-                    f"{'+' if coeff > 0 and i > 0 else ''} {'-' if coeff < 0 else ''}"
-                )
+                sign = "+" if coeff > 0 and i > 0 else ""
+                neg = "-" if coeff < 0 else ""
+                term = f"{sign} {neg}"
                 if abs(coeff) != 1 or power == 0:
                     term += str(abs(coeff))
                 if power > 0:
@@ -267,7 +274,10 @@ class SineFunction(DifferentiableFunction):
         phase: float = 0.0,
         name: str | None = None,
     ):
-        super().__init__(lambda x: amplitude * math.sin(frequency * x + phase), name)
+        super().__init__(
+            lambda x: amplitude * math.sin(frequency * x + phase),
+            name,
+        )
         self.amplitude = amplitude
         self.frequency = frequency
         self.phase = phase

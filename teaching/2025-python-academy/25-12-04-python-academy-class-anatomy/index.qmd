@@ -1,16 +1,16 @@
 ---
-title: "Anatomy of a Python Class"
-
+categories: [Python Academy]
 date: "2025-12-04"
 date-modified: "2026-02-20"
 description: "How to master the building blocks of Python classes for quantitative development."
-categories: [Python Academy]
-image: cover.jpg
 format-links: [html]
+image: cover.jpg
+title: "Anatomy of a Python Class"
+
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Class Anatomy cover](cover.jpg){width="98%" fig-align="center"}
 
 ## Introduction
 
@@ -24,7 +24,7 @@ We're going to break down exactly what goes into a Python class, starting from a
 empty shell and building it up into a robust financial model. By the end, you'll see how
 to turn a messy collection of variables into a clean, reliable tool.
 
-## Starting Simple: The Empty Class
+## Starting Simple: the Empty Class
 
 Python's dynamic nature allows for flexibility that can be surprising if you are coming
 from statically typed languages like C++ or Java. The most minimal class definition in
@@ -97,7 +97,7 @@ explicit reference to the specific instance currently executing the method:
 By adding type hints (`: float`, `: str`), we also document exactly what kind of data we
 expect, serving as a guide for other developers and our future selves.
 
-## Class Attributes vs. Instance Attributes
+## Class Attributes Vs. Instance Attributes
 
 The attributes `strike`, `expiry`, and `option_type` are **instance attributes**. They
 belong to a specific object; one option's strike does not affect another's.
@@ -127,7 +127,7 @@ print(f"Option 2 contract size: {op2.CONTRACT_SIZE}")
 Changing `EuropeanOption.CONTRACT_SIZE` updates the value for all instances that haven't
 explicitly overridden it.
 
-## The Three Method Types: An Overview
+## The Three Method Types: an Overview
 
 With `self` and class attributes covered, here are the three types of methods a class
 can have.
@@ -137,8 +137,6 @@ can have.
 | Instance | None            | `self`         | Operates on and modifies the object.                                                                            |
 | Class    | `@classmethod`  | `cls`          | Operates on and modifies the class itself; often used for factory methods.                                      |
 | Static   | `@staticmethod` | None           | Isolated utility functions that logically belong to the class but don't need access to instance or class state. |
-
----
 
 ### Instance Methods
 
@@ -183,7 +181,9 @@ class EuropeanOption:
         self.option_type = option_type
 
     def __repr__(self):
-        return f"EuropeanOption(strike={self.strike}, type='{self.option_type}')"
+        return (
+            f"EuropeanOption(strike={self.strike}, type='{self.option_type}')"
+        )
 
     @classmethod
     def from_string(cls, description: str):
@@ -206,9 +206,13 @@ option_from_str = EuropeanOption.from_string("Put-120")
 print(f"Created from string: {option_from_str}")
 
 # Demonstrate non-builder class method
-print(f"Default option type before change: {EuropeanOption._DEFAULT_OPTION_TYPE}")
+print(
+    f"Default option type before change: {EuropeanOption._DEFAULT_OPTION_TYPE}"
+)
 EuropeanOption.set_default_option_type("Put")
-print(f"Default option type after change: {EuropeanOption._DEFAULT_OPTION_TYPE}")
+print(
+    f"Default option type after change: {EuropeanOption._DEFAULT_OPTION_TYPE}"
+)
 ```
 
 ## Static Methods
@@ -231,7 +235,9 @@ class EuropeanOption:
     @staticmethod
     def d1(S, K, T, r, sigma):
         """Calculates d1 term for Black-Scholes."""
-        return (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+        return (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (
+            sigma * math.sqrt(T)
+        )
 
 
 # We can call it without an instance
@@ -283,7 +289,7 @@ except ValueError as e:
 
 Notice we use `self._strike` inside the property to store the actual value.
 
-## Access Control: Private vs. Protected
+## Access Control: Private Vs. Protected
 
 Python does not enforce strict `private` or `protected` keywords. Instead, it relies on
 naming conventions:

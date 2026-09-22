@@ -1,22 +1,22 @@
 ---
-title: "Linux in Windows via WSL"
-description: "Setting up Linux development in Windows."
+categories: [Dev Env]
 date: "2024-08-11"
 date-modified: "2024-08-30"
-categories: [Dev Env]
-image: cover.jpg
+description: "Setting up Linux development in Windows."
 format-links: [html]
+image: cover.jpg
+title: "Linux in Windows via WSL"
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Linux in Windows via WSL](cover.jpg){width="98%" fig-align="center"}
 
-## Windows, Linux, and You: Ménage à trois
+## Windows, Linux, and You: Ménage À Trois
 
 Tired of the same old Windows vs. Linux beef among PC superusers? Well, get ready to
 become a mediator in this feud. I'll show you how to get the best of both worlds.
 
-### Pros and cons
+### Pros and Cons
 
 Windows OS has long been the dominant platform for mainstream consumers and businesses.
 It offers good hardware compatibility, de facto *the* PC gaming experience and is
@@ -39,7 +39,7 @@ words as
 was much messier. Irony is the ambrosia of life (for me at least).
 :::
 
-### Bridging the gap
+### Bridging the Gap
 
 At this point even Microsoft --- a strong contrarian to Linux in the past --- embraced
 the usefulness of Linux shell at your fingertips. Imagine having the familiar interface
@@ -49,7 +49,7 @@ limited stakes once you (inevitably) remove half of your file system with a bash
 Enter Windows Subsystem for Linux (WSL): a ticket to 10x-ing your software development
 on Windows.
 
-### WSL vs. Virtual Machines: What's the Difference?
+### WSL Vs. Virtual Machines: What's the Difference?
 
 You might be wondering how WSL differs from a traditional virtual machine (VM). While
 both provide a way to run Linux on Windows, they operate in different ways. A VM
@@ -61,7 +61,7 @@ WSL, on the other hand, is a more lightweight approach. It integrates Linux dire
 into the Windows kernel, allowing for faster boot times, better performance, and
 native bidirectional file sharing between Windows and Linux environments.
 
-## Installing and setting up WSL
+## Installing and Setting up WSL
 
 First, we need to set up the WSL and install a chosen Linux distribution. Fortunately,
 this is "super easy, barely an inconvenience". You can choose from a list of distros
@@ -70,46 +70,46 @@ build Arch and be legally allowed to say `BTW, I use Arch (on Windows)`. For thi
 we'll take a more conventional approach and opt for the long-term support (LTS) version
 of Ubuntu. Now, open the Powershell with administrative privileges and run:
 
-```{shell}
+```powershell
 wsl --update
 wsl --version
 ```
 
 These commands ensure that WSL is up-to-date and displays the installed WSL version.
 
-![](../../assets/images/posts/24-08-11-linux-in-windows/1.png){width="90%"
+![Output of wsl --update and wsl --version in PowerShell](../../assets/images/posts/24-08-11-linux-in-windows/1.png){width="90%"
 fig-align="center"}
 
 Our next command will be:
 
-```{shell}
+```powershell
 wsl -l -o
 ```
 
 This yields a curated list of pre-packaged Linux distributions that Microsoft provides,
 making the process almost effortless.
 
-![](../../assets/images/posts/24-08-11-linux-in-windows/2.png){width="90%"
+![Available Linux distributions listed with wsl -l -o](../../assets/images/posts/24-08-11-linux-in-windows/2.png){width="90%"
 fig-align="center"}
 
 For the installation itself:
 
-```{shell}
+```powershell
 wsl --install -d 'Ubuntu-24.04'
 ```
 
-![](../../assets/images/posts/24-08-11-linux-in-windows/3.png){width="90%"
+![Installing Ubuntu 24.04 via WSL](../../assets/images/posts/24-08-11-linux-in-windows/3.png){width="90%"
 fig-align="center"}
 
 Reboot the Windows system and you'll see Ubuntu among your applications.
 
-![](../../assets/images/posts/24-08-11-linux-in-windows/4.png){width="90%"
+![Ubuntu launcher icon in Windows Start Menu](../../assets/images/posts/24-08-11-linux-in-windows/4.png){width="90%"
 fig-align="center"}
 
-![](../../assets/images/posts/24-08-11-linux-in-windows/5.png){width="90%"
+![Ubuntu terminal running in Windows](../../assets/images/posts/24-08-11-linux-in-windows/5.png){width="90%"
 fig-align="center"}
 
-## Base setup --- new shell and package manager
+## Base Setup --- New Shell and Package Manager
 
 There is an additional benefit we can reap with just a bit of more work --- a fully
 system-agnostic setup. By having Linux kernel run on Windows, we unified 2 out of 3
@@ -121,7 +121,7 @@ manager for macOS", provides a convenient way to install additional software on 
 systems. Let's change the terminal shell to `zsh` in our Ubuntu installation and compile
 a secondary (to `apt-get`) package manager -- `brew`.
 
-### Brewing starts
+### Brewing Starts
 
 Before installing Homebrew, we need to equip our system with the essential
 tools. The build-essential package provides a collection of compilers and libraries
@@ -130,44 +130,45 @@ used for managing code projects.
 
 Let's install these prerequisites using the following command:
 
-```{bash}
+```bash
 sudo apt-get upgrade -y
 sudo apt-get install build-essential git -y
 ```
 
 Execute the installation script for Homebrew:
 
-```{bash}
+```bash
 INSTALL_PATH="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
 /bin/bash -c "$(curl -fsSL $INSTALL_PATH)"
 ```
 
-![](../../assets/images/posts/24-08-11-linux-in-windows/6.png){width="90%"
+![Homebrew installation output in Ubuntu](../../assets/images/posts/24-08-11-linux-in-windows/6.png){width="90%"
 fig-align="center"}
 
 To make Homebrew accessible from your shell, you need to load its environment variables.
 The following command achieves this and subsequently runs a diagnostic check:
 
-```{bash}
+```bash
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 brew doctor
 ```
 
-![](../../assets/images/posts/24-08-11-linux-in-windows/7.png){width="90%"
+![Running brew doctor in WSL](../../assets/images/posts/24-08-11-linux-in-windows/7.png){width="90%"
 fig-align="center"}
 
 Doctor's orders to append brew to some set of paths! Let's do this then:
 
-```{bash}
-echo 'export XDG_DATA_DIRS="/home/linuxbrew/.linuxbrew/share:$XDG_DATA_DIRS"' >> ~/.profile
+```bash
+dir_export='export XDG_DATA_DIRS="/home/linuxbrew/.linuxbrew/share:$XDG_DATA_DIRS"'
+echo "$dir_export" >> ~/.profile
 ```
 
-## Z-shell --- sea-shell
+## Z-Shell --- Sea-Shell
 
 Homebrew makes package management a breeze. Let's install `zsh`, a powerful and
 customizable shell.
 
-```{bash}
+```bash
 brew install zsh
 zsh --version
 zsh
@@ -177,40 +178,40 @@ This will take you to interactive `.zshrc` file setup. The file contains command
 are run each time a shell is spawned. You can either generate empty file with `0` or go
 through the interactive setup with `1`.
 
-![](../../assets/images/posts/24-08-11-linux-in-windows/8.png){width="90%"
+![Interactive zsh configuration setup](../../assets/images/posts/24-08-11-linux-in-windows/8.png){width="90%"
 fig-align="center"}
 
 Add the brew initialization to `.zshrc` file as well. This way `brew` will always be by
 your side!
 
-```{bash}
+```bash
 (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> ~/.zshrc
 ```
 
 Check the default shell and set it to `zsh`:
 
-```{bash}
+```bash
 echo $SHELL
 sudo chsh -s $(which zsh)
 echo $SHELL
 ```
 
-## GitHub command line tool
+## GitHub Command Line Tool
 
 Remember `git != GitHub`, we need a way to authenticate and use GitHub from CLI. There's
 a tool for that!
 
-```{bash}
+```bash
 brew install gh
 gh auth login
 ```
 
-![](../../assets/images/posts/24-08-11-linux-in-windows/9.png){width="90%"
+![GitHub CLI auth login in terminal](../../assets/images/posts/24-08-11-linux-in-windows/9.png){width="90%"
 fig-align="center"}
 
 Now create a convenient directory and copy your favourite `GitHub` repo:
 
-```{bash}
+```bash
 mkdir repos && cd repos
 gh repo clone python_playground
 ```
@@ -231,16 +232,16 @@ Here's how:
 - **Launching VSC from WSL**: Within your WSL terminal, you can directly invoke VSC as
   if it were running natively on Windows. Use the following command:
 
-```{bash}
+```bash
 code ~/repos/python_playground
 ```
 
-![](../../assets/images/posts/24-08-11-linux-in-windows/10.png){width="90%"
+![VS Code opened from WSL terminal](../../assets/images/posts/24-08-11-linux-in-windows/10.png){width="90%"
 fig-align="center"}
 
 In the [next post](../24-08-11-linux-python-dev-env/index.qmd) I will show you how to
 set up Python environment in Linux. Stay tuned :) .
 
 ::: callout-note
-Download the Ubuntu shell script [here](wsl_setup.sh).
+Download the [Ubuntu WSL setup shell script](wsl_setup.sh).
 :::

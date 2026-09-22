@@ -1,9 +1,7 @@
-# Repository Agent Guidelines: bwrob.dev
+# Repository Agent Guidelines: Bwrob.dev
 
 Welcome to the codebase for [bwrob.dev](https://bwrob.dev), a personal software
 engineering, data systems, and quantitative computing blog built with Quarto.
-
----
 
 ## 1. Architecture & Tooling Stack
 
@@ -21,8 +19,6 @@ engineering, data systems, and quantitative computing blog built with Quarto.
   - **`ruff`**: Python linter and formatter (`target-version = "py313"`, line-length 88,
     docstring formatting enabled).
   - **`pyrefly`**: Static type checker.
-
----
 
 ## 2. Content Standards & Conventions
 
@@ -74,8 +70,6 @@ Use standard categories to avoid tag fragmentation:
 - **`Pythonic Distractions`**: Recreational math, puzzles, algorithms, creative coding.
 - **`Career`**: Software engineering reflections, developer growth.
 
----
-
 ## 3. Editorial Philosophy & Writing Tone
 
 - **Conversational & Pragmatic**: Write like an experienced engineer talking to a
@@ -100,8 +94,6 @@ Use standard categories to avoid tag fragmentation:
     observations.
 - **Code First**: Provide runnable, copy-pasteable, verified snippets with clear
   annotations (`<1>`, `<2>`) instead of hand-waving pseudocode.
-
----
 
 ## 4. Post Lifecycle & Skills
 

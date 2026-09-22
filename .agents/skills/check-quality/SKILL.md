@@ -1,9 +1,9 @@
 ---
-name: check-quality
 description: >-
   Run code quality, formatting, and linting checks on blog posts and scripts.
   Use this skill whenever formatting or verifying Quarto Markdown files, Python code
   blocks, or preparing to commit changes.
+name: check-quality
 ---
 
 # Code & Markdown Quality
@@ -11,8 +11,6 @@ description: >-
 This skill standardizes formatting and linting across [bwrob.dev](https://bwrob.dev),
 ensuring Quarto documents (`.qmd`), Markdown (`.md`), and Python files adhere to project
 conventions.
-
----
 
 ## Tooling Suite Overview
 
@@ -28,9 +26,9 @@ conventions.
 > `rumdl fmt` automatically runs `ruff` format and lint checks directly against
 > embedded `{python}` chunks within `.qmd` files.
 
----
-
 ## Workflow
+
+Follow these workflows to maintain consistent formatting and code quality:
 
 ### 1. Full Repository Suite (Recommended)
 
@@ -57,8 +55,6 @@ To verify git pre-commit hooks before committing:
 uv run pre-commit run --all-files
 ```
 
----
-
 ### 2. Targeted Formatting for Single Post or Lesson
 
 When editing a specific post or teaching lesson, format and check the file directly:
@@ -81,8 +77,6 @@ uv run rumdl check "posts/<post-slug>/index.qmd"
 uv run ruff format "assets/python/" "posts/<post-slug>/"
 uv run ruff check --fix "assets/python/" "posts/<post-slug>/"
 ```
-
----
 
 ## Known Lint Traps & Best Practices
 

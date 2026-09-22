@@ -1,17 +1,17 @@
 ---
-title: "Strategies for Numerical Integration"
-description: "Implementing the strategy design pattern in Python."
+categories: [Pythonic Distractions, Design Patterns, Numerical Methods]
 date: "2024-04-28"
 date-modified: "2024-08-30"
-categories: [Pythonic Distractions, Design Patterns, Numerical Methods]
-image: cover.jpg
+description: "Implementing the strategy design pattern in Python."
 format-links: [html]
+image: cover.jpg
+title: "Strategies for Numerical Integration"
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Numerical integration schemes](cover.jpg){width="98%" fig-align="center"}
 
-## Numerical integration
+## Numerical Integration
 
 Calculation of many financial methods or metrics relies on a mathematical tool called
 numerical integration. In simple terms, numerical integration takes a function that
@@ -30,7 +30,7 @@ there's no *best technique*. Same algorithm can be a perfect fit for problems wi
 As quantitative developers, we need software architectures that let us swap
 between these numerical schemes without rewriting downstream caller code.
 
-## Design patterns
+## Design Patterns
 
 This is where design patterns come in. Design patterns are reusable solutions to common
 programming problems. Their widespread adoption in software development is largely
@@ -54,7 +54,7 @@ answer. But first, you need to know the classics to diss the classics. We'll hol
 with the dissing for now, cause in the example below chosen design pattern makes for a
 very clean implementation. You'll see for yourself.
 
-## Strategy pattern
+## Strategy Pattern
 
 We know the stage now --- one problem statement, multiple strategies to tackle.
 Important observation here is that we don't actually care which one is used. When you
@@ -73,7 +73,7 @@ customary 'software engineering' example used to present the SDP is sorting a li
 integers using different sorting algorithms.
 :::
 
-## Abstract schema
+## Abstract Schema
 
 Each scheme that we'd come up with, even the most complex ones, would have the same main
 purpose --- 'integrate'. To make the implementation for it, we create a template class
@@ -106,7 +106,9 @@ class IntegrationScheme(ABC):  # <1>
 1. Type annotations improve readability and can be used by static type checkers like
    `mypy` to detect errors early.
 
-## Concrete schema implementations
+## Concrete Schema Implementations
+
+Now that the interface is established, we can implement concrete numerical schemes.
 
 ### Rectangle Rule
 
@@ -114,7 +116,7 @@ It's the simplest way of estimating the area under a curve you can think of --- 
 with smaller and smaller rectangles with the value of a function at the leftmost point
 as height constant width.
 
-[![](../../assets/images/posts/24-04-28-strategy-pattern-integration/Rectangle_rule.gif){width="100%"}](https://en.wikipedia.org/wiki/File:Rectangle_rule.gif)
+[![Approximation of an integral via rectangle rule](../../assets/images/posts/24-04-28-strategy-pattern-integration/Rectangle_rule.gif){width="100%"}](https://en.wikipedia.org/wiki/File:Rectangle_rule.gif)
 
 Implementing this idea is trivial when using [numpy](https://numpy.org/), but let's add
 some syntactic sugar so the class is sweeter to work with.
@@ -190,8 +192,12 @@ class MonteCarloScheme(IntegrationScheme):
 
     def __str__(self) -> str:
         """Returns the string representation of the schema."""
-        points_msg = f"Monte Carlo schema with {self.__random_points} random points"
-        seed_msg = f" and seed {self.__random_seed}" if self.__random_seed else ""
+        points_msg = (
+            f"Monte Carlo schema with {self.__random_points} random points"
+        )
+        seed_msg = (
+            f" and seed {self.__random_seed}" if self.__random_seed else ""
+        )
         return f"{points_msg}{seed_msg}"
 
     def integrate(
@@ -273,7 +279,7 @@ class Integrator:
    (using the `__str__` methods) and calls `integrate` method of the scheme. No care in
    the world on how the value is actually calculated.
 
-## Let's integrate
+## Let's Integrate
 
 Ok, now to the integrating! Let's set up the stage:
 
@@ -310,7 +316,9 @@ integrator = Integrator(
 
 iterations = [2**i for i in range(0, 21, 5)]
 rectangle_results = [integrator(RectangleScheme(steps=i)) for i in iterations]
-mc_results = [integrator(MonteCarloScheme(random_points=i)) for i in iterations]
+mc_results = [
+    integrator(MonteCarloScheme(random_points=i)) for i in iterations
+]
 
 print(f"Rectangle scheme results:\n{rectangle_results}.")
 print(f"Monte Carlo scheme results:\n{mc_results}.")
@@ -331,8 +339,6 @@ subclass `IntegrationScheme`. No alterations to existing business logic or calle
 functions are required. That is the Strategy pattern at its best.
 
 ::: callout-note
-
-Download the whole code
-[here](../../assets/python/numerical_integration_strategy_pattern_implementation.py).
-
+Download the complete
+[numerical integration strategy pattern script](../../assets/python/numerical_integration_strategy_pattern_implementation.py).
 :::

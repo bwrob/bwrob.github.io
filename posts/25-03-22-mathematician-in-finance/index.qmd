@@ -1,11 +1,11 @@
 ---
-title: "Mathematician in the Financial Markets"
-description: "Navigating the financial industry as a mathematician."
+categories: [Career, Financial Markets]
 date: "2025-03-22"
 date-modified: "2026-05-30"
-categories: [Career, Financial Markets]
-image: cover.jpg
+description: "Navigating the financial industry as a mathematician."
 format-links: [html]
+image: cover.jpg
+title: "Mathematician in the Financial Markets"
 toc-depth: 2
 ---
 
@@ -14,7 +14,7 @@ toc-depth: 2
 [Polski 🇵🇱](index-pl.qmd){.lang-btn}
 :::
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Mathematician in the financial markets](cover.jpg){width="98%" fig-align="center"}
 
 What happens when someone who spent years proving theorems about Banach spaces and
 differential equations lands on an investment bank's trading floor? You quickly discover
@@ -92,120 +92,30 @@ Curve is.
 # | output: asis
 # | collapse: true
 
-import dataclasses
+import json
+from pathlib import Path
 
-import plotly.graph_objects as go
 from IPython.display import Markdown, display
+import plotly.graph_objects as go
+from pydantic import BaseModel
 
 
-@dataclasses.dataclass
-class QuantType:
+class QuantType(BaseModel):
     skills: dict[str, int]
     description: str
 
 
-job_skills = {
-    "Front Office Quant": QuantType(
-        skills={
-            "Data Analysis": 1,
-            "Software Engineering": 1,
-            "Financial Math": 3,
-            "Programming": 3,
-            "Finance Knowledge": 3,
-            "Regulatory Knowledge": 1,
-        },
-        description=(
-            "Develops and applies quantitative models for pricing, risk management, "
-            "and trading strategies directly on the trading desk."
-        ),
-    ),
-    "Market Risk Quant": QuantType(
-        skills={
-            "Data Analysis": 2,
-            "Risk Modeling": 3,
-            "Financial Math": 2,
-            "Programming": 1,
-            "Finance Knowledge": 2,
-            "Regulatory Knowledge": 2,
-        },
-        description=(
-            "Develops and validates models to measure and manage market risk, "
-            "ensuring the bank stays within its limits and regulatory requirements."
-        ),
-    ),
-    "Credit Risk Quant": QuantType(
-        skills={
-            "Data Analysis": 2,
-            "Risk Modeling": 3,
-            "Financial Math": 3,
-            "Programming": 2,
-            "Numerical Methods": 1,
-            "Software Engineering": 1,
-            "Regulatory Knowledge": 2,
-            "Finance Knowledge": 2,
-        },
-        description=(
-            "Focuses on the risk of people or companies defaulting on their debts. "
-            "Heavy on probability and statistical modeling."
-        ),
-    ),
-    "Validation Quant": QuantType(
-        skills={
-            "Data Analysis": 1,
-            "Financial Math": 3,
-            "Programming": 1,
-            "Model Validation": 3,
-            "Regulatory Knowledge": 3,
-        },
-        description=(
-            "The 'internal police.' They independently check the models built by "
-            "other quants to make sure they aren't broken or dangerous."
-        ),
-    ),
-    "Quant Researcher": QuantType(
-        skills={
-            "Data Mining": 2,
-            "Programming": 2,
-            "Statistical Learning": 3,
-            "Financial Math": 3,
-            "Finance Knowledge": 3,
-        },
-        description=(
-            "The 'think tank' role. Conducts cutting-edge research to find new "
-            "trading signals or better ways to price assets."
-        ),
-    ),
-    "Algorithmic Trader": QuantType(
-        skills={
-            "Data Mining": 2,
-            "Software Engineering": 2,
-            "Market Microstructure": 3,
-            "Programming": 3,
-            "Finance Knowledge": 3,
-            "Data Management": 2,
-            "Statistical Learning": 3,
-        },
-        description=(
-            "Writes the code that actually executes trades. Needs to understand "
-            "how markets move on a second-by-second basis."
-        ),
-    ),
-    "Quant Developer": QuantType(
-        skills={
-            "Software Engineering": 3,
-            "Financial Math": 1,
-            "Programming": 3,
-            "Numerical Methods": 3,
-            "Finance Knowledge": 2,
-            "Regulatory Knowledge": 1,
-            "Data Management": 2,
-        },
-        description=(
-            "The backbone of the operation. They build the high-performance systems "
-            "that the math runs on."
-        ),
-    ),
-}
+data_path = Path("job_skills_en.json")
+if not data_path.exists():
+    data_path = (
+        Path("posts/25-03-22-mathematician-in-finance") / "job_skills_en.json"
+    )
+
+with data_path.open(encoding="utf-8") as f:
+    job_skills = {
+        title: QuantType.model_validate(info)
+        for title, info in json.load(f).items()
+    }
 
 all_skills = set()
 for data in job_skills.values():
@@ -245,14 +155,14 @@ for job_title, data in job_skills.items():
 display(Markdown(":::"))
 ```
 
-## Case Study: From Jupyter Notebook to Production
+## Case Study: from Jupyter Notebook to Production
 
 To see the difference between the various Quant Analyst and Quant Developer roles in
-practice, let’s look at a concrete project:
+practice, let's look at a concrete project:
 **extracting implied probability distributions from option prices**.
 
 This is one of the quantitative finance standards. By looking at option prices across
-different strikes for a given expiry, we can extract the market’s consensus on the
+different strikes for a given expiry, we can extract the market's consensus on the
 probability of the underlying asset reaching a certain price in the future.
 Mathematically, this is based on the Breeden-Litzenberger theorem, which states that the
 risk-neutral probability density function is proportional to the second derivative of
@@ -260,12 +170,12 @@ the option price with respect to the strike price.
 
 Imagine you have a basic implementation of this math in a Python script or Jupyter
 Notebook. It fits a smooth curve (like a cubic spline) to option prices and takes the
-numerical second derivative. It’s a neat math exercise, but in a professional setting,
+numerical second derivative. It's a neat math exercise, but in a professional setting,
 this script is just the starting point.
 
 Here is how the paths of the Quant Analyst and the Quant Developer diverge:
 
-### The Quant Analyst’s Path
+### The Quant Analyst's Path
 
 A Quant Analyst (QA) is primarily focused on the math, the models, and the financial
 implications of the output:
@@ -284,7 +194,7 @@ implications of the output:
   insights to buy or sell the required options in the market at the best possible price
   with minimal transaction costs?
 
-### The Quant Developer’s Path
+### The Quant Developer's Path
 
 A Quant Developer (QD) is focused on turning this mathematical prototype into
 maintainable production software:
@@ -300,7 +210,7 @@ maintainable production software:
 - **Performance Optimization:** Solving the math (interpolation, root-finding for
   implied volatilities) is CPU-heavy. The QD analyzes the performance. Sometimes
   Python's `scipy` is fast enough; other times, they need to implement highly optimized,
-  domain-specific algorithms (like Jaeckel’s method). For ultra-low latency, they might
+  domain-specific algorithms (like Jaeckel's method). For ultra-low latency, they might
   offload the calculations to a compiled language like C++ or Rust (binding it back to
   Python using `nanobind` or `PyO3`).
 - **Concurrency & API Limits:** If fetching data is the bottleneck, the QD implements
@@ -329,7 +239,7 @@ you can't implement it efficiently or prove that it works on historical data, it
 useless. You need to be comfortable with "messy" data—the kind that has holes, errors,
 and outliers that would make a pure mathematician cry.
 
-There’s also a big **communication** aspect. You'll often work with traders or managers
+There's also a big **communication** aspect. You'll often work with traders or managers
 who are brilliant at their jobs but don't know a Taylor series from a Taylor Swift song.
 Being able to explain why a model is giving a certain result, without using Greek
 letters, is a superpower.
@@ -337,7 +247,7 @@ letters, is a superpower.
 Finally, you have to deal with **pressure and regulations**. In some roles, if your code
 has a bug, you could lose millions of dollars in minutes. In others, you might spend
 weeks writing documentation for regulators to prove that your model isn't going to blow
-up the economy. It’s a job that requires extreme attention to detail and a thick skin.
+up the economy. It's a job that requires extreme attention to detail and a thick skin.
 
 ## Where to Look for Work?
 
@@ -348,13 +258,13 @@ established in major cities (including UBS, BNY Mellon, Santander, Goldman Sachs
 and Revolut). Of course, the global hubs remain London, New York, and Hong Kong, but the
 barrier to entry has lowered significantly with the rise of remote and hybrid work.
 
-## Q&A
+## Q&a
 
 In my discussions with students and aspiring professionals, several questions tend to
 come up repeatedly. Here they are, along with my answers, to help shed more light on the
 realities of this job:
 
-### 1. What does a typical day look like in this job?
+### 1. What Does a Typical Day Look Like in This Job?
 
 It really depends on the role you hold. There are many different "sub-species" of
 quants—ranging from those who work mostly with ready-made data from risk systems and
@@ -377,7 +287,7 @@ My typical day looks something like this:
   These involve reporting weekly progress, cross-team alignment, resolving dependencies,
   etc.
 
-### 2. Is this job stressful or exhausting?
+### 2. Is This Job Stressful or Exhausting?
 
 A lot depends on the work culture, the team and its management style, and the specific
 project.
@@ -393,7 +303,7 @@ intellectual. For me, it is rewarding, but it does mean that I mostly have energ
 time for private projects on weekends. Evenings after work are usually reserved for
 winding down—gaming, movies, or physical activity.
 
-### 3. What are the biggest challenges when working as a Quant?
+### 3. What Are the Biggest Challenges When Working as a Quant?
 
 The biggest challenge is
 **combining three worlds: mathematics, technology, and finance**. That is a lot of
@@ -407,7 +317,7 @@ different spot on the Venn diagram of these three fields. Explaining mathematica
 complexities to a developer or technical limitations to a trader requires a lot of
 cognitive flexibility.
 
-### 4. What gives you the most satisfaction?
+### 4. What Gives You the Most Satisfaction?
 
 This is a very personal question. In the projects I participate in, I try to push the
 philosophy of *"Make It Work, Make It Right, Make It Fast"* (dividing the work into
@@ -419,7 +329,7 @@ rich ecosystem of libraries and speed of development, not execution performance.
 this introduces an interesting puzzle of optimization and balancing trade-offs, which I
 find highly rewarding.
 
-### 5. Is it possible to stay focused all day? When I code, I can focus for about 2 hours, and then it gets harder
+### 5. Is It Possible to Stay Focused All Day? When I Code, I Can Focus for About 2 Hours, and Then It Gets Harder
 
 This is completely normal. I don't think anyone can stay fully focused for 8 hours
 straight. On a good, productive day, I get maybe 6 hours of actual engineering work
@@ -447,6 +357,8 @@ field.
 [My Resume](../../resume/index.qmd)
 
 ## Further Reading
+
+Here are foundational books and biographies exploring quantitative finance.
 
 ### Popular Books
 

@@ -1,15 +1,15 @@
 ---
-title: "Visualizing Pydantic Models"
-description: "Visualizing Pydantic models as tree structures."
+categories: [Python Recipes]
 date: "2024-10-11"
 date-modified: "2024-10-11"
-categories: [Python Recipes]
-image: cover.jpg
+description: "Visualizing Pydantic models as tree structures."
 format-links: [html]
+image: cover.jpg
+title: "Visualizing Pydantic Models"
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Pydantic Tree Walker cover](cover.jpg){width="98%" fig-align="center"}
 
 When designing large data pipelines or REST APIs, Pydantic schemas rarely stay flat.
 Models nest inside models, which nest inside generic containers like `list[...]` or
@@ -59,6 +59,7 @@ Here is the complete implementation. It parses field annotations, formats generi
 cleanly, and constructs a visual hierarchy using `rich.tree.Tree`:
 
 ```{python}
+#| label: tree-walker-implementation
 # pyright: reportAny=false, reportExplicitAny=false
 
 from collections.abc import Generator
@@ -143,7 +144,9 @@ def build_tree(model: type[Any], tree: Tree, level: int = 0) -> None:
             continue
 
         for model_type in model_types:
-            sub_tree_label = create_label(model_type.__name__, COLORS[level + 1])
+            sub_tree_label = create_label(
+                model_type.__name__, COLORS[level + 1]
+            )
             sub_tree = child_tree.add(sub_tree_label)
             build_tree(model_type, sub_tree, level + 2)
 
@@ -161,6 +164,7 @@ Let's test this with a realistic nested schema containing unions, lists, and
 dictionaries:
 
 ```{python}
+#| label: tree-walker-example
 class InnerNode(BaseModel):
     name: str
     id_number: int

@@ -1,10 +1,10 @@
 ---
-name: generate-post-image
 description: >-
   Generate, optimize, and integrate blog post cover images (cover.jpg).
   Use this skill whenever the user asks to create, generate, or update a cover image
   or visual asset for a blog post, following technical sizing and placement rules and
   referencing the visual style guide.
+name: generate-post-image
 ---
 
 # Post Image Generator
@@ -14,8 +14,6 @@ and embedding blog post cover images (`cover.jpg`) on [bwrob.dev](https://bwrob.
 
 For all visual aesthetics, art direction, color schemes, and motif guidelines, consult
 the **[Style Guide](./references/style-guide.md)**.
-
----
 
 ## Technical Specifications & Rules
 
@@ -41,8 +39,6 @@ the **[Style Guide](./references/style-guide.md)**.
 > **Lifecycle Timing**: Invoke this skill at the final stage of post authoring—after
 > post content is complete, finalized, and undrafted. This replaces the initial
 > placeholder `cover.jpg` created by `create-post-stub`.
-
----
 
 ## Procedural Workflow
 
@@ -105,7 +101,8 @@ Resize and convert the generated image to an optimized 900×600 JPEG at
 **Using macOS `sips`**:
 
 ```bash
-sips -s format jpeg -z 600 900 -s formatOptions 85 "<artifact_image_path>" --out "posts/<post-slug>/cover.jpg"
+sips -s format jpeg -z 600 900 -s formatOptions 85 \
+  "<artifact_image_path>" --out "posts/<post-slug>/cover.jpg"
 ```
 
 **Using Python (Pillow)**:

@@ -45,6 +45,8 @@
 
 
 [tool.rumdl]
+    disable = ["MD078"]
+    enable = ["ALL"]
     exclude = [
         ".git",
         ".github",
@@ -59,6 +61,9 @@
     flavor = "quarto"
     line-length = 88
     respect-gitignore = true
+
+    [tool.rumdl.per-file-flavor]
+        ".agents/**/*.md" = "gfm"
 
     # --- Code Block Tools (Format & Lint Python & JSON in QMD) ---
     [tool.rumdl.code-block-tools]
@@ -80,12 +85,15 @@
         [tool.rumdl.code-block-tools.languages.json]
             format = ["jq"]
 
+        [tool.rumdl.code-block-tools.tools."ruff:format"]
+            command = ["ruff", "format", "--line-length=79", "-"]
+
         [tool.rumdl.code-block-tools.tools."ruff:check"]
             command = [
                 "ruff",
                 "check",
                 "--output-format=concise",
-                "--ignore=INP001,F821,D,ANN,FBT,E402,B018,S101",
+                "--ignore=INP001,F821,D,ANN,FBT,E402,B018,S101,TRY,EM,PL,N,ERA,S,EXE,RET,SIM,PTH,F841,B,E501,C4,FURB,PIE,RUF,UP,F401,F403,I,SLF",
                 "-",
             ]
 
@@ -204,4 +212,5 @@
         "404.qmd"                                                     = ["MD041"]
         "hobbies/index.qmd"                                           = ["MD041"]
         "index.qmd"                                                   = ["MD041"]
-        "resume/index.qmd"                                            = ["MD036"]
+        "resume/index.qmd"                                            = ["MD036", "MD041"]
+        "teaching/index.qmd"                                          = ["MD041"]

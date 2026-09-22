@@ -1,16 +1,16 @@
 ---
-title: "A Collection of Iterator Utilities"
-description: "Practical iterator utilities and recipes for Python."
+categories: [Python Recipes]
 date: "2025-05-02"
 date-modified: "2026-02-20"
-categories: [Python Recipes]
-image: cover.jpg
+description: "Practical iterator utilities and recipes for Python."
 format-links: [html]
-toc-depth: 2
+image: cover.jpg
+title: "A Collection of Iterator Utilities"
 toc: true
+toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Collection of iterator utilities](cover.jpg){width="98%" fig-align="center"}
 
 We're always looping through something in Python. Whether it's processing lines in a
 file or streaming data from an API, iterables are everywhere.
@@ -21,7 +21,7 @@ helper functions to handle those "I wish `itertools` had this" moments. Here are
 of my favorites, complete with some type-safe implementations you can drop into your own
 projects.
 
-## batched
+## Batched
 
 This one's a classic: you have a long list and you want to slice it up into chunks.
 Maybe you're feeding data into a neural network or just trying not to hit a rate limit
@@ -57,7 +57,7 @@ def batched[T](
         yield batch
 ```
 
-### Example
+### Example {#example-batched}
 
 ```{python}
 # | code-fold: true
@@ -66,7 +66,7 @@ def batched[T](
 print(f"batched(range(10), 3): {list(batched(range(10), 3))}")
 ```
 
-## unbox
+## Unbox
 
 Ever have a list that *should* only have one thing in it? Maybe it's a filtered database
 result or a unique ID. Instead of doing `results[0]` and hoping for the best, `unbox`
@@ -88,7 +88,7 @@ def unbox[T](iterable: Iterable[T]) -> T:
         return first_value
 ```
 
-### Example
+### Example {#example-unbox}
 
 ```{python}
 # | code-fold: true
@@ -103,7 +103,7 @@ except ValueError as e:
     print(f"unbox([1, 2]): {e}")
 ```
 
-## unzip
+## Unzip
 
 If you've ever used Python's `zip` function, you know it's a lifesaver for pairing up
 data. But what about the other way around? If you have a list of pairs and you want two
@@ -127,7 +127,7 @@ RAM. For massive datasets, process streams lazily or split them through explicit
 generator pipelines instead of unpacking arguments.
 :::
 
-### Example
+### Example {#example-unzip}
 
 ```{python}
 # | code-fold: true
@@ -139,7 +139,7 @@ unzipped_data = unzip(zipped_data)
 print(f"unzip({zipped_data}): {[list(it) for it in unzipped_data]}")
 ```
 
-## flatten_iterable
+## Flatten_iterable
 
 Nested lists are a headache. `flatten_iterable` lets you turn a messy, deeply nested
 structure into a single, clean list. It's smart enough to leave strings and bytes alone,
@@ -157,7 +157,9 @@ def flatten_iterable[T](iterable: NestedIterable[T]) -> list[T]:
 
     def _helper(lst: NestedIterable[T]) -> Generator[T]:
         for item in lst:
-            if isinstance(item, Iterable) and not isinstance(item, (str, bytes)):
+            if isinstance(item, Iterable) and not isinstance(
+                item, (str, bytes)
+            ):
                 yield from _helper(cast(NestedIterable[T], item))
             else:
                 yield cast(T, item)
@@ -165,7 +167,7 @@ def flatten_iterable[T](iterable: NestedIterable[T]) -> list[T]:
     return list(_helper(iterable))
 ```
 
-### Example
+### Example {#example-flatten-iterable}
 
 ```{python}
 # | code-fold: true
@@ -176,7 +178,7 @@ nested_list = [1, [2, "a", [3]], "b"]
 print(f"flatten_iterable({nested_list}): {flatten_iterable(nested_list)}")
 ```
 
-## flatten_string_key_dict
+## Flatten_string_key_dict
 
 Nested dictionaries are great for structure, but they can be a pain to access. This
 function flattens them into a single level, using dots to join the keys (like
@@ -204,7 +206,7 @@ def flatten_string_key_dict[T](dictionary: NestedDict[T]) -> dict[str, T]:
     return dict(_generate_items(dictionary))
 ```
 
-### Example
+### Example {#example-flatten-string-key-dict}
 
 ```{python}
 # | code-fold: true
@@ -219,7 +221,7 @@ print(
 
 ```
 
-## group_by_non_consecutive
+## Group_by_non_consecutive
 
 If you've ever used `itertools.groupby`, you know the catch: your data *must* be sorted
 first, or it won't work as expected. This helper function takes care of that for you by
@@ -259,7 +261,7 @@ def group_by_non_consecutive[T, SLT: _SupportsLessThan](
     return itertools.groupby(sorted_iterable, key=key)  # type: ignore[arg-type]
 ```
 
-### Example
+### Example {#example-group-by-non-consecutive}
 
 ```{python}
 # | code-fold: true

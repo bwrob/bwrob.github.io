@@ -1,11 +1,11 @@
 ---
-title: "Liczby dualne"
-
 about:
   template: marquee
 
 execute:
   freeze: true  # never re-render during project render
+title: "Liczby dualne"
+
 ---
 
 ## Zadanie
@@ -239,7 +239,7 @@ class DualNumber:
         return NotImplemented
 
     def __rpow__(self, other: float) -> DualNumber:
-        """Obsługuje przypadek, gdy liczba rzeczywista jest podnoszona do potęgi liczby dualnej."""
+        """Obsługuje potęgę liczby rzeczywistej do liczby dualnej."""
         if isinstance(other, int | float):
             real_part = other**self.real
             dual_part = real_part * math.log(other) * self.dual
@@ -265,14 +265,17 @@ class DualNumber:
         return int(self.real)
 
     def __float__(self) -> float:
-        """Konwertuje liczbę dualną na liczbę zmiennoprzecinkową (zwraca część rzeczywistą)."""
+        """Konwertuje liczbę dualną na float (zwraca część rzeczywistą)."""
         return float(self.real)
 
     @staticmethod
     def sqrt(z: DualNumber) -> DualNumber:
         """Oblicza pierwiastek kwadratowy z liczby dualnej."""
         if z.real < 0:
-            msg = "Pierwiastek kwadratowy z ujemnej części rzeczywistej nie jest zdefiniowany dla liczb dualnych w tej implementacji"
+            msg = (
+                "Pierwiastek kwadratowy z ujemnej części rzeczywistej "
+                "nie jest zdefiniowany dla liczb dualnych"
+            )
             raise ValueError(
                 msg,
             )

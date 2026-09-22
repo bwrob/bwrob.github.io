@@ -3,8 +3,6 @@
 Aesthetic and visual style guidelines for blog post graphics and cover art on
 [bwrob.dev](https://bwrob.dev).
 
----
-
 ## 1. Design Philosophy & Visual Identity
 
 - **Tech-Savvy & Modern**: Clean, thoughtful visual metaphors tailored to software
@@ -17,8 +15,6 @@ Aesthetic and visual style guidelines for blog post graphics and cover art on
 - **Purposeful Micro-Structure**: Populate panels and containers with stylized
   micro-details (such as syntax-colored code bars, prompt chips, metric grids, routing
   paths, or bus lines) rather than leaving shapes flat and vacant.
-
----
 
 ## 2. Anti-Patterns & Negative Constraints
 
@@ -34,8 +30,6 @@ Aesthetic and visual style guidelines for blog post graphics and cover art on
   `wordless, no text, no words, no title, no letters, no neon bloom, no lens flare,`
   `no cartoon characters`.
 
----
-
 ## 3. Technology Inspirations & Motifs
 
 When a post focuses on a specific library, framework, or technology, incorporate its
@@ -50,8 +44,6 @@ signature branding, logo geometry, or motif into the scene:
     blocks.
   - *Python*: Sleek, intersecting curved ribbons or dual-tone matte loops.
   - *DuckDB*: Subtle geometric polygonal duck emblem etched into a relational data grid.
-
----
 
 ## 4. Composition & Framing
 
@@ -69,8 +61,6 @@ Choose a composition style that best conveys the post's core technical subject:
   front-facing elevations with soft depth.
 - **Canvas Aspect Ratio**: 3:2 horizontal landscape orientation.
 
----
-
 ## 5. Color Palette & Lighting
 
 - **Background Contrast**: Use a smooth mid-dark slate/charcoal canvas (`#222738` to
@@ -85,9 +75,9 @@ Choose a composition style that best conveys the post's core technical subject:
   - Matte, satin, or fine-grain frosted textures.
   - Diffuse ambient lighting rather than harsh directional spotlights or neon halos.
 
----
-
 ## 6. Prompting Vocabulary & Examples
+
+Use the following vocabulary and prompt templates when drafting image prompts:
 
 ### Recommended Aesthetic Descriptors
 
@@ -103,17 +93,29 @@ Choose a composition style that best conveys the post's core technical subject:
 **Data Pipeline / Distributed System:**
 
 ```text
-Minimalist technical illustration of a high-throughput message pipeline, abstract modular dark panels connected by fine crisp cyan and periwinkle routing lines, slate charcoal background (#222738), subtle ambient depth, clean balanced composition, generous margins. Wordless, no text, no words, no title, no letters, no neon bloom, no cartoon characters.
+Minimalist technical illustration of a high-throughput message pipeline,
+abstract modular dark panels connected by fine crisp cyan and periwinkle
+routing lines, slate charcoal background (#222738), subtle ambient depth,
+clean balanced composition, generous margins. Wordless, no text, no
+words, no title, no letters, no neon bloom, no cartoon characters.
 ```
 
 **Developer Tool / Terminal Pane:**
 
 ```text
-Clean orthographic illustration of split terminal panes in dark slate (#1a1b26) with stylized syntax-colored micro-bars and prompt chips, hovering over a smooth charcoal canvas (#222738) with soft drop shadows, crisp hairline borders, emerald green accent highlights. Wordless, no text, no words, no title, no letters, no neon glow.
+Clean orthographic illustration of split terminal panes in dark slate
+(#1a1b26) with stylized syntax-colored micro-bars and prompt chips,
+hovering over a smooth charcoal canvas (#222738) with soft drop shadows,
+crisp hairline borders, emerald green accent highlights. Wordless, no
+text, no words, no title, no letters, no neon glow.
 ```
 
 **Technology Motif (e.g. Polars / Vector Processing):**
 
 ```text
-Sleek isometric technical illustration of columnar data blocks in deep slate and frosted glass, featuring a small faceted low-poly geometric polar bear sculpture in matte white and pale cyan, balanced composition, soft studio lighting on dark slate canvas. Wordless, no text, no words, no title, no cartoon characters.
+Sleek isometric technical illustration of columnar data blocks in deep
+slate and frosted glass, featuring a small faceted low-poly geometric
+polar bear sculpture in matte white and pale cyan, balanced composition,
+soft studio lighting on dark slate canvas. Wordless, no text, no words,
+no title, no cartoon characters.
 ```

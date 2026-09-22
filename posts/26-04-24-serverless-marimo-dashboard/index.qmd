@@ -1,17 +1,17 @@
 ---
-title: "Serverless Marimo Dashboard"
-description: "Building serverless interactive dashboards with Marimo."
-
+categories: [Python Recipes, Data Science]
 date: "2026-04-24"
 date-modified: "2026-04-27"
 
-categories: [Python Recipes, Data Science]
-image: cover.jpg
+description: "Building serverless interactive dashboards with Marimo."
+
 format-links: [html]
+image: cover.jpg
+title: "Serverless Marimo Dashboard"
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Serverless Marimo Dashboard cover](cover.jpg){width="98%" fig-align="center"}
 
 `marimo` is a modern Python notebook alternative that solves Jupyter's biggest pain
 point: hidden out-of-order state. Its reactive dataflow graph tracks dependencies
@@ -36,7 +36,9 @@ transformations:
 import marimo as mo
 
 # Cell 1: Interactive slider
-slider = mo.ui.slider(start=10, stop=100, step=5, value=25, label="Sample Size")
+slider = mo.ui.slider(
+    start=10, stop=100, step=5, value=25, label="Sample Size"
+)
 slider
 
 # Cell 2: Reactive downstream consumer
@@ -78,12 +80,12 @@ python -m http.server --directory assets/marimo-dashboard
    like you would with any other web application. The compute is done locally in the
    browser using pyodide, the user is paying for it with their CPU cycles.
 
-You can try the dashboard out
-[here](https://bwrob.github.io/assets/marimo-dashboard/index.html).
+You can test the
+[live Marimo WebAssembly dashboard](https://bwrob.github.io/assets/marimo-dashboard/index.html).
 
 ::: {.callout-note}
 
-Download the whole code
-[here](../../assets/python/serverless_marimo_dashboard_example.py).
+Download the full script from the
+[Serverless Marimo Dashboard example script](../../assets/python/serverless_marimo_dashboard_example.py).
 
 :::

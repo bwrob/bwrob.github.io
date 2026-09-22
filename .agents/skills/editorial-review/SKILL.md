@@ -1,9 +1,9 @@
 ---
-name: editorial-review
 description: >-
   Review and polish blog post drafts for tone, clarity, and pedagogical effectiveness.
   Ensures articles have a conversational, engaging, non-textbook voice, strictly flags
   and eradicates AI speech tropes, and enforces the Socratic method for teaching posts.
+name: editorial-review
 ---
 
 # Editorial Review
@@ -11,8 +11,6 @@ description: >-
 This skill guides the editorial audit of blog posts on [bwrob.dev](https://bwrob.dev).
 It ensures posts maintain the blog's distinctive voice: conversational, practical,
 sharp, authentic, and pedagogically sound.
-
----
 
 ## 1. Tone & Voice Principles
 
@@ -29,8 +27,6 @@ sharp, authentic, and pedagogically sound.
   errors).
 - **Concise & Punchy**: Keep paragraphs short (2–4 sentences). Use bullet points and
   code callouts to keep reading momentum brisk.
-
----
 
 ## 2. Eradicating AI Speech & Generated Text Idiosyncrasies
 
@@ -75,8 +71,6 @@ Flag and replace dead giveaways of generated text:
   discuss warts, trade-offs, awkward APIs, and breaking changes. If a tool has a steep
   learning curve or poor Windows support, say so directly.
 
----
-
 ## 3. The Socratic Method for Teaching Posts
 
 When explaining complex systems, optimization techniques, or new libraries, **do not
@@ -86,9 +80,13 @@ simply dump the solution**. Guide the reader through inquiry and active discover
 
 ```mermaid
 flowchart TD
-    A["1. The Provocation / Surprise<br/>(Show an unexpected behavior or real pain point)"] --> B["2. The Guiding Question<br/>(Why did that happen? What is the runtime doing?)"]
-    B --> C["3. The Experiment<br/>(Run a minimal test or inspect internals)"]
-    C --> D["4. The Aha! Moment & Pattern<br/>(Connect the observation to the clean architecture)"]
+    A["1. The Provocation / Surprise<br/>(Show unexpected behavior)"]
+    B["2. The Guiding Question<br/>(Why did that happen?)"]
+    C["3. The Experiment<br/>(Run a minimal test)"]
+    D["4. The Aha! Moment & Pattern<br/>(Connect to clean architecture)"]
+    A --> B
+    B --> C
+    C --> D
 ```
 
 1. **The Provocation / Surprise**: Start with a tangible puzzle or failure mode.
@@ -106,8 +104,6 @@ flowchart TD
    principle.
    *"Now the mystery is solved: slicing created a view, but the arithmetic forced a
    full copy. Here is how we avoid it."*
-
----
 
 ## 4. Editorial Review Checklist
 
@@ -149,8 +145,6 @@ dimensions:
 - [ ] If bilingual (`index-pl.qmd` exists), verify matching frontmatter,
       `.lang-switcher` pills, and synchronized technical content.
 - [ ] Document lines respect the 88-column limit (run `uv run rumdl fmt <file>`).
-
----
 
 ## 5. Subagent Delegation
 

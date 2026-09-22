@@ -1,43 +1,45 @@
 ---
-title: "Prettify Dev Terminal Setup"
-description: "Configuring a productive, stylish Linux terminal."
+categories: [Dev Env]
 date: "2024-08-18"
 date-modified: "2025-05-01"
-categories: [Dev Env]
-image: cover.jpg
+description: "Configuring a productive, stylish Linux terminal."
 format-links: [html]
+image: cover.jpg
+title: "Prettify Dev Terminal Setup"
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Linux Shell Setup cover](cover.jpg){width="98%" fig-align="center"}
 
-## Oh my posh
+## Oh My Posh
 
 Oh My Posh is a prompt theme engine for any shell, including Zsh. It allows you to
 customize your terminal prompt with themes and segments.
 
-```{bash}
+```bash
 brew install jandedobbeleer/oh-my-posh/oh-my-posh
 echo 'eval "$(oh-my-posh init zsh)"' >> ~/.zshrc
 echo 'OH_MY_POSH_THEME="kali"' >> ~/.zshrc
 ```
 
-## autosuggestions
+## Autosuggestions
 
 Zsh autosuggestions provide command suggestions based on your history and current input,
 enhancing your command line experience.
 
-```{bash}
+```bash
 brew install zsh-autosuggestions
 # To activate the autosuggestions, add the following at the end of your ~/.zshrc:
-echo "source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ~/.zshrc
+brew_prefix=$(brew --prefix)
+echo "source $brew_prefix/share/zsh-autosuggestions/zsh-autosuggestions.zsh" \
+  >> ~/.zshrc
 ```
 
 ## Aliases
 
 Create a file `~/.bash_aliases` and add your aliases there, or directly in `~/.zshrc`.
 
-```{bash}
+```bash
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -50,9 +52,11 @@ alias zshconfig='nano ~/.zshrc'
 alias ls='eza -la --group-directories-first --icons'
 ```
 
-## Minor packages
+## Minor Packages
 
-### fzf
+A collection of lightweight CLI enhancements to round out your daily terminal workflow:
+
+### Fzf
 
 Fuzzy finder for command line, useful for searching files, history, etc.
 
@@ -62,7 +66,7 @@ brew install fzf
 echo 'source <(fzf --zsh)' >> ~/.zshrc
 ```
 
-### eza
+### Eza
 
 Better alternative to `ls` with icons and better defaults.
 
@@ -71,7 +75,7 @@ brew install eza
 echo 'alias ls="eza -la --group-directories-first --icons"' >> ~/.zshrc
 ```
 
-### thefuck
+### Thefuck
 
 A tool to correct mistyped commands in the terminal.
 
@@ -80,7 +84,7 @@ brew install thefuck
 echo 'eval $(thefuck --alias)' >> ~/.zshrc
 ```
 
-### tmux
+### Tmux
 
 A terminal multiplexer that allows you to manage multiple terminal sessions from a
 single window.
@@ -90,7 +94,7 @@ brew install tmux
 echo 'alias tmux="tmux -2"' >> ~/.zshrc
 ```
 
-### fastfetch
+### Fastfetch
 
 A tool to display system information in the terminal, similar to neofetch but faster.
 

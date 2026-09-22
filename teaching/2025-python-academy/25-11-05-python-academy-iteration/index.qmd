@@ -1,17 +1,17 @@
 ---
-title: "Efficient Iteration"
-
+categories: [Python Academy]
 date: "2025-11-05"
 date-modified: "2026-02-20"
 description: "How to iterate efficiently in Python for quantitative finance."
 
-categories: [Python Academy]
-image: cover.jpg
 format-links: [html]
+image: cover.jpg
+title: "Efficient Iteration"
+
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Iteration and Generators cover](cover.jpg){width="98%" fig-align="center"}
 
 If you are parsing a 50 GB market data feed, what happens when you run
 `[parse_tick(line) for line in file]`? The Linux OOM killer terminates your process.
@@ -24,7 +24,7 @@ This post explores iterators and generators—the lazy computational model that 
 continuous streams on demand, keeps memory footprints constant, and prevents
 Out-of-Memory crashes.
 
-## Lists vs. Tuples: The Eager Iterables
+## Lists Vs. Tuples: the Eager Iterables
 
 Lists and tuples are eager sequences: Python allocates memory for every single element
 the moment the container is constructed. When you create a list of a million numbers,
@@ -56,7 +56,7 @@ Use tuples for data that should not change, like coordinates, configuration sett
 records from a database. If you need a collection that you will modify, a list is the
 way to go.
 
-## Iterators: The Lazy Approach
+## Iterators: the Lazy Approach
 
 An iterator is an object that represents a stream of data. It produces one item at a
 time, only when requested. The iterator protocol consists of two methods:
@@ -159,7 +159,8 @@ def profile_memory(func):
         current, peak = tracemalloc.get_traced_memory()
         print(f"Function: {func.__name__}")
         print(
-            f"Current memory usage is {current / 10**6:.6f}MB; Peak was {peak / 10**6:.6f}MB"
+            f"Current memory usage is {current / 10**6:.6f}MB; "
+            f"Peak was {peak / 10**6:.6f}MB"
         )
         tracemalloc.stop()
         return result
@@ -299,8 +300,8 @@ print(list(cumulative_pnl))
 ```
 
   It can also model more complex recurrence relations, like the amortization of a loan.
-  Let's calculate the outstanding balance of a fixed-payment annuity until it's paid
-  off.
+Let's calculate the outstanding balance of a fixed-payment annuity until it's paid
+off.
 
 ```{python}
 import itertools
@@ -327,7 +328,9 @@ balances = itertools.accumulate(
 
 # We can use takewhile to iterate until the loan is paid off (balance > 0)
 # The +1 is to see the final payment that brings the balance to <= 0
-amortization_schedule = itertools.takewhile(lambda balance: balance > 0, balances)
+amortization_schedule = itertools.takewhile(
+    lambda balance: balance > 0, balances
+)
 
 for i, balance in enumerate(amortization_schedule):
     print(f"Month          {i + 1}: {balance:,.2f}")

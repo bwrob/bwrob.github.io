@@ -1,20 +1,20 @@
 ---
-title: "Gra w Życie"
-
 about:
   template: marquee
 
 execute:
   freeze: true  # never re-render during project render
+title: "Gra w Życie"
+
 ---
 
-## Gra w Życie
+## Gra W Życie
 
 [Conway's Game of Life](https://www.wikiwand.com/en/articles/Conway's_Game_of_Life) to
 symulacja automatu komórkowego, w której stan każdej komórki w siatce ewoluuje w czasie
 na podstawie prostych reguł dotyczących jej sąsiadów.
 
-**Zasady Gry**
+### Zasady Gry
 
 Gra toczy się na dwuwymiarowej siatce komórek, z których każda może być w jednym z dwóch
 stanów:
@@ -44,7 +44,7 @@ szkielet kodu, który musisz wypełnić.
 - **Dodatkowe wyzwanie:** Dodaj kontrolę prędkości symulacji. Zaimplementuj możliwość
   przewijania generacji.
 
-### Przykładowe sterowanie
+### Przykładowe Sterowanie
 
 - `Spacja`: Wznawia/wstrzymuje symulację.
 - `R`: Resetuje siatkę do losowego układu.
@@ -52,7 +52,7 @@ szkielet kodu, który musisz wypełnić.
 - `Lewy Przycisk Myszy`: Kliknięcie komórki przełącza jej stan (żywa/martwa), ale tylko
   gdy symulacja jest wstrzymana.
 
-### Przydatne zasoby
+### Przydatne Zasoby
 
 - [`pygame.init()`](https://www.pygame.org/docs/ref/pygame.html#pygame.init)
 - [`pygame.display.set_mode()`](https://www.pygame.org/docs/ref/pygame.html#pygame.display.set_mode)
@@ -67,7 +67,7 @@ szkielet kodu, który musisz wypełnić.
 - [`pygame.mouse.get_pos()`](https://www.pygame.org/docs/ref/mouse.html#pygame.mouse.get_pos)
 - [`pygame.quit()`](https://www.pygame.org/docs/ref/pygame.html#pygame.quit)
 
-### Przygotowanie środowiska
+### Przygotowanie Środowiska
 
 Dla tego zadania będziesz potrzebować zainstalować Pygame i NumPy. Możesz to zrobić za
 pomocą poleceń:
@@ -79,7 +79,7 @@ conda config --append channels conda-forge
 conda install numpy pygame
 ```
 
-### Szkielet kodu
+### Szkielet Kodu
 
 ```{python}
 # | eval: false
@@ -130,7 +130,8 @@ def get_next_generation(grid: np.ndarray) -> np.ndarray:
             c_start = max(0, c - 1)
             c_end = min(GRID_WIDTH, c + 2)
             # Policz żywych sąsiadów
-            live_neighbors = np.sum(grid[r_start:r_end, c_start:c_end]) - grid[r, c]
+            window = grid[r_start:r_end, c_start:c_end]
+            live_neighbors = np.sum(window) - grid[r, c]
             # Zastosuj reguły Gry w Życie
             if grid[r, c]:  # Komórka żywa
                 if live_neighbors not in (2, 3):
@@ -168,5 +169,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
 ```

@@ -1,10 +1,10 @@
 ---
-name: create-post-stub
 description: >-
   Scaffold a new draft blog post stub with frontmatter, current date, draft status,
   basic paragraph structure, and a Tokyo Night placeholder cover image.
   Use this skill whenever the user asks to create, scaffold, or start a new blog post.
   Bespoke cover image generation is deferred until the post is finalized and undrafted.
+name: create-post-stub
 ---
 
 # Create Post Stub
@@ -13,15 +13,17 @@ This skill scaffolds a new blog post draft on [bwrob.dev](https://bwrob.dev) wit
 naming conventions, draft status, structured outline, and a 900×600 placeholder cover
 image.
 
----
-
 ## Post Lifecycle Overview
 
 ```mermaid
 flowchart LR
-    A["1. create-post-stub<br/>(draft: true + placeholder cover)"] --> B["2. Author & Refine<br/>(Write content & code)"]
-    B --> C["3. Finalize Post<br/>(Remove draft status)"]
-    C --> D["4. generate-post-image<br/>(Generate final bespoke cover.jpg)"]
+    A["1. create-post-stub<br/>(draft: true + placeholder cover)"]
+    B["2. Author & Refine<br/>(Write content & code)"]
+    C["3. Finalize Post<br/>(Remove draft status)"]
+    D["4. generate-post-image<br/>(Generate final bespoke cover.jpg)"]
+    A --> B
+    B --> C
+    C --> D
 ```
 
 > [!IMPORTANT]
@@ -29,9 +31,9 @@ flowchart LR
 > placeholder cover image. Custom AI image generation must be deferred until the post
 > content is complete and the post is undrafted.
 
----
-
 ## Blog Conventions & Taxonomy
+
+Adhere to the following conventions when structuring post directories and metadata:
 
 ### Folder & File Rules
 
@@ -55,9 +57,9 @@ Select one or more appropriate categories from the blog's standard taxonomy:
 | **`Pythonic Distractions`** | Recreational math, algorithmic puzzles, creative coding.                                   |
 | **`Career`**                | Engineering reflections, developer growth, industry observations.                          |
 
----
-
 ## Standardized Workflow
+
+Follow these steps to scaffold and initialize a new post stub:
 
 ### Primary Method: Automated Scaffolding Script
 
@@ -85,8 +87,6 @@ uv run python .agents/skills/create-post-stub/scripts/scaffold.py \
 - **Custom Date**: Override default today's date with `--date "YYYY-MM-DD"`.
 - **Custom Opening Hook**: Pass `--hook "Opening introductory sentence..."`.
 
----
-
 ### Fallback Method: Manual Step-by-Step
 
 If running the script is not viable, follow these manual steps:
@@ -111,7 +111,7 @@ cp .agents/skills/create-post-stub/resources/placeholder-cover.jpg "$POST_DIR/co
 Copy and substitute variables from
 `.agents/skills/create-post-stub/resources/post-template.qmd`:
 
-```yaml
+````yaml
 ---
 title: "Your Post Title"
 description: "A short, engaging description of the post topic."
@@ -143,7 +143,7 @@ or Python code:
 def main() -> None:
     """Demonstrate the core pattern."""
     pass
-```
+````
 
 Explain the code mechanics, key arguments, and non-obvious nuances.
 
@@ -153,7 +153,7 @@ Explain the code mechanics, key arguments, and non-obvious nuances.
 - Core summary point 2.
 - Relevant documentation or GitHub links.
 
-```text
+````text
 
 ---
 
@@ -164,15 +164,13 @@ After scaffolding, verify the stub:
 1. **Verify Placeholder Cover**:
    ```bash
    file posts/<YY-MM-DD>-<slug>/cover.jpg
-   ```
+   ````
 
    Confirm it exists and is a 900×600 JPEG.
 
 2. **Verify Frontmatter**: Check `posts/<YY-MM-DD>-<slug>/index.qmd` to ensure
    `draft: true`, `image: cover.jpg`, and the captionless
    `![](cover.jpg){width="98%" fig-align="center"}` embed are present.
-
----
 
 ## Finalization Handoff (When Ready to Publish)
 

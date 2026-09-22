@@ -1,16 +1,16 @@
 ---
-title: "Functions, Closures and Decorators"
-
-description: "How to treat your functions well."
+categories: [Python Academy]
 date: "2025-10-23"
 date-modified: "2026-02-20"
-categories: [Python Academy]
-image: cover.jpg
+description: "How to treat your functions well."
 format-links: [html]
+image: cover.jpg
+title: "Functions, Closures and Decorators"
+
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Functions, Closures, and Decorators cover](cover.jpg){width="98%" fig-align="center"}
 
 Functions in Python are full-fledged objects. You can assign them to variables, store
 them in data structures, pass them into callers, or return them from outer scopes.
@@ -99,7 +99,9 @@ def fibonacci_recursive_cached(n: int) -> int:
     if n in FIBONACCI_CACHE:
         return FIBONACCI_CACHE[n]
 
-    result = fibonacci_recursive_cached(n - 1) + fibonacci_recursive_cached(n - 2)
+    result = fibonacci_recursive_cached(n - 1) + fibonacci_recursive_cached(
+        n - 2
+    )
 
     FIBONACCI_CACHE[n] = result
     return result
@@ -128,7 +130,7 @@ fib_functions = [
 benchmark(fib_functions, 30)
 ```
 
-## Closures: The Scope Persistence Puzzle
+## Closures: the Scope Persistence Puzzle
 
 Here is a puzzle: when a Python function finishes executing, all its local variables
 and execution frames are popped off the call stack and garbage collected.
@@ -287,7 +289,7 @@ decorator to profile memory allocations of iterators and generators using `trace
 
 ::: callout-note
 
-Download the whole code
-[here](../../../assets/python/python_functions_closures_and_decorators_explained.py).
+Download the full script from
+[`python_functions_closures_and_decorators_explained.py`](../../../assets/python/python_functions_closures_and_decorators_explained.py).
 
 :::

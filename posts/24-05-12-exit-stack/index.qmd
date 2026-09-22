@@ -1,15 +1,15 @@
 ---
-title: "Exit stack to the rescue"
-description: "Elegant resource management using Python's ExitStack."
+categories: [Pythonic Distractions]
 date: "2024-05-12"
 date-modified: "2024-08-30"
-categories: [Pythonic Distractions]
-image: cover.jpg
+description: "Elegant resource management using Python's ExitStack."
 format-links: [html]
+image: cover.jpg
+title: "Exit stack to the rescue"
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![ExitStack Context Management cover](cover.jpg){width="98%" fig-align="center"}
 
 ## Working with Risk Management Systems
 
@@ -23,14 +23,15 @@ RMS platforms (e.g., Murex, Acadia).
 
 Working with vendor RMS platforms entails juggling multiple stateful resources: defining
 OTC products, benchmarks, portfolios, and running simulations across dozens of API
-calls. Each step requires rigorous setup and guaranteed cleanup.
+endpoints. When these calls fail mid-sequence, resources on the remote server risk being
+orphaned, leaking memory and exhausting licensing seats.
 
 Thankfully, Python provides context managers (`with` statements) to manage resource
 lifecycles reliably. Standard library's `contextlib` module offers `ExitStack`, a
 powerful tool designed specifically for dynamic, multi-resource contexts. Today we will
 explore `ExitStack` in a realistic quantitative RMS workflow.
 
-## Setting the stage
+## Setting the Stage
 
 To run an analysis, the RMS first needs to know what our positions are. In case of
 tradable assets it's simple --- we provide a market identifier and how much of the
@@ -47,7 +48,7 @@ Finally --- once portfolio and analysis are defined in RMS --- we call the API t
 the calculation and respond with results. This is the control flow we execute to get to
 this point:
 
-```{mermaid}
+```mermaid
 flowchart LR
   A[OTC Products] --> B[Portfolio]
   B --> C{Analysis Run}
@@ -59,7 +60,7 @@ flowchart LR
 If we know we're never going to use all of the resources, we should clean up the server
 artifacts after receving the results. So for each resource we should have a CM.
 
-### Mock functions
+### Mock Functions
 
 The setup described above comes from a real-life situation I worked through. I can't
 show you the actual API usage or data (or even the name of RMS itself), so we need to
@@ -96,7 +97,8 @@ def mock_preparation(object_type: MockObject, **kwargs) -> None:
     Args:
         object_type: Type of object.
     """
-    print(f"Preparing {object_type}" + (f" using {kwargs}" if kwargs else "."))  # <1>
+    details = f" using {kwargs}" if kwargs else "."
+    print(f"Preparing {object_type}{details}")  # <1>
 
 
 def mock_clean_up(object_uuid: str) -> None:
@@ -113,7 +115,7 @@ def mock_clean_up(object_uuid: str) -> None:
 For each of the four types of resources we mock the preparation, object (ex. API
 response, some id of definition on server) and the clean up process.
 
-### Context managers
+### Context Managers
 
 Easiest way to define a CM is through `contextlib.contextmanager` decorator. To use it,
 you need a function that returns a generator. Code executed on enter should come before
@@ -212,7 +214,7 @@ def portfolio(
 1. Clean up after the OTC products definition is complete.
 1. Clean up after the portfolio definition is complete.
 
-### Analysis results
+### Analysis Results
 
 No stress or complexity here, to run the analysis we need to specify which analysis to
 run on which portfolio.
@@ -240,7 +242,7 @@ def analysis_results(
 
 Finally, we can run some (mock) risk analysis!
 
-### Using contexts directly
+### Using Contexts Directly
 
 First, we use the managers directly through `with` clause, remembering the dependencies
 from our flow chart.
@@ -290,7 +292,7 @@ lifecycles without deep nesting. Conceptually it's a First-In-Last-Out (FILO) st
 You push context managers onto the stack dynamically; when the stack exits, it unwinds
 and closes them in reverse order.
 
-```{mermaid}
+```mermaid
 flowchart LR
     A(Enter CM A) ---> B(Enter CM B)
     B ---> C(Enter CM C)
@@ -344,7 +346,7 @@ run_analysis_with_exit_stack()
 
 It works as well! We also get a package of benefits for free.
 
-### Disabling the clean up
+### Disabling the Clean Up
 
 Working with APIs is tricky and debugging can be painful. If we notice something
 unexpected with the results we are receiving, it could be due to an issue at any stage.
@@ -393,7 +395,7 @@ print_title("Running analysis with exit stack and no clean up.")
 run_analysis_with_exit_stack(clean_up=False)
 ```
 
-### Multiple portfolios
+### Multiple Portfolios
 
 Benefit #2: what do we do if we have multiple managers and many portfolios to re-run
 for? Or—outside of the example scope—we want to hold multiple files open at the same
@@ -454,6 +456,6 @@ of our initial attempt. Python really has *'batteries included'*,
 [see](https://docs.python.org/3/library/index.html) for yourself!
 
 ::: callout-note
-Download the whole code
-[here](../../assets/python/dynamic_context_management_with_exitstack.py).
+Download the complete code from
+[`dynamic_context_management_with_exitstack.py`](../../assets/python/dynamic_context_management_with_exitstack.py).
 :::

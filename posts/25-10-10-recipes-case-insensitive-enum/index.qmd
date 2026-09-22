@@ -1,15 +1,15 @@
 ---
-title: "Case Insensitive Enum"
-description: "Implementing case-insensitive enums in Python."
+categories: [Python Recipes]
 date: "2025-10-10"
 date-modified: "2025-10-10"
-categories: [Python Recipes]
-image: cover.jpg
+description: "Implementing case-insensitive enums in Python."
 format-links: [html]
+image: cover.jpg
+title: "Case Insensitive Enum"
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Case Insensitive Enum cover](cover.jpg){width="98%" fig-align="center"}
 
 When working with enums in Python, you might want to create an enum that is
 case-insensitive. This can be particularly useful when you want to allow users to input
@@ -20,16 +20,11 @@ values without worrying about the case. Here's how you can achieve this by subcl
 ## Implementation
 
 ```{python}
+#| label: case-insensitive-enum-implementation
 from __future__ import annotations
 
-import sys
-
-if sys.version_info >= (3, 11):
-    from enum import StrEnum
-    from typing import Any, Self, override
-else:
-    from backports.strenum import StrEnum
-    from typing_extensions import Any, Self, override
+from enum import StrEnum
+from typing import Any, Self, override
 
 
 class CaseInsensitiveStrEnum(StrEnum):
@@ -90,6 +85,7 @@ class CaseInsensitiveStrEnum(StrEnum):
 Here is an example of how to use the `CaseInsensitiveStrEnum` class:
 
 ```{python}
+#| label: test-case-insensitive-enum
 from enum import auto
 
 
@@ -114,6 +110,6 @@ except TypeError as e:
 ```
 
 ::: callout-note
-Download the whole code
-[here](../../assets/python/case_insensitive_str_enum_implementation.py).
+Download the complete code from
+[case_insensitive_str_enum_implementation.py](../../assets/python/case_insensitive_str_enum_implementation.py).
 :::

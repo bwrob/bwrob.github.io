@@ -1,13 +1,13 @@
 ---
+format:
+  html:
+    page-layout: article
 title: "Listy Python"
 
 toc: true
 toc-depth: 3
 toc-expand: true
 
-format:
-  html:
-    page-layout: article
 ---
 
 ## Lista 1
@@ -33,7 +33,7 @@ pole = pi * 10**2
 ```
 
   Zmniejszamy ilość pisania przy wielokrotnym użyciu, a sam import jest wydajniejszy co
-  może mieć znaczenie przy bardziej zaawansowanych zadaniach.
+może mieć znaczenie przy bardziej zaawansowanych zadaniach.
 
 - Funkcje pierwiastka kwadratowego i podnoszenia do potęgi $1/2$ są oczywiście
   równoważne, natomiast polecana jest `math.sqrt`. Mniej ogólne algorytmy są zazwyczaj
@@ -103,7 +103,7 @@ Python lista 3 - listy i słowniki
 
 Komentarze dla zaawansowanych:
 
-**Zadanie 2**
+### Zadanie 2
 
 Kluczem do pisania szybkiego kodu w Pythonie jest jak najczęstsze korzystanie z
 wbudowanych funkcji, które wykonywane są bezpośrednio w języku niskopoziomowym.
@@ -137,7 +137,7 @@ print(L)
 1. `list` tworzy listę zawierająca elementy złożonego generatora, zmusza do
    materializacji wyników. Wszystko powyżej było tworzone leniwie.
 
-**Zadanie 5**
+### Zadanie 5
 
 Iterowanie się po wszystkich elementach zbioru często da się zastąpić za pomocą
 matematycznych operacji na zbiorach, które są dobrze zoptymalizowane.
@@ -168,7 +168,7 @@ print(set.union(*D.values()))
 print({key for key, value in D.items() if value.intersection(M)})
 ```
 
-**Zadanie 6**
+### Zadanie 6
 
 W Pythonie 3.8+ jest to możliwe za pomocą operatora `:=` (walrus operator). Pozwala na
 tworzenie zmiennych pomocniczych wewnątrz wyrażeń języka.
@@ -178,7 +178,8 @@ from math import sin, cos, radians
 
 n = 101
 punkty = {
-    (angle := i * 360 / n): (cos(radians(angle)), sin(radians(angle))) for i in range(n)
+    (angle := i * 360 / n): (cos(radians(angle)), sin(radians(angle)))
+    for i in range(n)
 }
 print(punkty)
 ```
@@ -223,8 +224,8 @@ print([fizz_buzz(i) for i in range(1, 16)])
 ```
 
   Jest to szczególnie istotne, jeżeli dodamy dodatkowo `Mizz` dla liczb podzielnych
-  przez 7 i `Duzz` dla liczb podzielnych przez 8. Funkcję można wtedy jeszcze bardziej
-  uprościć za pomocą słownika i listy składanej:
+przez 7 i `Duzz` dla liczb podzielnych przez 8. Funkcję można wtedy jeszcze bardziej
+uprościć za pomocą słownika i listy składanej:
 
 ```{python}
 def fizz_buzz(

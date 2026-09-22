@@ -1,9 +1,9 @@
 ---
-name: finalize-post
 description: >-
   Finalize a blog post draft for publication on bwrob.dev.
   Use this skill when a draft is fully written and ready to be polished, undrafted,
   quality-checked, paired with bespoke cover artwork, and verified for publishing.
+name: finalize-post
 ---
 
 # Finalize Post
@@ -12,21 +12,24 @@ This skill orchestrates the end-of-lifecycle process for publishing a blog post 
 [bwrob.dev](https://bwrob.dev), transitioning a draft into a polished, production-ready
 article.
 
----
-
 ## Finalization Checklist
 
 ```mermaid
 flowchart TD
-    A["1. Inspect Post Content<br/>(Ensure body is complete)"] --> B["2. Undraft & Update Date<br/>(draft: false, date-modified)"]
-    B --> C["3. Run Quality Checks<br/>(poe code-quality / rumdl fmt)"]
-    C --> D["4. Check / Generate Cover Art<br/>(Invoke generate-post-image)"]
-    D --> E["5. Verify Quarto Render<br/>(quarto render or preview)"]
+    A["1. Inspect Post Content<br/>(Ensure body is complete)"]
+    B["2. Undraft & Update Date<br/>(draft: false, date-modified)"]
+    C["3. Run Quality Checks<br/>(poe code-quality / rumdl fmt)"]
+    D["4. Check / Generate Cover Art<br/>(Invoke generate-post-image)"]
+    E["5. Verify Quarto Render<br/>(quarto render or preview)"]
+    A --> B
+    B --> C
+    C --> D
+    D --> E
 ```
 
----
-
 ## Workflow Steps
+
+Execute the following steps in sequence when preparing a draft for publication:
 
 ### 1. Inspect Post Content
 
@@ -93,8 +96,6 @@ uv run poe preview
 
 Visit `http://localhost:3333/` to inspect layout, figure alignment, and code block
 formatting.
-
----
 
 ## Publication Handoff
 

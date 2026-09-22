@@ -1,15 +1,15 @@
 ---
-title: "Linux Python Dev Env"
-description: "Modern Python development setup on Linux."
+categories: [Dev Env]
 date: "2024-08-11"
 date-modified: "2025-06-01"
-categories: [Dev Env]
-image: cover.jpg
+description: "Modern Python development setup on Linux."
 format-links: [html]
+image: cover.jpg
+title: "Linux Python Dev Env"
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Linux Python dev env](cover.jpg){width="98%" fig-align="center"}
 
 Installing Python development tools on Linux can easily pollute your system environment
 if done carelessly. This guide covers how to set up an isolated, reproducible Python
@@ -19,11 +19,11 @@ development workstation on Linux using `brew`, `pipx`, and modern project toolin
 
 First, install the target Python interpreters via Homebrew:
 
-```{bash}
+```bash
 brew install python@3.12 python@3.13
 ```
 
-## Global CLI Tools with pipx
+## Global CLI Tools with Pipx
 
 Development CLI utilities (such as linters, formatters, and task runners) should be
 accessible globally across all terminal sessions, but should never be installed into
@@ -32,7 +32,7 @@ your default system or global Python site-packages.
 The solution is `pipx`, which installs each CLI tool into its own isolated virtual
 environment while exposing its binary on your `$PATH`:
 
-```{bash}
+```bash
 brew install pipx
 pipx ensurepath
 pipx install argcomplete --force
@@ -40,34 +40,34 @@ pipx install argcomplete --force
 
 Add `pipx` shell completions to your `~/.zshrc`:
 
-```{bash}
+```bash
 autoload -U compinit && compinit
 eval "$(register-python-argcomplete pipx)"
 ```
 
-![](../../assets/images/posts/24-08-11-linux-python-dev-env/1.png){width="90%"
+![Pipx argcomplete setup in terminal](../../assets/images/posts/24-08-11-linux-python-dev-env/1.png){width="90%"
 fig-align="center"}
 
 ## Installing Core Developer Utilities
 
 Now install your everyday terminal development tools:
 
-```{bash}
+```bash
 pipx install --force ruff hapless poethepoet poetry pre-commit uv pytest basedpyright
 ```
 
-![](../../assets/images/posts/24-08-11-linux-python-dev-env/2.png){width="90%"
+![Installing core utilities with pipx](../../assets/images/posts/24-08-11-linux-python-dev-env/2.png){width="90%"
 fig-align="center"}
 
-### How pipx Manages Isolation
+### How Pipx Manages Isolation
 
 Inspect the generated launcher for any installed tool:
 
-```{bash}
+```bash
 nano $(which poetry)
 ```
 
-![](../../assets/images/posts/24-08-11-linux-python-dev-env/3.png){width="90%"
+![Inspecting pipx launcher shebang in nano](../../assets/images/posts/24-08-11-linux-python-dev-env/3.png){width="90%"
 fig-align="center"}
 
 Notice the shebang (`#!`) line points to an interpreter inside
@@ -76,11 +76,11 @@ execution environment before delegating to the underlying package.
 
 Each tool installed with `pipx` lives in a dedicated, hermetic virtual environment:
 
-```{bash}
+```bash
 ls ~/.local/share/pipx/venvs/ -la
 ```
 
-![](../../assets/images/posts/24-08-11-linux-python-dev-env/4.png){width="90%"
+![Directory listing of pipx virtual environments](../../assets/images/posts/24-08-11-linux-python-dev-env/4.png){width="90%"
 fig-align="center"}
 
 ## Initializing a Project Repository
@@ -88,7 +88,7 @@ fig-align="center"}
 Clone or navigate into your project repository, install the dependencies, and configure
 pre-commit hooks:
 
-```{bash}
+```bash
 # Install project dependencies
 poetry install
 

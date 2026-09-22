@@ -1,15 +1,15 @@
 ---
-title: "Polars in Finance Cheat Sheet"
-description: "Polars expressions and contexts applied to S&P 500 OHLCV data."
+categories: [Data Science]
 date: "2026-04-05"
 date-modified: "2026-04-05"
-categories: [Data Science]
-image: cover.jpg
+description: "Polars expressions and contexts applied to S&P 500 OHLCV data."
 format-links: [html]
+image: cover.jpg
+title: "Polars in Finance Cheat Sheet"
 toc-depth: 3
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Polars in finance cheat sheet](cover.jpg){width="98%" fig-align="center"}
 
 Polars expressions and contexts applied to S&P 500 OHLCV data. If you know Pandas, the
 patterns here should click fast.
@@ -34,12 +34,14 @@ df.head(5)
 1. Load ticker data from an Arrow file.
 1. Sort by ticker and date — required for shifts and rolling windows.
 
-## 2. Expressions: The Atomic Units of Logic
+## 2. Expressions: the Atomic Units of Logic
 
 Expressions are reusable, composable chunks of logic. Define once, apply anywhere.
 
 ```{python}
-log_return = (pl.col("close") / pl.col("close").shift(1)).log().over("ticker")  # <1>
+log_return = (
+    (pl.col("close") / pl.col("close").shift(1)).log().over("ticker")
+)  # <1>
 
 realized_vol = (log_return.rolling_std(window_size=21) * (252**0.5)).over(
     "ticker"
@@ -63,7 +65,8 @@ def min_max_scale(name: str) -> pl.Expr:
 df = df.with_columns(
     ret=log_return,  # <1>
     vol=realized_vol,
-    typical_price=(pl.col("high") + pl.col("low") + pl.col("close")) / 3,  # <2>
+    typical_price=(pl.col("high") + pl.col("low") + pl.col("close"))
+    / 3,  # <2>
 )
 
 df.tail(5)
@@ -78,8 +81,12 @@ df.tail(5)
 risk_summary = df.group_by("ticker").agg(
     annual_return=(pl.col("ret").mean() * 252),
     annual_vol=(pl.col("ret").std() * (252**0.5)),
-    max_drawdown=((pl.col("close") / pl.col("close").cum_max() - 1).min()),  # <1>
-    sharpe_ratio=(pl.col("ret").mean() / pl.col("ret").std()) * (252**0.5),  # <2>
+    max_drawdown=(
+        (pl.col("close") / pl.col("close").cum_max() - 1).min()
+    ),  # <1>
+    sharpe_ratio=(
+        (pl.col("ret").mean() / pl.col("ret").std()) * (252**0.5)
+    ),  # <2>
 )
 
 risk_summary.sort("sharpe_ratio", descending=True).head(5)
@@ -171,8 +178,6 @@ df = (
 1. Streaming execution — processes in batches instead of loading everything at once.
 
 ::: callout-note
-
-Download the companion script
-[here](../../assets/python/polars_expressions_and_data_transformations_cheat_sheet.py).
-
+Download the companion
+[Polars cheat sheet script](../../assets/python/polars_expressions_and_data_transformations_cheat_sheet.py).
 :::

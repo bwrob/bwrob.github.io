@@ -1,16 +1,16 @@
 ---
-title: "The Python Data Model"
-
+categories: [Python Academy]
 date: "2025-12-12"
 date-modified: "2026-02-20"
 description: "How to unlock the power of Python's special methods to build intuitive and consistent classes."
-categories: [Python Academy]
-image: cover.jpg
 format-links: [html]
+image: cover.jpg
+title: "The Python Data Model"
+
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![Python Data Model cover](cover.jpg){width="98%" fig-align="center"}
 
 ## Introduction
 
@@ -25,7 +25,7 @@ In this post, we're going to build a `Portfolio` class that feels like a native 
 the language. Instead of clunky custom methods, we'll use the patterns Python already
 knows and loves.
 
-## The Goal: A Pythonic Portfolio
+## The Goal: a Pythonic Portfolio
 
 We want a `Portfolio` class that stores a list of financial positions. But we don't want
 a clunky interface like `portfolio.get_position_by_ticker("AAPL")`. We want the
@@ -69,10 +69,16 @@ class Portfolio:
         self.name = name
         self.managers = managers
         # Store positions in a dictionary keyed by symbol for fast lookup
-        self._contents = {pos.symbol: pos for pos in contents} if contents else {}
+        self._contents = (
+            {pos.symbol: pos for pos in contents} if contents else {}
+        )
 
     def __repr__(self):
-        return f"Portfolio(name={self.name!r}, managers={self.managers!r}, contents={list(self._contents.values())!r})"
+        repr_contents = list(self._contents.values())
+        return (
+            f"Portfolio(name={self.name!r}, managers={self.managers!r}, "
+            f"contents={repr_contents!r})"
+        )
 
 
 # Create some data
@@ -101,7 +107,8 @@ To enable the `len()` function, we implement `__len__`.
 ### `__len__`
 
 ```{python}
-class Portfolio(Portfolio):  # Inheriting to add methods incrementally for this post
+# Inheriting to add methods incrementally for this post
+class Portfolio(Portfolio):
     def __len__(self):
         return len(self._contents)
 
@@ -238,7 +245,7 @@ print(f"Merged AAPL: {p3['AAPL']}")
 
 ```
 
-## String Representation: `__repr__` vs `__str__`
+## String Representation: `__repr__` Vs `__str__`
 
 Finally, we need to decide how our portfolio presents itself to the world.
 
@@ -253,7 +260,8 @@ summary.
 ```{python}
 class Portfolio(Portfolio):
     def __str__(self):
-        return f"Portfolio '{self.name}' with {len(self)} positions managed by {', '.join(self.managers)}"
+        managers = ", ".join(self.managers)
+        return f"Portfolio '{self.name}' ({len(self)} items, {managers})"
 
 
 p = Portfolio("Tech Fund", ("Alice", "Bob"), [pos1, pos2])
@@ -273,7 +281,7 @@ composition, and protocols to model financial yield curves.
 
 ::: callout-note
 
-Download the whole code
-[here](../../../assets/python/python_data_model_portfolio_implementation_example.py).
+Download the full script from
+[`python_data_model_portfolio_implementation_example.py`](../../../assets/python/python_data_model_portfolio_implementation_example.py).
 
 :::
