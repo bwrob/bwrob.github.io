@@ -423,7 +423,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Debugging Out-of-Memory Errors cover"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%" alt="Debugging Out-of-Memory Errors cover"></a></p>
+</figure>
+</div>
+<figcaption>Debugging Out-of-Memory Errors cover</figcaption>
 </figure>
 </div>
 <p>Your Python process crashes in production with an unceremonious <code>Killed</code>. No traceback, no log entry, no <code>MemoryError</code>.</p>
@@ -437,7 +442,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="setting-the-limit" class="level3">
 <h3 class="anchored" data-anchor-id="setting-the-limit">Setting the Limit</h3>
 <p>First, we define a utility function to set the virtual memory limit.</p>
-<div id="d24ef215" class="cell" data-execution_count="1">
+<div id="844a7a58" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-label="1"></a><span class="im">import</span> os</span>
@@ -463,7 +468,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="pure-python-allocation" class="level3">
 <h3 class="anchored" data-anchor-id="pure-python-allocation">Pure Python Allocation</h3>
 <p>Next, we define a function that allocates memory using Python bytes.</p>
-<div id="c0a3b2e9" class="cell" data-execution_count="2">
+<div id="8e6693b6" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-label="1"></a><span class="kw">def</span> leak_python() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
@@ -474,25 +479,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-label="6"></a></span>
 <span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-label="7"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
 <span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-label="8"></a>        <span class="cf">if</span> data <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-9" class="code-annotation-target"><a href="#annotated-cell-2-9" aria-label="9"></a>            <span class="kw">del</span> data  <span class="co"># Explicitly free memory before the next allocation</span></span>
-<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-label="10"></a></span>
-<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-label="11"></a>        <span class="bu">print</span>(<span class="ss">f"Attempting to allocate </span><span class="sc">{</span>current_size <span class="op">//</span> (<span class="dv">1024</span><span class="op">**</span><span class="dv">2</span>)<span class="sc">}</span><span class="ss"> MB bytes object..."</span>)</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-12" class="code-annotation-target"><a href="#annotated-cell-2-12" aria-label="12"></a>        data <span class="op">=</span> os.urandom(current_size)</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-13" class="code-annotation-target"><a href="#annotated-cell-2-13" aria-label="13"></a>        current_size <span class="op">=</span> <span class="bu">int</span>(current_size <span class="op">*</span> <span class="fl">1.5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-label="9"></a>            <span class="kw">del</span> (</span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-label="10"></a>                data</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-11" class="code-annotation-target"><a href="#annotated-cell-2-11" aria-label="11"></a>            )  <span class="co"># Explicitly free memory before the next allocation</span></span>
+<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12" aria-label="12"></a></span>
+<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13" aria-label="13"></a>        <span class="bu">print</span>(</span>
+<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14" aria-label="14"></a>            <span class="ss">f"Attempting to allocate </span><span class="sc">{</span>current_size <span class="op">//</span> (<span class="dv">1024</span><span class="op">**</span><span class="dv">2</span>)<span class="sc">}</span><span class="ss"> MB bytes object..."</span></span>
+<span id="annotated-cell-2-15"><a href="#annotated-cell-2-15" aria-label="15"></a>        )</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-16" class="code-annotation-target"><a href="#annotated-cell-2-16" aria-label="16"></a>        data <span class="op">=</span> os.urandom(current_size)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-17" class="code-annotation-target"><a href="#annotated-cell-2-17" aria-label="17"></a>        current_size <span class="op">=</span> <span class="bu">int</span>(current_size <span class="op">*</span> <span class="fl">1.5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="9" data-code-annotation="1">Freeing the previous allocation ensures the OOM is triggered by a single large allocation failing, rather than gradual accumulation.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="11" data-code-annotation="1">Freeing the previous allocation ensures the OOM is triggered by a single large allocation failing, rather than gradual accumulation.</span>
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="12" data-code-annotation="2"><code>os.urandom</code> generates uncompressible bytes, preventing OS memory compression from masking the size of the allocation.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="16" data-code-annotation="2"><code>os.urandom</code> generates uncompressible bytes, preventing OS memory compression from masking the size of the allocation.</span>
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="13" data-code-annotation="3">Grow by 50% each iteration.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="17" data-code-annotation="3">Grow by 50% each iteration.</span>
 </dd>
 </dl>
 </div>
@@ -501,7 +510,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="numpy-allocation" class="level3">
 <h3 class="anchored" data-anchor-id="numpy-allocation">NumPy Allocation</h3>
 <p>We also define a function that allocates memory via NumPy.</p>
-<div id="9791ba2d" class="cell" data-execution_count="3">
+<div id="5664d84a" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-label="1"></a><span class="kw">def</span> leak_numpy() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
@@ -538,7 +547,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="running-the-simulator" class="level3">
 <h3 class="anchored" data-anchor-id="running-the-simulator">Running the Simulator</h3>
 <p>The entry point sets the memory limit and runs one of the allocation functions.</p>
-<div id="c8fbca2f" class="cell" data-execution_count="4">
+<div id="975cda4a" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-label="1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
@@ -550,9 +559,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="annotated-cell-4-7"><a href="#annotated-cell-4-7" aria-label="7"></a>        <span class="cf">else</span>:</span>
 <span id="annotated-cell-4-8"><a href="#annotated-cell-4-8" aria-label="8"></a>            leak_numpy()</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-9" class="code-annotation-target"><a href="#annotated-cell-4-9" aria-label="9"></a>    <span class="cf">except</span> <span class="pp">MemoryError</span>:</span>
-<span id="annotated-cell-4-10"><a href="#annotated-cell-4-10" aria-label="10"></a>        <span class="bu">print</span>(</span>
-<span id="annotated-cell-4-11"><a href="#annotated-cell-4-11" aria-label="11"></a>            <span class="st">"</span><span class="ch">\n</span><span class="st">[!] MemoryError caught. Memray can now flush the capture file to disk."</span></span>
-<span id="annotated-cell-4-12"><a href="#annotated-cell-4-12" aria-label="12"></a>        )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-4-10"><a href="#annotated-cell-4-10" aria-label="10"></a>        msg <span class="op">=</span> (</span>
+<span id="annotated-cell-4-11"><a href="#annotated-cell-4-11" aria-label="11"></a>            <span class="st">"</span><span class="ch">\n</span><span class="st">[!] MemoryError caught. "</span></span>
+<span id="annotated-cell-4-12"><a href="#annotated-cell-4-12" aria-label="12"></a>            <span class="st">"Memray can now flush the capture file to disk."</span></span>
+<span id="annotated-cell-4-13"><a href="#annotated-cell-4-13" aria-label="13"></a>        )</span>
+<span id="annotated-cell-4-14"><a href="#annotated-cell-4-14" aria-label="14"></a>        <span class="bu">print</span>(msg)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -589,7 +600,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.png" class="lightbox" data-gallery="memray" data-glightbox="description: .lightbox-desc-2;title:Memray Flamegraph;" title="Memray Flamegraph"><img src="../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.png" class="img-fluid figure-img" alt="Memray Flamegraph"></a></p>
+<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.png" class="lightbox" data-glightbox="description: .lightbox-desc-2;title:Memray Flamegraph;" data-gallery="memray" title="Memray Flamegraph"><img src="../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.png" class="img-fluid figure-img" alt="Memray Flamegraph"></a></p>
 <figcaption>Memray Flamegraph</figcaption>
 </figure>
 </div>
@@ -601,7 +612,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This shows real-time memory spikes, top allocating files, and a running plot of heap usage. It is useful for monitoring background services over SSH.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-live.png" class="lightbox" data-gallery="memray" data-glightbox="description: .lightbox-desc-3;title:Memray Live TUI;" title="Memray Live TUI"><img src="../../assets/images/posts/26-07-02-oom-python/memray-live.png" class="img-fluid figure-img" alt="Memray Live TUI"></a></p>
+<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-live.png" class="lightbox" data-glightbox="description: .lightbox-desc-3;title:Memray Live TUI;" data-gallery="memray" title="Memray Live TUI"><img src="../../assets/images/posts/26-07-02-oom-python/memray-live.png" class="img-fluid figure-img" alt="Memray Live TUI"></a></p>
 <figcaption>Memray Live TUI</figcaption>
 </figure>
 </div>
@@ -618,7 +629,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-stats.png" class="lightbox" data-gallery="memray" data-glightbox="description: .lightbox-desc-4;title:Memray Stats;" title="Memray Stats"><img src="../../assets/images/posts/26-07-02-oom-python/memray-stats.png" class="img-fluid figure-img" alt="Memray Stats"></a></p>
+<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-stats.png" class="lightbox" data-glightbox="description: .lightbox-desc-4;title:Memray Stats;" data-gallery="memray" title="Memray Stats"><img src="../../assets/images/posts/26-07-02-oom-python/memray-stats.png" class="img-fluid figure-img" alt="Memray Stats"></a></p>
 <figcaption>Memray Stats</figcaption>
 </figure>
 </div>
@@ -630,7 +641,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This visualizes the call relationships of functions that consumed memory. It helps trace a memory leak straight to the source.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-tree.png" class="lightbox" data-gallery="memray" data-glightbox="description: .lightbox-desc-5;title:Memray Tree;" title="Memray Tree"><img src="../../assets/images/posts/26-07-02-oom-python/memray-tree.png" class="img-fluid figure-img" alt="Memray Tree"></a></p>
+<p><a href="../../assets/images/posts/26-07-02-oom-python/memray-tree.png" class="lightbox" data-glightbox="description: .lightbox-desc-5;title:Memray Tree;" data-gallery="memray" title="Memray Tree"><img src="../../assets/images/posts/26-07-02-oom-python/memray-tree.png" class="img-fluid figure-img" alt="Memray Tree"></a></p>
 <figcaption>Memray Tree</figcaption>
 </figure>
 </div>
@@ -644,7 +655,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Download the companion script <a href="../../assets/python/oom_simulator.py">here</a>.</p>
+<p>Download the companion script from <a href="../../assets/python/oom_simulator.py">oom_simulator.py</a>.</p>
 </div>
 </div>
 

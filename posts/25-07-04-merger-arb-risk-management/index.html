@@ -421,7 +421,12 @@ window.Quarto = {
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Merger Arbitrage Risk Management cover"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%" alt="Merger Arbitrage Risk Management cover"></a></p>
+</figure>
+</div>
+<figcaption>Merger Arbitrage Risk Management cover</figcaption>
 </figure>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -532,7 +537,7 @@ Note
 <p>The arbitrageur needs to consider all of these factors and assign a probability of closing to each deal. They may also use historical data regarding the proceedings of similar deals and statistical models to help estimate the probability of a merger closing. Another source of information could be overall market sentiment, which can be gauged from the media coverage of the deal and market pricing, for example, option prices.</p>
 </section>
 <section id="estimating-severity-of-loss" class="level3">
-<h3 class="anchored" data-anchor-id="estimating-severity-of-loss">Estimating severity of loss</h3>
+<h3 class="anchored" data-anchor-id="estimating-severity-of-loss">Estimating Severity of Loss</h3>
 <p>The severity of loss from a merger arbitrage position is the loss that the arbitrageur incurs if the merger fails to close. Severity is analogous to the loss given default (LGD) in credit risk management. The equation for calculating the severity is deceptively simple:</p>
 <p><span class="math display">\[L =P\_{\\mathrm{p}} - P\_{\\mathrm{s}}\]</span></p>
 <p>where <span class="math inline">\(P\_{\\mathrm{p}}\)</span> is the arbitrageur’s purchase price, and <span class="math inline">\(P\_{\\mathrm{s}}\)</span> is the estimated price of the stock at the time of the merger failure. The hard part is estimating <span class="math inline">\(P\_{\\mathrm{s}}\)</span>, which might involve even more guesswork than estimating the probability of closing. The purchase price for the arbitrageur has already included the merger premium, but there might have already been some rumors about the possible merger before the announcement, and the stock price might have already reflected some of the merger premium. Or the merger proceedings might unearth some negative information about the target company that was not public previously and affect the outlook on the target. The arbitrageur needs to be conservative and apply punitive estimates of <span class="math inline">\(P\_{\\mathrm{s}}\)</span> to avoid underestimating the severity of loss.</p>
@@ -574,12 +579,12 @@ R\_{\\mathrm{Risk Arb}} - R_f &amp;= (1 - \\delta)[\\alpha\_{\\mathrm{Mkt Low}} 
 <h2 class="anchored" data-anchor-id="option-pricing">Option Pricing</h2>
 <p>Merger arbitrage is comparatively a low-volatility strategy, being a market-neutral investment. To amplify the returns, arbitrageurs often employ leverage. Two main vectors of leverage are available: borrowing cash (through margin or loans) to increase the size of the position, or using derivatives to increase the exposure to the underlying stock.</p>
 <section id="options-on-ma-targets" class="level3">
-<h3 class="anchored" data-anchor-id="options-on-ma-targets">Options on M&amp;A Targets</h3>
+<h3 class="anchored" data-anchor-id="options-on-ma-targets">Options on M&amp;a Targets</h3>
 <p>Often, purchasing derivatives is the more efficient way to achieve the desired exposure. Derivative instruments are priced based on risk-free interest rates; hence, the associated costs can be lower than borrowing cash. They also allow for more precise engineering of the exposure, as they can be sold or bought depending on the turning market conditions. Purchasing calls on the target stock can be a cost-effective way of obtaining leverage. The option premia are typically low after the announcement of a merger, as the volatility of the stock price drops.</p>
 <p>There are other ways that options on M&amp;A targets can be utilized. One is to purchase puts to limit the downside risk of a merger failure. This incurs a premium cost, as mostly the options would expire worthless, but it can allow for a more aggressive overall position size. Finally, option prices can convey information about the market’s expectations regarding the merger outcome. Just as in the general case, option quotes can be used to infer the market’s expectations of the future volatility of the underlying stock; for M&amp;A targets, this can be used to gauge the market’s expectations of the merger outcome. All three of the aforementioned uses require a proper pricing model for the options.</p>
 </section>
 <section id="option-pricing-on-stocks-involved-in-ma" class="level3">
-<h3 class="anchored" data-anchor-id="option-pricing-on-stocks-involved-in-ma">Option Pricing on Stocks Involved in M&amp;A</h3>
+<h3 class="anchored" data-anchor-id="option-pricing-on-stocks-involved-in-ma">Option Pricing on Stocks Involved in M&amp;a</h3>
 <p>As signaled, the standard Black-Scholes model is not suitable for valuation in the context of stocks under a merger process. More complex mathematical models are needed to account for their unique characteristics. This complexity arises from the fact that, unlike typical stocks, the stock price in an M&amp;A scenario does not follow a continuous process. Instead, it is characterized by discrete price movements, or “jumps.” For a stock undergoing a merger, the price would undergo a sudden, instantaneous drop if the merger were to fall through.</p>
 <p>Ajay Subramanian made an early attempt to model this, proposing a framework for pricing options on stocks under M&amp;A. His work models option prices of two stocks undergoing a merger, one of which is the target and the other is the acquirer. The pricing model is based on the assumption that the stock price dynamics are governed by the following stochastic differential equations (SDEs):</p>
 <p><span class="math display">\[\\begin{aligned}
@@ -626,6 +631,7 @@ P_1(0, T_0, K) &amp;= e^{-\\lambda T_0} \\left{ S_1(0) e^{-d_1 T_0} \\frac{e^{i 
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
+<p>Selected academic and industry literature informing this thesis:</p>
 <section id="books" class="level3">
 <h3 class="anchored" data-anchor-id="books">Books</h3>
 <ul>

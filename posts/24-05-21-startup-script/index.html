@@ -407,10 +407,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#why-a-startup-script" id="toc-why-a-startup-script" class="nav-link active" data-scroll-target="#why-a-startup-script">Why a startup script?</a></li>
-  <li><a href="#the-startup-script" id="toc-the-startup-script" class="nav-link" data-scroll-target="#the-startup-script">The startup script</a></li>
-  <li><a href="#the-last-bit-of-convenience" id="toc-the-last-bit-of-convenience" class="nav-link" data-scroll-target="#the-last-bit-of-convenience">The last bit of convenience</a></li>
-  <li><a href="#further-extensions" id="toc-further-extensions" class="nav-link" data-scroll-target="#further-extensions">Further extensions</a></li>
+  <li><a href="#why-a-startup-script" id="toc-why-a-startup-script" class="nav-link active" data-scroll-target="#why-a-startup-script">Why a Startup Script?</a></li>
+  <li><a href="#the-startup-script" id="toc-the-startup-script" class="nav-link" data-scroll-target="#the-startup-script">The Startup Script</a></li>
+  <li><a href="#the-last-bit-of-convenience" id="toc-the-last-bit-of-convenience" class="nav-link" data-scroll-target="#the-last-bit-of-convenience">The Last Bit of Convenience</a></li>
+  <li><a href="#further-extensions" id="toc-further-extensions" class="nav-link" data-scroll-target="#further-extensions">Further Extensions</a></li>
   </ul>
 </nav>
     </div>
@@ -424,11 +424,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Windows Startup Automation Script cover"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%" alt="Windows Startup Automation Script cover"></a></p>
+</figure>
+</div>
+<figcaption>Windows Startup Automation Script cover</figcaption>
 </figure>
 </div>
 <section id="why-a-startup-script" class="level2">
-<h2 class="anchored" data-anchor-id="why-a-startup-script">Why a startup script?</h2>
+<h2 class="anchored" data-anchor-id="why-a-startup-script">Why a Startup Script?</h2>
 <p>Confession time. Pre-COVID I worked for a Swiss bank — it was the whole corporate package. Working from a crowded office, open space, dedicated desks, dedicated desktop PCs, hundreds of people. And we never turned the PCs off, some of them were running constantly for months. Not very eco-friendly behaviour, either from the company side or from the employees. But there were legit reasons for this and the company had much <a href="https://www.wikiwand.com/en/Credit_Suisse#Controversies">bigger sins</a> on their books.</p>
 <p>As for the reasons for constantly turned on machines — the proprietary frameworks and tooling we used were awfully heavy and slow. If you were occasionally forced to kill all the processes — due to an update or system crash — getting them all up again took an hour or more. Developer tools, pricing systems, connections to Monte Carlo farms, downloading trade data, analysis definitions — you name it, we used it.</p>
 <p>One tidbit to get this point across — in 2019 we still used 32-bit Win7, which had a cap on single-process memory consumption to 4GB. We had a universally used hack to extend this to 8GB for Excel, since the default wasn’t enough for many of our pricing sheets.</p>
@@ -437,16 +442,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>To spice things up, we will overengineer the hell out of it and use generic typing, generators and decorators :D.</p>
 </section>
 <section id="the-startup-script" class="level2">
-<h2 class="anchored" data-anchor-id="the-startup-script">The startup script</h2>
+<h2 class="anchored" data-anchor-id="the-startup-script">The Startup Script</h2>
+<p>We organize the startup automation script into two distinct layers:</p>
 <section id="public-interface" class="level3">
-<h3 class="anchored" data-anchor-id="public-interface">Public interface</h3>
+<h3 class="anchored" data-anchor-id="public-interface">Public Interface</h3>
 <p>Let’s first think about the design and what we want to achieve. Imagine the code being split into two parts:</p>
 <ul>
 <li>the hidden logic layer, <strong>the worker</strong> that does stuff and</li>
 <li>the public interface that integrates with the rest of the codebase or is called at the top level, <strong>the manager</strong>.</li>
 </ul>
 <p>We can start by creating the public interface, see what we want to achieve and later deal with filling in a working implementation. You can either define the logic functions as mocks, or just live with linting issues. This is what my desired usage is:</p>
-<div id="8fcbf0fb" class="cell" data-execution_count="1">
+<div id="664bd3ab" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">def</span> run_startup_script() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
@@ -466,11 +472,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We specify programs to be launched, open all files in a chosen temp folder and run a list of shell commands. After each step there should be some delay to avoid spamming system with process calls. Certain steps might be more time consuming, like cloud services authorization. Those need longer delay. On the other hand, specifying delay for each task would be cumbersome, most cases would be fine with some default value. We end up with a design that our soon-to-be workers <code>start_programs</code>, <code>start_work_files</code>, and <code>run_commands</code> expect lists of either <code>task</code> or <code>(task, delay_seconds)</code>. We can now start the implementation by figuring out how the delay time should be defaulted if not specified.</p>
 </section>
 <section id="decorator-defaulting-the-time-delays" class="level3">
-<h3 class="anchored" data-anchor-id="decorator-defaulting-the-time-delays">Decorator defaulting the time delays</h3>
+<h3 class="anchored" data-anchor-id="decorator-defaulting-the-time-delays">Decorator Defaulting the Time Delays</h3>
 <p>Now we can start the implementation. We want the workers to be called with a list of tasks, but a task can be either a command or a tuple including the delay. Let’s not include some complicated conditionals in each of the workers — that would be annoying and potentially get out of sync at some point.</p>
 <p>Other way to do this is to add a default delay to all non-tuple items. We can implement that as a separate defaulting function, which we would call in each worker. But — being more clever! — we could also use a decorator that changes the workers’s signature.</p>
 <p>First, for convenience, let’s define a template type annotation.</p>
-<div id="f8c5e0c0" class="cell" data-execution_count="2">
+<div id="81ebe3be" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-label="1"></a><span class="im">from</span> functools <span class="im">import</span> wraps</span>
@@ -541,9 +547,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 <section id="main-workers" class="level3">
-<h3 class="anchored" data-anchor-id="main-workers">Main workers</h3>
+<h3 class="anchored" data-anchor-id="main-workers">Main Workers</h3>
 <p>With the preparation done, we can start with the workers. For the programs we will be launching, we need to look up the exact paths of the executables. Let’s define a <code>Program</code> enum that would wrap those up in readable nice names. For working with system paths we will use <code>pathlib.Path</code> that provides high-level interface.</p>
-<div id="750d8888" class="cell" data-execution_count="3">
+<div id="cea59f2b" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="im">from</span> enum <span class="im">import</span> Enum</span>
@@ -553,13 +559,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-5"><a href="#cb2-5" aria-label="5"></a><span class="kw">class</span> Program(Enum):</span>
 <span id="cb2-6"><a href="#cb2-6" aria-label="6"></a>    <span class="co">"""Types of programs."""</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-label="7"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a>    POWERSHELL <span class="op">=</span> Path(<span class="vs">r"C:</span><span class="dv">\w</span><span class="vs">indows</span><span class="dv">\s</span><span class="vs">ystem32</span><span class="dv">\w</span><span class="vs">indowspowershell</span><span class="ch">\v</span><span class="vs">1</span><span class="dv">.</span><span class="vs">0</span><span class="er">\</span><span class="vs">powershell</span><span class="dv">.</span><span class="vs">exe"</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-label="9"></a>    NOTEPAD <span class="op">=</span> Path(<span class="vs">r"C:</span><span class="er">\</span><span class="vs">Program Files</span><span class="er">\</span><span class="vs">Notepad</span><span class="op">++</span><span class="ch">\n</span><span class="vs">otepad</span><span class="op">++</span><span class="dv">.</span><span class="vs">exe"</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-label="10"></a>    FIREFOX <span class="op">=</span> Path(<span class="vs">r"C:</span><span class="er">\</span><span class="vs">ProgramData</span><span class="dv">\M</span><span class="vs">icrosoft</span><span class="dv">\W</span><span class="vs">indows</span><span class="dv">\S</span><span class="vs">tart Menu</span><span class="er">\</span><span class="vs">Programs</span><span class="er">\</span><span class="vs">Firefox</span><span class="dv">.</span><span class="vs">lnk"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a>    POWERSHELL <span class="op">=</span> Path(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-label="9"></a>        <span class="vs">r"C:</span><span class="dv">\w</span><span class="vs">indows</span><span class="dv">\s</span><span class="vs">ystem32</span><span class="dv">\w</span><span class="vs">indowspowershell</span><span class="ch">\v</span><span class="vs">1</span><span class="dv">.</span><span class="vs">0</span><span class="er">\</span><span class="vs">powershell</span><span class="dv">.</span><span class="vs">exe"</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-label="10"></a>    )</span>
+<span id="cb2-11"><a href="#cb2-11" aria-label="11"></a>    NOTEPAD <span class="op">=</span> Path(<span class="vs">r"C:</span><span class="er">\</span><span class="vs">Program Files</span><span class="er">\</span><span class="vs">Notepad</span><span class="op">++</span><span class="ch">\n</span><span class="vs">otepad</span><span class="op">++</span><span class="dv">.</span><span class="vs">exe"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-label="12"></a>    FIREFOX <span class="op">=</span> Path(</span>
+<span id="cb2-13"><a href="#cb2-13" aria-label="13"></a>        <span class="vs">r"C:</span><span class="er">\</span><span class="vs">ProgramData</span><span class="dv">\M</span><span class="vs">icrosoft</span><span class="dv">\W</span><span class="vs">indows</span><span class="dv">\S</span><span class="vs">tart Menu</span><span class="er">\</span><span class="vs">Programs</span><span class="er">\</span><span class="vs">Firefox</span><span class="dv">.</span><span class="vs">lnk"</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-label="14"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Other than that, the main workers <code>start_programs</code>, <code>start_work_files</code>, and <code>run_commands</code> are simple. They just iterate over the provided <code>TaskList</code> and do the respective action for a given <code>Task</code>.</p>
-<div id="f78a617e" class="cell" data-execution_count="4">
+<div id="aa8401bb" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="at">@with_optional_delay</span></span>
@@ -619,7 +629,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 <section id="list-all-files-in-list-of-directories" class="level3">
-<h3 class="anchored" data-anchor-id="list-all-files-in-list-of-directories">List all files in list of directories</h3>
+<h3 class="anchored" data-anchor-id="list-all-files-in-list-of-directories">List All Files in List of Directories</h3>
 <p>Notice the use of <code>path_files</code> generator above. When working with complex iterations, it’s a good practice to create a generator that wraps the iteration details. It is beneficial for readability and maintainability, especially in cases where you need to:</p>
 <ul>
 <li>yield multiple values at once (ex. <em>yield path, delay for path in directory</em>),</li>
@@ -627,7 +637,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>filter the iteration (ex. <em>for path in directory if filter(path)</em>).</li>
 </ul>
 <p>Here we’ll have all three of them combined!</p>
-<div id="80b69cf7" class="cell" data-execution_count="5">
+<div id="37072573" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a>NAME_EXCLUDES <span class="op">=</span> (<span class="st">"$"</span>, <span class="st">"tmp"</span>)</span>
@@ -644,29 +654,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-12"><a href="#cb4-12" aria-label="12"></a><span class="co">        path: Path to filter.</span></span>
 <span id="cb4-13"><a href="#cb4-13" aria-label="13"></a></span>
 <span id="cb4-14"><a href="#cb4-14" aria-label="14"></a><span class="co">    """</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-label="15"></a>    <span class="cf">return</span> (path.stem <span class="kw">not</span> <span class="kw">in</span> NAME_EXCLUDES) <span class="kw">and</span> (path.suffix <span class="kw">not</span> <span class="kw">in</span> EXT_EXCLUDES)</span>
-<span id="cb4-16"><a href="#cb4-16" aria-label="16"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-label="17"></a></span>
-<span id="cb4-18"><a href="#cb4-18" aria-label="18"></a><span class="kw">def</span> path_files(</span>
-<span id="cb4-19"><a href="#cb4-19" aria-label="19"></a>    directory_tasks: TaskList[Path],</span>
-<span id="cb4-20"><a href="#cb4-20" aria-label="20"></a>) <span class="op">-&gt;</span> Generator[<span class="bu">tuple</span>[Path, <span class="bu">int</span>], <span class="va">None</span>, <span class="va">None</span>]:</span>
-<span id="cb4-21"><a href="#cb4-21" aria-label="21"></a>    <span class="co">"""Generate all files in the work folder that are not excluded.</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-label="22"></a></span>
-<span id="cb4-23"><a href="#cb4-23" aria-label="23"></a><span class="co">    Yields the folder path at beginning of the generator.</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-label="15"></a>    <span class="cf">return</span> (path.stem <span class="kw">not</span> <span class="kw">in</span> NAME_EXCLUDES) <span class="kw">and</span> (</span>
+<span id="cb4-16"><a href="#cb4-16" aria-label="16"></a>        path.suffix <span class="kw">not</span> <span class="kw">in</span> EXT_EXCLUDES</span>
+<span id="cb4-17"><a href="#cb4-17" aria-label="17"></a>    )</span>
+<span id="cb4-18"><a href="#cb4-18" aria-label="18"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-label="19"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-label="20"></a><span class="kw">def</span> path_files(</span>
+<span id="cb4-21"><a href="#cb4-21" aria-label="21"></a>    directory_tasks: TaskList[Path],</span>
+<span id="cb4-22"><a href="#cb4-22" aria-label="22"></a>) <span class="op">-&gt;</span> Generator[<span class="bu">tuple</span>[Path, <span class="bu">int</span>], <span class="va">None</span>, <span class="va">None</span>]:</span>
+<span id="cb4-23"><a href="#cb4-23" aria-label="23"></a>    <span class="co">"""Generate all files in the work folder that are not excluded.</span></span>
 <span id="cb4-24"><a href="#cb4-24" aria-label="24"></a></span>
-<span id="cb4-25"><a href="#cb4-25" aria-label="25"></a><span class="co">    Args:</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-label="26"></a><span class="co">    ----</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-label="27"></a><span class="co">        directory_tasks: List of tasks with paths to work folders.</span></span>
-<span id="cb4-28"><a href="#cb4-28" aria-label="28"></a></span>
-<span id="cb4-29"><a href="#cb4-29" aria-label="29"></a><span class="co">    """</span></span>
-<span id="cb4-30"><a href="#cb4-30" aria-label="30"></a>    <span class="cf">for</span> folder, delay <span class="kw">in</span> directory_tasks:</span>
-<span id="cb4-31"><a href="#cb4-31" aria-label="31"></a>        <span class="cf">yield</span> folder, delay</span>
-<span id="cb4-32"><a href="#cb4-32" aria-label="32"></a></span>
-<span id="cb4-33"><a href="#cb4-33" aria-label="33"></a>        all_files <span class="op">=</span> folder.glob(FILES_IN_TREE_PATTERN)</span>
-<span id="cb4-34"><a href="#cb4-34" aria-label="34"></a>        filtered <span class="op">=</span> <span class="bu">filter</span>(filter_excluded, all_files)</span>
-<span id="cb4-35"><a href="#cb4-35" aria-label="35"></a></span>
-<span id="cb4-36"><a href="#cb4-36" aria-label="36"></a>        <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> filtered:</span>
-<span id="cb4-37"><a href="#cb4-37" aria-label="37"></a>            <span class="cf">yield</span> <span class="bu">file</span>, delay</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-25"><a href="#cb4-25" aria-label="25"></a><span class="co">    Yields the folder path at beginning of the generator.</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-label="26"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-label="27"></a><span class="co">    Args:</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-label="28"></a><span class="co">    ----</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-label="29"></a><span class="co">        directory_tasks: List of tasks with paths to work folders.</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-label="30"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-label="31"></a><span class="co">    """</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-label="32"></a>    <span class="cf">for</span> folder, delay <span class="kw">in</span> directory_tasks:</span>
+<span id="cb4-33"><a href="#cb4-33" aria-label="33"></a>        <span class="cf">yield</span> folder, delay</span>
+<span id="cb4-34"><a href="#cb4-34" aria-label="34"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-label="35"></a>        all_files <span class="op">=</span> folder.glob(FILES_IN_TREE_PATTERN)</span>
+<span id="cb4-36"><a href="#cb4-36" aria-label="36"></a>        filtered <span class="op">=</span> <span class="bu">filter</span>(filter_excluded, all_files)</span>
+<span id="cb4-37"><a href="#cb4-37" aria-label="37"></a></span>
+<span id="cb4-38"><a href="#cb4-38" aria-label="38"></a>        <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> filtered:</span>
+<span id="cb4-39"><a href="#cb4-39" aria-label="39"></a>            <span class="cf">yield</span> <span class="bu">file</span>, delay</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>The <code>filter_excluded</code> function filters out files based on exclusions in name and extension lists. <code>Path.stem</code> and <code>Path.suffix</code> are used to check if the file name or extension is in the lists respectively.</p>
@@ -674,7 +686,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="interacting-with-the-os" class="level3">
 <h3 class="anchored" data-anchor-id="interacting-with-the-os">Interacting with the OS</h3>
 <p>With all of the framework prepared, the next step is to interact with the OS. To open a file, folder or run an app, we can use the <code>os.startfile</code> function. All the rest of the <code>start_process</code> function is just utility logging. For running a shell command we can use the <code>subprocess</code> module, calling powershell with the <code>powershell.exe</code> and adding the command to run.</p>
-<div id="8d97d395" class="cell" data-execution_count="6">
+<div id="b60220f7" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="im">import</span> os</span>
@@ -738,7 +750,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </section>
 <section id="the-last-bit-of-convenience" class="level2">
-<h2 class="anchored" data-anchor-id="the-last-bit-of-convenience">The last bit of convenience</h2>
+<h2 class="anchored" data-anchor-id="the-last-bit-of-convenience">The Last Bit of Convenience</h2>
 <p>We got it, friends, the script works and the job is done. But… do you recall the last time you googled a shortcut for a semi-frequently used functionality? Do you still remember the shortcut, or use it each time you need the functionality? Convenience needs to be convenient (obviously). So let’s make running our script truly effortless.</p>
 <p>In Windows OS the best way for me would be to have a shortcut that would run it with one click. We could pin it to the taskbar and start menu. To create one:</p>
 <ul>
@@ -749,13 +761,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../../assets/images/posts/24-05-21-startup-script/startup_shortcut.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="../../assets/images/posts/24-05-21-startup-script/startup_shortcut.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../../assets/images/posts/24-05-21-startup-script/startup_shortcut.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Windows Startup Shortcut"><img src="../../assets/images/posts/24-05-21-startup-script/startup_shortcut.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%" alt="Windows Startup Shortcut"></a></p>
+</figure>
+</div>
+<figcaption>Windows Startup Shortcut</figcaption>
 </figure>
 </div>
 <p>That’s a good enough reminder and convenience tool for me. You might need some different setup, especially for another OS. On Linux, you can hook the script directly into your <code>.bashrc</code> or virtual environment <code>activate</code> scripts.</p>
 </section>
 <section id="further-extensions" class="level2">
-<h2 class="anchored" data-anchor-id="further-extensions">Further extensions</h2>
+<h2 class="anchored" data-anchor-id="further-extensions">Further Extensions</h2>
 <p>There are a couple more things I wish this guy could do for me still:</p>
 <ul>
 <li><strong>Changing Teams status to green</strong> - there’s a MS Graph API that could do this but we would need to manage Azure authorizations through the script. I am not up to that, especially on a work account. Might experiment on personal one in the future.</li>

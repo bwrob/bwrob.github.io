@@ -408,7 +408,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul class="collapse">
   <li><a href="#installing-python-runtimes" id="toc-installing-python-runtimes" class="nav-link active" data-scroll-target="#installing-python-runtimes">Installing Python Runtimes</a></li>
-  <li><a href="#global-cli-tools-with-pipx" id="toc-global-cli-tools-with-pipx" class="nav-link" data-scroll-target="#global-cli-tools-with-pipx">Global CLI Tools with pipx</a></li>
+  <li><a href="#global-cli-tools-with-pipx" id="toc-global-cli-tools-with-pipx" class="nav-link" data-scroll-target="#global-cli-tools-with-pipx">Global CLI Tools with Pipx</a></li>
   <li><a href="#installing-core-developer-utilities" id="toc-installing-core-developer-utilities" class="nav-link" data-scroll-target="#installing-core-developer-utilities">Installing Core Developer Utilities</a></li>
   <li><a href="#initializing-a-project-repository" id="toc-initializing-a-project-repository" class="nav-link" data-scroll-target="#initializing-a-project-repository">Initializing a Project Repository</a></li>
   </ul>
@@ -424,55 +424,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Linux Python dev env"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%" alt="Linux Python dev env"></a></p>
+</figure>
+</div>
+<figcaption>Linux Python dev env</figcaption>
 </figure>
 </div>
 <p>Installing Python development tools on Linux can easily pollute your system environment if done carelessly. This guide covers how to set up an isolated, reproducible Python development workstation on Linux using <code>brew</code>, <code>pipx</code>, and modern project tooling.</p>
 <section id="installing-python-runtimes" class="level2">
 <h2 class="anchored" data-anchor-id="installing-python-runtimes">Installing Python Runtimes</h2>
 <p>First, install the target Python interpreters via Homebrew:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a>brew install python@3.12 python@3.13</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="ex">brew</span> install python@3.12 python@3.13</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="global-cli-tools-with-pipx" class="level2">
-<h2 class="anchored" data-anchor-id="global-cli-tools-with-pipx">Global CLI Tools with pipx</h2>
+<h2 class="anchored" data-anchor-id="global-cli-tools-with-pipx">Global CLI Tools with Pipx</h2>
 <p>Development CLI utilities (such as linters, formatters, and task runners) should be accessible globally across all terminal sessions, but should never be installed into your default system or global Python site-packages.</p>
 <p>The solution is <code>pipx</code>, which installs each CLI tool into its own isolated virtual environment while exposing its binary on your <code>$PATH</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>brew install pipx</span>
-<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a>pipx ensurepath</span>
-<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>pipx install argcomplete --force</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="ex">brew</span> install pipx</span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a><span class="ex">pipx</span> ensurepath</span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a><span class="ex">pipx</span> install argcomplete <span class="at">--force</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Add <code>pipx</code> shell completions to your <code>~/.zshrc</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a>autoload -U compinit &amp;&amp; compinit</span>
-<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a>eval "$(register-python-argcomplete pipx)"</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="ex">autoload</span> <span class="at">-U</span> compinit <span class="kw">&amp;&amp;</span> <span class="ex">compinit</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a><span class="bu">eval</span> <span class="st">"</span><span class="va">$(</span><span class="ex">register-python-argcomplete</span> pipx<span class="va">)</span><span class="st">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../../assets/images/posts/24-08-11-linux-python-dev-env/1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="../../assets/images/posts/24-08-11-linux-python-dev-env/1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../../assets/images/posts/24-08-11-linux-python-dev-env/1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Pipx argcomplete setup in terminal"><img src="../../assets/images/posts/24-08-11-linux-python-dev-env/1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%" alt="Pipx argcomplete setup in terminal"></a></p>
+</figure>
+</div>
+<figcaption>Pipx argcomplete setup in terminal</figcaption>
 </figure>
 </div>
 </section>
 <section id="installing-core-developer-utilities" class="level2">
 <h2 class="anchored" data-anchor-id="installing-core-developer-utilities">Installing Core Developer Utilities</h2>
 <p>Now install your everyday terminal development tools:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a>pipx install --force ruff hapless poethepoet poetry pre-commit uv pytest basedpyright</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="ex">pipx</span> install <span class="at">--force</span> ruff hapless poethepoet poetry pre-commit uv pytest basedpyright</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../../assets/images/posts/24-08-11-linux-python-dev-env/2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="../../assets/images/posts/24-08-11-linux-python-dev-env/2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../../assets/images/posts/24-08-11-linux-python-dev-env/2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Installing core utilities with pipx"><img src="../../assets/images/posts/24-08-11-linux-python-dev-env/2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%" alt="Installing core utilities with pipx"></a></p>
+</figure>
+</div>
+<figcaption>Installing core utilities with pipx</figcaption>
 </figure>
 </div>
 <section id="how-pipx-manages-isolation" class="level3">
-<h3 class="anchored" data-anchor-id="how-pipx-manages-isolation">How pipx Manages Isolation</h3>
+<h3 class="anchored" data-anchor-id="how-pipx-manages-isolation">How Pipx Manages Isolation</h3>
 <p>Inspect the generated launcher for any installed tool:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a>nano $(which poetry)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="fu">nano</span> <span class="va">$(</span><span class="fu">which</span> poetry<span class="va">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../../assets/images/posts/24-08-11-linux-python-dev-env/3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="../../assets/images/posts/24-08-11-linux-python-dev-env/3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../../assets/images/posts/24-08-11-linux-python-dev-env/3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Inspecting pipx launcher shebang in nano"><img src="../../assets/images/posts/24-08-11-linux-python-dev-env/3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%" alt="Inspecting pipx launcher shebang in nano"></a></p>
+</figure>
+</div>
+<figcaption>Inspecting pipx launcher shebang in nano</figcaption>
 </figure>
 </div>
 <p>Notice the shebang (<code>#!</code>) line points to an interpreter inside <code>~/.local/share/pipx/venvs/poetry/bin/python</code>. This launcher script sets up the execution environment before delegating to the underlying package.</p>
 <p>Each tool installed with <code>pipx</code> lives in a dedicated, hermetic virtual environment:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a>ls ~/.local/share/pipx/venvs/ -la</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a><span class="fu">ls</span> ~/.local/share/pipx/venvs/ <span class="at">-la</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../../assets/images/posts/24-08-11-linux-python-dev-env/4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="../../assets/images/posts/24-08-11-linux-python-dev-env/4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../../assets/images/posts/24-08-11-linux-python-dev-env/4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Directory listing of pipx virtual environments"><img src="../../assets/images/posts/24-08-11-linux-python-dev-env/4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%" alt="Directory listing of pipx virtual environments"></a></p>
+</figure>
+</div>
+<figcaption>Directory listing of pipx virtual environments</figcaption>
 </figure>
 </div>
 </section>
@@ -480,15 +505,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="initializing-a-project-repository" class="level2">
 <h2 class="anchored" data-anchor-id="initializing-a-project-repository">Initializing a Project Repository</h2>
 <p>Clone or navigate into your project repository, install the dependencies, and configure pre-commit hooks:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a># Install project dependencies</span>
-<span id="cb7-2"><a href="#cb7-2" aria-label="2"></a>poetry install</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="co"># Install project dependencies</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-label="2"></a><span class="ex">poetry</span> install</span>
 <span id="cb7-3"><a href="#cb7-3" aria-label="3"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-label="4"></a># Install and configure git pre-commit hooks</span>
-<span id="cb7-5"><a href="#cb7-5" aria-label="5"></a>pre-commit install --install-hooks --overwrite --allow-missing-config</span>
-<span id="cb7-6"><a href="#cb7-6" aria-label="6"></a>pre-commit autoupdate</span>
+<span id="cb7-4"><a href="#cb7-4" aria-label="4"></a><span class="co"># Install and configure git pre-commit hooks</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-label="5"></a><span class="ex">pre-commit</span> install <span class="at">--install-hooks</span> <span class="at">--overwrite</span> <span class="at">--allow-missing-config</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-label="6"></a><span class="ex">pre-commit</span> autoupdate</span>
 <span id="cb7-7"><a href="#cb7-7" aria-label="7"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-label="8"></a># Run checks across all files to verify environment integrity</span>
-<span id="cb7-9"><a href="#cb7-9" aria-label="9"></a>pre-commit run --all-files</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-8"><a href="#cb7-8" aria-label="8"></a><span class="co"># Run checks across all files to verify environment integrity</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-label="9"></a><span class="ex">pre-commit</span> run <span class="at">--all-files</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>With this architecture, your global tools stay isolated, dependencies never conflict, and each repository manages its own hermetic virtual environment.</p>
 
 

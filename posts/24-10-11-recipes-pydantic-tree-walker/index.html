@@ -426,7 +426,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Pydantic Tree Walker cover"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%" alt="Pydantic Tree Walker cover"></a></p>
+</figure>
+</div>
+<figcaption>Pydantic Tree Walker cover</figcaption>
 </figure>
 </div>
 <p>When designing large data pipelines or REST APIs, Pydantic schemas rarely stay flat. Models nest inside models, which nest inside generic containers like <code>list[...]</code> or <code>dict[str, ...]</code>, often unioned with optional branches like <code>list[InnerNode | AnotherInnerNode]</code>.</p>
@@ -453,7 +458,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="building-the-tree-walker" class="level2">
 <h2 class="anchored" data-anchor-id="building-the-tree-walker">Building the Tree Walker</h2>
 <p>Here is the complete implementation. It parses field annotations, formats generic types cleanly, and constructs a visual hierarchy using <code>rich.tree.Tree</code>:</p>
-<div id="3000f5e5" class="cell" data-execution_count="1">
+<div id="tree-walker-implementation" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="co"># pyright: reportAny=false, reportExplicitAny=false</span></span>
@@ -540,23 +545,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-82"><a href="#cb2-82" aria-label="82"></a>            <span class="cf">continue</span></span>
 <span id="cb2-83"><a href="#cb2-83" aria-label="83"></a></span>
 <span id="cb2-84"><a href="#cb2-84" aria-label="84"></a>        <span class="cf">for</span> model_type <span class="kw">in</span> model_types:</span>
-<span id="cb2-85"><a href="#cb2-85" aria-label="85"></a>            sub_tree_label <span class="op">=</span> create_label(model_type.<span class="va">__name__</span>, COLORS[level <span class="op">+</span> <span class="dv">1</span>])</span>
-<span id="cb2-86"><a href="#cb2-86" aria-label="86"></a>            sub_tree <span class="op">=</span> child_tree.add(sub_tree_label)</span>
-<span id="cb2-87"><a href="#cb2-87" aria-label="87"></a>            build_tree(model_type, sub_tree, level <span class="op">+</span> <span class="dv">2</span>)</span>
-<span id="cb2-88"><a href="#cb2-88" aria-label="88"></a></span>
-<span id="cb2-89"><a href="#cb2-89" aria-label="89"></a></span>
-<span id="cb2-90"><a href="#cb2-90" aria-label="90"></a><span class="kw">def</span> display_tree(model: <span class="bu">type</span>[Any]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb2-91"><a href="#cb2-91" aria-label="91"></a>    <span class="co">"""Print a colorful, tree-like representation of a model to the console."""</span></span>
-<span id="cb2-92"><a href="#cb2-92" aria-label="92"></a>    tree <span class="op">=</span> Tree(create_label(model.<span class="va">__name__</span>, COLORS[<span class="dv">0</span>]))</span>
-<span id="cb2-93"><a href="#cb2-93" aria-label="93"></a>    build_tree(model, tree)</span>
-<span id="cb2-94"><a href="#cb2-94" aria-label="94"></a>    console.<span class="bu">print</span>(tree)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-85"><a href="#cb2-85" aria-label="85"></a>            sub_tree_label <span class="op">=</span> create_label(</span>
+<span id="cb2-86"><a href="#cb2-86" aria-label="86"></a>                model_type.<span class="va">__name__</span>, COLORS[level <span class="op">+</span> <span class="dv">1</span>]</span>
+<span id="cb2-87"><a href="#cb2-87" aria-label="87"></a>            )</span>
+<span id="cb2-88"><a href="#cb2-88" aria-label="88"></a>            sub_tree <span class="op">=</span> child_tree.add(sub_tree_label)</span>
+<span id="cb2-89"><a href="#cb2-89" aria-label="89"></a>            build_tree(model_type, sub_tree, level <span class="op">+</span> <span class="dv">2</span>)</span>
+<span id="cb2-90"><a href="#cb2-90" aria-label="90"></a></span>
+<span id="cb2-91"><a href="#cb2-91" aria-label="91"></a></span>
+<span id="cb2-92"><a href="#cb2-92" aria-label="92"></a><span class="kw">def</span> display_tree(model: <span class="bu">type</span>[Any]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb2-93"><a href="#cb2-93" aria-label="93"></a>    <span class="co">"""Print a colorful, tree-like representation of a model to the console."""</span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-label="94"></a>    tree <span class="op">=</span> Tree(create_label(model.<span class="va">__name__</span>, COLORS[<span class="dv">0</span>]))</span>
+<span id="cb2-95"><a href="#cb2-95" aria-label="95"></a>    build_tree(model, tree)</span>
+<span id="cb2-96"><a href="#cb2-96" aria-label="96"></a>    console.<span class="bu">print</span>(tree)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
 <section id="putting-it-into-practice" class="level2">
 <h2 class="anchored" data-anchor-id="putting-it-into-practice">Putting It into Practice</h2>
 <p>Let’s test this with a realistic nested schema containing unions, lists, and dictionaries:</p>
-<div id="2d819a74" class="cell" data-execution_count="2">
+<div id="cell-tree-walker-example" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="kw">class</span> InnerNode(BaseModel):</span>
@@ -584,7 +591,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-23"><a href="#cb3-23" aria-label="23"></a></span>
 <span id="cb3-24"><a href="#cb3-24" aria-label="24"></a>display_tree(Root)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display">
+<div id="tree-walker-example" class="cell-output cell-output-display">
 <pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="color: #008080; text-decoration-color: #008080">Root</span>
 ├── <span style="color: #008080; text-decoration-color: #008080">name</span>: <span style="color: #808080; text-decoration-color: #808080">str</span>
 └── <span style="color: #008080; text-decoration-color: #008080">child</span>: <span style="color: #808080; text-decoration-color: #808080">Node</span>

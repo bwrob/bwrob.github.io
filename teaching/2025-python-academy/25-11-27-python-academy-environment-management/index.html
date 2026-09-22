@@ -408,7 +408,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul class="collapse">
   <li><a href="#creating-and-activating" id="toc-creating-and-activating" class="nav-link active" data-scroll-target="#creating-and-activating">Creating and Activating</a></li>
-  <li><a href="#the-modern-toolchain-uv" id="toc-the-modern-toolchain-uv" class="nav-link" data-scroll-target="#the-modern-toolchain-uv">The Modern Toolchain: uv</a></li>
+  <li><a href="#the-modern-toolchain-uv" id="toc-the-modern-toolchain-uv" class="nav-link" data-scroll-target="#the-modern-toolchain-uv">The Modern Toolchain: Uv</a></li>
   </ul>
 </nav>
     </div>
@@ -422,7 +422,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Environment Management cover"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%" alt="Environment Management cover"></a></p>
+</figure>
+</div>
+<figcaption>Environment Management cover</figcaption>
 </figure>
 </div>
 <p>You are about to deploy a pricing service that depends on <code>pandas==1.5.3</code>. You download a teammate’s utility script, run <code>pip install</code>, and suddenly your core pricing model throws an <code>ImportError</code>. What happened? Your global Python environment just silently overwritten your production dependencies.</p>
@@ -446,7 +451,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource powershell number-lines code-with-copy"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="op">.</span><span class="fu">venv</span>\Scripts\Activate<span class="op">.</span><span class="fu">ps1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Once you see <code>(.venv)</code> in your prompt, you’re in the sandbox. Anything you install here stays here.</p>
 <section id="managing-packages-with-pip" class="level3">
-<h3 class="anchored" data-anchor-id="managing-packages-with-pip">Managing Packages with pip</h3>
+<h3 class="anchored" data-anchor-id="managing-packages-with-pip">Managing Packages with Pip</h3>
 <p><code>pip</code> is your tool for grabbing libraries from the internet (PyPI).</p>
 <p>To install something:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="ex">pip</span> install requests</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -465,11 +470,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </section>
 <section id="the-modern-toolchain-uv" class="level2">
-<h2 class="anchored" data-anchor-id="the-modern-toolchain-uv">The Modern Toolchain: uv</h2>
+<h2 class="anchored" data-anchor-id="the-modern-toolchain-uv">The Modern Toolchain: Uv</h2>
 <p>While <code>venv</code> and <code>pip</code> are standard library fixtures, managing multi-package dependency resolution, cross-platform lockfiles, and Python runtime versions creates constant developer friction.</p>
 <p><code>uv</code>, developed in Rust by Astral, replaces <code>pip</code>, <code>pip-tools</code>, <code>virtualenv</code>, and <code>pyenv</code> with a single, standalone binary that resolves dependencies 10 to 100 times faster.</p>
 <section id="initializing-a-project-with-uv" class="level3">
-<h3 class="anchored" data-anchor-id="initializing-a-project-with-uv">Initializing a Project with uv</h3>
+<h3 class="anchored" data-anchor-id="initializing-a-project-with-uv">Initializing a Project with Uv</h3>
 <p>Instead of manually creating folders, virtual environments, and requirement files, <code>uv</code> initializes standard project layouts in one step:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-label="1"></a><span class="ex">uv</span> init my-project</span>
 <span id="cb8-2"><a href="#cb8-2" aria-label="2"></a><span class="bu">cd</span> my-project</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -553,7 +558,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a><span class="ex">python</span> setup.py sdist bdist_wheel</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="the-new-way-uv-build" class="level4">
-<h4 class="anchored" data-anchor-id="the-new-way-uv-build">The New Way: uv build</h4>
+<h4 class="anchored" data-anchor-id="the-new-way-uv-build">The New Way: Uv Build</h4>
 <p>Since <code>uv</code> already knows everything about your project from <code>pyproject.toml</code>, building a package is laughably simple. You don’t need a <code>setup.py</code> anymore.</p>
 <p>Just run:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-label="1"></a><span class="ex">uv</span> build</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>

@@ -422,7 +422,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Serverless Marimo Dashboard cover"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%" alt="Serverless Marimo Dashboard cover"></a></p>
+</figure>
+</div>
+<figcaption>Serverless Marimo Dashboard cover</figcaption>
 </figure>
 </div>
 <p><code>marimo</code> is a modern Python notebook alternative that solves Jupyter’s biggest pain point: hidden out-of-order state. Its reactive dataflow graph tracks dependencies between cells: updating a parameter automatically recalculates all dependent variables, eliminating stale state bugs.</p>
@@ -435,11 +440,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="im">import</span> marimo <span class="im">as</span> mo</span>
 <span id="cb2-2"><a href="#cb2-2" aria-label="2"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-label="3"></a><span class="co"># Cell 1: Interactive slider</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>slider <span class="op">=</span> mo.ui.slider(start<span class="op">=</span><span class="dv">10</span>, stop<span class="op">=</span><span class="dv">100</span>, step<span class="op">=</span><span class="dv">5</span>, value<span class="op">=</span><span class="dv">25</span>, label<span class="op">=</span><span class="st">"Sample Size"</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>slider</span>
-<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a><span class="co"># Cell 2: Reactive downstream consumer</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a>mo.md(<span class="ss">f"Current sample size is: **</span><span class="sc">{</span>slider<span class="sc">.</span>value<span class="sc">}</span><span class="ss">**"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>slider <span class="op">=</span> mo.ui.slider(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>    start<span class="op">=</span><span class="dv">10</span>, stop<span class="op">=</span><span class="dv">100</span>, step<span class="op">=</span><span class="dv">5</span>, value<span class="op">=</span><span class="dv">25</span>, label<span class="op">=</span><span class="st">"Sample Size"</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a>slider</span>
+<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-label="9"></a><span class="co"># Cell 2: Reactive downstream consumer</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-label="10"></a>mo.md(<span class="ss">f"Current sample size is: **</span><span class="sc">{</span>slider<span class="sc">.</span>value<span class="sc">}</span><span class="ss">**"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>When a user drags <code>slider</code>, Cell 2 updates automatically.</p>
 <section id="compiling-to-serverless-webassembly" class="level3">
 <h3 class="anchored" data-anchor-id="compiling-to-serverless-webassembly">Compiling to Serverless WebAssembly</h3>
@@ -458,7 +465,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Host your dashboard on a static site hosting service like GitHub Pages, Netlify, or Vercel. Since the dashboard is just a static file, you don’t need to worry about server maintenance or costs.</p></li>
 <li><p>When you open the dashboard in your browser, it will load the webassembly module and run your Python code to display the data. You can interact with the dashboard just like you would with any other web application. The compute is done locally in the browser using pyodide, the user is paying for it with their CPU cycles.</p></li>
 </ol>
-<p>You can try the dashboard out <a href="https://bwrob.github.io/assets/marimo-dashboard/index.html">here</a>.</p>
+<p>You can test the <a href="https://bwrob.github.io/assets/marimo-dashboard/index.html">live Marimo WebAssembly dashboard</a>.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -469,7 +476,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Download the whole code <a href="../../assets/python/serverless_marimo_dashboard_example.py">here</a>.</p>
+<p>Download the full script from the <a href="../../assets/python/serverless_marimo_dashboard_example.py">Serverless Marimo Dashboard example script</a>.</p>
 </div>
 </div>
 

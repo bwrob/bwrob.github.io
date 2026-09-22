@@ -411,7 +411,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#loading-financial-data" id="toc-loading-financial-data" class="nav-link active" data-scroll-target="#loading-financial-data">1. Loading Financial Data</a></li>
-  <li><a href="#expressions-the-atomic-units-of-logic" id="toc-expressions-the-atomic-units-of-logic" class="nav-link" data-scroll-target="#expressions-the-atomic-units-of-logic">2. Expressions: The Atomic Units of Logic</a></li>
+  <li><a href="#expressions-the-atomic-units-of-logic" id="toc-expressions-the-atomic-units-of-logic" class="nav-link" data-scroll-target="#expressions-the-atomic-units-of-logic">2. Expressions: the Atomic Units of Logic</a></li>
   <li><a href="#context-selection-feature-engineering" id="toc-context-selection-feature-engineering" class="nav-link" data-scroll-target="#context-selection-feature-engineering">3. Context: Selection &amp; Feature Engineering</a></li>
   <li><a href="#context-aggregation-group_by" id="toc-context-aggregation-group_by" class="nav-link" data-scroll-target="#context-aggregation-group_by">4. Context: Aggregation (<code>group_by</code>)</a></li>
   <li><a href="#power-selectors-polars.selectors" id="toc-power-selectors-polars.selectors" class="nav-link" data-scroll-target="#power-selectors-polars.selectors">5. Power Selectors (<code>polars.selectors</code>)</a></li>
@@ -432,13 +432,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%"></a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="cover.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Polars in finance cheat sheet"><img src="cover.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:98.0%" alt="Polars in finance cheat sheet"></a></p>
+</figure>
+</div>
+<figcaption>Polars in finance cheat sheet</figcaption>
 </figure>
 </div>
 <p>Polars expressions and contexts applied to S&amp;P 500 OHLCV data. If you know Pandas, the patterns here should click fast.</p>
 <section id="loading-financial-data" class="level2">
 <h2 class="anchored" data-anchor-id="loading-financial-data">1. Loading Financial Data</h2>
-<div id="b570a500" class="cell" data-execution_count="1">
+<div id="ed93c368" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-label="1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
@@ -552,35 +557,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 <section id="expressions-the-atomic-units-of-logic" class="level2">
-<h2 class="anchored" data-anchor-id="expressions-the-atomic-units-of-logic">2. Expressions: The Atomic Units of Logic</h2>
+<h2 class="anchored" data-anchor-id="expressions-the-atomic-units-of-logic">2. Expressions: the Atomic Units of Logic</h2>
 <p>Expressions are reusable, composable chunks of logic. Define once, apply anywhere.</p>
-<div id="7ec9c0a5" class="cell" data-execution_count="2">
+<div id="2d457f2b" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-label="1"></a>log_return <span class="op">=</span> (pl.col(<span class="st">"close"</span>) <span class="op">/</span> pl.col(<span class="st">"close"</span>).shift(<span class="dv">1</span>)).log().over(<span class="st">"ticker"</span>)</span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-label="2"></a></span>
-<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-label="3"></a>realized_vol <span class="op">=</span> (log_return.rolling_std(window_size<span class="op">=</span><span class="dv">21</span>) <span class="op">*</span> (<span class="dv">252</span><span class="op">**</span><span class="fl">0.5</span>)).over(</span>
-<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-label="4"></a>    <span class="st">"ticker"</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-5" class="code-annotation-target"><a href="#annotated-cell-2-5" aria-label="5"></a>)</span>
-<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-label="6"></a></span>
-<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-label="7"></a></span>
-<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-label="8"></a><span class="kw">def</span> min_max_scale(name: <span class="bu">str</span>) <span class="op">-&gt;</span> pl.Expr:</span>
-<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-label="9"></a>    col <span class="op">=</span> pl.col(name)</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-10" class="code-annotation-target"><a href="#annotated-cell-2-10" aria-label="10"></a>    <span class="cf">return</span> (col <span class="op">-</span> col.<span class="bu">min</span>()) <span class="op">/</span> (col.<span class="bu">max</span>() <span class="op">-</span> col.<span class="bu">min</span>())</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-label="1"></a>log_return <span class="op">=</span> (</span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-label="2"></a>    (pl.col(<span class="st">"close"</span>) <span class="op">/</span> pl.col(<span class="st">"close"</span>).shift(<span class="dv">1</span>)).log().over(<span class="st">"ticker"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-label="3"></a>)</span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-label="4"></a></span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-label="5"></a>realized_vol <span class="op">=</span> (log_return.rolling_std(window_size<span class="op">=</span><span class="dv">21</span>) <span class="op">*</span> (<span class="dv">252</span><span class="op">**</span><span class="fl">0.5</span>)).over(</span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-label="6"></a>    <span class="st">"ticker"</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-7" class="code-annotation-target"><a href="#annotated-cell-2-7" aria-label="7"></a>)</span>
+<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-label="8"></a></span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-label="9"></a></span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-label="10"></a><span class="kw">def</span> min_max_scale(name: <span class="bu">str</span>) <span class="op">-&gt;</span> pl.Expr:</span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-label="11"></a>    col <span class="op">=</span> pl.col(name)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-12" class="code-annotation-target"><a href="#annotated-cell-2-12" aria-label="12"></a>    <span class="cf">return</span> (col <span class="op">-</span> col.<span class="bu">min</span>()) <span class="op">/</span> (col.<span class="bu">max</span>() <span class="op">-</span> col.<span class="bu">min</span>())</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="1" data-code-annotation="1">Log returns: ln(P_t / P_{t-1}), calculated within each ticker via <code>.over()</code>.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">Log returns: ln(P_t / P_{t-1}), calculated within each ticker via <code>.over()</code>.</span>
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="5" data-code-annotation="2">Realized volatility: annualized rolling std (21-day window ≈ 1 trading month).</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="7" data-code-annotation="2">Realized volatility: annualized rolling std (21-day window ≈ 1 trading month).</span>
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="10" data-code-annotation="3">Min-max scaling for ML features.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="12" data-code-annotation="3">Min-max scaling for ML features.</span>
 </dd>
 </dl>
 </div>
@@ -589,16 +596,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-selection-feature-engineering" class="level2">
 <h2 class="anchored" data-anchor-id="context-selection-feature-engineering">3. Context: Selection &amp; Feature Engineering</h2>
 <p><code>with_columns</code> adds multiple indicators in a single pass.</p>
-<div id="9530d85d" class="cell" data-execution_count="3">
+<div id="450ff5d4" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-label="1"></a>df <span class="op">=</span> df.with_columns(</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2" aria-label="2"></a>    ret<span class="op">=</span>log_return,</span>
 <span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-label="3"></a>    vol<span class="op">=</span>realized_vol,</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-4" class="code-annotation-target"><a href="#annotated-cell-3-4" aria-label="4"></a>    typical_price<span class="op">=</span>(pl.col(<span class="st">"high"</span>) <span class="op">+</span> pl.col(<span class="st">"low"</span>) <span class="op">+</span> pl.col(<span class="st">"close"</span>)) <span class="op">/</span> <span class="dv">3</span>,</span>
-<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-label="5"></a>)</span>
-<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-label="6"></a></span>
-<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-label="7"></a>df.tail(<span class="dv">5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-label="4"></a>    typical_price<span class="op">=</span>(pl.col(<span class="st">"high"</span>) <span class="op">+</span> pl.col(<span class="st">"low"</span>) <span class="op">+</span> pl.col(<span class="st">"close"</span>))</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-5" class="code-annotation-target"><a href="#annotated-cell-3-5" aria-label="5"></a>    <span class="op">/</span> <span class="dv">3</span>,</span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-label="6"></a>)</span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-label="7"></a></span>
+<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8" aria-label="8"></a>df.tail(<span class="dv">5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -608,7 +616,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 <dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="4" data-code-annotation="2">Typical price — common input for Money Flow Index.</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="5" data-code-annotation="2">Typical price — common input for Money Flow Index.</span>
 </dd>
 </dl>
 </div>
@@ -717,27 +725,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="context-aggregation-group_by" class="level2">
 <h2 class="anchored" data-anchor-id="context-aggregation-group_by">4. Context: Aggregation (<code>group_by</code>)</h2>
-<div id="7d9721d5" class="cell" data-execution_count="4">
+<div id="3db21189" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-label="1"></a>risk_summary <span class="op">=</span> df.group_by(<span class="st">"ticker"</span>).agg(</span>
 <span id="annotated-cell-4-2"><a href="#annotated-cell-4-2" aria-label="2"></a>    annual_return<span class="op">=</span>(pl.col(<span class="st">"ret"</span>).mean() <span class="op">*</span> <span class="dv">252</span>),</span>
 <span id="annotated-cell-4-3"><a href="#annotated-cell-4-3" aria-label="3"></a>    annual_vol<span class="op">=</span>(pl.col(<span class="st">"ret"</span>).std() <span class="op">*</span> (<span class="dv">252</span><span class="op">**</span><span class="fl">0.5</span>)),</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4" aria-label="4"></a>    max_drawdown<span class="op">=</span>((pl.col(<span class="st">"close"</span>) <span class="op">/</span> pl.col(<span class="st">"close"</span>).cum_max() <span class="op">-</span> <span class="dv">1</span>).<span class="bu">min</span>()),</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-5" class="code-annotation-target"><a href="#annotated-cell-4-5" aria-label="5"></a>    sharpe_ratio<span class="op">=</span>(pl.col(<span class="st">"ret"</span>).mean() <span class="op">/</span> pl.col(<span class="st">"ret"</span>).std()) <span class="op">*</span> (<span class="dv">252</span><span class="op">**</span><span class="fl">0.5</span>),</span>
-<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6" aria-label="6"></a>)</span>
-<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7" aria-label="7"></a></span>
-<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8" aria-label="8"></a>risk_summary.sort(<span class="st">"sharpe_ratio"</span>, descending<span class="op">=</span><span class="va">True</span>).head(<span class="dv">5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-4-4"><a href="#annotated-cell-4-4" aria-label="4"></a>    max_drawdown<span class="op">=</span>(</span>
+<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5" aria-label="5"></a>        (pl.col(<span class="st">"close"</span>) <span class="op">/</span> pl.col(<span class="st">"close"</span>).cum_max() <span class="op">-</span> <span class="dv">1</span>).<span class="bu">min</span>()</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-6" class="code-annotation-target"><a href="#annotated-cell-4-6" aria-label="6"></a>    ),</span>
+<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7" aria-label="7"></a>    sharpe_ratio<span class="op">=</span>(</span>
+<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8" aria-label="8"></a>        (pl.col(<span class="st">"ret"</span>).mean() <span class="op">/</span> pl.col(<span class="st">"ret"</span>).std()) <span class="op">*</span> (<span class="dv">252</span><span class="op">**</span><span class="fl">0.5</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-9" class="code-annotation-target"><a href="#annotated-cell-4-9" aria-label="9"></a>    ),</span>
+<span id="annotated-cell-4-10"><a href="#annotated-cell-4-10" aria-label="10"></a>)</span>
+<span id="annotated-cell-4-11"><a href="#annotated-cell-4-11" aria-label="11"></a></span>
+<span id="annotated-cell-4-12"><a href="#annotated-cell-4-12" aria-label="12"></a>risk_summary.sort(<span class="st">"sharpe_ratio"</span>, descending<span class="op">=</span><span class="va">True</span>).head(<span class="dv">5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="4" data-code-annotation="1">Max drawdown via cumulative maximum.</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="6" data-code-annotation="1">Max drawdown via cumulative maximum.</span>
 </dd>
 <dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="5" data-code-annotation="2">Sharpe ratio (assuming 0% risk-free rate).</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="9" data-code-annotation="2">Sharpe ratio (assuming 0% risk-free rate).</span>
 </dd>
 </dl>
 </div>
@@ -812,7 +824,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="power-selectors-polars.selectors" class="level2">
 <h2 class="anchored" data-anchor-id="power-selectors-polars.selectors">5. Power Selectors (<code>polars.selectors</code>)</h2>
 <p>Target columns by properties instead of hardcoding names — handy for scenario shocks.</p>
-<div id="7b9caa58" class="cell" data-execution_count="5">
+<div id="ba116ab7" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-1" class="code-annotation-target"><a href="#annotated-cell-5-1" aria-label="1"></a>price_shock <span class="op">=</span> cs.starts_with(<span class="st">"open"</span>, <span class="st">"high"</span>, <span class="st">"low"</span>, <span class="st">"close"</span>) <span class="op">*</span> <span class="fl">1.01</span></span>
@@ -897,7 +909,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="window-functions-over" class="level2">
 <h2 class="anchored" data-anchor-id="window-functions-over">6. Window Functions (<code>over</code>)</h2>
 <p>Compute group-level stats and project them back onto individual rows — no merge needed.</p>
-<div id="f9542323" class="cell" data-execution_count="6">
+<div id="05d0af67" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1" aria-label="1"></a>df.with_columns(</span>
@@ -1037,7 +1049,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="time-series-rolling-metrics-asof-joins" class="level2">
 <h2 class="anchored" data-anchor-id="time-series-rolling-metrics-asof-joins">7. Time Series: Rolling Metrics &amp; Asof Joins</h2>
-<div id="bc7d5fda" class="cell" data-execution_count="7">
+<div id="496a1a60" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-label="1"></a>df.with_columns(</span>
@@ -1166,7 +1178,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reshaping-for-correlation-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="reshaping-for-correlation-analysis">8. Reshaping for Correlation Analysis</h2>
 <p>Pivot from long to wide for correlation / covariance matrices.</p>
-<div id="42a26e10" class="cell" data-execution_count="8">
+<div id="c64a5c8c" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1" aria-label="1"></a>wide_returns <span class="op">=</span> df.pivot(</span>
@@ -1751,7 +1763,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="performance-categoricals-streaming" class="level2">
 <h2 class="anchored" data-anchor-id="performance-categoricals-streaming">9. Performance: Categoricals &amp; Streaming</h2>
 <p>Cast string columns to <code>Categorical</code> for memory savings. For datasets that exceed RAM, use <code>LazyFrame</code> + streaming to process in batches.</p>
-<div id="b06d43d1" class="cell" data-execution_count="9">
+<div id="b4b0c9c8" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-label="1"></a>df <span class="op">=</span> (</span>
@@ -1786,7 +1798,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Download the companion script <a href="../../assets/python/polars_expressions_and_data_transformations_cheat_sheet.py">here</a>.</p>
+<p>Download the companion <a href="../../assets/python/polars_expressions_and_data_transformations_cheat_sheet.py">Polars cheat sheet script</a>.</p>
 </div>
 </div>
 
