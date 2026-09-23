@@ -44,7 +44,7 @@ repos:
         id: validate-pyproject
         name: 🐍 validate-pyproject · Validate pyproject.toml
     repo: https://github.com/abravalheri/validate-pyproject
-    rev: '0.26'
+    rev: "0.26"
   - repo: https://github.com/myint/eradicate
     rev: 3.0.1
     hooks:
@@ -52,7 +52,7 @@ repos:
         args: []
         name: 🐍 eradicate · Remove dead code
   - hooks:
-      - args: [ --fix , --config, ./pyproject.toml , --unsafe-fixes]
+      - args: [--fix, --config, ./pyproject.toml, --unsafe-fixes]
         id: ruff-check
         name: 🐍 ruff · Check Python code
         exclude: ^(_not_posted/)
@@ -78,6 +78,26 @@ repos:
         entry: uv run pyrefly check
         language: system
         pass_filenames: false
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0
+    hooks:
+      - id: prettier
+        name: 🎨 prettier · Format CSS & SCSS
+        alias: prettier-css
+        types_or: [css, scss]
+        files: ^css/
+      - id: prettier
+        name: 🎨 prettier · Format YAML files
+        alias: prettier-yaml
+        types: [yaml]
+        exclude: ^(_extensions/|_site/|_freeze/|\.venv/)
+
+  - repo: https://github.com/ComPWA/taplo-pre-commit
+    rev: v0.9.3
+    hooks:
+      - id: taplo-format
+        name: ⚙️ taplo · Format TOML files
+
   - hooks:
       - id: uv-lock
         name: 🐍 uv · Lock dependencies

@@ -35,9 +35,9 @@ body {
   margin-bottom: 1.25rem;
 }
 
-h1, .h1 { font-size: 2.25rem; }
-h2, .h2 { font-size: 1.6rem; border-bottom: 1px solid var(--color-rule); padding-bottom: 0.5rem; }
-h3, .h3 { font-size: 1.25rem; }
+h1, .h1 { font-size: clamp(1.6rem, 3.5vw + 0.5rem, 2.25rem); }
+h2, .h2 { font-size: clamp(1.3rem, 2vw + 0.5rem, 1.6rem); border-bottom: 1px solid var(--color-rule); padding-bottom: 0.5rem; }
+h3, .h3 { font-size: clamp(1.1rem, 1.5vw + 0.4rem, 1.25rem); }
 h4, .h4 { font-size: 1rem; color: var(--color-accent); }
 
 a { color: var(--color-accent); text-decoration: none; }
@@ -48,6 +48,32 @@ a:hover { text-decoration: underline; } /* color overridden per-theme */
 .navbar-brand { margin: 0 !important; }
 .navbar-title { display: none !important; }
 .nav-link { font-size: 0.8rem; }
+
+/* Light mode navbar controls (ensure hamburger & theme toggle are visible on light bg) */
+body:not(.quarto-dark) .navbar-toggler {
+  border-color: var(--color-rule) !important;
+}
+
+body:not(.quarto-dark) .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2844, 62, 80, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+body:not(.quarto-dark) .quarto-color-scheme-toggle .bi::before {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgba(44, 62, 80, 0.8)" class="bi bi-toggle-off" viewBox="0 0 16 16"><path d="M11 4a4 4 0 0 1 0 8H8a4.992 4.992 0 0 0 2-4 4.992 4.992 0 0 0-2-4h3zm-6 8a4 4 0 1 1 0-8 4 4 0 0 1 0 8zM0 8a5 5 0 0 0 5 5h6a5 5 0 0 0 0-10H5a5 5 0 0 0-5 5z"/></svg>') !important;
+}
+
+body:not(.quarto-dark) .quarto-color-scheme-toggle:hover .bi::before {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgba(84, 119, 204, 1)" class="bi bi-toggle-off" viewBox="0 0 16 16"><path d="M11 4a4 4 0 0 1 0 8H8a4.992 4.992 0 0 0 2-4 4.992 4.992 0 0 0-2-4h3zm-6 8a4 4 0 1 1 0-8 4 4 0 0 1 0 8zM0 8a5 5 0 0 0 5 5h6a5 5 0 0 0 0-10H5a5 5 0 0 0-5 5z"/></svg>') !important;
+}
+
+body:not(.quarto-dark) .quarto-navigation-tool {
+  color: var(--color-ink-2) !important;
+}
+
+body:not(.quarto-dark) .quarto-navigation-tool:hover {
+  color: var(--color-accent) !important;
+}
+
 
 /* --- Hero Page Body Classes --- */
 
@@ -108,7 +134,7 @@ body.teaching-page .quarto-secondary-nav {
 
 .hero-banner h1 {
   font-weight: 800;
-  font-size: 2.5rem;
+  font-size: clamp(1.75rem, 4vw + 0.5rem, 2.5rem);
   margin: 0 0 0.5rem;
   letter-spacing: -0.04em;
   color: white;
@@ -192,7 +218,7 @@ img.hero-img-profile {
 
 .page-header-block h1 {
   margin-top: 0 !important;
-  font-size: 2.25rem !important;
+  font-size: clamp(1.6rem, 3.5vw + 0.5rem, 2.25rem) !important;
 }
 
 .page-header-block h1::before {
@@ -214,9 +240,68 @@ header#title-block-header {
 
 
 
+.quarto-title-block .quarto-title-banner {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
 .quarto-title-block .title {
   color: var(--color-ink) !important;
+  margin-bottom: 0 !important;
 }
+
+.quarto-title-block .description {
+  display: none !important;
+}
+
+/* Post metadata: align dates and category tags in a single line */
+#title-block-header.quarto-title-block.default .quarto-title-meta {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-end !important;
+  flex-wrap: wrap !important;
+  gap: 2rem !important;
+  margin-top: 0.75rem !important;
+}
+
+#title-block-header.quarto-title-block.default .quarto-title-meta-heading {
+  margin-top: 0 !important;
+}
+
+#title-block-header.quarto-title-block.default .quarto-title-meta > div {
+  margin: 0 !important;
+}
+
+#title-block-header.quarto-title-block.default .quarto-title-meta .quarto-categories {
+  margin: 0 0 0.1em auto !important;
+  padding: 0 !important;
+  display: flex !important;
+  gap: 0.5rem !important;
+  align-items: center !important;
+}
+
+#title-block-header.quarto-title-block.default .quarto-categories .quarto-category {
+  font-size: 0.72rem !important;
+  padding: 0.25rem 0.65rem !important;
+  border-radius: 4px !important;
+  border: 1px solid var(--color-rule) !important;
+  color: var(--color-ink-2) !important;
+  background: transparent !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-family: var(--font-mono) !important;
+  line-height: 1.2 !important;
+  opacity: 0.8 !important;
+  transition: opacity 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+#title-block-header.quarto-title-block.default .quarto-categories .quarto-category:hover {
+  opacity: 1 !important;
+  border-color: var(--color-accent) !important;
+  color: var(--color-accent) !important;
+}
+
+
 
 /* --- Post Cover Image --- */
 
@@ -605,4 +690,63 @@ footer,
 .quarto-container {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
+}
+
+/* --- Mobile Responsive Typography & Layout --- */
+
+@media (max-width: 768px) {
+  body {
+    font-size: 0.925rem;
+    line-height: 1.55;
+  }
+
+  :where(h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6) {
+    margin-top: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header-block {
+    padding: 2.25rem 1.25rem 1.5rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero-banner {
+    padding: 1.5em 1rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero-links {
+    margin-top: 1.25rem;
+    gap: 0.75rem;
+  }
+
+  .resume-top-row {
+    gap: 1.5rem;
+  }
+
+  .hobby-card img {
+    height: 240px;
+  }
+
+  .hobby-content {
+    padding: 1.25rem;
+  }
+
+  div.sourceCode pre {
+    font-size: 0.85em;
+  }
+
+  #title-block-header.quarto-title-block.default .quarto-title-meta {
+    gap: 0.75rem 1.5rem !important;
+  }
+
+  #title-block-header.quarto-title-block.default .quarto-title-meta .quarto-categories {
+    margin-left: 0 !important;
+  }
 }

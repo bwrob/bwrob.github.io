@@ -1,67 +1,89 @@
 [executor]
-type = "uv"
+    type = "uv"
 
 [tasks._check]
-help = "Run ruff code quality checks"
-cmd  = "ruff check ."
+    cmd  = "ruff check ."
+    help = "Run ruff code quality checks"
 
 [tasks._fix_lint]
-help = "Fix auto-fixable ruff linter issues"
-cmd  = "ruff check --fix --unsafe-fixes ."
+    cmd  = "ruff check --fix --unsafe-fixes ."
+    help = "Fix auto-fixable ruff linter issues"
 
 [tasks._format]
-help = "Format code using ruff format"
-cmd  = "ruff format ."
+    cmd  = "ruff format ."
+    help = "Format code using ruff format"
 
 [tasks._hap_preview]
-help = "Run quarto preview on port 3333 via hap"
-cmd  = "hap run quarto preview ./index.qmd --port 3333"
+    cmd  = "hap run quarto preview ./index.qmd --port 3333"
+    help = "Run quarto preview on port 3333 via hap"
 
 [tasks._hap_publish]
-help = "Publish index to gh-pages via hap and quarto"
-cmd  = "hap run quarto publish --no-prompt --no-browser gh-pages"
+    cmd  = "hap run quarto publish --no-prompt --no-browser gh-pages"
+    help = "Publish index to gh-pages via hap and quarto"
 
 [tasks._format_md]
-help = "Format markdown files with rumdl"
-cmd  = "rumdl fmt"
+    cmd  = "rumdl fmt"
+    help = "Format markdown files with rumdl"
 
 [tasks._check_md]
-help = "Run rumdl markdown & quarto linter"
-cmd  = "rumdl check"
+    cmd  = "rumdl check"
+    help = "Run rumdl markdown & quarto linter"
 
 [tasks.check_md]
-help = "Run rumdl markdown & quarto linter"
-cmd  = "rumdl check"
+    cmd  = "rumdl check"
+    help = "Run rumdl markdown & quarto linter"
 
 
 [tasks._pre_commit]
-help = "Run pre-commit checks on all files"
-cmd  = "pre-commit run --all-files"
+    cmd  = "pre-commit run --all-files"
+    help = "Run pre-commit checks on all files"
 
 [tasks._report_host]
-help = "Print the local preview URL"
-cmd  = "echo 'http://localhost:3333/'"
+    cmd  = "echo 'http://localhost:3333/'"
+    help = "Print the local preview URL"
 
 [tasks._type_check]
-help = "Run static type checking with pyrefly"
-cmd  = "pyrefly check"
+    cmd  = "pyrefly check"
+    help = "Run static type checking with pyrefly"
 
 [tasks._check_cname]
-help = "Verify CNAME file exists and contains bwrob.dev"
-cmd  = "sh -c 'test -f CNAME && [ \"$(cat CNAME | tr -d \"[:space:]\")\" = \"bwrob.dev\" ]'"
+    cmd  = "sh -c 'test -f CNAME && [ \"$(cat CNAME | tr -d \"[:space:]\")\" = \"bwrob.dev\" ]'"
+    help = "Verify CNAME file exists and contains bwrob.dev"
+
+[tasks._format_css]
+    cmd  = "pre-commit run prettier-css --all-files"
+    help = "Format CSS and SCSS files with prettier"
+
+[tasks._format_yaml]
+    cmd  = "pre-commit run prettier-yaml --all-files"
+    help = "Format YAML files with prettier"
+
+[tasks._format_toml]
+    cmd  = "pre-commit run taplo-format --all-files"
+    help = "Format TOML files with taplo"
 
 [tasks.clean_tree]
-help = "Clean up active git worktrees (except quarto-main)"
-cmd  = "git worktree list | grep -v quarto-main | awk '{print $1}' | xargs git worktree remove"
+    cmd  = "git worktree list | grep -v quarto-main | awk '{print $1}' | xargs git worktree remove"
+    help = "Clean up active git worktrees (except quarto-main)"
 
 [tasks.code-quality]
-help     = "Run formatters, linters, and type checkers"
-sequence = ["_check_cname", "_format", "_format_md", "_fix_lint", "_check", "_type_check"]
+    help = "Run formatters, linters, and type checkers"
+    sequence = [
+        "_check_cname",
+        "_format",
+        "_format_md",
+        "_format_css",
+        "_format_yaml",
+        "_format_toml",
+        "_fix_lint",
+        "_check",
+        "_type_check",
+    ]
 
 [tasks.preview]
-help     = "Preview quarto site locally and report local host URL"
-sequence = ["_hap_preview", "_report_host"]
+    help     = "Preview quarto site locally and report local host URL"
+    sequence = [ "_hap_preview", "_report_host" ]
 
 [tasks.publish]
-help     = "Run pre-commit checks and publish to gh-pages"
-sequence = ["_check_cname", "_pre_commit", "_hap_publish"]
+    help     = "Run pre-commit checks and publish to gh-pages"
+    sequence = [ "_check_cname", "_pre_commit", "_hap_publish" ]
