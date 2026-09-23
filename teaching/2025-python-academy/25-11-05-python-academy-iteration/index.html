@@ -83,8 +83,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../site_libs/bootstrap/bootstrap-d2f8a27639f4fc2bf7bba3056eca9a55.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../../site_libs/bootstrap/bootstrap-dark-7ebe754634c09e163cb13976304e8d4c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-340b2ce726dd9eb67ff0665932bb3319.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-2cc1960065226ef361e0aef201d45138.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -441,7 +441,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="lists-vs.-tuples-the-eager-iterables" class="level2">
 <h2 class="anchored" data-anchor-id="lists-vs.-tuples-the-eager-iterables">Lists Vs. Tuples: the Eager Iterables</h2>
 <p>Lists and tuples are eager sequences: Python allocates memory for every single element the moment the container is constructed. When you create a list of a million numbers, Python allocates the entire contiguous block of pointer references immediately:</p>
-<div id="65555661" class="cell" data-execution_count="1">
+<div id="c6f297bd" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a>my_list <span class="op">=</span> [i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1_000_000</span>)]</span>
@@ -467,7 +467,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>__next__()</code>: Returns the next item from the stream. When there are no more items, it raises a <code>StopIteration</code> exception.</li>
 </ul>
 <p>You can get an iterator from any iterable (like a list) using the <code>iter()</code> function.</p>
-<div id="04e290a4" class="cell" data-execution_count="2">
+<div id="8ec61435" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>my_list <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span>
@@ -489,7 +489,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="generators-simplified-iterators">Generators: Simplified Iterators</h2>
 <p>Generators are a simpler way to create iterators. Instead of writing a class with <code>__iter__</code> and <code>__next__</code>, you write a function that uses <code>yield</code>.</p>
 <p>Here’s a simple generator that produces a sequence of numbers:</p>
-<div id="96589eb6" class="cell" data-execution_count="3">
+<div id="db21e3ad" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="kw">def</span> number_generator(n):</span>
@@ -507,7 +507,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="example-flattening-a-list-of-lists">Example: Flattening a List of Lists</h3>
 <p>A common task is to flatten a list of lists into a single list. A generator is a perfect tool for this, especially when dealing with large datasets, as it avoids creating a new, large list in memory.</p>
 <p>Imagine you have a list of trades, where each trade has a list of associated cashflows. You want to process all cashflows from all trades.</p>
-<div id="14ddd36f" class="cell" data-execution_count="4">
+<div id="5c8401db" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a>trades_cashflows <span class="op">=</span> [</span>
@@ -544,7 +544,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="memory-efficiency-in-action">Memory Efficiency in Action</h2>
 <p>To make our memory analysis cleaner, we can define a decorator. This is a more Pythonic way to wrap functions with common boilerplate code, like starting and stopping <code>tracemalloc</code>.</p>
 <p>Let’s demonstrate the memory difference using a decorator with the standard library’s <code>tracemalloc</code> module. We’ll compare the memory usage of creating a list versus creating a generator.</p>
-<div id="51b230c2" class="cell" data-execution_count="5">
+<div id="c44ca765" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="im">import</span> tracemalloc</span>
@@ -602,13 +602,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>Profiling memory for list creation...
 Function: create_list
-Current memory usage is 40.441184MB; Peak was 40.441224MB
+Current memory usage is 40.441231MB; Peak was 40.441271MB
 Profiling memory for generator creation...
 Function: create_generator
 Current memory usage is 0.000392MB; Peak was 0.000392MB
 Profiling memory for generator consumption...
 Function: consume_generator
-Current memory usage is 40.441272MB; Peak was 40.441272MB</code></pre>
+Current memory usage is 40.441225MB; Peak was 40.441225MB</code></pre>
 </div>
 </div>
 <p>The output speaks for itself: creating the generator uses almost no memory. The cost only shows up when you actually consume it into a list.</p>
@@ -619,7 +619,7 @@ Current memory usage is 40.441272MB; Peak was 40.441272MB</code></pre>
 <ul>
 <li><strong><code>enumerate(iterable, start=0)</code></strong>: When processing a series of cashflows, you might need to know the period number for each payment. <code>enumerate</code> is perfect for this.</li>
 </ul>
-<div id="b7e79b33" class="cell" data-execution_count="6">
+<div id="dc6426d4" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a>cashflows <span class="op">=</span> [<span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">1100</span>]  <span class="co"># Coupon payments and principal</span></span>
@@ -636,7 +636,7 @@ Period 4: Cashflow = 1100</code></pre>
 <ul>
 <li><strong><code>zip(*iterables)</code></strong>: This function is very useful for combining different streams of data. For example, you can pair trade dates with their corresponding notionals.</li>
 </ul>
-<div id="61f71cd7" class="cell" data-execution_count="7">
+<div id="f19d5760" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a>trade_dates <span class="op">=</span> [<span class="st">"2025-11-05"</span>, <span class="st">"2025-11-06"</span>, <span class="st">"2025-11-07"</span>]</span>
@@ -653,7 +653,7 @@ On 2025-11-07, we traded a notional of 500,000</code></pre>
 <ul>
 <li><strong><code>sorted(iterable, key=None, reverse=False)</code></strong>: Sorting is a common task. You might want to sort a list of trades by maturity date or notional.</li>
 </ul>
-<div id="d7f7af15" class="cell" data-execution_count="8">
+<div id="542e037f" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
@@ -692,7 +692,7 @@ Trade(trade_id='T3', maturity=datetime.date(2027, 12, 31), notional=15000000)</c
 <li><p><strong><code>itertools.chain(*iterables)</code> and <code>itertools.chain.from_iterable(iterable)</code></strong>: Often you need to process items from several sequences in a row. <code>chain</code> lets you treat them as a single, continuous stream without merging them in memory. A great example is pricing a fixed-to-float swap leg, where initial coupon payments are fixed, and later ones are floating.</p>
 <p><code>chain.from_iterable</code> is a useful variant that takes a single iterable of iterables.</p></li>
 </ul>
-<div id="f40d11fe" class="cell" data-execution_count="9">
+<div id="00a671a6" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-label="1"></a><span class="im">import</span> itertools</span>
@@ -716,13 +716,13 @@ Trade(trade_id='T3', maturity=datetime.date(2027, 12, 31), notional=15000000)</c
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Full cashflow stream for the leg:
-50.00 50.00 50.00 50.00 53.94 53.90 46.09 54.85 54.75 49.12 </code></pre>
+50.00 50.00 50.00 50.00 52.77 48.20 53.66 51.83 47.72 48.62 </code></pre>
 </div>
 </div>
 <ul>
 <li><strong><code>itertools.accumulate(iterable[, func])</code></strong>: This is ideal for calculating cumulative sums or running products. A common use case is to calculate the cumulative P&amp;L of a trading strategy.</li>
 </ul>
-<div id="2d737f93" class="cell" data-execution_count="10">
+<div id="bca7d11a" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-label="1"></a><span class="im">import</span> itertools</span>
@@ -737,7 +737,7 @@ Trade(trade_id='T3', maturity=datetime.date(2027, 12, 31), notional=15000000)</c
 </div>
 </div>
 <p>It can also model more complex recurrence relations, like the amortization of a loan. Let’s calculate the outstanding balance of a fixed-payment annuity until it’s paid off.</p>
-<div id="69b78fec" class="cell" data-execution_count="11">
+<div id="eb2d5d8b" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-label="1"></a><span class="im">import</span> itertools</span>
@@ -803,7 +803,7 @@ Month          23: 21.14</code></pre>
 <ul>
 <li><strong><code>itertools.pairwise(iterable)</code></strong>: As we’ve seen, this is ideal for working with consecutive items in a sequence. Calculating year fractions for a swap leg is a prime example.</li>
 </ul>
-<div id="645774bf" class="cell" data-execution_count="12">
+<div id="8ca8f6c2" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-label="1"></a><span class="im">import</span> itertools</span>
@@ -828,7 +828,7 @@ Period: 2025-07-15 to 2026-01-15, Year Fraction: 0.5038</code></pre>
 <ul>
 <li><strong><code>itertools.cycle(iterable)</code></strong>: Repeats a sequence indefinitely. This can be used to cycle through a set of risk scenarios or apply a repeating pattern of market data shocks.</li>
 </ul>
-<div id="cc494888" class="cell" data-execution_count="13">
+<div id="4a25e816" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-label="1"></a><span class="im">import</span> itertools</span>

@@ -1,17 +1,55 @@
-/* --- Global Modernizations --- */
+/* --- Design Tokens --- */
+
 :root {
   --brand-blue: #2c3e50;
-  --hero-sidebar-offset: 22rem;
-  --hero-sidebar-offset-resume: 26rem;
-  --hero-sidebar-offset-course: 18rem;
+  --font-mono: "Hack Nerd Font", "JetBrainsMono Nerd Font", "CascadiaCode Nerd Font", ui-monospace, monospace;
+  --font-display: "Hack Nerd Font", "JetBrainsMono Nerd Font", "CascadiaCode Nerd Font", ui-monospace, monospace;
 }
 
+/* --- Base --- */
+
 body {
+  background-color: var(--color-paper);
+  color: var(--color-ink-2);
+  font-family: var(--font-mono);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
-/* --- Hero Section System (Homepage, Resume, Hobbies, Teaching) --- */
+html,
+body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: clip !important;
+}
+
+/* --- Typography --- */
+
+:where(h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6) {
+  font-weight: 700;
+  letter-spacing: -0.01ch;
+  line-height: 1.2;
+  color: var(--color-ink);
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+}
+
+h1, .h1 { font-size: 2.25rem; }
+h2, .h2 { font-size: 1.6rem; border-bottom: 1px solid var(--color-rule); padding-bottom: 0.5rem; }
+h3, .h3 { font-size: 1.25rem; }
+h4, .h4 { font-size: 1rem; color: var(--color-accent); }
+
+a { color: var(--color-accent); text-decoration: none; }
+a:hover { text-decoration: underline; } /* color overridden per-theme */
+
+/* --- Navbar --- */
+
+.navbar-brand { margin: 0 !important; }
+.navbar-title { display: none !important; }
+.nav-link { font-size: 0.8rem; }
+
+/* --- Hero Page Body Classes --- */
 
 /* Align Hero with Navbar */
 body.resume-page.nav-fixed,
@@ -21,14 +59,9 @@ body.teaching-page.nav-fixed {
   margin-top: 0 !important;
 }
 
-/* Homepage Listing Spacing: clear navbar comfortably */
+/* Homepage listing spacing */
 body.homepage #quarto-content {
-  padding-top: 0rem;
-}
-
-/* Ensure enough space in standard Quarto title banners */
-.quarto-title-block .quarto-title-banner {
-  padding-bottom: 2.5rem !important;
+  padding-top: 0;
 }
 
 body.resume-page #quarto-header,
@@ -49,22 +82,22 @@ body.teaching-page .quarto-secondary-nav {
   display: none !important;
 }
 
-/* Full-Width Hero Background Trick */
+/* --- Hero Banner --- */
+
 .hero-banner {
-  padding: 2em 1rem 2em 1rem !important;
+  padding: 2em 1rem !important;
   text-align: center !important;
-  margin-bottom: 2.5rem !important;
+  margin: 0 0 2.5rem !important;
   position: relative !important;
   display: block !important;
   background-color: var(--brand-blue) !important;
   box-shadow: 0 0 0 100vmax var(--brand-blue) !important;
   clip-path: inset(0 -100vmax);
   color: white !important;
-  margin-top: 0 !important;
 }
 
 .hero-banner.minimal {
-  padding: 1rem 1rem 1rem 1rem !important;
+  padding: 1rem !important;
   margin-bottom: 1.5rem !important;
 }
 
@@ -76,14 +109,12 @@ body.teaching-page .quarto-secondary-nav {
 .hero-banner h1 {
   font-weight: 800;
   font-size: 2.5rem;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.5rem;
   letter-spacing: -0.04em;
   color: white;
 }
 
-.hero-banner.minimal h1 {
-  font-size: 1.8rem;
-}
+.hero-banner.minimal h1 { font-size: 1.8rem; }
 
 .hero-subtitle {
   font-weight: 600;
@@ -97,7 +128,8 @@ body.teaching-page .quarto-secondary-nav {
   margin-bottom: 0;
 }
 
-/* Hero Images */
+/* --- Hero Images --- */
+
 img.hero-logo,
 img.hero-img-profile {
   width: 85px;
@@ -112,7 +144,8 @@ img.hero-img-profile {
   object-fit: cover;
 }
 
-/* Hero Links */
+/* --- Hero Links --- */
+
 .hero-links {
   margin-top: 2rem;
   display: flex;
@@ -122,9 +155,7 @@ img.hero-img-profile {
   flex-wrap: wrap;
 }
 
-.hero-links p {
-  display: contents;
-}
+.hero-links p { display: contents; }
 
 .hero-link {
   color: white !important;
@@ -146,24 +177,45 @@ img.hero-img-profile {
   transform: translateY(-3px);
 }
 
-/* --- Content Components --- */
+/* --- Page Header Block --- */
 
-/* Listing Cards */
-.quarto-listing-grid .quarto-grid-item {
-  border: 1px solid rgba(44, 62, 80, 0.1) !important;
+.page-header-block {
+  background: var(--color-paper-2);
+  border: 1px solid var(--color-rule);
   border-radius: 12px;
-  transition: all 0.3s ease;
-  background: white;
+  padding: 5rem 3rem 3rem;
+  margin-top: 1.5rem;
+  margin-bottom: 4rem;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.quarto-dark .quarto-listing-grid .quarto-grid-item {
-  background: #2a2a2a !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+.page-header-block h1 {
+  margin-top: 0 !important;
+  font-size: 2.25rem !important;
 }
 
-.quarto-listing-grid .quarto-grid-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(44, 62, 80, 0.12) !important;
+.page-header-block h1::before {
+  content: "> ";
+  color: var(--color-accent);
+  opacity: 0.6;
+}
+
+/* --- Post Title Block --- */
+
+.quarto-title-block .quarto-title-banner,
+.quarto-title-block,
+header#title-block-header {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  color: var(--color-ink) !important;
+}
+
+
+
+.quarto-title-block .title {
+  color: var(--color-ink) !important;
 }
 
 /* --- Sticky Sidebars --- */
@@ -182,9 +234,7 @@ img.hero-img-profile {
   top: 6rem !important;
 }
 
-/* Hero pages alignment: Sidebars now stick to top */
 @media (min-width: 992px) {
-
   .hobbies-page #quarto-margin-sidebar,
   .teaching-page #quarto-margin-sidebar,
   .resume-page #quarto-margin-sidebar,
@@ -192,6 +242,8 @@ img.hero-img-profile {
     padding-top: 1rem !important;
   }
 }
+
+/* --- TOC --- */
 
 #TOC .nav-link {
   color: var(--brand-blue) !important;
@@ -213,29 +265,7 @@ img.hero-img-profile {
   color: white !important;
 }
 
-/* Only target code blocks inside main content headers for dark mode fix */
-#quarto-document-content h1 code,
-#quarto-document-content h2 code,
-#quarto-document-content h3 code,
-#quarto-document-content h4 code,
-#quarto-document-content h5 code,
-#quarto-document-content h6 code {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  color: #f0f0f0 !important;
-  padding: 0.1rem 0.3rem !important;
-  border-radius: 4px !important;
-}
-
-/* General inline code modernization for dark mode */
-.quarto-dark code:not(pre > code) {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  color: #e9ecef !important;
-  padding: 0.2rem 0.4rem !important;
-  border-radius: 4px !important;
-  font-size: 0.9em !important;
-}
-
-/* Explicitly clean up TOC code styling to keep it clean and readable */
+/* Clean up TOC inline-code styling */
 #TOC .nav-link code,
 #TOC .nav-link span code,
 #TOC li code {
@@ -248,9 +278,88 @@ img.hero-img-profile {
   font-size: inherit !important;
 }
 
-/* --- Page-Specifics --- */
+/* --- Dark Mode Code Overrides --- */
 
-/* Resume */
+.quarto-dark #quarto-document-content h1 code,
+.quarto-dark #quarto-document-content h2 code,
+.quarto-dark #quarto-document-content h3 code,
+.quarto-dark #quarto-document-content h4 code,
+.quarto-dark #quarto-document-content h5 code,
+.quarto-dark #quarto-document-content h6 code {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f0f0f0 !important;
+  padding: 0.1rem 0.3rem !important;
+  border-radius: 4px !important;
+}
+
+.quarto-dark code:not(pre > code) {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #e9ecef !important;
+  padding: 0.2rem 0.4rem !important;
+  border-radius: 4px !important;
+  font-size: 0.9em !important;
+}
+
+/* --- Listing Cards --- */
+
+/* Legacy grid selector */
+.quarto-listing-grid .quarto-grid-item {
+  border: 1px solid rgba(44, 62, 80, 0.1) !important;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.quarto-dark .quarto-listing-grid .quarto-grid-item {
+  background: #2a2a2a !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.quarto-listing-grid .quarto-grid-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(44, 62, 80, 0.12) !important;
+}
+
+/* Shared card layout */
+.quarto-listing-container-grid .card-body.post-contents {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1 !important;
+  padding: 1.25rem !important;
+  background: transparent !important;
+}
+
+.listing-categories {
+  padding-top: 0.5rem !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.4rem !important;
+  position: static !important;
+  margin-top: 0 !important;
+}
+
+/* Clear bright title backgrounds */
+.quarto-listing-container-grid .listing-title,
+.quarto-listing-container-grid .card-title {
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.listing-title {
+  font-weight: 700 !important;
+  color: var(--color-ink) !important;
+  font-size: 1.15rem !important;
+}
+
+.listing-description {
+  margin-top: auto !important;
+  padding-top: 1rem !important;
+}
+
+/* --- Resume --- */
+
 .resume-section {
   border-left: 2px solid rgba(44, 62, 80, 0.1);
   padding-left: 1.5rem;
@@ -259,24 +368,95 @@ img.hero-img-profile {
 }
 
 .resume-header {
+  margin-top: -0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.resume-header p {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 0.25rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
 }
 
-.resume-company {
-  font-weight: 700;
-  color: var(--brand-blue);
+.resume-title {
+  font-weight: 600;
+  color: var(--color-accent, #5477cc);
 }
 
 .resume-date {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.85rem;
-  color: #888;
+  font-size: 0.9rem;
+  color: var(--color-muted, #888888);
 }
 
-/* Hobbies */
+.resume-tech {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.resume-top-row {
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.resume-photo-column { flex-shrink: 0; }
+.resume-identity-column { flex: 1; min-width: 300px; }
+
+.resume-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-ink-2);
+  margin-bottom: 2rem;
+}
+
+/* --- ASCII Components --- */
+
+.ascii-divider pre {
+  color: var(--color-rule);
+  font-size: 0.7rem;
+  line-height: 1;
+  margin: 4rem 0;
+  text-align: center;
+}
+
+.hero-ascii pre {
+  font-size: clamp(0.35rem, 0.9vw, 0.6rem);
+  line-height: 1.1;
+  margin: 0;
+}
+
+/* --- Stats Strip --- */
+
+.stats-strip {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--color-paper-2);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-rule);
+  display: inline-block;
+}
+
+.status-ok::before { content: "● "; color: var(--color-green); }
+
+/* --- Hobbies --- */
+
+/* Quarto renders ![Alt](img) as .quarto-figure > figure > p > a > img.
+   Hide the redundant caption and strip all the wrapper margins so the image
+   sits flush against the .hobby-content below it. */
+.hobby-card figcaption { display: none; }
+.hobby-card .quarto-figure,
+.hobby-card figure,
+.hobby-card figure p,
+.hobby-card .figure-img { margin: 0; }
+
 .hobby-card {
   background: white;
   border-radius: 15px;
@@ -296,19 +476,16 @@ img.hero-img-profile {
   object-fit: cover;
 }
 
-.hobby-content {
-  padding: 2rem;
-}
+.hobby-content { padding: 2rem; }
 
-/* Teaching */
+/* --- Teaching --- */
+
 .teaching-timeline {
   padding-left: 1.5rem;
   border-left: 2px solid rgba(44, 62, 80, 0.1);
 }
 
-.semester-block {
-  margin-bottom: 2rem;
-}
+.semester-block { margin-bottom: 2rem; }
 
 .semester-title {
   font-weight: 700;
@@ -338,16 +515,15 @@ img.hero-img-profile {
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-.quarto-dark .course-link {
-  background: rgba(255, 255, 255, 0.03);
-}
+.quarto-dark .course-link { background: rgba(255, 255, 255, 0.03); }
 
 .quarto-dark .course-link:hover {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Course Page Enhancements */
+/* --- Course Page --- */
+
 .course-info-card {
   background: rgba(44, 62, 80, 0.03);
   padding: 1.5rem;
@@ -382,97 +558,29 @@ img.hero-img-profile {
   color: var(--brand-blue);
 }
 
-.quarto-dark .course-info-item .value {
-  color: #3498db;
-}
+.quarto-dark .course-info-item .value { color: #3498db; }
 
-/* Course Page Badge */
 .course-logo {
   width: 150px;
   height: 150px;
   object-fit: contain;
   display: block;
-  margin: 0 0 1rem 0;
+  margin: 0 0 1rem;
 }
 
-/* --- Footer & Whitespace Fixes --- */
-
-/* Bottom Metadata Block (Moved via JS) */
-.bottom-meta-block {
-  margin-top: 5rem !important;
-  padding-top: 2rem !important;
-  border-top: 1px solid rgba(44, 62, 80, 0.1) !important;
-  display: flex !important;
-  flex-wrap: wrap;
-  gap: 2rem;
-  font-size: 0.9rem;
-}
-
-.quarto-dark .bottom-meta-block {
-  border-top-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-.bottom-meta-block>div {
-  flex: 0 1 auto;
-}
-
-.bottom-meta-block .quarto-title-meta-heading {
-  color: var(--brand-blue);
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.25rem;
-}
-
-.quarto-dark .bottom-meta-block .quarto-title-meta-heading {
-  color: #3498db;
-}
-
-.bottom-meta-block .quarto-title-meta-contents {
-  font-size: 1rem;
-}
-
-.bottom-meta-block .quarto-title-meta-contents p {
-  margin: 0;
-}
-
-footer,
-.nav-footer {
-  margin-top: 0 !important;
-  padding: 1rem 0 !important;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  opacity: 0.7;
-}
-
-#quarto-content,
-#quarto-content>main,
-.page-columns,
-#quarto-document-content,
-#quarto-main-content,
-.quarto-container {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* MASTER FIX: Clear potential right-side gaps without breaking sticky */
-html,
-body {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: clip !important;
-}
-
-/* --- Language Switcher --- */
+/* Standalone fallback (pages without JS or before DOM move) */
 .lang-switcher {
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
-  margin-top: -2.2rem;
-  /* Reduces the gap from the title banner */
-  margin-bottom: 1.8rem;
   font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+/* When JS has moved it inside .quarto-title-meta (2-col grid) */
+.quarto-title-meta .lang-switcher {
+  grid-column: 1 / -1;
+  margin: 0.5rem 0 0;
 }
 
 .lang-btn {
@@ -503,32 +611,28 @@ body {
   pointer-events: none;
 }
 
-/* --- Resume Page Styling --- */
-.resume-header {
-  margin-top: -0.25rem;
-  margin-bottom: 0.75rem;
+/* --- Footer & Whitespace --- */
+
+footer,
+.nav-footer {
+  margin-top: 0 !important;
+  padding: 1rem 0 !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  opacity: 0.7;
 }
 
-.resume-header p {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0;
+.nav-footer {
+  border-top: 1px solid var(--color-rule);
+  background: var(--color-paper-2) !important;
+  color: var(--color-muted) !important;
 }
 
-.resume-title {
-  font-weight: 600;
-  color: var(--color-accent, #5477cc);
-}
-
-.resume-date {
-  font-size: 0.9rem;
-  color: var(--color-muted, #888888);
-}
-
-.resume-tech {
-  margin-top: 0.75rem;
-  font-size: 0.9rem;
+#quarto-content,
+#quarto-content > main,
+.page-columns,
+#quarto-document-content,
+#quarto-main-content,
+.quarto-container {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
