@@ -218,6 +218,18 @@ header#title-block-header {
   color: var(--color-ink) !important;
 }
 
+/* --- Post Cover Image --- */
+
+/* Quarto generates <figcaption> from markdown alt text (which rumdl MD045 requires).
+   Hide figcaptions on cover images so alt text remains for accessibility/SEO
+   without displaying redundant text beneath the cover banner. */
+figure:has(img[src*="cover."]) > figcaption,
+.quarto-figure:has(img[src*="cover."]) > figcaption,
+.quarto-figure:has(img[src*="cover."]) figcaption {
+  display: none !important;
+}
+
+
 /* --- Sticky Sidebars --- */
 
 #quarto-margin-sidebar {
@@ -568,50 +580,8 @@ header#title-block-header {
   margin: 0 0 1rem;
 }
 
-/* Standalone fallback (pages without JS or before DOM move) */
-.lang-switcher {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  margin-bottom: 1.5rem;
-}
 
-/* When JS has moved it inside .quarto-title-meta (2-col grid) */
-.quarto-title-meta .lang-switcher {
-  grid-column: 1 / -1;
-  margin: 0.5rem 0 0;
-}
 
-.lang-btn {
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  text-decoration: none !important;
-  font-weight: 500;
-  border: 1px solid var(--color-rule, rgba(44, 62, 80, 0.2));
-  color: var(--color-ink-2, #333333) !important;
-  background-color: var(--color-paper-2, #ffffff);
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.lang-btn:hover {
-  background-color: var(--color-paper, rgba(44, 62, 80, 0.05));
-  border-color: var(--color-accent, #5477cc);
-  color: var(--color-accent, #5477cc) !important;
-  transform: translateY(-1px);
-}
-
-.lang-btn.active {
-  background-color: var(--color-accent, #5477cc);
-  color: #ffffff !important;
-  border-color: var(--color-accent, #5477cc);
-  pointer-events: none;
-}
-
-/* --- Footer & Whitespace --- */
 
 footer,
 .nav-footer {
