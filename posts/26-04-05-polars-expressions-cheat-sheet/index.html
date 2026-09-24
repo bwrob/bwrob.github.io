@@ -83,8 +83,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-175e116823cc63f1ca17072cf15cf938.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-2cc1960065226ef361e0aef201d45138.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-2a6514824c030cb0a4b203b3611967a1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-d712c2b42573e80a8cf7be1ed92ea0f9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -443,7 +443,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Polars expressions and contexts applied to S&amp;P 500 OHLCV data. If you know Pandas, the patterns here should click fast.</p>
 <section id="loading-financial-data" class="level2">
 <h2 class="anchored" data-anchor-id="loading-financial-data">1. Loading Financial Data</h2>
-<div id="9069ae9f" class="cell" data-execution_count="1">
+<div id="4a0fa341" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-label="1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
@@ -474,7 +474,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 </dl>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="1">
+<div class="cell-output cell-output-display" data-execution_count="9">
 <div><style>
 .dataframe > thead > tr,
 .dataframe > tbody > tr {
@@ -559,7 +559,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="expressions-the-atomic-units-of-logic" class="level2">
 <h2 class="anchored" data-anchor-id="expressions-the-atomic-units-of-logic">2. Expressions: the Atomic Units of Logic</h2>
 <p>Expressions are reusable, composable chunks of logic. Define once, apply anywhere.</p>
-<div id="f5f07986" class="cell" data-execution_count="2">
+<div id="11c98551" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-label="1"></a>log_return <span class="op">=</span> (</span>
@@ -596,7 +596,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context-selection-feature-engineering" class="level2">
 <h2 class="anchored" data-anchor-id="context-selection-feature-engineering">3. Context: Selection &amp; Feature Engineering</h2>
 <p><code>with_columns</code> adds multiple indicators in a single pass.</p>
-<div id="c21faf9d" class="cell" data-execution_count="3">
+<div id="368d1b7e" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-label="1"></a>df <span class="op">=</span> df.with_columns(</span>
@@ -620,7 +620,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 </dl>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <div><style>
 .dataframe > thead > tr,
 .dataframe > tbody > tr {
@@ -725,7 +725,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="context-aggregation-group_by" class="level2">
 <h2 class="anchored" data-anchor-id="context-aggregation-group_by">4. Context: Aggregation (<code>group_by</code>)</h2>
-<div id="6f17abe2" class="cell" data-execution_count="4">
+<div id="a8e7ec31" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-label="1"></a>risk_summary <span class="op">=</span> df.group_by(<span class="st">"ticker"</span>).agg(</span>
@@ -753,7 +753,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 </dl>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="4">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <div><style>
 .dataframe > thead > tr,
 .dataframe > tbody > tr {
@@ -824,7 +824,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="power-selectors-polars.selectors" class="level2">
 <h2 class="anchored" data-anchor-id="power-selectors-polars.selectors">5. Power Selectors (<code>polars.selectors</code>)</h2>
 <p>Target columns by properties instead of hardcoding names — handy for scenario shocks.</p>
-<div id="41e2cbd5" class="cell" data-execution_count="5">
+<div id="6e943612" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-1" class="code-annotation-target"><a href="#annotated-cell-5-1" aria-label="1"></a>price_shock <span class="op">=</span> cs.starts_with(<span class="st">"open"</span>, <span class="st">"high"</span>, <span class="st">"low"</span>, <span class="st">"close"</span>) <span class="op">*</span> <span class="fl">1.01</span></span>
@@ -847,7 +847,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 </dl>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="13">
 <div><style>
 .dataframe > thead > tr,
 .dataframe > tbody > tr {
@@ -909,7 +909,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="window-functions-over" class="level2">
 <h2 class="anchored" data-anchor-id="window-functions-over">6. Window Functions (<code>over</code>)</h2>
 <p>Compute group-level stats and project them back onto individual rows — no merge needed.</p>
-<div id="99d50d09" class="cell" data-execution_count="6">
+<div id="1ddbe54e" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1" aria-label="1"></a>df.with_columns(</span>
@@ -930,7 +930,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 </dl>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="14">
 <div><style>
 .dataframe > thead > tr,
 .dataframe > tbody > tr {
@@ -1049,7 +1049,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="time-series-rolling-metrics-asof-joins" class="level2">
 <h2 class="anchored" data-anchor-id="time-series-rolling-metrics-asof-joins">7. Time Series: Rolling Metrics &amp; Asof Joins</h2>
-<div id="3f7ce97b" class="cell" data-execution_count="7">
+<div id="af6a6e31" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-label="1"></a>df.with_columns(</span>
@@ -1065,7 +1065,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 </dl>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="15">
 <div><style>
 .dataframe > thead > tr,
 .dataframe > tbody > tr {
@@ -1178,7 +1178,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reshaping-for-correlation-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="reshaping-for-correlation-analysis">8. Reshaping for Correlation Analysis</h2>
 <p>Pivot from long to wide for correlation / covariance matrices.</p>
-<div id="6a222664" class="cell" data-execution_count="8">
+<div id="7e5ed454" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1" aria-label="1"></a>wide_returns <span class="op">=</span> df.pivot(</span>
@@ -1202,7 +1202,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 </dl>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="16">
 <div><style>
 .dataframe > thead > tr,
 .dataframe > tbody > tr {
@@ -1375,7 +1375,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>0.159886</td>
 <td>0.387158</td>
 <td>0.291319</td>
-<td>0.051918</td>
+<td>0.051919</td>
 <td>0.314924</td>
 <td>0.220464</td>
 <td>0.365594</td>
@@ -1478,7 +1478,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>0.248612</td>
 <td>0.294118</td>
 <td>0.025718</td>
-<td>0.231091</td>
+<td>0.23109</td>
 <td>0.098731</td>
 <td>-0.052414</td>
 <td>0.18999</td>
@@ -1763,7 +1763,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="performance-categoricals-streaming" class="level2">
 <h2 class="anchored" data-anchor-id="performance-categoricals-streaming">9. Performance: Categoricals &amp; Streaming</h2>
 <p>Cast string columns to <code>Categorical</code> for memory savings. For datasets that exceed RAM, use <code>LazyFrame</code> + streaming to process in batches.</p>
-<div id="a7065bae" class="cell" data-execution_count="9">
+<div id="c845ac73" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-label="1"></a>df <span class="op">=</span> (</span>
