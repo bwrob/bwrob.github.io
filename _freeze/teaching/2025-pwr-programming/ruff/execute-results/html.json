@@ -1,0 +1,12 @@
+{
+  "hash": "861b7bb6c96fa62c5471a3e0d819e156",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\nabout:\n  template: marquee\n\nexecute:\n  freeze: true  # never re-render during project render\ntitle: \"Ruff - narzędzie do analizy kodu\"\n\n---\n\n## Instalacja\n\n```bash\nconda install -c conda-forge ruff\n```\n\n## Użycie Z Poziomu Terminala\n\n```bash\n# poprawia formatowanie kodu\nruff format\n# sprawdza kod\nruff check\n# sprawdza kod i poprawia błędy które można naprawić automatycznie\nruff check --fix --unsafe-fixes\n```\n\n## Dodatkowa Konfiguracja\n\nRuff można skonfigurować za pomocą pliku `ruff.toml`. Przykładowa konfiguracja:\n\n```toml\nline-length    = 79\ntarget-version = \"py312\"\n\n[lint]\n    select = [\"ALL\"]\n    ignore = [\n        \"COM\",\n        \"D203\",\n        \"D211\",\n        \"D213\",\n        \"FA\",\n        \"ISC\",\n        \"T\",\n        \"TC\",\n    ]\n\n[format]\n    docstring-code-format = true\n```\n\nAby użyć tej konfiguracji, należy uruchomić Ruff z odpowiednim argumentem:\n\n```bash\nruff --config ruff.toml format\nruff --config ruff.toml check\nruff --config ruff.toml check --fix --unsafe-fixes\n```\n\n## Integracja Z VSCode\n\n1. Instalacja rozszerzenia [Ruff].\n1. Dodanie do pliku `.vscode/settings.json` następującej konfiguracji.\n\n```{json}\n{\n   \"[python]\": {\n        \"editor.codeActionsOnSave\": {\n            \"source.fixAll\": \"always\",\n            \"source.organizeImports\": \"always\"\n        },\n        \"editor.defaultFormatter\": \"charliermarsh.ruff\",\n        \"editor.formatOnSave\": true,\n        \"editor.formatOnType\": true,\n    },\n    \"ruff.configuration\": \"ruff.toml\",\n    \"ruff.configurationPreference\": \"filesystemFirst\",\n}\n```\n\n## Zadanie\n\nZainstaluj Ruff i skonfiguruj go w swoim folderze. Użyj go do sprawdzenia i poprawienia\nkodu rozwiązań z dowolnej listy zadań. Zrób to na kopii kodu, aby nie stracić\noryginalnych rozwiązań.\n\nNajpierw popraw formatowanie kodu, a następnie sprawdź kod pod kątem błędów.\nPrzeanalizuj błędy. Gdy jesteś pewny/a że je rozumiesz, użyj opcji `--fix` aby poprawić\nbłędy, które można naprawić automatycznie. Popraw ręcznie błędy, które Ruff nie potrafił\nnaprawić.\n\nPorównaj efekty przed i po użyciu Ruff.\n\n",
+    "supporting": [
+      "ruff_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}
