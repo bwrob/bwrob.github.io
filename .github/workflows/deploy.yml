@@ -79,10 +79,26 @@ jobs:
             exit 1
           fi
 
+      - name: Restore _freeze cache from gh-pages
+        run: |
+          git fetch origin gh-pages --depth=1 || true
+          git archive origin/gh-pages _freeze 2>/dev/null | tar -x || echo "No previous _freeze found on gh-pages, starting fresh."
+
+      - name: Render Quarto site
+        run: uv run quarto render
+        env:
+          QUARTO_PYTHON: .venv/bin/python
+
+      - name: Stage _freeze into _site for gh-pages persistence
+        run: |
+          if [ -d _freeze ]; then
+            cp -r _freeze _site/
+          fi
+
       - name: Publish to GitHub Pages
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: gh-pages
+          render: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          QUARTO_PYTHON: .venv/bin/python
