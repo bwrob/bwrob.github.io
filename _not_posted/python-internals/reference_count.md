@@ -4,9 +4,9 @@ revealing how virtual machines manage lifecycles, execution stacks, and object\
 ownership.\
 ──────
 
-### Act I: The Illusion of Dynamic Lifecycles
+### Act I: the Illusion of Dynamic Lifecycles
 
-#### Question: "How many references exist for a fundamental constant?"
+#### Question: "How Many References Exist for a Fundamental Constant?"
 
 • Intuition: An integer like 1 is just a basic value. If passed into an inspection\
 function, it should have a reference count of 1 or 2.\
@@ -28,9 +28,9 @@ CPU churn. Under PEP 683, CPython marks these objects as immortal.\
 
 ──────
 
-### Act II: The Invisible Hand of the Compiler
+### Act II: the Invisible Hand of the Compiler
 
-#### Question: "What holds references to a standard variable?"
+#### Question: "What Holds References to a Standard Variable?"
 
 • Intuition: Let's pick a number outside the immortal pool (1111) and bind it to a\
 single variable v. We expect exactly 2 references: one from variable v, and one\
@@ -57,7 +57,7 @@ structures.\
 
 ### Act III: Isolating Pure Runtime Allocation
 
-#### Question: "Can we decouple an object from the compiler's constant table?"
+#### Question: "Can We Decouple an Object from the Compiler's Constant Table?"
 
 • Intuition: If we prevent the compiler from seeing the literal 1111 during\
 compilation, the extra constant references should disappear.\
@@ -76,9 +76,9 @@ $$\text{Refcount} = \underbrace{1}{\text{Namespace Dict } (v)} +
 \underbrace{1}{\text{VM Evaluation Stack}} = 2$$\
 ──────
 
-### Act IV: The Cost of Crossing Function Boundaries
+### Act IV: the Cost of Crossing Function Boundaries
 
-#### Question: "What happens when an anonymous object enters a function?"
+#### Question: "What Happens When an Anonymous Object Enters a Function?"
 
 • Intuition: If an object has no variable name (object()), it should have 0 permanent
 references. Passing it into a user function should give it a temporary refcount.\
@@ -102,9 +102,9 @@ frame activation record that roots and retains all arguments for the duration of
 function's scope.
 ──────
 
-### Act V: The Zero-Cost Abstraction of Borrowed Pointers
+### Act V: the Zero-Cost Abstraction of Borrowed Pointers
 
-#### Question: "Can an object ever be observed alive with a refcount of 1?"
+#### Question: "Can an Object Ever Be Observed Alive with a Refcount of 1?"
 
 • Intuition: If passing an argument to any function requires a reference, it seems\
 mathematically impossible for sys.getrefcount to ever report 1.

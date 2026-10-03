@@ -1,9 +1,9 @@
 ---
-title: "Mixin Magic Part 2: Practical Patterns"
-description: "Real-world examples of Mixins for debugging, serialization, and registry management."
-date: "2025-12-08"
 categories: [Python, Mixins, Patterns]
+date: "2025-12-08"
+description: "Real-world examples of Mixins for debugging, serialization, and registry management."
 draft: true
+title: "Mixin Magic Part 2: Practical Patterns"
 ---
 
 Mixins are excellent for reducing boilerplate code. Here are some practical examples.
@@ -18,19 +18,22 @@ class ReprMixin:
         attrs = ", ".join(f"{k}={v}" for k, v in self.__dict__.items())
         return f"<{self.__class__.__name__}({attrs})>"
 
+
 class User(ReprMixin):
     def __init__(self, name):
         self.name = name
 
+
 print(User("Alice"))  # Output: <User(name=Alice)>
 ```
 
-## 2. The "dict-ification" Mixin (`ToDictMixin`)
+## 2. The "Dict-Ification" Mixin (`ToDictMixin`)
 
 Standardize how objects convert to JSON.
 
 ```python
 import json
+
 
 class ToDictMixin:
     def to_dict(self):
@@ -57,6 +60,8 @@ class RegistryMixin:
         return cls._instances
 ```
 
-## Composition vs Inheritance
+## Composition Vs Inheritance
 
-For simple data transformations (like `to_dict`), simple functions or `@dataclass` are often better. Use Mixins when you need to hook into the object's lifecycle (`__init__`) or use polymorphism (treating different objects the same way via a shared interface).
+For simple data transformations (like `to_dict`), simple functions or `@dataclass` are
+often better. Use Mixins when you need to hook into the object's lifecycle (`__init__`)
+or use polymorphism (treating different objects the same way via a shared interface).

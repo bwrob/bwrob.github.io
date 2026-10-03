@@ -1,12 +1,14 @@
 ---
-title: "Advanced Testing: Dynamic Mixin Injection and Recursive Spies"
-description: "Techniques for injecting spies into objects at runtime for deep inspection and testing."
-date: "2025-12-08"
 categories: [Python, Testing, Mixins]
+date: "2025-12-08"
+description: "Techniques for injecting spies into objects at runtime for deep inspection and testing."
 draft: true
+title: "Advanced Testing: Dynamic Mixin Injection and Recursive Spies"
 ---
 
-Sometimes standard mocking isn't enough. You might need to log internal calls, inspect nested objects, or "infect" an object hierarchy with spying behavior without modifying the production code. This post explores Dynamic Mixin Injection.
+Sometimes standard mocking isn't enough. You might need to log internal calls, inspect
+nested objects, or "infect" an object hierarchy with spying behavior without modifying
+the production code. This post explores Dynamic Mixin Injection.
 
 ## The "Audit Mixin"
 
@@ -14,6 +16,7 @@ This mixin intercepts every attribute access and method call.
 
 ```python
 import functools
+
 
 class AuditMixin:
     def __getattribute__(self, name):
@@ -25,12 +28,14 @@ class AuditMixin:
         attr = super().__getattribute__(name)
 
         if callable(attr):
+
             @functools.wraps(attr)
             def wrapper(*args, **kwargs):
                 print(f"   ▶️ Calling method '{name}' with {args} {kwargs}")
                 result = attr(*args, **kwargs)
                 print(f"   ◀️ Returned: {result}")
                 return result
+
             return wrapper
 
         return attr
@@ -57,15 +62,19 @@ def inject_spy(instance):
 
 ## The "Contagious Spy"
 
-To make the spy recursive (so it infects children objects returned by methods or accessed via attributes), we need a more advanced mixin.
+To make the spy recursive (so it infects children objects returned by methods or
+accessed via attributes), we need a more advanced mixin.
 
 ```python
 import functools
 from unittest.mock import MagicMock
 
+
 def is_infectable(obj):
-    return (hasattr(obj, '__dict__')
-            and not obj.__class__.__name__.startswith("MagicSpy"))
+    return hasattr(obj, "__dict__") and not obj.__class__.__name__.startswith(
+        "MagicSpy"
+    )
+
 
 def make_contagious_spy(instance, parent_mock=None, attribute_name=None):
     if not is_infectable(instance):
@@ -78,23 +87,30 @@ def make_contagious_spy(instance, parent_mock=None, attribute_name=None):
 
     original_cls = instance.__class__
     new_cls_name = f"MagicSpy{original_cls.__name__}"
-    instance.__class__ = type(new_cls_name, (ContagiousSpyMixin, original_cls), {})
+    instance.__class__ = type(
+        new_cls_name, (ContagiousSpyMixin, original_cls), {}
+    )
 
     return instance
+
 
 class ContagiousSpyMixin:
     def __getattribute__(self, name):
         if name.startswith("__") or name.startswith("_") or name == "spy":
-            if name == "spy": return super().__getattribute__("_internal_mock")
+            if name == "spy":
+                return super().__getattribute__("_internal_mock")
             return super().__getattribute__(name)
 
         val = super().__getattribute__(name)
 
         # Infect attributes
         if is_infectable(val):
-            make_contagious_spy(val, parent_mock=self._internal_mock, attribute_name=name)
+            make_contagious_spy(
+                val, parent_mock=self._internal_mock, attribute_name=name
+            )
 
         if callable(val):
+
             @functools.wraps(val)
             def wrapper(*args, **kwargs):
                 getattr(self, "_internal_mock").getattr(name)(*args, **kwargs)
@@ -105,6 +121,7 @@ class ContagiousSpyMixin:
                     make_contagious_spy(result)
 
                 return result
+
             return wrapper
 
         return val
@@ -122,6 +139,7 @@ class Controller:
     def handle_request(self, uid):
         self.service.fetch_user(uid)
 
+
 app = Controller()
 make_contagious_spy(app)
 app.handle_request(99)
@@ -130,4 +148,5 @@ app.handle_request(99)
 print(app.spy.mock_calls)
 ```
 
-This technique is powerful for debugging legacy code or ensuring strict adherence to internal contracts when necessary.
+This technique is powerful for debugging legacy code or ensuring strict adherence to
+internal contracts when necessary.
