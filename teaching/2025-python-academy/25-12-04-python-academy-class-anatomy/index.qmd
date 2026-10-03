@@ -20,9 +20,10 @@ also *does* stuff, like calculating its own payoff or theoretical price. Object-
 Programming (OOP) is just a fancy way of saying we're going to bundle all that related
 info and logic into one tidy package called a class.
 
-We're going to break down exactly what goes into a Python class, starting from a totally
-empty shell and building it up into a robust financial model. By the end, you'll see how
-to turn a messy collection of variables into a clean, reliable tool.
+We will examine each layer of a Python class, starting from an empty shell and
+building it step by step into a typed financial model with validated attributes and
+methods. By the end, you will understand how Python manages attributes and methods
+under the hood.
 
 ## Starting Simple: the Empty Class
 
@@ -100,7 +101,7 @@ expect, serving as a guide for other developers and our future selves.
 ## Class Attributes Vs. Instance Attributes
 
 The attributes `strike`, `expiry`, and `option_type` are **instance attributes**. They
-belong to a specific object; one option's strike does not affect another's.
+belong to a specific instance: mutating one option's strike does not affect another's.
 
 Sometimes, however, we need to share data across *all* instances of a class. These are
 **class attributes**, defined directly in the class body.
@@ -135,7 +136,7 @@ can have.
 | Type     | Decorator       | First Argument | Purpose                                                                                                         |
 | :------- | :-------------- | :------------- | :-------------------------------------------------------------------------------------------------------------- |
 | Instance | None            | `self`         | Operates on and modifies the object.                                                                            |
-| Class    | `@classmethod`  | `cls`          | Operates on and modifies the class itself; often used for factory methods.                                      |
+| Class    | `@classmethod`  | `cls`          | Operates on the class itself (often used for alternative constructor factories).                                |
 | Static   | `@staticmethod` | None           | Isolated utility functions that logically belong to the class but don't need access to instance or class state. |
 
 ### Instance Methods
@@ -417,8 +418,8 @@ some serious quant work. Here's the quick checklist:
   info.
 
 With these building blocks in place, the
-[next post](../25-12-12-python-academy-data-model/) dives into Python's data model — the
-dunder methods that make your classes feel like built-in types.
+[next lesson](../25-12-12-python-academy-data-model/) covers Python's data model — the
+dunder methods that make custom classes behave like native types.
 
 ::: {.callout-note}
 

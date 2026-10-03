@@ -110,3 +110,6 @@ The repository includes specialized skills in `.agents/skills/`:
    Socratic structure.
 4. **Finalize & Publish**: Use `finalize-post` to undraft, bump dates, generate final
    cover art via `generate-post-image`, and verify rendering.
+5. **Technical Clarity & Controlled Language**: Use `asd-ste100` to eliminate ambiguity,
+   overlong sentences, and misleading phrasing in prompt instructions, tool
+   descriptions, or procedural docs using Simplified Technical English.

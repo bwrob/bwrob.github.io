@@ -57,13 +57,13 @@ very clean implementation. You'll see for yourself.
 ## Strategy Pattern
 
 We know the stage now --- one problem statement, multiple strategies to tackle.
-Important observation here is that we don't actually care which one is used. When you
-substitute the integral value to client code --- a formula or further algorithm --- it's
-irrelevant how it was computed, as long its correct to required level of accuracy. This
-means that the problem should be decoupled from algorithms to solve it. We should target
-a implementation where you can state a problem *Calculate the integral of* $\\sin(x)$
-*from* $0$ *to* $\\pi$ and then just throw different algorithms at it to obtain a
-solution. So let's get coding!
+An important observation is that we do not care which numerical method is used.
+When you pass the integral value to client code — a formula or downstream
+algorithm — how the system computed it is irrelevant, as long as it satisfies the
+required level of accuracy. This means the problem should be decoupled from the
+algorithms that solve it. We want an implementation where you can state a problem
+(*Calculate the integral of* $\\sin(x)$ *from* $0$ *to* $\\pi$) and apply different
+algorithms to solve it. So let's get coding!
 
 ::: callout-note
 I will show you this pattern through an example. If you prefer more generic setup see
@@ -98,8 +98,8 @@ class IntegrationScheme(ABC):  # <1>
         """Abstract method for integrating a function."""
 ```
 
-1. `ABC` defines abstract classes, serving as a template. Concrete subclasses inherit
-   from it; abstract classes cannot be instantiated.
+1. `ABC` defines abstract classes that serve as templates. Concrete subclasses inherit
+   from it, while abstract classes cannot be instantiated directly.
 1. The `@abstractmethod` decorator signifies this method must be overridden by all
    concrete subclasses.
 1. `Callable` annotations define function-like objects that can be executed.
@@ -159,13 +159,13 @@ class RectangleScheme(IntegrationScheme):  # <1>
    `integrate`.
 1. `__init__` sets up the rectangle count, including validation for positive values.
 1. `__str__` customizes the string representation of the class instance.
-1. `integrate` performs the calculation: linear spacing, function evaluation, and
-   summing area elements.
+1. `integrate` executes the algorithm: generates linearly spaced points, evaluates the
+   integrand, and sums the area elements.
 
 ### Simple Monte Carlo
 
 This guy sounds fancy with its luxurious Monaco vibes, but it's just a peasant in a nice
-suit. Instead of looking at equaly-spaced points, we shuffle them from uniform
+suit. Instead of looking at equally-spaced points, we shuffle them from uniform
 distribution on the interval of integration. We calculate the integrand function values
 at those points and sum them up. Then multiply the sum by the average distance between
 points and through the magic of probability theory (and not opening actual probability

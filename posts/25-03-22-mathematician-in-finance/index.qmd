@@ -62,8 +62,8 @@ quantitative.
 
 Take **pricing**, for example. If you want to sell someone an option -- the right to buy
 a stock at a certain price in six months -- you need to know what that right is worth
-today. That involves stochastic calculus, partial differential equations, and a lot of
-numerical methods. It's not just "guessing"; it's solving a more complex Heat Equation
+today. That involves stochastic calculus, partial differential equations, and
+numerical methods. It is not mere guesswork: it is solving a generalized Heat Equation
 in a financial context.
 
 Then there's **Risk Management**. After the 2008 crisis, "winging it" stopped being an
@@ -205,10 +205,10 @@ maintainable production software:
   software design patterns like Dependency Injection and the Adapter Pattern to ensure
   that swapping data vendors doesn't require rewriting the core mathematical model.
 - **Performance Optimization:** Solving the math (interpolation, root-finding for
-  implied volatilities) is CPU-heavy. The QD analyzes the performance. Sometimes
-  Python's `scipy` is fast enough; other times, they need to implement highly optimized,
+  implied volatilities) is CPU-heavy. The QD analyzes the bottlenecks. Sometimes
+  Python's `scipy` is fast enough. Other times, they must implement optimized,
   domain-specific algorithms (like Jaeckel's method). For ultra-low latency, they might
-  offload the calculations to a compiled language like C++ or Rust (binding it back to
+  offload calculations to a compiled language like C++ or Rust (binding it back to
   Python using `nanobind` or `PyO3`).
 - **Concurrency & API Limits:** If fetching data is the bottleneck, the QD implements
   asynchronous programming (`asyncio`). They must handle blocking vendor APIs safely

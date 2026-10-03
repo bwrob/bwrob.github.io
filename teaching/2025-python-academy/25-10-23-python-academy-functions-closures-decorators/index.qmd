@@ -169,8 +169,8 @@ We can inspect this directly:
 good_morning_greeter.__closure__[0].cell_contents
 ```
 
-This shows that the value `"Good morning"` is tucked away in our `good_morning_greeter`
-function's closure.
+The closure cell preserves the string `"Good morning"` directly on the function
+object, keeping it alive independently of the finished local frame.
 
 Closures are a key ingredient for decorators, which we'll get to next. They also let us
 create "function factories" that can produce specialized functions.

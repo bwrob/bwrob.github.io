@@ -42,19 +42,17 @@ lead to `MemoryError`.
 
 The primary difference between lists and tuples is **mutability**.
 
-- **Lists** are mutable, meaning you can change their content. You can add, remove, or
-  change elements. This flexibility comes at a cost: lists typically require more
-  memory to store the same number of elements compared to tuples. This is because
-  Python allocates extra memory to accommodate future additions.
+- **Lists** are mutable: you can append, remove, or reassign elements in place.
+  This flexibility requires additional memory overhead, because Python over-allocates
+  buffer capacity to keep amortized append operations $O(1)$.
 
-- **Tuples** are immutable. Once a tuple is created, you cannot change its content. This
-  immutability makes them slightly more memory-efficient and faster to access than
-  lists.
+- **Tuples** are immutable: once allocated, their length and element references cannot
+  change. This immutability allows Python to allocate exact memory blocks without growth
+  buffers, making tuples more compact and slightly faster to iterate.
 
-From a quant's perspective, you can think of a tuple as a "frozen" or "read-only" list.
-Use tuples for data that should not change, like coordinates, configuration settings, or
-records from a database. If you need a collection that you will modify, a list is the
-way to go.
+From a quant's perspective, think of a tuple as a read-only sequence. Use tuples for
+fixed structural records, coordinates, or configuration values. If your algorithm needs
+in-place resizing or mutations, use a list.
 
 ## Iterators: the Lazy Approach
 

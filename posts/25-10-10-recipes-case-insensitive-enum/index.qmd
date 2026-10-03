@@ -11,11 +11,11 @@ toc-depth: 2
 
 ![Case Insensitive Enum cover](cover.webp){width="98%" fig-align="center"}
 
-When working with enums in Python, you might want to create an enum that is
-case-insensitive. This can be particularly useful when you want to allow users to input
-values without worrying about the case. Here's how you can achieve this by subclassing
-`StrEnum`. To enforce that all enum members are defined in lowercase, we can use a hook
-`__init_subclass__`.
+Standard Python `StrEnum` lookups are strictly case-sensitive. Accepting user input or
+external API payloads often demands more forgiving string matching. By subclassing
+`StrEnum` and intercepting class creation with the `__init_subclass__` hook, we can
+enforce lowercase canonical members while supporting case-insensitive lookups
+seamlessly.
 
 ## Implementation
 

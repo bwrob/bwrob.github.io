@@ -54,9 +54,9 @@ We organize the startup automation script into two distinct layers:
 Let's first think about the design and what we want to achieve. Imagine the code being
 split into two parts:
 
-- the hidden logic layer, **the worker** that does stuff and
-- the public interface that integrates with the rest of the codebase or is called at the
-  top level, **the manager**.
+- The hidden logic layer (**the worker**) that performs the system automation.
+- The public interface (**the manager**) that integrates with the rest of the
+  codebase or executes at the top level.
 
 We can start by creating the public interface, see what we want to achieve and later
 deal with filling in a working implementation. You can either define the logic functions
@@ -384,10 +384,10 @@ def run_command(
 We got it, friends, the script works and the job is done. But... do you recall the last
 time you googled a shortcut for a semi-frequently used functionality? Do you still
 remember the shortcut, or use it each time you need the functionality? Convenience needs
-to be convenient (obviously). So let's make running our script truly effortless.
+to be convenient (obviously). Let's make running our script as quick as a single click.
 
-In Windows OS the best way for me would be to have a shortcut that would run it with one
-click. We could pin it to the taskbar and start menu. To create one:
+On Windows, a one-click desktop shortcut is ideal. We can pin it to the taskbar and
+start menu. To create one:
 
 - Go to any folder, right-click and select `New > Shortcut`.
 - In the guide that pops up paste in `%systemroot%\System32\cmd.exe /c "python.exe $1"`
