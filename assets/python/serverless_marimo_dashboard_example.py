@@ -32,7 +32,7 @@ def _() -> tuple[marimo._runtime.packages.loader.LazyPackage, Any]:
 @app.cell
 def _(mo: Any) -> tuple[Any]:
     """Display the project logo."""
-    img = mo.image(src="https://bwrob.github.io/assets/logo/python_mug.png", width=100)
+    img = mo.image(src="https://bwrob.github.io/assets/logo/python_mug.webp", width=100)
     return (img,)
 
 

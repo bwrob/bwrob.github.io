@@ -4,12 +4,12 @@ date: "2026-07-02"
 date-modified: "2026-07-02"
 description: "Using Memray and resource limits to profile memory leaks and Out of Memory (OOM) errors in Python and compiled extensions."
 format-links: [html]
-image: cover.jpg
+image: cover.webp
 title: "Profiling Python OOMs"
 toc-depth: 2
 ---
 
-![Debugging Out-of-Memory Errors cover](cover.jpg){width="98%" fig-align="center"}
+![Debugging Out-of-Memory Errors cover](cover.webp){width="98%" fig-align="center"}
 
 Your Python process crashes in production with an unceremonious `Killed`. No
 traceback, no log entry, no `MemoryError`.
@@ -176,7 +176,7 @@ This will produce an HTML file that you can open in a browser.
   `numpy._core.multiarray.ones` (or `numpy.core` in pre-2.0 NumPy) and down to the C
   allocation function that breached the 1 GB limit.
 
-![Memray Flamegraph](../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.png){.lightbox
+![Memray Flamegraph](../../assets/images/posts/26-07-02-oom-python/memray-flamegraph.webp){.lightbox
 group="memray" description="HTML flamegraph showing the call stack of the NumPy
 allocation."}
 
@@ -192,7 +192,7 @@ memray run --native --live oom_simulator.py
 This shows real-time memory spikes, top allocating files, and a running plot of heap
 usage. It is useful for monitoring background services over SSH.
 
-![Memray Live TUI](../../assets/images/posts/26-07-02-oom-python/memray-live.png){.lightbox
+![Memray Live TUI](../../assets/images/posts/26-07-02-oom-python/memray-live.webp){.lightbox
 group="memray" description="Terminal UI monitoring memory usage."}
 
 ### Statistics Summary
@@ -209,7 +209,7 @@ This outputs a summary directly to the terminal, containing:
 - The top allocating functions (both Python and C-level).
 - A histogram of allocation sizes.
 
-![Memray Stats](../../assets/images/posts/26-07-02-oom-python/memray-stats.png){.lightbox
+![Memray Stats](../../assets/images/posts/26-07-02-oom-python/memray-stats.webp){.lightbox
 group="memray" description="Terminal statistics summary of memory usage."}
 
 ### Terminal Tree View
@@ -223,7 +223,7 @@ memray tree memray-oom_simulator.py.12345.bin
 This visualizes the call relationships of functions that consumed memory. It helps trace
 a memory leak straight to the source.
 
-![Memray Tree](../../assets/images/posts/26-07-02-oom-python/memray-tree.png){.lightbox
+![Memray Tree](../../assets/images/posts/26-07-02-oom-python/memray-tree.webp){.lightbox
 group="memray" description="Call graph tree showing allocation hierarchy."}
 
 ::: callout-note

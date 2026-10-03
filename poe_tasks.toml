@@ -50,6 +50,10 @@
     cmd  = "sh -c 'test -f CNAME && [ \"$(cat CNAME | tr -d \"[:space:]\")\" = \"bwrob.dev\" ]'"
     help = "Verify CNAME file exists and contains bwrob.dev"
 
+[tasks._check_image_formats]
+    cmd  = "sh -c '! find posts teaching assets/images -type f \\( -name \"*.jpg\" -o -name \"*.jpeg\" -o -name \"*.png\" -o -name \"*.gif\" \\) | grep .'"
+    help = "Verify all post and asset images are WebP format"
+
 [tasks._format_css]
     cmd  = "pre-commit run prettier-css --all-files"
     help = "Format CSS and SCSS files with prettier"
@@ -66,10 +70,15 @@
     cmd  = "git worktree list | grep -v quarto-main | awk '{print $1}' | xargs git worktree remove"
     help = "Clean up active git worktrees (except quarto-main)"
 
+[tasks.optimize-image]
+    cmd  = "python scripts/optimize_image.py"
+    help = "Convert and compress images to WebP format"
+
 [tasks.code-quality]
     help = "Run formatters, linters, and type checkers"
     sequence = [
         "_check_cname",
+        "_check_image_formats",
         "_format",
         "_format_md",
         "_format_css",

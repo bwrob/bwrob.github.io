@@ -223,7 +223,7 @@ def main() -> None:
     categories = args.categories or ["Dev Env"]
     validate_categories(categories)
 
-    placeholder_cover = skill_dir / "resources" / "placeholder-cover.jpg"
+    placeholder_cover = skill_dir / "resources" / "placeholder-cover.webp"
     template_file = skill_dir / "resources" / "post-template.qmd"
 
     if not placeholder_cover.exists():
@@ -232,7 +232,7 @@ def main() -> None:
         sys.exit(f"Error: Template file not found at {template_file}")
 
     target_post_dir.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(placeholder_cover, target_post_dir / "cover.jpg")
+    shutil.copyfile(placeholder_cover, target_post_dir / "cover.webp")
 
     template_text = template_file.read_text(encoding="utf-8")
     seed_code = load_seed_code(repo_root, args.from_not_posted)
@@ -271,7 +271,7 @@ def main() -> None:
     print(f"   - Index file:  {rel_post_dir / 'index.qmd'}")
     if args.bilingual:
         print(f"   - Polish file: {rel_post_dir / 'index-pl.qmd'}")
-    print(f"   - Cover image: {rel_post_dir / 'cover.jpg'} (900x600 placeholder)")
+    print(f"   - Cover image: {rel_post_dir / 'cover.webp'} (900x600 placeholder)")
     print("   - Status:      draft: true")
     print(f"   - Categories:  [{', '.join(categories)}]")
 

@@ -71,13 +71,13 @@ uv run rumdl fmt "posts/<post-slug>/index-pl.qmd"
 
 ### 4. Replace Placeholder Cover Art
 
-Check if `posts/<post-slug>/cover.jpg` is still the placeholder or if bespoke art is
+Check if `posts/<post-slug>/cover.webp` is still the placeholder or if bespoke art is
 needed:
 
 - If the cover is still the placeholder (or needs an update), invoke the
   **`generate-post-image`** skill.
 - Follow the visual art direction in `references/style-guide.md` to produce an optimized
-  900×600 JPEG at `posts/<post-slug>/cover.jpg`.
+  900×600 WebP at `posts/<post-slug>/cover.webp`.
 
 ### 5. Verify Quarto Rendering
 

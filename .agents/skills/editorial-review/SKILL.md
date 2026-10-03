@@ -139,7 +139,7 @@ dimensions:
       `Career`).
 - [ ] Post title is crisp and descriptive.
 - [ ] Cover image embed is captionless:
-      `![](cover.jpg){width="98%" fig-align="center"}`.
+      `![](cover.webp){width="98%" fig-align="center"}`.
 - [ ] Links have descriptive text (no bare `[here]` or `[link]`, complying with MD059).
 - [ ] In bash/shell blocks, `# <1>` annotations never trail a line-continuation `\`.
 - [ ] If bilingual (`index-pl.qmd` exists), verify matching frontmatter,

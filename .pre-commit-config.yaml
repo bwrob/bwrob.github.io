@@ -52,11 +52,12 @@ repos:
         args: []
         name: 🐍 eradicate · Remove dead code
   - hooks:
-      - args: [--fix, --config, ./pyproject.toml, --unsafe-fixes]
+      - args: [--fix, --config, ./ruff.toml, --unsafe-fixes]
         id: ruff-check
         name: 🐍 ruff · Check Python code
         exclude: ^(_not_posted/)
       - id: ruff-format
+        args: [--config, ./ruff.toml]
         name: 🐍 ruff · Format Python code
     repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.16.7
@@ -73,6 +74,11 @@ repos:
 
   - repo: local
     hooks:
+      - id: check-webp-only
+        name: 🖼️ images · Ensure post and asset images are WebP
+        entry: sh -c '! find posts teaching assets/images -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" \) | grep .'
+        language: system
+        pass_filenames: false
       - id: pyrefly
         name: 🐍 pyrefly · Type check Python code
         entry: uv run pyrefly check

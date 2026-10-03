@@ -20,7 +20,7 @@ flowchart LR
     A["1. create-post-stub<br/>(draft: true + placeholder cover)"]
     B["2. Author & Refine<br/>(Write content & code)"]
     C["3. Finalize Post<br/>(Remove draft status)"]
-    D["4. generate-post-image<br/>(Generate final bespoke cover.jpg)"]
+    D["4. generate-post-image<br/>(Generate final bespoke cover.webp)"]
     A --> B
     B --> C
     C --> D
@@ -39,7 +39,7 @@ Adhere to the following conventions when structuring post directories and metada
 
 - **Directory Pattern**: `posts/<YY-MM-DD>-<slug>/` (two-digit year, month, day prefix).
 - **Slug**: Lowercase alphanumeric with hyphens (e.g. `fast-ipc-pyarrow`).
-- **Co-located Cover**: `posts/<YY-MM-DD>-<slug>/cover.jpg` (must **always** live
+- **Co-located Cover**: `posts/<YY-MM-DD>-<slug>/cover.webp` (must **always** live
   directly inside the post folder).
 - **Post Entrypoint**: `posts/<YY-MM-DD>-<slug>/index.qmd`.
 
@@ -103,7 +103,7 @@ mkdir -p "$POST_DIR"
 #### 2. Copy Placeholder Cover Image
 
 ```bash
-cp .agents/skills/create-post-stub/resources/placeholder-cover.jpg "$POST_DIR/cover.jpg"
+cp .agents/skills/create-post-stub/resources/placeholder-cover.webp "$POST_DIR/cover.webp"
 ```
 
 #### 3. Render `index.qmd` from Template
@@ -119,12 +119,12 @@ date: "YYYY-MM-DD"
 date-modified: "YYYY-MM-DD"
 draft: true
 categories: [Dev Env]
-image: cover.jpg
+image: cover.webp
 format-links: [html]
 toc-depth: 2
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![](cover.webp){width="98%" fig-align="center"}
 
 Opening hook paragraph introducing the problem, tool, or pattern. Explain why this
 matters to developers and what the post demonstrates.
@@ -163,14 +163,14 @@ After scaffolding, verify the stub:
 
 1. **Verify Placeholder Cover**:
    ```bash
-   file posts/<YY-MM-DD>-<slug>/cover.jpg
+   file posts/<YY-MM-DD>-<slug>/cover.webp
    ````
 
-   Confirm it exists and is a 900×600 JPEG.
+   Confirm it exists and is a 900×600 WebP.
 
 2. **Verify Frontmatter**: Check `posts/<YY-MM-DD>-<slug>/index.qmd` to ensure
-   `draft: true`, `image: cover.jpg`, and the captionless
-   `![](cover.jpg){width="98%" fig-align="center"}` embed are present.
+   `draft: true`, `image: cover.webp`, and the captionless
+   `![](cover.webp){width="98%" fig-align="center"}` embed are present.
 
 ## Finalization Handoff (When Ready to Publish)
 
@@ -179,4 +179,4 @@ Once the post content is fully authored and ready to publish:
 1. **Undraft the post**: Remove `draft: true` (or set `draft: false`) in `index.qmd`.
 2. **Update modified date**: Set `date-modified: "YYYY-MM-DD"` to the current date.
 3. **Generate Final Cover**: Invoke the **`generate-post-image`** skill to replace the
-   placeholder `cover.jpg` with bespoke cover artwork.
+   placeholder `cover.webp` with bespoke cover artwork.

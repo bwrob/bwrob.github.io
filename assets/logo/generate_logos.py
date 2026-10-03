@@ -1,3 +1,4 @@
+# ruff: noqa: PLR0913, PLR0917
 """Technical logo generation for the workstation aesthetic."""
 
 import argparse
@@ -80,16 +81,16 @@ def get_font(
         return ImageFont.load_default()
 
 
-def generate_logo(  # noqa: PLR0913, PLR0917
+def generate_logo(
     logo_text: str = ASCII_LOGO,
     font_size: int = 100,
     font_path: str | None = None,
-    output_path: str = "assets/logo/logo_full.png",
+    output_path: str = "assets/logo/logo_full.webp",
     fill_color: tuple[int, ...] = MAGENTA,
     line_height_factor: float = 0.85,
     padding: int = 50,
 ) -> None:
-    """Render the ASCII logo to PNG with customizable inputs."""
+    """Render the ASCII logo to WebP with customizable inputs."""
     font = get_font(font_path, font_size)
     dummy = ImageDraw.Draw(Image.new("RGBA", (1, 1)))
     lines = logo_text.split("\n")
@@ -119,12 +120,12 @@ def generate_logo(  # noqa: PLR0913, PLR0917
         print(f"Warning: Empty bounding box for {output_path}")
 
 
-def generate_favicon(  # noqa: PLR0913, PLR0917
+def generate_favicon(
     text: str = "BW",
     side: int = 512,
     font_size: int = 300,
     font_path: str | None = None,
-    output_path: str = "assets/logo/favicon.png",
+    output_path: str = "assets/logo/favicon.webp",
     radius: int = 80,
     bg_color: tuple[int, ...] = PAPER,
     fill_color: tuple[int, ...] = MAGENTA,
@@ -223,7 +224,7 @@ if __name__ == "__main__":
             font_path=args.font_path,
             line_height_factor=args.line_height_factor,
             padding=args.padding,
-            output_path="assets/logo/logo_bwrob.png",
+            output_path="assets/logo/logo_bwrob.webp",
         )
     elif args.text == "full":
         generate_logo(
@@ -232,7 +233,7 @@ if __name__ == "__main__":
             font_path=args.font_path,
             line_height_factor=args.line_height_factor,
             padding=args.padding,
-            output_path="assets/logo/logo_full.png",
+            output_path="assets/logo/logo_full.webp",
         )
     else:
         # Default behavior: generate both logos and favicon
@@ -242,7 +243,7 @@ if __name__ == "__main__":
             font_path=args.font_path,
             line_height_factor=args.line_height_factor,
             padding=args.padding,
-            output_path="assets/logo/logo_full.png",
+            output_path="assets/logo/logo_full.webp",
         )
         generate_logo(
             logo_text=ASCII_BWROB,
@@ -250,7 +251,7 @@ if __name__ == "__main__":
             font_path=args.font_path,
             line_height_factor=args.line_height_factor,
             padding=args.padding,
-            output_path="assets/logo/logo_bwrob.png",
+            output_path="assets/logo/logo_bwrob.webp",
         )
         generate_favicon(
             side=args.favicon_size,

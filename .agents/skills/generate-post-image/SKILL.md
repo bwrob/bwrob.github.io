@@ -1,6 +1,6 @@
 ---
 description: >-
-  Generate, optimize, and integrate blog post cover images (cover.jpg).
+  Generate, optimize, and integrate blog post cover images (cover.webp).
   Use this skill whenever the user asks to create, generate, or update a cover image
   or visual asset for a blog post, following technical sizing and placement rules and
   referencing the visual style guide.
@@ -10,7 +10,7 @@ name: generate-post-image
 # Post Image Generator
 
 This skill defines the technical and procedural workflow for generating, optimizing,
-and embedding blog post cover images (`cover.jpg`) on [bwrob.dev](https://bwrob.dev).
+and embedding blog post cover images (`cover.webp`) on [bwrob.dev](https://bwrob.dev).
 
 For all visual aesthetics, art direction, color schemes, and motif guidelines, consult
 the **[Style Guide](./references/style-guide.md)**.
@@ -18,27 +18,27 @@ the **[Style Guide](./references/style-guide.md)**.
 ## Technical Specifications & Rules
 
 - **Destination File Path**: Must **always** be placed directly inside the post folder:
-  `posts/<post-slug>/cover.jpg`. Never place covers in `assets/` or other shared
+  `posts/<post-slug>/cover.webp`. Never place covers in `assets/` or other shared
   directories.
-- **Dimensions & Format**: **900 × 600** pixels (3:2 horizontal aspect ratio), JPEG
-  format optimized at quality ~85 (target file size: 40–85 KB).
+- **Dimensions & Format**: **900 × 600** pixels (3:2 horizontal aspect ratio), WebP
+  format optimized at quality ~85 (target file size: 20–60 KB).
 - **Frontmatter Configuration**: `posts/<post-slug>/index.qmd` must declare:
 
   ```yaml
-  image: cover.jpg
+  image: cover.webp
   ```
 
 - **In-Post Display Embed**: The cover must be embedded at the top of the post body
   (immediately following frontmatter) at 98% width:
 
   ```markdown
-  ![](cover.jpg){width="98%" fig-align="center"}
+  ![](cover.webp){width="98%" fig-align="center"}
   ```
 
 > [!NOTE]
 > **Lifecycle Timing**: Invoke this skill at the final stage of post authoring—after
 > post content is complete, finalized, and undrafted. This replaces the initial
-> placeholder `cover.jpg` created by `create-post-stub`.
+> placeholder `cover.webp` created by `create-post-stub`.
 
 ## Procedural Workflow
 
@@ -47,7 +47,7 @@ flowchart TD
     A["1. Inspect Post Context<br/>(Read index.qmd)"] --> B["2. Consult Style Guide<br/>(references/style-guide.md)"]
     B --> C["3. Formulate Prompt<br/>(Subject + Style + Negative Constraints)"]
     C --> D["4. Execute generate_image<br/>(Aspect ratio 3:2)"]
-    D --> E["5. Resize & Optimize<br/>(Convert to 900x600 JPEG)"]
+    D --> E["5. Resize & Optimize<br/>(Convert to 900x600 WebP)"]
     E --> F["6. Update Post Integration<br/>(Frontmatter + top embed)"]
     F --> G["7. Verify & Remediate<br/>(Check size & inpaint if needed)"]
 ```
@@ -95,15 +95,8 @@ Call the `generate_image` tool:
 ### 5. Resize and Optimize Image
 
 Generated images are written to the conversation artifact directory as `.png` or `.jpg`.
-Resize and convert the generated image to an optimized 900×600 JPEG at
-`posts/<post-slug>/cover.jpg`.
-
-**Using macOS `sips`**:
-
-```bash
-sips -s format jpeg -z 600 900 -s formatOptions 85 \
-  "<artifact_image_path>" --out "posts/<post-slug>/cover.jpg"
-```
+Resize and convert the generated image to an optimized 900×600 WebP at
+`posts/<post-slug>/cover.webp`.
 
 **Using Python (Pillow)**:
 
@@ -112,7 +105,7 @@ uv run python -c "
 from PIL import Image
 im = Image.open('<artifact_image_path>')
 im = im.resize((900, 600), Image.Resampling.LANCZOS)
-im.convert('RGB').save('posts/<post-slug>/cover.jpg', 'JPEG', quality=85, optimize=True)
+im.convert('RGB').save('posts/<post-slug>/cover.webp', 'WEBP', quality=85, method=6)
 "
 ```
 
@@ -126,35 +119,40 @@ embeds it at the top of the body:
 title: "Your Post Title"
 description: "Your Post Description"
 categories: [...]
-image: cover.jpg
+image: cover.webp
 ---
 
-![](cover.jpg){width="98%" fig-align="center"}
+![](cover.webp){width="98%" fig-align="center"}
 ```
 
 ### 7. Verify & Remediate
 
 1. **Verify Technical File Properties**:
-   Ensure the output is 900×600 and lightweight (~40–85 KB):
+   Ensure the output is 900×600 and lightweight (~20–60 KB):
 
    ```bash
-   file posts/<post-slug>/cover.jpg
-   ls -lh posts/<post-slug>/cover.jpg
+   file posts/<post-slug>/cover.webp
+   ls -lh posts/<post-slug>/cover.webp
    ```
 
 2. **Inspect Visual Output**:
    Check that the image rendered cleanly and is completely wordless/text-free.
 
 3. **Remediate Accidental Text (Inpainting)**: If the generation contains faint unwanted
-   text or artifact labels, inpaint them cleanly using OpenCV Telea:
+   text or artifact labels, inpaint them cleanly using OpenCV Telea and Pillow:
 
    ```bash
-   uv run --with opencv-python python -c "
+   uv run --with opencv-python --with pillow python -c "
    import cv2, numpy as np
-   img = cv2.imread('posts/<post-slug>/cover.jpg')
+   from PIL import Image
+   img = cv2.imread('posts/<post-slug>/cover.webp')
    mask = np.zeros(img.shape[:2], dtype=np.uint8)
    mask[y1:y2, x1:x2] = 255
-   cv2.imwrite('posts/<post-slug>/cover.jpg', cv2.inpaint(img, mask, 3, cv2.INPAINT_TELEA))
+   inpainted = cv2.inpaint(img, mask, 3, cv2.INPAINT_TELEA)
+   rgb = cv2.cvtColor(inpainted, cv2.COLOR_BGR2RGB)
+   Image.fromarray(rgb).save(
+       'posts/<post-slug>/cover.webp', 'WEBP', quality=85, method=6
+   )
    "
    ```
 
