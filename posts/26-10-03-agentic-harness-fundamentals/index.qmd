@@ -1,28 +1,27 @@
 ---
 categories: [Dev Env]
-date: "2026-10-03"
-date-modified: "2026-10-03"
+date: "2026-10-06"
+date-modified: "2026-10-06"
 description: "Why default agent instructions fail, the three building blocks of a repository harness, and the bootstrap order I use to set one up."
-draft: true
 format-links: [html]
 image: cover.webp
 title: "Agentic Harness in Practice"
-toc-depth: 2
+toc-depth: 3
 ---
 
-![Agentic Harness in Practice](cover.webp){width="98%" fig-align="center"}
+![Agentic Harness cover](cover.webp){width="98%" fig-align="center" .nolightbox}
 
 Every AI coding tool comes with its own harness. When you install Cursor, Claude
 Code, or Antigravity, the vendor supplies a default system prompt and standard tool
 integrations.
 
 The problem is simple: vendor defaults are generic. They know nothing about your
-architecture, your deprecated libraries, or the edge cases that broke production
-last month.
+architecture, business needs, your deprecated libraries, or the edge cases that
+you spent weeks solving.
 
-Leaving your agent on default settings costs you real time. It affects the quality
-of your results, increases the number of times you have to interrupt the agent,
-and wastes context tokens.
+Leaving your agent on default settings costs you real time and tokens. The model
+drifts, introduces subtle regressions, and burns context tokens on repetitive
+corrections.
 
 You can fix this. You do not need to accept generic behavior. By building a harness
 directly into your repository, you turn an unpredictable model into a reliable
@@ -30,7 +29,7 @@ pair programmer.
 
 ## Building Blocks
 
-Before looking at how to assemble a harness, let us define the core concepts.
+An effective repository harness rests on three distinct components:
 
 ```mermaid
 flowchart TD
@@ -46,8 +45,11 @@ flowchart TD
 Context represents the general instructions, project goals, and business domain you
 provide to the model.
 
-Keep your context small. Context is your most expensive asset. Every token in your
-base prompt consumes working memory and incurs cost on every single turn.
+Keep your context small. Context is your most expensive asset. Every token in your base
+prompt consumes working memory and incurs cost on every single turn. Computerphile has a
+clear breakdown of
+[why agent tokens become so expensive](https://www.youtube.com/watch?v=-0HRzXk8vlk) as
+conversation turns compound.
 
 Divide your context into two scopes:
 
@@ -122,13 +124,13 @@ Now consider the typed equivalent:
 import datetime as dt
 from collections.abc import Callable
 
-type YieldCurve = dict[float, float]
+type YieldCurve = dict[float, float]  # <1>
 type ParSwapQuote = tuple[dt.date, float]
 
 
 def prepare_objects(
     data: list[ParSwapQuote],
-    preparer: Callable[[list[ParSwapQuote]], YieldCurve],
+    preparer: Callable[[list[ParSwapQuote]], YieldCurve],  # <2>
 ) -> list[YieldCurve]:
     objects: list[YieldCurve] = []
     for d in data:
@@ -136,6 +138,9 @@ def prepare_objects(
         objects.append(o)
     return objects
 ```
+
+1. Explicit domain type aliases document data structures.
+2. Strict callable contracts prevent the agent from hallucinating object attributes.
 
 This version requires more effort to write. Yet it is infinitely more readable. That
 clarity helps human engineers, and it helps AI agents even more. When the type system
@@ -180,9 +185,9 @@ Next, write a minimal `AGENTS.md`. Focus on two critical elements:
 
 Keep it concise and information-dense. Context is your most expensive asset.
 
-It is effective if every task begins with a quick rediscovery phase: inspect what you
-are building, check the current repository state, and read the tests. Do not cram
-twenty formatting rules into this file. Lean on your linters and type checkers for
+Direct the agent to begin every session with a quick rediscovery pass: inspect what
+you are building, check git status, and read relevant tests. Never cram twenty
+formatting rules into `AGENTS.md`. Let your linters and type checkers enforce
 mechanical standards.
 
 ### 3. Spec-Driven Development
@@ -244,12 +249,33 @@ directly into your local check command.
 
 A healthy dose of realism is necessary when working with agentic systems:
 
-- **Do not trust techbros**: Do not let marketing hype dictate your engineering
-  practices. Fancy demos rarely survive contact with messy legacy codebases.
-- **Do not expect a dark factory (yet)**: The fantasy of a software factory where
-  humans never touch code is an illusion. You should not want that anyway.
+- **Developer skills decay**: If you outsource all reasoning and debugging to the
+  agent, your own edge dulls. You must understand the generated code deeply enough to
+  catch subtle algorithmic failures or silent memory leaks during review.
+- **The "solved software" myth**: Marketing pitches claim software production is solved
+  and everyone can just prompt. The fantasy of a dark factory where code writes itself
+  without human intervention is an illusion. Real engineering remains hard.
+- **Token costs are real**: Multi-turn agent loops burn tokens fast. If your base
+  context is bloated or your agent loops through ten failed test runs, your API bills
+  compound rapidly.
+- **Review fatigue and rubber-stamping**: Agents generate hundreds of plausible lines
+  in seconds. The bottleneck shifts from writing code to auditing it. If tired engineers
+  rubber-stamp massive diffs, subtle technical debt rapidly pollutes the repository.
+- **The "set it and forget it" trap**: A repository harness is not a static setup.
+  As codebases evolve, libraries update, and model capabilities shift, your rules,
+  skills, and deterministic gates require continuous maintenance.
 
 Software engineering is evolving from line-by-line typing into system design,
 constraint specification, and architectural review. Build rigid rails. Let
 deterministic tools catch mistakes. Keep human judgment where it matters most:
 on intent, architecture, and correctness.
+
+## References
+
+- [How to set up your repository for AI coding agents](https://ainativesoftware.engineering/harness) --
+  Alfonso Graziano's guide on repository context layers and deterministic feedback gates
+  from *AI-Native Software Engineering* (O'Reilly).
+- [Addy Osmani's Blog](https://addyosmani.com/blog/) --
+  Essays on agent harness engineering, agent skills, and workflow orchestration.
+- [Why AI Tokens are so Expensive](https://www.youtube.com/watch?v=-0HRzXk8vlk) --
+  Computerphile video on token costs and runaway context growth in agentic loops.
