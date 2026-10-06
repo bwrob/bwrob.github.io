@@ -1,4 +1,5 @@
 ---
+bibliography: references.bib
 categories: [Dev Env]
 date: "2026-10-06"
 date-modified: "2026-10-06"
@@ -23,20 +24,30 @@ tool set. Those defaults are generic. They contain no context about your archite
 business requirements, deprecated libraries, or the edge cases you spent weeks solving.
 
 Operating with default settings costs real time and tokens. The model drifts, introduces
-subtle regressions, and burns context tokens on repetitive corrections. Build the
-missing harness directly into your repository, and an unpredictable model becomes a
-reliable engineering tool.
+subtle regressions, and burns context tokens on repetitive corrections. Both Addy Osmani
+[@osmani2025] and Alfonso Graziano [@graziano2026] emphasize that an agent is a model
+plus its harness. Build that missing harness directly into your repository, and an
+unpredictable model becomes a reliable engineering tool.
 
 ## Building Blocks
 
-A repository harness has two halves: what the model reads before it writes, and the
-checks that run after it writes. The errors from the second half feed straight back
-into the next attempt.
+The harness orchestrates two loops around the model. In the inner loop, the model
+loads skills or queries MCP tools to produce a diff. In the outer loop, deterministic
+checks catch failures and feed errors back for correction.
 
 ```{mermaid}
 flowchart LR
-    Ctx["Context + Skills + MCP<br/>(read before writing)"] --> Model["Model"]
-    Model --> Diff["Diff"]
+    Ctx["Context<br/>(AGENTS.md, task)"] --> Model["Model"]
+
+    subgraph AgentLoop["Agentic Loop"]
+        Model --> Decision{"Decides action"}
+        Decision -- "workflow" --> Skills["Skill"]
+        Decision -- "live tool" --> MCP["MCP"]
+        Skills --> Model
+        MCP --> Model
+    end
+
+    Decision -- "diff ready" --> Diff["Diff"]
     Diff --> Checks["Deterministic checks<br/>(types, linters, tests)"]
     Checks -- "errors" --> Model
 ```
@@ -50,12 +61,12 @@ Keep your context small. Context is your most expensive asset. Every token in yo
 prompt consumes working memory and incurs cost on every single turn. Computerphile has a
 clear breakdown of
 [why agent tokens become so expensive](https://www.youtube.com/watch?v=-0HRzXk8vlk) as
-conversation turns compound.
+conversation turns compound [@computerphile2024].
 
 Divide your context into two scopes:
 
 1. **Global scope**: Project purpose, core practices, and non-negotiable boundaries.
-   This belongs in a root [`AGENTS.md`](https://agents.md) file.
+   This belongs in a root [`AGENTS.md`](https://agents.md) file [@agentsmd2025].
 2. **Local scope**: Directory-specific conventions and module rules. Harnesses load
    these only when the model works on matching files: a nested `AGENTS.md` or
    `CLAUDE.md` inside a subdirectory, or a Cursor rule in `.cursor/rules/*.mdc` with a
@@ -103,9 +114,9 @@ Skills come in several distinct flavors:
   into your packages.
 
 Where markdown skills define procedural workflows, the **Model Context Protocol (MCP)**
-standardizes live tool execution. MCP servers allow the harness to query external
-systems—such as schema inspectors, issue trackers, or documentation indices—on demand
-without bloating base context tokens.
+standardizes live tool execution [@mcp2024]. MCP servers allow the harness to query
+external systems—such as schema inspectors, issue trackers, or documentation
+indices—on demand without bloating base context tokens.
 
 ### Deterministic Tooling
 
@@ -114,7 +125,9 @@ mistake. Probabilistic models drift. Deterministic tools evaluate explicit rules
 
 Know the modern tooling ecosystem for your stack, and use it aggressively. In Python,
 that means full type annotation coverage combined with a fast static type checker like
-`pyrefly`.
+`pyrefly`. Benchmark evaluations such as SWE-bench demonstrate that models struggle on
+real-world repository tasks without reproducible environments and tight feedback
+loops [@jimenez2024swebench].
 
 Consider this riddle: What does this code do?
 
@@ -172,17 +185,29 @@ The key technique is **bootstrapping**. Use the model itself to generate the ini
 harness configuration.
 
 ```{mermaid}
-flowchart LR
-    A["1. Tooling"] --> B["2. Context"]
-    B --> C["3. Specs"]
-    C --> D["4. Published Skills"]
-    D --> E["5. Custom Skills"]
-    E --> F["6. Bespoke Tooling"]
+flowchart TD
+    subgraph Seed["1. Seed Foundation"]
+        A["1. Tooling<br/>(linters, types, single check command)"]
+        B["2. Context<br/>(minimal AGENTS.md mandating check command)"]
+        A --> B
+    end
+
+    B --> C["3. Specs<br/>(intent, constraints, acceptance tests)"]
+
+    subgraph Expansion["2. Model Expands the Harness"]
+        C --> D["4. Published Skills<br/>(curate lean toolset)"]
+        D --> E["5. Custom Skills<br/>(model scaffolds workflows)"]
+        E --> F["6. Bespoke Tooling<br/>(model writes domain checkers)"]
+    end
+
+    F -. "wires back into check command" .-> A
 ```
 
-Note that the order flips relative to the building blocks above. Tooling comes first
-because every later step leans on it: the context file points to the check command, and
-custom skills end by running it.
+Tooling comes first because every later step leans on it: `AGENTS.md` mandates the
+check command, and skills execute it. Once that foundation is set, the model helps
+expand the harness by scaffolding custom skills and writing bespoke verification
+scripts. Those new tools wire straight back into the primary check command,
+compounding the harness over time.
 
 ### 1. Tooling First
 
@@ -254,7 +279,9 @@ The ecosystem now offers thousands of community skills, installable with a singl
 A new hype wave appears every week. Approach published skills with care:
 
 - **Security risks**: Community skills often contain executable scripts and shell
-  commands. Always audit the underlying code before running them.
+  commands. As Simon Willison warns in his analysis of the "lethal trifecta", connecting
+  models to private files and active tools creates severe prompt-injection risks
+  [@willison2024]. Always audit the underlying code before running them.
 - **Skill bloat**: Overloading the environment with 100 skills degrades tool
   selection. Routing fails when descriptions overlap.
 
@@ -291,10 +318,10 @@ your local check command.
 
 A healthy dose of realism is necessary when working with agentic systems:
 
-- **Developer skills decay**: If you outsource all debugging and analysis to
-  automated tools, your own technical edge dulls. You must understand generated code
-  deeply enough to catch subtle algorithmic failures or silent memory leaks during
-  review.
+- **Developer skills decay**: As Addy Osmani details in his analysis of agentic
+  skill decay, outsourcing all debugging and implementation dulls technical intuition
+  [@osmani2026decay]. You must understand generated code deeply enough to catch
+  subtle algorithmic failures or silent memory leaks during review.
 - **The "solved software" myth**: Marketing pitches claim software production is solved
   and everyone can just prompt. The fantasy of a dark factory where code writes itself
   without human intervention is an illusion. Real engineering remains hard.
@@ -303,7 +330,9 @@ A healthy dose of realism is necessary when working with agentic systems:
   the same failing test multiply that cost. Most harnesses report per-session token
   usage. Look at it weekly, and trim whatever context the model never needed.
 - **Review fatigue and rubber-stamping**: Automated tools generate hundreds of plausible
-  lines in seconds. The bottleneck shifts from writing code to auditing it. If tired
+  lines in seconds. The bottleneck shifts from writing code to auditing it. GitClear's
+  analysis of over 150 million lines of AI-assisted code found marked increases in code
+  churn and duplicate logic when review fatigue sets in [@gitclear2024]. If tired
   engineers rubber-stamp massive diffs, subtle technical debt rapidly pollutes the
   repository.
 - **The "set it and forget it" trap**: A repository harness is not a static setup.
@@ -315,10 +344,5 @@ Wire it into the model's loop today. Everything else in this post builds on it.
 
 ## References
 
-- [How to set up your repository for AI coding agents](https://ainativesoftware.engineering/harness) --
-  Alfonso Graziano's guide on repository context layers and deterministic feedback gates
-  from *AI-Native Software Engineering* (O'Reilly).
-- [Agent Harness Engineering](https://addyosmani.com/blog/agent-harness-engineering/) --
-  Addy Osmani on designing the scaffolding around coding agents.
-- [Why AI Tokens are so Expensive](https://www.youtube.com/watch?v=-0HRzXk8vlk) --
-  Computerphile video on token costs and runaway context growth in agentic loops.
+::: {#refs}
+:::
