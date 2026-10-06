@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.10.19">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2026-10-06">
-<meta name="description" content="Why default agent instructions fail, the three building blocks of a repository harness, and the bootstrap order I use to set one up.">
+<meta name="description" content="Why default agent instructions fail, the two halves of a repository harness, and the bootstrap order I use to set one up.">
 
 <title>Agentic Harness in Practice – bwrob.dev</title>
 <style>
@@ -79,8 +79,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-73751680ca121cac81413277327230eb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a8b5afb172109410260edd8876471e0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-f4678996c696dc2faf52d4f029bd3e82.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4fcca5789713fd2d0ceba1e347cb9687.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap-2a6514824c030cb0a4b203b3611967a1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
@@ -112,6 +112,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
+<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="../../css/styles.css">
@@ -366,7 +369,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <h1 class="title">Agentic Harness in Practice</h1>
                   <div>
         <div class="description">
-          Why default agent instructions fail, the three building blocks of a repository harness, and the bootstrap order I use to set one up.
+          Why default agent instructions fail, the two halves of a repository harness, and the bootstrap order I use to set one up.
         </div>
       </div>
                           <div class="quarto-categories">
@@ -410,7 +413,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#skills" id="toc-skills" class="nav-link" data-scroll-target="#skills">Skills</a></li>
   <li><a href="#deterministic-tooling" id="toc-deterministic-tooling" class="nav-link" data-scroll-target="#deterministic-tooling">Deterministic Tooling</a></li>
   </ul></li>
-  <li><a href="#putting-on-the-harness" id="toc-putting-on-the-harness" class="nav-link" data-scroll-target="#putting-on-the-harness">Putting on the Harness</a>
+  <li><a href="#bootstrapping-the-harness" id="toc-bootstrapping-the-harness" class="nav-link" data-scroll-target="#bootstrapping-the-harness">Bootstrapping the Harness</a>
   <ul class="collapse">
   <li><a href="#tooling-first" id="toc-tooling-first" class="nav-link" data-scroll-target="#tooling-first">1. Tooling First</a></li>
   <li><a href="#context-1" id="toc-context-1" class="nav-link" data-scroll-target="#context-1">2. Context</a></li>
@@ -438,19 +441,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>Agentic Harness cover</figcaption>
 </figure>
 </div>
-<p>Every AI coding tool comes with its own harness. When you install Cursor, Claude Code, or Antigravity, the vendor supplies a default system prompt and standard tool integrations.</p>
-<p>The problem is simple: vendor defaults are generic. They know nothing about your architecture, business needs, your deprecated libraries, or the edge cases that you spent weeks solving.</p>
-<p>Leaving your agent on default settings costs you real time and tokens. The model drifts, introduces subtle regressions, and burns context tokens on repetitive corrections.</p>
-<p>You can fix this. You do not need to accept generic behavior. By building a harness directly into your repository, you turn an unpredictable model into a reliable pair programmer.</p>
+<p>Ask a fresh coding agent to add a swap pricer to a quant codebase. Thirty seconds later you get clean, plausible code. It stores notionals as <code>float</code>, reaches for Pandas where the rest of the repository uses Polars, and passes curves around as bare dictionaries instead of the <code>YieldCurve</code> type you defined. None of it is wrong in the abstract. All of it is wrong for your system.</p>
+<p>The model is not the problem. The harness is. Every AI coding tool ships with one: Cursor, Claude Code, and Antigravity each supply a default system prompt and a standard tool set. Those defaults are generic. They contain no context about your architecture, business requirements, deprecated libraries, or the edge cases you spent weeks solving.</p>
+<p>Operating with default settings costs real time and tokens. The model drifts, introduces subtle regressions, and burns context tokens on repetitive corrections. Build the missing harness directly into your repository, and an unpredictable model becomes a reliable engineering tool.</p>
 <section id="building-blocks" class="level2">
 <h2 class="anchored" data-anchor-id="building-blocks">Building Blocks</h2>
-<p>An effective repository harness rests on three distinct components:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource mermaid number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a>flowchart TD</span>
-<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a>    subgraph Blocks["The Three Building Blocks"]</span>
-<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a>        Context["Context&lt;br/&gt;(Global AGENTS.md + Local Scopes)"]</span>
-<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a>        Skills["Skills&lt;br/&gt;(On-Demand Progressive Capabilities)"]</span>
-<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a>        Tooling["Deterministic Tooling&lt;br/&gt;(Types, Linters, Check Scripts)"]</span>
-<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a>    end</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A repository harness has two halves: what the model reads before it writes, and the checks that run after it writes. The errors from the second half feed straight back into the next attempt.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    Ctx["Context + Skills + MCP&lt;br/&gt;(read before writing)"] --&gt; Model["Model"]
+    Model --&gt; Diff["Diff"]
+    Diff --&gt; Checks["Deterministic checks&lt;br/&gt;(types, linters, tests)"]
+    Checks -- "errors" --&gt; Model
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 <section id="context" class="level3">
 <h3 class="anchored" data-anchor-id="context">Context</h3>
 <p>Context represents the general instructions, project goals, and business domain you provide to the model.</p>
@@ -458,125 +470,161 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Divide your context into two scopes:</p>
 <ol type="1">
 <li><strong>Global scope</strong>: Project purpose, core practices, and non-negotiable boundaries. This belongs in a root <a href="https://agents.md"><code>AGENTS.md</code></a> file.</li>
-<li><strong>Local scope</strong>: Directory-specific conventions, module rules, or scoped path settings. Modern harnesses attach these instructions to specific file patterns so they load only when needed.</li>
+<li><strong>Local scope</strong>: Directory-specific conventions and module rules. Harnesses load these only when the model works on matching files: a nested <code>AGENTS.md</code> or <code>CLAUDE.md</code> inside a subdirectory, or a Cursor rule in <code>.cursor/rules/*.mdc</code> with a glob such as <code>src/pricing/**/*.py</code>.</li>
 </ol>
 </section>
 <section id="skills" class="level3">
 <h3 class="anchored" data-anchor-id="skills">Skills</h3>
 <p>Skills represent on-demand capabilities. Unlike global context, skills do not load into memory all at once.</p>
-<p>When a session begins, the agent inspects only the skill frontmatter: its name and description. That metadata costs roughly fifty tokens per skill. The agent loads the full instructions only when your prompt requires that specific workflow.</p>
+<p>When a session begins, the harness exposes only skill frontmatter: its name and description. That metadata costs roughly fifty tokens per skill. The runtime injects full instructions into context only when a prompt matches that specific workflow.</p>
 <p>Here is a minimal skill example:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="co">---</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a><span class="an">name:</span><span class="co"> verify-release</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a><span class="an">description:</span><span class="co"> Run the pre-release checklist and verify distribution artifacts.</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a><span class="co">---</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a><span class="fu"># Release Verification Workflow</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a><span class="ss">1. </span>Run the test suite: <span class="in">`uv run pytest`</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-label="9"></a><span class="ss">2. </span>Build the wheel: <span class="in">`uv run pyproject-build`</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-label="10"></a><span class="ss">3. </span>Inspect package metadata: <span class="in">`uv run twine check dist/*`</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a><span class="an">name:</span><span class="co"> verify-release</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a><span class="an">description:</span><span class="co"> Run the pre-release checklist and verify distribution artifacts.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a><span class="co">---</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a><span class="fu"># Release Verification Workflow</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a><span class="ss">1. </span>Run the test suite: <span class="in">`uv run pytest`</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a><span class="ss">2. </span>Build the wheel: <span class="in">`uv run pyproject-build`</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a><span class="ss">3. </span>Inspect package metadata: <span class="in">`uv run twine check dist/*`</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Skills come in several distinct flavors:</p>
 <ul>
-<li><strong>Wording and communication</strong>: Enforcing specific output formats. Examples include <code>caveman</code> for terse terminal responses or <code>asd-ste100</code> for unambiguous technical prose.</li>
-<li><strong>General approach and methodology</strong>: Guiding how the agent thinks and acts. Examples include <code>ponytail</code> or spec-plan-execute review cycles.</li>
-<li><strong>Specific functions and risk assessments</strong>: Specialized diagnostic procedures, such as paper-tiger-elephant risk evaluations before architectural migrations.</li>
+<li><strong>Wording and communication</strong>: Enforcing specific output formats. Examples include <a href="https://github.com/JuliusBrussee/caveman"><code>caveman</code></a>, which strips filler from responses to save output tokens, and <code>asd-ste100</code>, which rewrites prose into unambiguous Simplified Technical English.</li>
+<li><strong>General approach and methodology</strong>: Structuring model reasoning and task execution. <a href="https://github.com/DietrichGebert/ponytail"><code>ponytail</code></a> makes the model check whether code needs to exist at all, or already exists in the standard library, before it writes anything. Spec-plan-execute review cycles belong here too.</li>
+<li><strong>Specific functions and risk assessments</strong>: Specialized diagnostic procedures. One I use before architectural migrations is Shreyas Doshi’s pre-mortem: sort every risk into tigers (real threats), paper tigers (scary but harmless), and elephants (the problems nobody says out loud).</li>
 <li><strong>Tool integrations</strong>: Domain-specific scripts, test helpers, or wrappers built into your packages.</li>
 </ul>
+<p>Where markdown skills define procedural workflows, the <strong>Model Context Protocol (MCP)</strong> standardizes live tool execution. MCP servers allow the harness to query external systems—such as schema inspectors, issue trackers, or documentation indices—on demand without bloating base context tokens.</p>
 </section>
 <section id="deterministic-tooling" class="level3">
 <h3 class="anchored" data-anchor-id="deterministic-tooling">Deterministic Tooling</h3>
-<p>Many developers rely on long prompt instructions to enforce coding standards. That is a mistake. Probabilistic models drift. Deterministic tools do not guess.</p>
+<p>Many developers rely on long prompt instructions to enforce coding standards. That is a mistake. Probabilistic models drift. Deterministic tools evaluate explicit rules.</p>
 <p>Know the modern tooling ecosystem for your stack, and use it aggressively. In Python, that means full type annotation coverage combined with a fast static type checker like <code>pyrefly</code>.</p>
 <p>Consider this riddle: What does this code do?</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="kw">def</span> prepare_objects(data, preparer):</span>
-<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a>    objects <span class="op">=</span> []</span>
-<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a>    <span class="cf">for</span> d <span class="kw">in</span> data:</span>
-<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a>        o <span class="op">=</span> preparer(d)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a>        objects.append(o)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a>    <span class="cf">return</span> objects</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>What shape is <code>data</code>? What does <code>preparer</code> expect? What does it return? Neither a human developer nor an AI model can tell without searching caller implementations.</p>
-<p>Now consider the typed equivalent:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-4"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-label="1"></a><span class="im">import</span> datetime <span class="im">as</span> dt</span>
-<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2" aria-label="2"></a><span class="im">from</span> collections.abc <span class="im">import</span> Callable</span>
-<span id="annotated-cell-4-3"><a href="#annotated-cell-4-3" aria-label="3"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4" aria-label="4"></a><span class="bu">type</span> YieldCurve <span class="op">=</span> <span class="bu">dict</span>[<span class="bu">float</span>, <span class="bu">float</span>]</span>
-<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5" aria-label="5"></a><span class="bu">type</span> ParSwapQuote <span class="op">=</span> <span class="bu">tuple</span>[dt.date, <span class="bu">float</span>]</span>
-<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6" aria-label="6"></a></span>
-<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7" aria-label="7"></a></span>
-<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8" aria-label="8"></a><span class="kw">def</span> prepare_objects(</span>
-<span id="annotated-cell-4-9"><a href="#annotated-cell-4-9" aria-label="9"></a>    data: <span class="bu">list</span>[ParSwapQuote],</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-10" class="code-annotation-target"><a href="#annotated-cell-4-10" aria-label="10"></a>    preparer: Callable[[<span class="bu">list</span>[ParSwapQuote]], YieldCurve],</span>
-<span id="annotated-cell-4-11"><a href="#annotated-cell-4-11" aria-label="11"></a>) <span class="op">-&gt;</span> <span class="bu">list</span>[YieldCurve]:</span>
-<span id="annotated-cell-4-12"><a href="#annotated-cell-4-12" aria-label="12"></a>    objects: <span class="bu">list</span>[YieldCurve] <span class="op">=</span> []</span>
-<span id="annotated-cell-4-13"><a href="#annotated-cell-4-13" aria-label="13"></a>    <span class="cf">for</span> d <span class="kw">in</span> data:</span>
-<span id="annotated-cell-4-14"><a href="#annotated-cell-4-14" aria-label="14"></a>        o <span class="op">=</span> preparer([d])</span>
-<span id="annotated-cell-4-15"><a href="#annotated-cell-4-15" aria-label="15"></a>        objects.append(o)</span>
-<span id="annotated-cell-4-16"><a href="#annotated-cell-4-16" aria-label="16"></a>    <span class="cf">return</span> objects</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="kw">def</span> prepare_objects(data, preparer):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a>    objects <span class="op">=</span> []</span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>    <span class="cf">for</span> d <span class="kw">in</span> data:</span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>        o <span class="op">=</span> preparer(d)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>        objects.append(o)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a>    <span class="cf">return</span> objects</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>What shape is <code>data</code>? What input type does <code>preparer</code> accept? What does it return? Neither a human developer nor a type checker can answer without inspecting caller implementations.</p>
+<p>Now consider the typed equivalent. The function body is identical. Only the annotations changed:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-label="1"></a><span class="im">import</span> datetime <span class="im">as</span> dt</span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-label="2"></a><span class="im">from</span> collections.abc <span class="im">import</span> Callable</span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-label="3"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-4" class="code-annotation-target"><a href="#annotated-cell-3-4" aria-label="4"></a><span class="bu">type</span> YieldCurve <span class="op">=</span> <span class="bu">dict</span>[<span class="bu">float</span>, <span class="bu">float</span>]</span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-label="5"></a><span class="bu">type</span> ParSwapQuote <span class="op">=</span> <span class="bu">tuple</span>[dt.date, <span class="bu">float</span>]</span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-label="6"></a></span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-label="7"></a></span>
+<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8" aria-label="8"></a><span class="kw">def</span> prepare_objects(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-9" class="code-annotation-target"><a href="#annotated-cell-3-9" aria-label="9"></a>    data: <span class="bu">list</span>[<span class="bu">list</span>[ParSwapQuote]],</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-3-10" class="code-annotation-target"><a href="#annotated-cell-3-10" aria-label="10"></a>    preparer: Callable[[<span class="bu">list</span>[ParSwapQuote]], YieldCurve],</span>
+<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11" aria-label="11"></a>) <span class="op">-&gt;</span> <span class="bu">list</span>[YieldCurve]:</span>
+<span id="annotated-cell-3-12"><a href="#annotated-cell-3-12" aria-label="12"></a>    objects: <span class="bu">list</span>[YieldCurve] <span class="op">=</span> []</span>
+<span id="annotated-cell-3-13"><a href="#annotated-cell-3-13" aria-label="13"></a>    <span class="cf">for</span> d <span class="kw">in</span> data:</span>
+<span id="annotated-cell-3-14"><a href="#annotated-cell-3-14" aria-label="14"></a>        o <span class="op">=</span> preparer(d)</span>
+<span id="annotated-cell-3-15"><a href="#annotated-cell-3-15" aria-label="15"></a>        objects.append(o)</span>
+<span id="annotated-cell-3-16"><a href="#annotated-cell-3-16" aria-label="16"></a>    <span class="cf">return</span> objects</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="4" data-code-annotation="1">Explicit domain type aliases document data structures.</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="4" data-code-annotation="1">Domain type aliases: a curve maps tenor (in years) to rate, a quote is a maturity date and a par rate.</span>
 </dd>
-<dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="10" data-code-annotation="2">Strict callable contracts prevent the agent from hallucinating object attributes.</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="9" data-code-annotation="2">One list of quotes per curve to build.</span>
+</dd>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="10" data-code-annotation="3">The callable contract states exactly what goes in and what comes out.</span>
 </dd>
 </dl>
-<p>This version requires more effort to write. Yet it is infinitely more readable. That clarity helps human engineers, and it helps AI agents even more. When the type system enforces the data contract, the agent cannot hallucinate invalid object attributes.</p>
+<p>This version requires more effort to write. Yet it is much more readable. That clarity helps human engineers, and it cuts generation errors further. If generated code passes a single quote where a list is expected, or reads an attribute that does not exist, <code>pyrefly</code> rejects it before any test runs.</p>
 </section>
 </section>
-<section id="putting-on-the-harness" class="level2">
-<h2 class="anchored" data-anchor-id="putting-on-the-harness">Putting on the Harness</h2>
+<section id="bootstrapping-the-harness" class="level2">
+<h2 class="anchored" data-anchor-id="bootstrapping-the-harness">Bootstrapping the Harness</h2>
 <p>Your mileage may vary, but this is the exact sequence I follow when setting up a project.</p>
-<p>The most important word here is <strong>bootstrap</strong>. Make the agent help you put the harness on itself.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource mermaid number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a>flowchart LR</span>
-<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a>    A["1. Tooling"] --&gt; B["2. Context"]</span>
-<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a>    B --&gt; C["3. Specs"]</span>
-<span id="cb4-4"><a href="#cb4-4" aria-label="4"></a>    C --&gt; D["4. Published Skills"]</span>
-<span id="cb4-5"><a href="#cb4-5" aria-label="5"></a>    D --&gt; E["5. Custom Skills"]</span>
-<span id="cb4-6"><a href="#cb4-6" aria-label="6"></a>    E --&gt; F["6. Bespoke Tooling"]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The key technique is <strong>bootstrapping</strong>. Use the model itself to generate the initial harness configuration.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A["1. Tooling"] --&gt; B["2. Context"]
+    B --&gt; C["3. Specs"]
+    C --&gt; D["4. Published Skills"]
+    D --&gt; E["5. Custom Skills"]
+    E --&gt; F["6. Bespoke Tooling"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Note that the order flips relative to the building blocks above. Tooling comes first because every later step leans on it: the context file points to the check command, and custom skills end by running it.</p>
 <section id="tooling-first" class="level3">
 <h3 class="anchored" data-anchor-id="tooling-first">1. Tooling First</h3>
-<p>Deterministic tooling is your most reliable investment and offers the highest ROI. If you develop software, you must know the tools that surround your technology.</p>
-<p>Configuring linters, formatters, and type checkers by hand can take time. Do not do it manually. Use pre-made templates, or describe your desired standards and instruct the agent to write the configuration for you.</p>
-<p>Add your check commands to pre-commit hooks and CI pipelines. Create a single script command (like <code>poe code-quality</code> or <code>make check</code>) and run it as often as possible.</p>
+<p>Deterministic tooling is your most reliable investment and offers the highest ROI.</p>
+<p>Configuring linters, formatters, and type checkers by hand can take time. Do not do it manually. Use pre-made templates, or define desired standards and prompt the model to generate the configuration.</p>
+<p>Create a single script command (like <code>poe code-quality</code> or <code>make check</code>) that runs everything. Then wire it in three places:</p>
+<ul>
+<li><strong>The model’s own loop</strong>: The model runs the command after every change, reads the errors, and fixes them before it reports done. This is the cheapest feedback you will ever get. It costs seconds and no human attention.</li>
+<li><strong>Pre-commit hooks</strong>: Catch what slipped through before it lands in history.</li>
+<li><strong>CI pipelines</strong>: The final gate that nobody can skip.</li>
+</ul>
 </section>
 <section id="context-1" class="level3">
 <h3 class="anchored" data-anchor-id="context-1">2. Context</h3>
-<p>Next, write a minimal <code>AGENTS.md</code>. Focus on two critical elements:</p>
-<ol type="1">
-<li>What the project is trying to achieve.</li>
-<li>The mandate that all code must pass the deterministic quality checks defined in step 1.</li>
-</ol>
-<p>Keep it concise and information-dense. Context is your most expensive asset.</p>
-<p>Direct the agent to begin every session with a quick rediscovery pass: inspect what you are building, check git status, and read relevant tests. Never cram twenty formatting rules into <code>AGENTS.md</code>. Let your linters and type checkers enforce mechanical standards.</p>
+<p>Next, write a minimal <code>AGENTS.md</code>. Mine rarely exceeds twenty lines:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="fu"># AGENTS.md</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a><span class="fu">## Project</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a>Pricing library for interest-rate swaps. Python 3.13, managed with <span class="in">`uv`</span>.</span>
+<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a><span class="fu">## Commands</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-label="7"></a><span class="ss">- </span>Install: <span class="in">`uv sync`</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-label="8"></a><span class="ss">- </span>Check everything: <span class="in">`uv run poe code-quality`</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-label="9"></a><span class="ss">- </span>Tests only: <span class="in">`uv run pytest -q`</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-label="10"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-label="11"></a><span class="fu">## Rules</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-label="12"></a><span class="ss">- </span>Run <span class="in">`uv run poe code-quality`</span> after every change. Fix all errors before you</span>
+<span id="cb3-13"><a href="#cb3-13" aria-label="13"></a>  report done.</span>
+<span id="cb3-14"><a href="#cb3-14" aria-label="14"></a><span class="ss">- </span>Use <span class="in">`Decimal`</span> for money. Never <span class="in">`float`</span>.</span>
+<span id="cb3-15"><a href="#cb3-15" aria-label="15"></a><span class="ss">- </span>Start each session: read the target module, <span class="in">`git status`</span>, and the relevant tests.</span>
+<span id="cb3-16"><a href="#cb3-16" aria-label="16"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-label="17"></a><span class="fu">## Do not touch</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-label="18"></a><span class="ss">- </span><span class="in">`vendor/`</span> (generated code)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-label="19"></a><span class="ss">- </span><span class="in">`migrations/`</span> (hand-reviewed only)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Two elements matter most: what the project is trying to achieve, and the mandate that all code must pass the deterministic quality checks from step 1. Never cram twenty formatting rules into <code>AGENTS.md</code>. Let linters and type checkers enforce mechanical standards.</p>
 </section>
 <section id="spec-driven-development" class="level3">
 <h3 class="anchored" data-anchor-id="spec-driven-development">3. Spec-Driven Development</h3>
 <p>Establish your own practices for specification.</p>
-<p>An agent will implement the wrong solution with complete confidence if requirements are vague. Before asking an agent to write code, write down three things:</p>
+<p>A model generates incorrect implementations when requirements are vague. Before requesting code generation, define three elements:</p>
 <ul>
 <li><strong>Intent</strong>: The problem you are solving.</li>
 <li><strong>Constraints</strong>: What cannot break.</li>
 <li><strong>Acceptance criteria</strong>: The tests that prove success.</li>
 </ul>
-<p>Resolving disagreements in a short spec document takes minutes. Fixing a 500-line pull request built on a misunderstanding takes hours.</p>
+<p>Resolving ambiguity in a short specification takes minutes. Fixing a 500-line pull request built on incorrect assumptions takes hours.</p>
 </section>
 <section id="published-skills" class="level3">
 <h3 class="anchored" data-anchor-id="published-skills">4. Published Skills</h3>
-<p>The ecosystem now offers thousands of community skills (<code>npx skills install</code>).</p>
+<p>The ecosystem now offers thousands of community skills, installable with a single <a href="https://skills.sh"><code>npx skills add</code></a> command.</p>
 <p>A new hype wave appears every week. Approach published skills with care:</p>
 <ul>
 <li><strong>Security risks</strong>: Community skills often contain executable scripts and shell commands. Always audit the underlying code before running them.</li>
-<li><strong>Skill bloat</strong>: Installing 100 skills confuses both the agent and the developer. The model struggles to select the right tool when descriptions overlap.</li>
+<li><strong>Skill bloat</strong>: Overloading the environment with 100 skills degrades tool selection. Routing fails when descriptions overlap.</li>
 </ul>
 <p>Experiment, evaluate what works, and keep your skill inventory lean.</p>
 </section>
 <section id="custom-skills" class="level3">
 <h3 class="anchored" data-anchor-id="custom-skills">5. Custom Skills</h3>
 <p>Most modern agentic tools include skill-authoring capabilities in their default harness. Use them.</p>
-<p>When you notice yourself typing the same prompt instructions three times, turn that workflow into a skill. Describe the procedure to the agent. Let the agent scaffold the skill file. Test the workflow, refine the steps, and commit the skill to your repository.</p>
+<p>When you type the same prompt instructions three times, turn that workflow into a skill. Document the procedure, prompt the model to scaffold the skill file, verify the steps, and commit the file to version control.</p>
 <p>Treat custom skills as version-controlled code. Review modifications to them through pull requests just as you would application code.</p>
 </section>
 <section id="bespoke-tooling" class="level3">
@@ -588,26 +636,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>What architectural invariants must we guarantee?</li>
 <li>Where do repeated mistakes happen?</li>
 </ul>
-<p>Spend half a day identifying those pain points. Then instruct your agent to write a custom lint script or verification tool that detects violations. Wire that tool directly into your local check command.</p>
+<p>Spend half a day identifying those pain points. Then prompt the model to write a custom lint script or verification tool that detects violations. Wire that tool directly into your local check command.</p>
 </section>
 </section>
 <section id="here-be-dragons" class="level2">
 <h2 class="anchored" data-anchor-id="here-be-dragons">Here Be Dragons</h2>
 <p>A healthy dose of realism is necessary when working with agentic systems:</p>
 <ul>
-<li><strong>Developer skills decay</strong>: If you outsource all reasoning and debugging to the agent, your own edge dulls. You must understand the generated code deeply enough to catch subtle algorithmic failures or silent memory leaks during review.</li>
+<li><strong>Developer skills decay</strong>: If you outsource all debugging and analysis to automated tools, your own technical edge dulls. You must understand generated code deeply enough to catch subtle algorithmic failures or silent memory leaks during review.</li>
 <li><strong>The “solved software” myth</strong>: Marketing pitches claim software production is solved and everyone can just prompt. The fantasy of a dark factory where code writes itself without human intervention is an illusion. Real engineering remains hard.</li>
-<li><strong>Token costs are real</strong>: Multi-turn agent loops burn tokens fast. If your base context is bloated or your agent loops through ten failed test runs, your API bills compound rapidly.</li>
-<li><strong>Review fatigue and rubber-stamping</strong>: Agents generate hundreds of plausible lines in seconds. The bottleneck shifts from writing code to auditing it. If tired engineers rubber-stamp massive diffs, subtle technical debt rapidly pollutes the repository.</li>
+<li><strong>Token costs are real</strong>: Multi-turn agent loops burn tokens fast. Every turn re-sends your base context (see <a href="#context">Context</a>), and automated loops that cycle through the same failing test multiply that cost. Most harnesses report per-session token usage. Look at it weekly, and trim whatever context the model never needed.</li>
+<li><strong>Review fatigue and rubber-stamping</strong>: Automated tools generate hundreds of plausible lines in seconds. The bottleneck shifts from writing code to auditing it. If tired engineers rubber-stamp massive diffs, subtle technical debt rapidly pollutes the repository.</li>
 <li><strong>The “set it and forget it” trap</strong>: A repository harness is not a static setup. As codebases evolve, libraries update, and model capabilities shift, your rules, skills, and deterministic gates require continuous maintenance.</li>
 </ul>
-<p>Software engineering is evolving from line-by-line typing into system design, constraint specification, and architectural review. Build rigid rails. Let deterministic tools catch mistakes. Keep human judgment where it matters most: on intent, architecture, and correctness.</p>
+<p>If you do one thing after reading this, make it the single check command from step 1. Wire it into the model’s loop today. Everything else in this post builds on it.</p>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
 <ul>
 <li><a href="https://ainativesoftware.engineering/harness">How to set up your repository for AI coding agents</a> – Alfonso Graziano’s guide on repository context layers and deterministic feedback gates from <em>AI-Native Software Engineering</em> (O’Reilly).</li>
-<li><a href="https://addyosmani.com/blog/">Addy Osmani’s Blog</a> – Essays on agent harness engineering, agent skills, and workflow orchestration.</li>
+<li><a href="https://addyosmani.com/blog/agent-harness-engineering/">Agent Harness Engineering</a> – Addy Osmani on designing the scaffolding around coding agents.</li>
 <li><a href="https://www.youtube.com/watch?v=-0HRzXk8vlk">Why AI Tokens are so Expensive</a> – Computerphile video on token costs and runaway context growth in agentic loops.</li>
 </ul>
 
