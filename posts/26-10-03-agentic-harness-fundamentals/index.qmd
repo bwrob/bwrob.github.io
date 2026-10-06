@@ -184,25 +184,6 @@ project.
 The key technique is **bootstrapping**. Use the model itself to generate the initial
 harness configuration.
 
-```{mermaid}
-flowchart TD
-    subgraph Seed["1. Seed Foundation"]
-        A["1. Tooling<br/>(linters, types, single check command)"]
-        B["2. Context<br/>(minimal AGENTS.md mandating check command)"]
-        A --> B
-    end
-
-    B --> C["3. Specs<br/>(intent, constraints, acceptance tests)"]
-
-    subgraph Expansion["2. Model Expands the Harness"]
-        C --> D["4. Published Skills<br/>(curate lean toolset)"]
-        D --> E["5. Custom Skills<br/>(model scaffolds workflows)"]
-        E --> F["6. Bespoke Tooling<br/>(model writes domain checkers)"]
-    end
-
-    F -. "wires back into check command" .-> A
-```
-
 Tooling comes first because every later step leans on it: `AGENTS.md` mandates the
 check command, and skills execute it. Once that foundation is set, the model helps
 expand the harness by scaffolding custom skills and writing bespoke verification
