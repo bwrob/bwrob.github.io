@@ -62,16 +62,18 @@ This is much more husssle but much more readable. Both for developers and for ag
 import datetime as dt
 from typing import Callable
 
-type YieldCurve
+type YieldCurve = dict[float, float]
 type ParSwapQuote = tuple[dt.date, float]
+
 
 def prepare_objects(
     data: list[ParSwapQuote],
-    preparer Callable[[list[ParSwapQuote]], YieldCurve ]
-):
+    preparer: Callable[[list[ParSwapQuote]], YieldCurve],
+) -> list[YieldCurve]:
     objects: list[YieldCurve] = []
     for d in data:
-        o = preparer(d)
+        o = preparer([d])
+        objects.append(o)
     return objects
 ```
 
@@ -102,6 +104,10 @@ It can also contain style guides, conventions etc. But probabilistic models are 
 relible in following those. Better to lean on the derteministing tooling and code
 quality checks.
 
+### Spec Driven Development
+
+Establish your own practices
+
 #### Published Skills
 
 npx skills install
@@ -115,7 +121,7 @@ There are thousands of them, new hype each week.
 
 Most agentic tools include skill making skills in the defualt harness.
 Just ask the agent to make a skill based on your description, read it, test it, iterate.
-Add it to your repo, version, treat as integral part of the project
+Add it to your repo, version, treat as integral part of the project.
 
 ### Custom Tooling
 
