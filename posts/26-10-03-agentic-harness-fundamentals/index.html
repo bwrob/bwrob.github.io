@@ -575,33 +575,6 @@ div.csl-indent {
 <h2 class="anchored" data-anchor-id="bootstrapping-the-harness">Bootstrapping the Harness</h2>
 <p>Your mileage may vary, but this is the exact sequence I follow when setting up a project.</p>
 <p>The key technique is <strong>bootstrapping</strong>. Use the model itself to generate the initial harness configuration.</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart TD
-    subgraph Seed["1. Seed Foundation"]
-        A["1. Tooling&lt;br/&gt;(linters, types, single check command)"]
-        B["2. Context&lt;br/&gt;(minimal AGENTS.md mandating check command)"]
-        A --&gt; B
-    end
-
-    B --&gt; C["3. Specs&lt;br/&gt;(intent, constraints, acceptance tests)"]
-
-    subgraph Expansion["2. Model Expands the Harness"]
-        C --&gt; D["4. Published Skills&lt;br/&gt;(curate lean toolset)"]
-        D --&gt; E["5. Custom Skills&lt;br/&gt;(model scaffolds workflows)"]
-        E --&gt; F["6. Bespoke Tooling&lt;br/&gt;(model writes domain checkers)"]
-    end
-
-    F -. "wires back into check command" .-&gt; A
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
 <p>Tooling comes first because every later step leans on it: <code>AGENTS.md</code> mandates the check command, and skills execute it. Once that foundation is set, the model helps expand the harness by scaffolding custom skills and writing bespoke verification scripts. Those new tools wire straight back into the primary check command, compounding the harness over time.</p>
 <section id="tooling-first" class="level3">
 <h3 class="anchored" data-anchor-id="tooling-first">1. Tooling First</h3>
