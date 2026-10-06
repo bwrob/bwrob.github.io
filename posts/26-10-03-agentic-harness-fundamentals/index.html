@@ -63,7 +63,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -443,18 +462,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Ask a fresh coding agent to add a swap pricer to a quant codebase. Thirty seconds later you get clean, plausible code. It stores notionals as <code>float</code>, reaches for Pandas where the rest of the repository uses Polars, and passes curves around as bare dictionaries instead of the <code>YieldCurve</code> type you defined. None of it is wrong in the abstract. All of it is wrong for your system.</p>
 <p>The model is not the problem. The harness is. Every AI coding tool ships with one: Cursor, Claude Code, and Antigravity each supply a default system prompt and a standard tool set. Those defaults are generic. They contain no context about your architecture, business requirements, deprecated libraries, or the edge cases you spent weeks solving.</p>
-<p>Operating with default settings costs real time and tokens. The model drifts, introduces subtle regressions, and burns context tokens on repetitive corrections. Build the missing harness directly into your repository, and an unpredictable model becomes a reliable engineering tool.</p>
+<p>Operating with default settings costs real time and tokens. The model drifts, introduces subtle regressions, and burns context tokens on repetitive corrections. Both Addy Osmani <span class="citation" data-cites="osmani2025">(<a href="#ref-osmani2025" role="doc-biblioref">Osmani 2025</a>)</span> and Alfonso Graziano <span class="citation" data-cites="graziano2026">(<a href="#ref-graziano2026" role="doc-biblioref">Graziano 2026</a>)</span> emphasize that an agent is a model plus its harness. Build that missing harness directly into your repository, and an unpredictable model becomes a reliable engineering tool.</p>
 <section id="building-blocks" class="level2">
 <h2 class="anchored" data-anchor-id="building-blocks">Building Blocks</h2>
-<p>A repository harness has two halves: what the model reads before it writes, and the checks that run after it writes. The errors from the second half feed straight back into the next attempt.</p>
+<p>The harness orchestrates two loops around the model. In the inner loop, the model loads skills or queries MCP tools to produce a diff. In the outer loop, deterministic checks catch failures and feed errors back for correction.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart LR
-    Ctx["Context + Skills + MCP&lt;br/&gt;(read before writing)"] --&gt; Model["Model"]
-    Model --&gt; Diff["Diff"]
+    Ctx["Context&lt;br/&gt;(AGENTS.md, task)"] --&gt; Model["Model"]
+
+    subgraph AgentLoop["Agentic Loop"]
+        Model --&gt; Decision{"Decides action"}
+        Decision -- "workflow" --&gt; Skills["Skill"]
+        Decision -- "live tool" --&gt; MCP["MCP"]
+        Skills --&gt; Model
+        MCP --&gt; Model
+    end
+
+    Decision -- "diff ready" --&gt; Diff["Diff"]
     Diff --&gt; Checks["Deterministic checks&lt;br/&gt;(types, linters, tests)"]
     Checks -- "errors" --&gt; Model
 </pre>
@@ -466,10 +494,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="context" class="level3">
 <h3 class="anchored" data-anchor-id="context">Context</h3>
 <p>Context represents the general instructions, project goals, and business domain you provide to the model.</p>
-<p>Keep your context small. Context is your most expensive asset. Every token in your base prompt consumes working memory and incurs cost on every single turn. Computerphile has a clear breakdown of <a href="https://www.youtube.com/watch?v=-0HRzXk8vlk">why agent tokens become so expensive</a> as conversation turns compound.</p>
+<p>Keep your context small. Context is your most expensive asset. Every token in your base prompt consumes working memory and incurs cost on every single turn. Computerphile has a clear breakdown of <a href="https://www.youtube.com/watch?v=-0HRzXk8vlk">why agent tokens become so expensive</a> as conversation turns compound <span class="citation" data-cites="computerphile2024">(<a href="#ref-computerphile2024" role="doc-biblioref">Pound and Computerphile 2024</a>)</span>.</p>
 <p>Divide your context into two scopes:</p>
 <ol type="1">
-<li><strong>Global scope</strong>: Project purpose, core practices, and non-negotiable boundaries. This belongs in a root <a href="https://agents.md"><code>AGENTS.md</code></a> file.</li>
+<li><strong>Global scope</strong>: Project purpose, core practices, and non-negotiable boundaries. This belongs in a root <a href="https://agents.md"><code>AGENTS.md</code></a> file <span class="citation" data-cites="agentsmd2025">(<a href="#ref-agentsmd2025" role="doc-biblioref">GitHub Next 2025</a>)</span>.</li>
 <li><strong>Local scope</strong>: Directory-specific conventions and module rules. Harnesses load these only when the model works on matching files: a nested <code>AGENTS.md</code> or <code>CLAUDE.md</code> inside a subdirectory, or a Cursor rule in <code>.cursor/rules/*.mdc</code> with a glob such as <code>src/pricing/**/*.py</code>.</li>
 </ol>
 </section>
@@ -495,12 +523,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Specific functions and risk assessments</strong>: Specialized diagnostic procedures. One I use before architectural migrations is Shreyas Doshi’s pre-mortem: sort every risk into tigers (real threats), paper tigers (scary but harmless), and elephants (the problems nobody says out loud).</li>
 <li><strong>Tool integrations</strong>: Domain-specific scripts, test helpers, or wrappers built into your packages.</li>
 </ul>
-<p>Where markdown skills define procedural workflows, the <strong>Model Context Protocol (MCP)</strong> standardizes live tool execution. MCP servers allow the harness to query external systems—such as schema inspectors, issue trackers, or documentation indices—on demand without bloating base context tokens.</p>
+<p>Where markdown skills define procedural workflows, the <strong>Model Context Protocol (MCP)</strong> standardizes live tool execution <span class="citation" data-cites="mcp2024">(<a href="#ref-mcp2024" role="doc-biblioref">Anthropic 2024</a>)</span>. MCP servers allow the harness to query external systems—such as schema inspectors, issue trackers, or documentation indices—on demand without bloating base context tokens.</p>
 </section>
 <section id="deterministic-tooling" class="level3">
 <h3 class="anchored" data-anchor-id="deterministic-tooling">Deterministic Tooling</h3>
 <p>Many developers rely on long prompt instructions to enforce coding standards. That is a mistake. Probabilistic models drift. Deterministic tools evaluate explicit rules.</p>
-<p>Know the modern tooling ecosystem for your stack, and use it aggressively. In Python, that means full type annotation coverage combined with a fast static type checker like <code>pyrefly</code>.</p>
+<p>Know the modern tooling ecosystem for your stack, and use it aggressively. In Python, that means full type annotation coverage combined with a fast static type checker like <code>pyrefly</code>. Benchmark evaluations such as SWE-bench demonstrate that models struggle on real-world repository tasks without reproducible environments and tight feedback loops <span class="citation" data-cites="jimenez2024swebench">(<a href="#ref-jimenez2024swebench" role="doc-biblioref">Jimenez et al. 2024</a>)</span>.</p>
 <p>Consider this riddle: What does this code do?</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="kw">def</span> prepare_objects(data, preparer):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-label="2"></a>    objects <span class="op">=</span> []</span>
@@ -552,19 +580,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
-    A["1. Tooling"] --&gt; B["2. Context"]
-    B --&gt; C["3. Specs"]
-    C --&gt; D["4. Published Skills"]
-    D --&gt; E["5. Custom Skills"]
-    E --&gt; F["6. Bespoke Tooling"]
+<pre class="mermaid mermaid-js">flowchart TD
+    subgraph Seed["1. Seed Foundation"]
+        A["1. Tooling&lt;br/&gt;(linters, types, single check command)"]
+        B["2. Context&lt;br/&gt;(minimal AGENTS.md mandating check command)"]
+        A --&gt; B
+    end
+
+    B --&gt; C["3. Specs&lt;br/&gt;(intent, constraints, acceptance tests)"]
+
+    subgraph Expansion["2. Model Expands the Harness"]
+        C --&gt; D["4. Published Skills&lt;br/&gt;(curate lean toolset)"]
+        D --&gt; E["5. Custom Skills&lt;br/&gt;(model scaffolds workflows)"]
+        E --&gt; F["6. Bespoke Tooling&lt;br/&gt;(model writes domain checkers)"]
+    end
+
+    F -. "wires back into check command" .-&gt; A
 </pre>
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
-<p>Note that the order flips relative to the building blocks above. Tooling comes first because every later step leans on it: the context file points to the check command, and custom skills end by running it.</p>
+<p>Tooling comes first because every later step leans on it: <code>AGENTS.md</code> mandates the check command, and skills execute it. Once that foundation is set, the model helps expand the harness by scaffolding custom skills and writing bespoke verification scripts. Those new tools wire straight back into the primary check command, compounding the harness over time.</p>
 <section id="tooling-first" class="level3">
 <h3 class="anchored" data-anchor-id="tooling-first">1. Tooling First</h3>
 <p>Deterministic tooling is your most reliable investment and offers the highest ROI.</p>
@@ -616,7 +654,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The ecosystem now offers thousands of community skills, installable with a single <a href="https://skills.sh"><code>npx skills add</code></a> command.</p>
 <p>A new hype wave appears every week. Approach published skills with care:</p>
 <ul>
-<li><strong>Security risks</strong>: Community skills often contain executable scripts and shell commands. Always audit the underlying code before running them.</li>
+<li><strong>Security risks</strong>: Community skills often contain executable scripts and shell commands. As Simon Willison warns in his analysis of the “lethal trifecta”, connecting models to private files and active tools creates severe prompt-injection risks <span class="citation" data-cites="willison2024">(<a href="#ref-willison2024" role="doc-biblioref">Willison 2024</a>)</span>. Always audit the underlying code before running them.</li>
 <li><strong>Skill bloat</strong>: Overloading the environment with 100 skills degrades tool selection. Routing fails when descriptions overlap.</li>
 </ul>
 <p>Experiment, evaluate what works, and keep your skill inventory lean.</p>
@@ -643,21 +681,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="here-be-dragons">Here Be Dragons</h2>
 <p>A healthy dose of realism is necessary when working with agentic systems:</p>
 <ul>
-<li><strong>Developer skills decay</strong>: If you outsource all debugging and analysis to automated tools, your own technical edge dulls. You must understand generated code deeply enough to catch subtle algorithmic failures or silent memory leaks during review.</li>
+<li><strong>Developer skills decay</strong>: As Addy Osmani details in his analysis of agentic skill decay, outsourcing all debugging and implementation dulls technical intuition <span class="citation" data-cites="osmani2026decay">(<a href="#ref-osmani2026decay" role="doc-biblioref">Osmani 2026</a>)</span>. You must understand generated code deeply enough to catch subtle algorithmic failures or silent memory leaks during review.</li>
 <li><strong>The “solved software” myth</strong>: Marketing pitches claim software production is solved and everyone can just prompt. The fantasy of a dark factory where code writes itself without human intervention is an illusion. Real engineering remains hard.</li>
 <li><strong>Token costs are real</strong>: Multi-turn agent loops burn tokens fast. Every turn re-sends your base context (see <a href="#context">Context</a>), and automated loops that cycle through the same failing test multiply that cost. Most harnesses report per-session token usage. Look at it weekly, and trim whatever context the model never needed.</li>
-<li><strong>Review fatigue and rubber-stamping</strong>: Automated tools generate hundreds of plausible lines in seconds. The bottleneck shifts from writing code to auditing it. If tired engineers rubber-stamp massive diffs, subtle technical debt rapidly pollutes the repository.</li>
+<li><strong>Review fatigue and rubber-stamping</strong>: Automated tools generate hundreds of plausible lines in seconds. The bottleneck shifts from writing code to auditing it. GitClear’s analysis of over 150 million lines of AI-assisted code found marked increases in code churn and duplicate logic when review fatigue sets in <span class="citation" data-cites="gitclear2024">(<a href="#ref-gitclear2024" role="doc-biblioref">GitClear 2024</a>)</span>. If tired engineers rubber-stamp massive diffs, subtle technical debt rapidly pollutes the repository.</li>
 <li><strong>The “set it and forget it” trap</strong>: A repository harness is not a static setup. As codebases evolve, libraries update, and model capabilities shift, your rules, skills, and deterministic gates require continuous maintenance.</li>
 </ul>
 <p>If you do one thing after reading this, make it the single check command from step 1. Wire it into the model’s loop today. Everything else in this post builds on it.</p>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
-<ul>
-<li><a href="https://ainativesoftware.engineering/harness">How to set up your repository for AI coding agents</a> – Alfonso Graziano’s guide on repository context layers and deterministic feedback gates from <em>AI-Native Software Engineering</em> (O’Reilly).</li>
-<li><a href="https://addyosmani.com/blog/agent-harness-engineering/">Agent Harness Engineering</a> – Addy Osmani on designing the scaffolding around coding agents.</li>
-<li><a href="https://www.youtube.com/watch?v=-0HRzXk8vlk">Why AI Tokens are so Expensive</a> – Computerphile video on token costs and runaway context growth in agentic loops.</li>
-</ul>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-mcp2024" class="csl-entry" role="listitem">
+Anthropic. 2024. <span>“Model Context Protocol (<span>MCP</span>) Specification.”</span> <a href="https://modelcontextprotocol.io/">https://modelcontextprotocol.io/</a>.
+</div>
+<div id="ref-gitclear2024" class="csl-entry" role="listitem">
+GitClear. 2024. <em>Coding on <span>Copilot</span>: 2023 Data Suggests Downward Pressure on Code Quality</em>. <a href="https://www.gitclear.com/coding_on_copilot_data_shows_downward_pressure_on_code_quality">https://www.gitclear.com/coding_on_copilot_data_shows_downward_pressure_on_code_quality</a>.
+</div>
+<div id="ref-agentsmd2025" class="csl-entry" role="listitem">
+GitHub Next. 2025. <span>“<span class="nocase">AGENTS.md</span>: An Open Convention for <span>AI</span> Coding Agents.”</span> <a href="https://agents.md">https://agents.md</a>.
+</div>
+<div id="ref-graziano2026" class="csl-entry" role="listitem">
+Graziano, Alfonso. 2026. <span>“How to Set up Your Repository for <span>AI</span> Coding Agents.”</span> O’Reilly Media. <a href="https://ainativesoftware.engineering/harness">https://ainativesoftware.engineering/harness</a>.
+</div>
+<div id="ref-jimenez2024swebench" class="csl-entry" role="listitem">
+Jimenez, Carlos E., John Yang, Alexander Wettig, et al. 2024. <span>“<span class="nocase">SWE-bench</span>: Can Language Models Resolve Real-World <span>GitHub</span> Issues?”</span> <em>International Conference on Learning Representations (ICLR)</em>. <a href="https://arxiv.org/abs/2310.06770">https://arxiv.org/abs/2310.06770</a>.
+</div>
+<div id="ref-osmani2025" class="csl-entry" role="listitem">
+Osmani, Addy. 2025. <span>“Agent Harness Engineering.”</span> <a href="https://addyosmani.com/blog/agent-harness-engineering/">https://addyosmani.com/blog/agent-harness-engineering/</a>.
+</div>
+<div id="ref-osmani2026decay" class="csl-entry" role="listitem">
+Osmani, Addy. 2026. <span>“Agentic Skill Decay.”</span> <a href="https://addyosmani.com/blog/agentic-skill-decay/">https://addyosmani.com/blog/agentic-skill-decay/</a>.
+</div>
+<div id="ref-computerphile2024" class="csl-entry" role="listitem">
+Pound, Mike, and Computerphile. 2024. <span>“Why <span>AI</span> Tokens Are so Expensive.”</span> <a href="https://www.youtube.com/watch?v=-0HRzXk8vlk">https://www.youtube.com/watch?v=-0HRzXk8vlk</a>.
+</div>
+<div id="ref-willison2024" class="csl-entry" role="listitem">
+Willison, Simon. 2024. <span>“The Lethal Trifecta of <span>AI</span> Agent Security and Prompt Injection.”</span> <a href="https://simonwillison.net/2025/Jun/18/the-lethal-trifecta/">https://simonwillison.net/2025/Jun/18/the-lethal-trifecta/</a>.
+</div>
+</div>
 
 
 </section>
