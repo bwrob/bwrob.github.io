@@ -2,7 +2,7 @@
 categories: [Dev Env]
 date: "2026-10-06"
 date-modified: "2026-10-06"
-description: "Why default agent instructions fail, the three building blocks of a repository harness, and the bootstrap order I use to set one up."
+description: "Why default agent instructions fail, the two halves of a repository harness, and the bootstrap order I use to set one up."
 format-links: [html]
 image: cover.webp
 title: "Agentic Harness in Practice"
@@ -11,33 +11,34 @@ toc-depth: 3
 
 ![Agentic Harness cover](cover.webp){width="98%" fig-align="center" .nolightbox}
 
-Every AI coding tool comes with its own harness. When you install Cursor, Claude
-Code, or Antigravity, the vendor supplies a default system prompt and standard tool
-integrations.
+Ask a fresh coding agent to add a swap pricer to a quant codebase. Thirty seconds later
+you get clean, plausible code. It stores notionals as `float`, reaches for Pandas where
+the rest of the repository uses Polars, and passes curves around as bare dictionaries
+instead of the `YieldCurve` type you defined. None of it is wrong in the abstract. All
+of it is wrong for your system.
 
-The problem is simple: vendor defaults are generic. They know nothing about your
-architecture, business needs, your deprecated libraries, or the edge cases that
-you spent weeks solving.
+The model is not the problem. The harness is. Every AI coding tool ships with one:
+Cursor, Claude Code, and Antigravity each supply a default system prompt and a standard
+tool set. Those defaults are generic. They contain no context about your architecture,
+business requirements, deprecated libraries, or the edge cases you spent weeks solving.
 
-Leaving your agent on default settings costs you real time and tokens. The model
-drifts, introduces subtle regressions, and burns context tokens on repetitive
-corrections.
-
-You can fix this. You do not need to accept generic behavior. By building a harness
-directly into your repository, you turn an unpredictable model into a reliable
-pair programmer.
+Operating with default settings costs real time and tokens. The model drifts, introduces
+subtle regressions, and burns context tokens on repetitive corrections. Build the
+missing harness directly into your repository, and an unpredictable model becomes a
+reliable engineering tool.
 
 ## Building Blocks
 
-An effective repository harness rests on three distinct components:
+A repository harness has two halves: what the model reads before it writes, and the
+checks that run after it writes. The errors from the second half feed straight back
+into the next attempt.
 
-```mermaid
-flowchart TD
-    subgraph Blocks["The Three Building Blocks"]
-        Context["Context<br/>(Global AGENTS.md + Local Scopes)"]
-        Skills["Skills<br/>(On-Demand Progressive Capabilities)"]
-        Tooling["Deterministic Tooling<br/>(Types, Linters, Check Scripts)"]
-    end
+```{mermaid}
+flowchart LR
+    Ctx["Context + Skills + MCP<br/>(read before writing)"] --> Model["Model"]
+    Model --> Diff["Diff"]
+    Diff --> Checks["Deterministic checks<br/>(types, linters, tests)"]
+    Checks -- "errors" --> Model
 ```
 
 ### Context
@@ -55,18 +56,19 @@ Divide your context into two scopes:
 
 1. **Global scope**: Project purpose, core practices, and non-negotiable boundaries.
    This belongs in a root [`AGENTS.md`](https://agents.md) file.
-2. **Local scope**: Directory-specific conventions, module rules, or scoped path
-   settings. Modern harnesses attach these instructions to specific file patterns so
-   they load only when needed.
+2. **Local scope**: Directory-specific conventions and module rules. Harnesses load
+   these only when the model works on matching files: a nested `AGENTS.md` or
+   `CLAUDE.md` inside a subdirectory, or a Cursor rule in `.cursor/rules/*.mdc` with a
+   glob such as `src/pricing/**/*.py`.
 
 ### Skills
 
 Skills represent on-demand capabilities. Unlike global context, skills do not load into
 memory all at once.
 
-When a session begins, the agent inspects only the skill frontmatter: its name and
-description. That metadata costs roughly fifty tokens per skill. The agent loads the
-full instructions only when your prompt requires that specific workflow.
+When a session begins, the harness exposes only skill frontmatter: its name and
+description. That metadata costs roughly fifty tokens per skill. The runtime injects
+full instructions into context only when a prompt matches that specific workflow.
 
 Here is a minimal skill example:
 
@@ -86,19 +88,29 @@ description: Run the pre-release checklist and verify distribution artifacts.
 Skills come in several distinct flavors:
 
 - **Wording and communication**: Enforcing specific output formats. Examples include
-  `caveman` for terse terminal responses or `asd-ste100` for unambiguous technical
-  prose.
-- **General approach and methodology**: Guiding how the agent thinks and acts. Examples
-  include `ponytail` or spec-plan-execute review cycles.
-- **Specific functions and risk assessments**: Specialized diagnostic procedures, such
-  as paper-tiger-elephant risk evaluations before architectural migrations.
+  [`caveman`](https://github.com/JuliusBrussee/caveman), which strips filler from
+  responses to save output tokens, and `asd-ste100`, which rewrites prose into
+  unambiguous Simplified Technical English.
+- **General approach and methodology**: Structuring model reasoning and task
+  execution. [`ponytail`](https://github.com/DietrichGebert/ponytail) makes the model
+  check whether code needs to exist at all, or already exists in the standard library,
+  before it writes anything. Spec-plan-execute review cycles belong here too.
+- **Specific functions and risk assessments**: Specialized diagnostic procedures. One
+  I use before architectural migrations is Shreyas Doshi's pre-mortem: sort every risk
+  into tigers (real threats), paper tigers (scary but harmless), and elephants (the
+  problems nobody says out loud).
 - **Tool integrations**: Domain-specific scripts, test helpers, or wrappers built
   into your packages.
+
+Where markdown skills define procedural workflows, the **Model Context Protocol (MCP)**
+standardizes live tool execution. MCP servers allow the harness to query external
+systems—such as schema inspectors, issue trackers, or documentation indices—on demand
+without bloating base context tokens.
 
 ### Deterministic Tooling
 
 Many developers rely on long prompt instructions to enforce coding standards. That is a
-mistake. Probabilistic models drift. Deterministic tools do not guess.
+mistake. Probabilistic models drift. Deterministic tools evaluate explicit rules.
 
 Know the modern tooling ecosystem for your stack, and use it aggressively. In Python,
 that means full type annotation coverage combined with a fast static type checker like
@@ -115,10 +127,12 @@ def prepare_objects(data, preparer):
     return objects
 ```
 
-What shape is `data`? What does `preparer` expect? What does it return? Neither a
-human developer nor an AI model can tell without searching caller implementations.
+What shape is `data`? What input type does `preparer` accept? What does it return?
+Neither a human developer nor a type checker can answer without inspecting caller
+implementations.
 
-Now consider the typed equivalent:
+Now consider the typed equivalent. The function body is identical. Only the
+annotations changed:
 
 ```python
 import datetime as dt
@@ -129,32 +143,35 @@ type ParSwapQuote = tuple[dt.date, float]
 
 
 def prepare_objects(
-    data: list[ParSwapQuote],
-    preparer: Callable[[list[ParSwapQuote]], YieldCurve],  # <2>
+    data: list[list[ParSwapQuote]],  # <2>
+    preparer: Callable[[list[ParSwapQuote]], YieldCurve],  # <3>
 ) -> list[YieldCurve]:
     objects: list[YieldCurve] = []
     for d in data:
-        o = preparer([d])
+        o = preparer(d)
         objects.append(o)
     return objects
 ```
 
-1. Explicit domain type aliases document data structures.
-2. Strict callable contracts prevent the agent from hallucinating object attributes.
+1. Domain type aliases: a curve maps tenor (in years) to rate, a quote is a maturity
+   date and a par rate.
+2. One list of quotes per curve to build.
+3. The callable contract states exactly what goes in and what comes out.
 
-This version requires more effort to write. Yet it is infinitely more readable. That
-clarity helps human engineers, and it helps AI agents even more. When the type system
-enforces the data contract, the agent cannot hallucinate invalid object attributes.
+This version requires more effort to write. Yet it is much more readable. That clarity
+helps human engineers, and it cuts generation errors further. If generated code passes
+a single quote where a list is expected, or reads an attribute that does not exist,
+`pyrefly` rejects it before any test runs.
 
-## Putting on the Harness
+## Bootstrapping the Harness
 
 Your mileage may vary, but this is the exact sequence I follow when setting up a
 project.
 
-The most important word here is **bootstrap**. Make the agent help you put the
-harness on itself.
+The key technique is **bootstrapping**. Use the model itself to generate the initial
+harness configuration.
 
-```mermaid
+```{mermaid}
 flowchart LR
     A["1. Tooling"] --> B["2. Context"]
     B --> C["3. Specs"]
@@ -163,57 +180,83 @@ flowchart LR
     E --> F["6. Bespoke Tooling"]
 ```
 
+Note that the order flips relative to the building blocks above. Tooling comes first
+because every later step leans on it: the context file points to the check command, and
+custom skills end by running it.
+
 ### 1. Tooling First
 
 Deterministic tooling is your most reliable investment and offers the highest ROI.
-If you develop software, you must know the tools that surround your technology.
 
 Configuring linters, formatters, and type checkers by hand can take time. Do not do it
-manually. Use pre-made templates, or describe your desired standards and instruct the
-agent to write the configuration for you.
+manually. Use pre-made templates, or define desired standards and prompt the model to
+generate the configuration.
 
-Add your check commands to pre-commit hooks and CI pipelines. Create a single script
-command (like `poe code-quality` or `make check`) and run it as often as possible.
+Create a single script command (like `poe code-quality` or `make check`) that runs
+everything. Then wire it in three places:
+
+- **The model's own loop**: The model runs the command after every change, reads the
+  errors, and fixes them before it reports done. This is the cheapest feedback you
+  will ever get. It costs seconds and no human attention.
+- **Pre-commit hooks**: Catch what slipped through before it lands in history.
+- **CI pipelines**: The final gate that nobody can skip.
 
 ### 2. Context
 
-Next, write a minimal `AGENTS.md`. Focus on two critical elements:
+Next, write a minimal `AGENTS.md`. Mine rarely exceeds twenty lines:
 
-1. What the project is trying to achieve.
-2. The mandate that all code must pass the deterministic quality checks defined in
-   step 1.
+```markdown
+# AGENTS.md
 
-Keep it concise and information-dense. Context is your most expensive asset.
+## Project
+Pricing library for interest-rate swaps. Python 3.13, managed with `uv`.
 
-Direct the agent to begin every session with a quick rediscovery pass: inspect what
-you are building, check git status, and read relevant tests. Never cram twenty
-formatting rules into `AGENTS.md`. Let your linters and type checkers enforce
-mechanical standards.
+## Commands
+- Install: `uv sync`
+- Check everything: `uv run poe code-quality`
+- Tests only: `uv run pytest -q`
+
+## Rules
+- Run `uv run poe code-quality` after every change. Fix all errors before you
+  report done.
+- Use `Decimal` for money. Never `float`.
+- Start each session: read the target module, `git status`, and the relevant tests.
+
+## Do not touch
+- `vendor/` (generated code)
+- `migrations/` (hand-reviewed only)
+```
+
+Two elements matter most: what the project is trying to achieve, and the mandate that
+all code must pass the deterministic quality checks from step 1. Never cram twenty
+formatting rules into `AGENTS.md`. Let linters and type checkers enforce mechanical
+standards.
 
 ### 3. Spec-Driven Development
 
 Establish your own practices for specification.
 
-An agent will implement the wrong solution with complete confidence if requirements
-are vague. Before asking an agent to write code, write down three things:
+A model generates incorrect implementations when requirements are vague. Before
+requesting code generation, define three elements:
 
 - **Intent**: The problem you are solving.
 - **Constraints**: What cannot break.
 - **Acceptance criteria**: The tests that prove success.
 
-Resolving disagreements in a short spec document takes minutes. Fixing a 500-line pull
-request built on a misunderstanding takes hours.
+Resolving ambiguity in a short specification takes minutes. Fixing a 500-line pull
+request built on incorrect assumptions takes hours.
 
 ### 4. Published Skills
 
-The ecosystem now offers thousands of community skills (`npx skills install`).
+The ecosystem now offers thousands of community skills, installable with a single
+[`npx skills add`](https://skills.sh) command.
 
 A new hype wave appears every week. Approach published skills with care:
 
 - **Security risks**: Community skills often contain executable scripts and shell
   commands. Always audit the underlying code before running them.
-- **Skill bloat**: Installing 100 skills confuses both the agent and the developer.
-  The model struggles to select the right tool when descriptions overlap.
+- **Skill bloat**: Overloading the environment with 100 skills degrades tool
+  selection. Routing fails when descriptions overlap.
 
 Experiment, evaluate what works, and keep your skill inventory lean.
 
@@ -222,10 +265,9 @@ Experiment, evaluate what works, and keep your skill inventory lean.
 Most modern agentic tools include skill-authoring capabilities in their default
 harness. Use them.
 
-When you notice yourself typing the same prompt instructions three times, turn that
-workflow into a skill. Describe the procedure to the agent. Let the agent scaffold the
-skill file. Test the workflow, refine the steps, and commit the skill to your
-repository.
+When you type the same prompt instructions three times, turn that workflow into a skill.
+Document the procedure, prompt the model to scaffold the skill file, verify the steps,
+and commit the file to version control.
 
 Treat custom skills as version-controlled code. Review modifications to them through
 pull requests just as you would application code.
@@ -241,41 +283,42 @@ Ask yourself these questions:
 - What architectural invariants must we guarantee?
 - Where do repeated mistakes happen?
 
-Spend half a day identifying those pain points. Then instruct your agent to write a
-custom lint script or verification tool that detects violations. Wire that tool
-directly into your local check command.
+Spend half a day identifying those pain points. Then prompt the model to write a custom
+lint script or verification tool that detects violations. Wire that tool directly into
+your local check command.
 
 ## Here Be Dragons
 
 A healthy dose of realism is necessary when working with agentic systems:
 
-- **Developer skills decay**: If you outsource all reasoning and debugging to the
-  agent, your own edge dulls. You must understand the generated code deeply enough to
-  catch subtle algorithmic failures or silent memory leaks during review.
+- **Developer skills decay**: If you outsource all debugging and analysis to
+  automated tools, your own technical edge dulls. You must understand generated code
+  deeply enough to catch subtle algorithmic failures or silent memory leaks during
+  review.
 - **The "solved software" myth**: Marketing pitches claim software production is solved
   and everyone can just prompt. The fantasy of a dark factory where code writes itself
   without human intervention is an illusion. Real engineering remains hard.
-- **Token costs are real**: Multi-turn agent loops burn tokens fast. If your base
-  context is bloated or your agent loops through ten failed test runs, your API bills
-  compound rapidly.
-- **Review fatigue and rubber-stamping**: Agents generate hundreds of plausible lines
-  in seconds. The bottleneck shifts from writing code to auditing it. If tired engineers
-  rubber-stamp massive diffs, subtle technical debt rapidly pollutes the repository.
+- **Token costs are real**: Multi-turn agent loops burn tokens fast. Every turn re-sends
+  your base context (see [Context](#context)), and automated loops that cycle through
+  the same failing test multiply that cost. Most harnesses report per-session token
+  usage. Look at it weekly, and trim whatever context the model never needed.
+- **Review fatigue and rubber-stamping**: Automated tools generate hundreds of plausible
+  lines in seconds. The bottleneck shifts from writing code to auditing it. If tired
+  engineers rubber-stamp massive diffs, subtle technical debt rapidly pollutes the
+  repository.
 - **The "set it and forget it" trap**: A repository harness is not a static setup.
   As codebases evolve, libraries update, and model capabilities shift, your rules,
   skills, and deterministic gates require continuous maintenance.
 
-Software engineering is evolving from line-by-line typing into system design,
-constraint specification, and architectural review. Build rigid rails. Let
-deterministic tools catch mistakes. Keep human judgment where it matters most:
-on intent, architecture, and correctness.
+If you do one thing after reading this, make it the single check command from step 1.
+Wire it into the model's loop today. Everything else in this post builds on it.
 
 ## References
 
 - [How to set up your repository for AI coding agents](https://ainativesoftware.engineering/harness) --
   Alfonso Graziano's guide on repository context layers and deterministic feedback gates
   from *AI-Native Software Engineering* (O'Reilly).
-- [Addy Osmani's Blog](https://addyosmani.com/blog/) --
-  Essays on agent harness engineering, agent skills, and workflow orchestration.
+- [Agent Harness Engineering](https://addyosmani.com/blog/agent-harness-engineering/) --
+  Addy Osmani on designing the scaffolding around coding agents.
 - [Why AI Tokens are so Expensive](https://www.youtube.com/watch?v=-0HRzXk8vlk) --
   Computerphile video on token costs and runaway context growth in agentic loops.
