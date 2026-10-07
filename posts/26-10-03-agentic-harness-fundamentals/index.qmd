@@ -32,17 +32,19 @@ unpredictable model becomes a reliable engineering tool.
 ## Building Blocks
 
 The harness orchestrates two loops around the model. In the inner loop, the model
-loads skills or queries MCP tools to produce a diff. In the outer loop, deterministic
-checks catch failures and feed errors back for correction.
+loads context rules, skills, or MCP tools to produce a diff. In the outer loop,
+deterministic checks catch failures and feed errors back for correction.
 
 ```{mermaid}
 flowchart LR
-    Ctx["Context<br/>(AGENTS.md, task)"] --> Model["Model"]
+    Task["Task"] --> Model["Model"]
 
     subgraph AgentLoop["Agentic Loop"]
         Model --> Decision{"Decides action"}
+        Decision -- "rules" --> Context["Context<br/>(AGENTS.md, specs)"]
         Decision -- "workflow" --> Skills["Skill"]
         Decision -- "live tool" --> MCP["MCP"]
+        Context --> Model
         Skills --> Model
         MCP --> Model
     end
@@ -106,22 +108,35 @@ description: >
 3. Inspect package metadata: `uv run twine check dist/*`
 ````
 
-Skills come in several distinct flavors:
+Skills come in several distinct flavors across the ecosystem:
 
-- **Wording and communication**: Enforcing specific output formats. Examples include
-  [`caveman`](https://github.com/JuliusBrussee/caveman), which strips filler from
-  responses to save output tokens, and `asd-ste100`, which rewrites prose into
-  unambiguous Simplified Technical English.
-- **General approach and methodology**: Structuring model reasoning and task
-  execution. [`ponytail`](https://github.com/DietrichGebert/ponytail) makes the model
-  check whether code needs to exist at all, or already exists in the standard library,
-  before it writes anything. Spec-plan-execute review cycles belong here too.
-- **Specific functions and risk assessments**: Specialized diagnostic procedures. One
-  I use before architectural migrations is Shreyas Doshi's pre-mortem: sort every risk
-  into tigers (real threats), paper tigers (scary but harmless), and elephants (the
-  problems nobody says out loud).
-- **Tool integrations**: Domain-specific scripts, test helpers, or wrappers built
-  into your packages.
+- **Output formatting and token efficiency**: Enforcing communication contracts and
+  reducing output waste. Examples include
+  [`caveman`](https://github.com/JuliusBrussee/caveman) to strip verbose boilerplate,
+  [ASD-STE100](https://www.asd-ste100.org/) to enforce unambiguous Simplified
+  Technical English, and
+  [Conventional Commits](https://www.conventionalcommits.org/) to produce structured
+  git histories.
+- **Architectural discipline and methodology**: Guiding how the model approaches
+  problem-solving. [`ponytail`](https://github.com/DietrichGebert/ponytail) forces the
+  model to verify standard library alternatives before adding dependencies. Other
+  skills enforce test-driven development (TDD) via
+  [red-green-refactor cycles](https://github.com/anthropics/skills) or mandate
+  spec-plan-execute reviews before touching code.
+- **Risk assessment and pre-flight triage**: Surfacing edge cases and architectural
+  hazards before execution. One framework I run before migrations is Shreyas Doshi's
+  [pre-mortem rubric](https://x.com/shreyas/status/1414441589417873409), sorting
+  threats into tigers (real risks), paper tigers (false alarms), and elephants
+  (unspoken systemic blockers).
+- **Performance profiling and debugging**: Automating diagnostic routines for memory
+  and CPU bottlenecks. A profiling skill can instruct the model to run
+  [Memray](https://bloomberg.github.io/memray/) for memory allocation tracking or
+  execute [py-spy](https://github.com/benfred/py-spy) to sample running processes.
+- **Operational automation and release lifecycles**: Wrapping domain-specific tools
+  and distribution sequences into verifiable scripts. Examples include running
+  [Alembic](https://alembic.sqlalchemy.org/) schema migration checks, orchestrating
+  [Twine](https://twine.readthedocs.io/) package verification, or crawling site routes
+  with [broken-link checkers](https://github.com/stevenvachon/broken-link-checker).
 
 Where markdown skills define procedural workflows, the **Model Context Protocol (MCP)**
 standardizes live tool execution [@mcp2024]. MCP servers allow the harness to query
