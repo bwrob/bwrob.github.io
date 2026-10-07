@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2026-10-06">
+<meta name="dcterms.date" content="2026-10-03">
 <meta name="description" content="Why default agent instructions fail, the two halves of a repository harness, and the bootstrap order I use to set one up.">
 
 <title>Agentic Harness in Practice – bwrob.dev</title>
@@ -404,14 +404,14 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">October 6, 2026</p>
+        <p class="date">October 3, 2026</p>
       </div>
     </div>
     
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">October 6, 2026</p>
+        <p class="date-modified">October 7, 2026</p>
       </div>
     </div>
       
@@ -503,7 +503,7 @@ div.csl-indent {
 </section>
 <section id="skills" class="level3">
 <h3 class="anchored" data-anchor-id="skills">Skills</h3>
-<p>Skills represent on-demand capabilities. Unlike global context, skills do not load into memory all at once.</p>
+<p>Skills represent on-demand capabilities. Unlike global context, skills do not load into memory all at once. Standardized through the open Agent Skills specification <span class="citation" data-cites="agentskills2025">(<a href="#ref-agentskills2025" role="doc-biblioref">Agent Skills 2025</a>)</span>, skills package workflows into modular <code>SKILL.md</code> files.</p>
 <p>When a session begins, the harness exposes only skill frontmatter: its name and description. That metadata costs roughly fifty tokens per skill. The runtime injects full instructions into context only when a prompt matches that specific workflow.</p>
 <p>Here is a minimal skill example:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="co">---</span></span>
@@ -541,7 +541,7 @@ div.csl-indent {
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-label="1"></a><span class="im">import</span> datetime <span class="im">as</span> dt</span>
 <span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-label="2"></a><span class="im">from</span> collections.abc <span class="im">import</span> Callable</span>
 <span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-label="3"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-4" class="code-annotation-target"><a href="#annotated-cell-3-4" aria-label="4"></a><span class="bu">type</span> YieldCurve <span class="op">=</span> <span class="bu">dict</span>[<span class="bu">float</span>, <span class="bu">float</span>]</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-4" class="code-annotation-target"><a href="#annotated-cell-3-4" aria-label="4"></a><span class="bu">type</span> YieldCurve <span class="op">=</span> Callable[[<span class="bu">float</span>], <span class="bu">float</span>]</span>
 <span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-label="5"></a><span class="bu">type</span> ParSwapQuote <span class="op">=</span> <span class="bu">tuple</span>[dt.date, <span class="bu">float</span>]</span>
 <span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-label="6"></a></span>
 <span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-label="7"></a></span>
@@ -665,6 +665,9 @@ div.csl-indent {
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-agentskills2025" class="csl-entry" role="listitem">
+Agent Skills. 2025. <span>“Agent Skills Format Specification.”</span> <a href="https://agentskills.io/specification">https://agentskills.io/specification</a>.
+</div>
 <div id="ref-mcp2024" class="csl-entry" role="listitem">
 Anthropic. 2024. <span>“Model Context Protocol (<span>MCP</span>) Specification.”</span> <a href="https://modelcontextprotocol.io/">https://modelcontextprotocol.io/</a>.
 </div>
