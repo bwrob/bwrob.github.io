@@ -82,12 +82,21 @@ When a session begins, the harness exposes only skill frontmatter: its name and
 description. That metadata costs roughly fifty tokens per skill. The runtime injects
 full instructions into context only when a prompt matches that specific workflow.
 
+Because routing depends on this frontmatter, the `description` must explicitly
+state both what the skill does and **when to run it**. Frame descriptions with
+imperative trigger conditions (*"Use when..."*) and user intent rather than
+internal mechanics. Clear triggers prevent false negatives and ensure reliable
+activation.
+
 Here is a minimal skill example:
 
 ````markdown
 ---
 name: verify-release
-description: Run the pre-release checklist and verify distribution artifacts.
+description: >
+  Run the pre-release checklist and verify distribution artifacts. Use when
+  tagging a release, preparing a PyPI publication, or validating wheels before
+  deployment.
 ---
 
 # Release Verification Workflow
@@ -277,6 +286,10 @@ harness. Use them.
 When you type the same prompt instructions three times, turn that workflow into a skill.
 Document the procedure, prompt the model to scaffold the skill file, verify the steps,
 and commit the file to version control.
+
+Pay close attention to the description field. List concrete trigger contexts
+(*"Use when migrating a database schema or writing Alembic revisions"*) so the
+model activates the file reliably.
 
 Treat custom skills as version-controlled code. Review modifications to them through
 pull requests just as you would application code.
