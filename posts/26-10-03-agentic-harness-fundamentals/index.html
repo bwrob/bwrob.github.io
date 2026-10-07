@@ -460,9 +460,9 @@ div.csl-indent {
 <figcaption>Agentic Harness cover</figcaption>
 </figure>
 </div>
-<p>Ask a fresh coding agent to add a swap pricer to a quant codebase. Thirty seconds later you get clean, plausible code. It stores notionals as <code>float</code>, reaches for Pandas where the rest of the repository uses Polars, and passes curves around as bare dictionaries instead of the <code>YieldCurve</code> type you defined. None of it is wrong in the abstract. All of it is wrong for your system.</p>
+<p>Ask a fresh coding agent to add a swap pricer to a quant codebase. Thirty seconds later you get clean, plausible code. It stores notionals as <code>float</code> and uses Pandas where your repository uses Polars. It passes curves around as bare dictionaries instead of your <code>YieldCurve</code> type. None of it is wrong in the abstract. All of it is wrong for your system.</p>
 <p>The model is not the problem. The harness is. Every AI coding tool ships with one: Cursor, Claude Code, and Antigravity each supply a default system prompt and a standard tool set. Those defaults are generic. They contain no context about your architecture, business requirements, deprecated libraries, or the edge cases you spent weeks solving.</p>
-<p>Operating with default settings costs real time and tokens. The model drifts, introduces subtle regressions, and burns context tokens on repetitive corrections. An agent is not just the model; it is the model plus its harness <span class="citation" data-cites="osmani2025 graziano2026 hashimoto2026">(<a href="#ref-osmani2025" role="doc-biblioref">Osmani 2025</a>; <a href="#ref-graziano2026" role="doc-biblioref">Graziano 2026</a>; <a href="#ref-hashimoto2026" role="doc-biblioref">Hashimoto 2026</a>)</span>. Build that missing harness directly into your repository, and an unpredictable model becomes a reliable engineering tool.</p>
+<p>Operating with default settings costs real time and tokens. The model drifts, introduces subtle regressions, and burns context tokens on repetitive corrections. An agent is not just the model. It is the model plus its harness <span class="citation" data-cites="osmani2025 graziano2026 hashimoto2026">(<a href="#ref-osmani2025" role="doc-biblioref">Osmani 2025</a>; <a href="#ref-graziano2026" role="doc-biblioref">Graziano 2026</a>; <a href="#ref-hashimoto2026" role="doc-biblioref">Hashimoto 2026</a>)</span>. Build that missing harness directly into your repository, and an unpredictable model becomes a reliable engineering tool.</p>
 <section id="building-blocks" class="level2">
 <h2 class="anchored" data-anchor-id="building-blocks">Building Blocks</h2>
 <p>The harness orchestrates two loops around the model. In the inner loop, the model fetches more context, loads skills, or queries MCP tools to produce a diff. In the outer loop, deterministic checks catch failures and feed errors back for correction.</p>
@@ -501,7 +501,7 @@ div.csl-indent {
 <p>Divide your context into two scopes:</p>
 <ol type="1">
 <li><strong>Global scope</strong>: Project purpose, core practices, and non-negotiable boundaries. This belongs in a root <a href="https://agents.md"><code>AGENTS.md</code></a> file <span class="citation" data-cites="agentsmd2025">(<a href="#ref-agentsmd2025" role="doc-biblioref">GitHub Next 2025</a>)</span>.</li>
-<li><strong>Local scope</strong>: Directory-specific conventions and module rules. Harnesses load these only when the model works on matching files: a nested <code>AGENTS.md</code> or <code>CLAUDE.md</code> inside a subdirectory, or a Cursor rule in <code>.cursor/rules/*.mdc</code> with a glob such as <code>src/pricing/**/*.py</code>.</li>
+<li><strong>Local scope</strong>: Directory-specific conventions and module rules. Harnesses load local rules only for matching files. Examples include a nested <code>AGENTS.md</code> in a subdirectory, or a Cursor rule matching <code>src/pricing/**/*.py</code>.</li>
 </ol>
 </section>
 <section id="skills" class="level3">
@@ -527,7 +527,7 @@ div.csl-indent {
 <ul>
 <li><strong>Output formatting and token efficiency</strong>: Enforcing communication contracts and reducing output waste. Examples include <a href="https://github.com/JuliusBrussee/caveman"><code>caveman</code></a> to strip verbose boilerplate, <a href="https://www.asd-ste100.org/">ASD-STE100</a> to enforce unambiguous Simplified Technical English, and <a href="https://www.conventionalcommits.org/">Conventional Commits</a> to produce structured git histories.</li>
 <li><strong>Architectural discipline and methodology</strong>: Guiding how the model approaches problem-solving. <a href="https://github.com/DietrichGebert/ponytail"><code>ponytail</code></a> forces the model to verify standard library alternatives before adding dependencies. Other skills enforce test-driven development (TDD) via <a href="https://github.com/anthropics/skills">red-green-refactor cycles</a> or mandate spec-plan-execute reviews before touching code.</li>
-<li><strong>Risk assessment and pre-flight triage</strong>: Surfacing edge cases and architectural hazards before execution. One framework I run before migrations is Shreyas Doshi’s <a href="https://x.com/shreyas/status/1414441589417873409">pre-mortem rubric</a>, sorting threats into tigers (real risks), paper tigers (false alarms), and elephants (unspoken systemic blockers).</li>
+<li><strong>Risk assessment and pre-flight triage</strong>: Surfacing edge cases and architectural hazards before execution. Before migrations, I run Shreyas Doshi’s <a href="https://x.com/shreyas/status/1414441589417873409">pre-mortem rubric</a>. It sorts threats into tigers (real risks), paper tigers (false alarms), and elephants (unspoken blockers).</li>
 <li><strong>Performance profiling and debugging</strong>: Automating diagnostic routines for memory and CPU bottlenecks. A profiling skill can instruct the model to run <a href="https://bloomberg.github.io/memray/">Memray</a> for memory allocation tracking or execute <a href="https://github.com/benfred/py-spy">py-spy</a> to sample running processes.</li>
 <li><strong>Operational automation and release lifecycles</strong>: Wrapping domain-specific tools and distribution sequences into verifiable scripts. Examples include running <a href="https://alembic.sqlalchemy.org/">Alembic</a> schema migration checks, orchestrating <a href="https://twine.readthedocs.io/">Twine</a> package verification, or crawling site routes with <a href="https://github.com/stevenvachon/broken-link-checker">broken-link checkers</a>.</li>
 </ul>
@@ -576,14 +576,14 @@ div.csl-indent {
 <span data-code-cell="annotated-cell-3" data-code-lines="10" data-code-annotation="3">The callable contract states exactly what goes in and what comes out.</span>
 </dd>
 </dl>
-<p>This version requires more effort to write. Yet it is much more readable. That clarity helps human engineers, and it cuts generation errors further. If generated code passes a single quote where a list is expected, or reads an attribute that does not exist, <code>pyrefly</code> rejects it before any test runs.</p>
+<p>This version requires more effort to write. Yet it is much more readable. That clarity helps human engineers, and it cuts generation errors further. If generated code passes a single quote where the contract expects a list, or reads a missing attribute, <code>pyrefly</code> rejects it immediately.</p>
 </section>
 </section>
 <section id="bootstrapping-the-harness" class="level2">
 <h2 class="anchored" data-anchor-id="bootstrapping-the-harness">Bootstrapping the Harness</h2>
 <p>Your mileage may vary, but this is the exact sequence I follow when setting up a project.</p>
 <p>The key technique is <strong>bootstrapping</strong>. Use the model itself to generate the initial harness configuration.</p>
-<p>Tooling comes first because every later step leans on it: <code>AGENTS.md</code> mandates the check command, and skills execute it. Once that foundation is set, the model helps expand the harness by scaffolding custom skills and writing bespoke verification scripts. Those new tools wire straight back into the primary check command, compounding the harness over time.</p>
+<p>Tooling comes first because every later step leans on it: <code>AGENTS.md</code> mandates the check command, and skills execute it. Once you set that foundation, the model helps expand the harness by scaffolding custom skills and writing bespoke verification scripts. Those new tools wire straight back into the primary check command, compounding the harness over time.</p>
 <section id="tooling-first" class="level3">
 <h3 class="anchored" data-anchor-id="tooling-first">1. Tooling First</h3>
 <p>Deterministic tooling is your most reliable investment and offers the highest ROI. Fiddling with system prompts without automated assertions is an exercise in futility <span class="citation" data-cites="husain2024">(<a href="#ref-husain2024" role="doc-biblioref">Husain 2024</a>)</span>. You need concrete gates that catch regressions instantly.</p>
@@ -617,7 +617,7 @@ div.csl-indent {
 <span id="cb3-17"><a href="#cb3-17" aria-label="17"></a><span class="fu">## Do not touch</span></span>
 <span id="cb3-18"><a href="#cb3-18" aria-label="18"></a><span class="ss">- </span><span class="in">`vendor/`</span> (generated code)</span>
 <span id="cb3-19"><a href="#cb3-19" aria-label="19"></a><span class="ss">- </span><span class="in">`migrations/`</span> (hand-reviewed only)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Two elements matter most: what the project is trying to achieve, and the mandate that all code must pass the deterministic quality checks from step 1. Never cram twenty formatting rules into <code>AGENTS.md</code>. Let linters and type checkers enforce mechanical standards.</p>
+<p>Two elements matter most: your project goal, and the mandate that all code must pass the deterministic quality checks from step 1. Never cram twenty formatting rules into <code>AGENTS.md</code>. Let linters and type checkers enforce mechanical standards.</p>
 </section>
 <section id="spec-driven-development" class="level3">
 <h3 class="anchored" data-anchor-id="spec-driven-development">3. Spec-Driven Development</h3>
@@ -664,7 +664,7 @@ div.csl-indent {
 <p>A healthy dose of realism is necessary when working with agentic systems:</p>
 <ul>
 <li><strong>Developer skills decay</strong>: Outsourcing all debugging and implementation dulls technical intuition <span class="citation" data-cites="osmani2026decay">(<a href="#ref-osmani2026decay" role="doc-biblioref">Osmani 2026a</a>)</span>. You must understand generated code deeply enough to catch subtle algorithmic failures or silent memory leaks during review.</li>
-<li><strong>The “solved software” myth</strong>: Marketing pitches claim software production is solved and everyone can just prompt. The fantasy of a fully autonomous “dark factory” where code writes itself without human intervention remains an illusion <span class="citation" data-cites="osmani2026factories">(<a href="#ref-osmani2026factories" role="doc-biblioref">Osmani 2026b</a>)</span>. Real engineering remains hard.</li>
+<li><strong>The “solved software” myth</strong>: Marketing claims that prompt engineering solves software production. The fantasy of a fully autonomous “dark factory” where code writes itself without human intervention remains an illusion <span class="citation" data-cites="osmani2026factories">(<a href="#ref-osmani2026factories" role="doc-biblioref">Osmani 2026b</a>)</span>. Real engineering remains hard.</li>
 <li><strong>Token costs are real</strong>: Multi-turn agent loops burn tokens fast. Every turn re-sends your base context (see <a href="#context">Context</a>), and automated loops that cycle through the same failing test multiply that cost. Most harnesses report per-session token usage. Look at it weekly, and trim whatever context the model never needed.</li>
 <li><strong>Review fatigue and rubber-stamping</strong>: Automated tools generate hundreds of plausible lines in seconds. The bottleneck shifts from writing code to auditing it. Large-scale code quality data reveals marked increases in code churn and duplicate logic when review fatigue sets in <span class="citation" data-cites="gitclear2024">(<a href="#ref-gitclear2024" role="doc-biblioref">GitClear 2024</a>)</span>. If tired engineers rubber-stamp massive diffs, subtle technical debt rapidly pollutes the repository.</li>
 <li><strong>The “set it and forget it” trap</strong>: A repository harness is not a static setup. As codebases evolve, libraries update, and model capabilities shift, your rules, skills, and deterministic gates require continuous maintenance.</li>
