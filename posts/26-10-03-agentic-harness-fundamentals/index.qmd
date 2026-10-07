@@ -23,11 +23,12 @@ Cursor, Claude Code, and Antigravity each supply a default system prompt and a s
 tool set. Those defaults are generic. They contain no context about your architecture,
 business requirements, deprecated libraries, or the edge cases you spent weeks solving.
 
-Operating with default settings costs real time and tokens. The model drifts, introduces
-subtle regressions, and burns context tokens on repetitive corrections. Both Addy Osmani
-[@osmani2025] and Alfonso Graziano [@graziano2026] emphasize that an agent is a model
-plus its harness. Build that missing harness directly into your repository, and an
-unpredictable model becomes a reliable engineering tool.
+Operating with default settings costs real time and tokens. The model drifts,
+introduces subtle regressions, and burns context tokens on repetitive corrections.
+Engineering leaders like Addy Osmani [@osmani2025], Alfonso Graziano [@graziano2026],
+and Mitchell Hashimoto [@hashimoto2026] converge on the same conclusion: an agent is a
+model plus its harness. Build that missing harness directly into your repository, and
+an unpredictable model becomes a reliable engineering tool.
 
 ## Building Blocks
 
@@ -220,6 +221,9 @@ compounding the harness over time.
 ### 1. Tooling First
 
 Deterministic tooling is your most reliable investment and offers the highest ROI.
+As Hamel Husain argues in his analysis of evaluation systems, fiddling with prompts
+without automated assertions is an exercise in futility [@husain2024]. You need
+concrete gates that catch regressions instantly.
 
 Configuring linters, formatters, and type checkers by hand can take time. Do not do it
 manually. Use pre-made templates, or define desired standards and prompt the model to
@@ -291,7 +295,9 @@ A new hype wave appears every week. Approach published skills with care:
   models to private files and active tools creates severe prompt-injection risks
   [@willison2024]. Always audit the underlying code before running them.
 - **Skill bloat**: Overloading the environment with 100 skills degrades tool
-  selection. Routing fails when descriptions overlap.
+  selection. As Eugene Yan documents in his analysis of production LLM patterns,
+  routing accuracy drops sharply as tool counts grow and descriptions overlap
+  [@yan2023].
 
 Experiment, evaluate what works, and keep your skill inventory lean.
 
