@@ -32,19 +32,21 @@ unpredictable model becomes a reliable engineering tool.
 ## Building Blocks
 
 The harness orchestrates two loops around the model. In the inner loop, the model
-loads context rules, skills, or MCP tools to produce a diff. In the outer loop,
-deterministic checks catch failures and feed errors back for correction.
+fetches more context, loads skills, or queries MCP tools to produce a diff. In the
+outer loop, deterministic checks catch failures and feed errors back for
+correction.
 
 ```{mermaid}
 flowchart LR
     Task["Task"] --> Model["Model"]
+    BaseCtx["Base context<br/>(AGENTS.md)"] --> Model
 
     subgraph AgentLoop["Agentic Loop"]
         Model --> Decision{"Decides action"}
-        Decision -- "rules" --> Context["Context<br/>(AGENTS.md, specs)"]
+        Decision -- "fetch context" --> Ctx["More context<br/>(files, rules)"]
         Decision -- "workflow" --> Skills["Skill"]
         Decision -- "live tool" --> MCP["MCP"]
-        Context --> Model
+        Ctx --> Model
         Skills --> Model
         MCP --> Model
     end
