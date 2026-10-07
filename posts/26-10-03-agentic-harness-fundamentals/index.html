@@ -505,17 +505,21 @@ div.csl-indent {
 <h3 class="anchored" data-anchor-id="skills">Skills</h3>
 <p>Skills represent on-demand capabilities. Unlike global context, skills do not load into memory all at once. Standardized through the open Agent Skills specification <span class="citation" data-cites="agentskills2025">(<a href="#ref-agentskills2025" role="doc-biblioref">Agent Skills 2025</a>)</span>, skills package workflows into modular <code>SKILL.md</code> files.</p>
 <p>When a session begins, the harness exposes only skill frontmatter: its name and description. That metadata costs roughly fifty tokens per skill. The runtime injects full instructions into context only when a prompt matches that specific workflow.</p>
+<p>Because routing depends on this frontmatter, the <code>description</code> must explicitly state both what the skill does and <strong>when to run it</strong>. Frame descriptions with imperative trigger conditions (<em>“Use when…”</em>) and user intent rather than internal mechanics. Clear triggers prevent false negatives and ensure reliable activation.</p>
 <p>Here is a minimal skill example:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="co">---</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-label="2"></a><span class="an">name:</span><span class="co"> verify-release</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a><span class="an">description:</span><span class="co"> Run the pre-release checklist and verify distribution artifacts.</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a><span class="co">---</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a><span class="fu"># Release Verification Workflow</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a><span class="ss">1. </span>Run the test suite: <span class="in">`uv run pytest`</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a><span class="ss">2. </span>Build the wheel: <span class="in">`uv run pyproject-build`</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a><span class="ss">3. </span>Inspect package metadata: <span class="in">`uv run twine check dist/*`</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a><span class="an">description:</span><span class="co"> &gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a><span class="co">  Run the pre-release checklist and verify distribution artifacts. Use when</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a><span class="co">  tagging a release, preparing a PyPI publication, or validating wheels before</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a><span class="co">  deployment.</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a><span class="co">---</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a><span class="fu"># Release Verification Workflow</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a><span class="ss">1. </span>Run the test suite: <span class="in">`uv run pytest`</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a><span class="ss">2. </span>Build the wheel: <span class="in">`uv run pyproject-build`</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a><span class="ss">3. </span>Inspect package metadata: <span class="in">`uv run twine check dist/*`</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Skills come in several distinct flavors:</p>
 <ul>
 <li><strong>Wording and communication</strong>: Enforcing specific output formats. Examples include <a href="https://github.com/JuliusBrussee/caveman"><code>caveman</code></a>, which strips filler from responses to save output tokens, and <code>asd-ste100</code>, which rewrites prose into unambiguous Simplified Technical English.</li>
@@ -636,6 +640,7 @@ div.csl-indent {
 <h3 class="anchored" data-anchor-id="custom-skills">5. Custom Skills</h3>
 <p>Most modern agentic tools include skill-authoring capabilities in their default harness. Use them.</p>
 <p>When you type the same prompt instructions three times, turn that workflow into a skill. Document the procedure, prompt the model to scaffold the skill file, verify the steps, and commit the file to version control.</p>
+<p>Pay close attention to the description field. List concrete trigger contexts (<em>“Use when migrating a database schema or writing Alembic revisions”</em>) so the model activates the file reliably.</p>
 <p>Treat custom skills as version-controlled code. Review modifications to them through pull requests just as you would application code.</p>
 </section>
 <section id="bespoke-tooling" class="level3">
