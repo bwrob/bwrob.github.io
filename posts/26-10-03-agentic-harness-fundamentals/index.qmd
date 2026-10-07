@@ -25,10 +25,9 @@ business requirements, deprecated libraries, or the edge cases you spent weeks s
 
 Operating with default settings costs real time and tokens. The model drifts,
 introduces subtle regressions, and burns context tokens on repetitive corrections.
-Engineering leaders like Addy Osmani [@osmani2025], Alfonso Graziano [@graziano2026],
-and Mitchell Hashimoto [@hashimoto2026] converge on the same conclusion: an agent is a
-model plus its harness. Build that missing harness directly into your repository, and
-an unpredictable model becomes a reliable engineering tool.
+An agent is not just the model; it is the model plus its harness [@osmani2025;
+@graziano2026; @hashimoto2026]. Build that missing harness directly into your
+repository, and an unpredictable model becomes a reliable engineering tool.
 
 ## Building Blocks
 
@@ -63,10 +62,8 @@ Context represents the general instructions, project goals, and business domain 
 provide to the model.
 
 Keep your context small. Context is your most expensive asset. Every token in your base
-prompt consumes working memory and incurs cost on every single turn. Computerphile has a
-clear breakdown of
-[why agent tokens become so expensive](https://www.youtube.com/watch?v=-0HRzXk8vlk) as
-conversation turns compound [@computerphile2024].
+prompt consumes working memory and incurs compounding cost on every single turn
+[@computerphile2024].
 
 Divide your context into two scopes:
 
@@ -80,8 +77,8 @@ Divide your context into two scopes:
 ### Skills
 
 Skills represent on-demand capabilities. Unlike global context, skills do not load into
-memory all at once. Standardized through the open Agent Skills specification
-[@agentskills2025], skills package workflows into modular `SKILL.md` files.
+memory all at once. They package workflows into modular `SKILL.md` files following the
+open skill format [@agentskills2025].
 
 When a session begins, the harness exposes only skill frontmatter: its name and
 description. That metadata costs roughly fifty tokens per skill. The runtime injects
@@ -153,9 +150,8 @@ mistake. Probabilistic models drift. Deterministic tools evaluate explicit rules
 
 Know the modern tooling ecosystem for your stack, and use it aggressively. In Python,
 that means full type annotation coverage combined with a fast static type checker like
-`pyrefly`. Benchmark evaluations such as SWE-bench demonstrate that models struggle on
-real-world repository tasks without reproducible environments and tight feedback
-loops [@jimenez2024swebench].
+`pyrefly`. Models struggle on real-world repository tasks without reproducible
+environments and tight feedback loops [@jimenez2024swebench].
 
 Consider this riddle: What does this code do?
 
@@ -221,9 +217,9 @@ compounding the harness over time.
 ### 1. Tooling First
 
 Deterministic tooling is your most reliable investment and offers the highest ROI.
-As Hamel Husain argues in his analysis of evaluation systems, fiddling with prompts
-without automated assertions is an exercise in futility [@husain2024]. You need
-concrete gates that catch regressions instantly.
+Fiddling with system prompts without automated assertions is an exercise in
+futility [@husain2024]. You need concrete gates that catch regressions
+instantly.
 
 Configuring linters, formatters, and type checkers by hand can take time. Do not do it
 manually. Use pre-made templates, or define desired standards and prompt the model to
@@ -291,13 +287,12 @@ The ecosystem now offers thousands of community skills, installable with a singl
 A new hype wave appears every week. Approach published skills with care:
 
 - **Security risks**: Community skills often contain executable scripts and shell
-  commands. As Simon Willison warns in his analysis of the "lethal trifecta", connecting
-  models to private files and active tools creates severe prompt-injection risks
-  [@willison2024]. Always audit the underlying code before running them.
+  commands. Connecting models to private files and active tools creates severe
+  prompt-injection risks [@willison2024]. Always audit the underlying code before
+  running them.
 - **Skill bloat**: Overloading the environment with 100 skills degrades tool
-  selection. As Eugene Yan documents in his analysis of production LLM patterns,
-  routing accuracy drops sharply as tool counts grow and descriptions overlap
-  [@yan2023].
+  selection. Routing accuracy drops sharply as tool counts grow and descriptions
+  overlap [@yan2023].
 
 Experiment, evaluate what works, and keep your skill inventory lean.
 
@@ -336,25 +331,22 @@ your local check command.
 
 A healthy dose of realism is necessary when working with agentic systems:
 
-- **Developer skills decay**: As Addy Osmani details in his analysis of agentic
-  skill decay, outsourcing all debugging and implementation dulls technical intuition
-  [@osmani2026decay]. You must understand generated code deeply enough to catch
-  subtle algorithmic failures or silent memory leaks during review.
+- **Developer skills decay**: Outsourcing all debugging and implementation dulls
+  technical intuition [@osmani2026decay]. You must understand generated code deeply
+  enough to catch subtle algorithmic failures or silent memory leaks during review.
 - **The "solved software" myth**: Marketing pitches claim software production is solved
-  and everyone can just prompt. While Addy Osmani analyzes the spectrum between
-  human-in-the-loop "light factories" and fully autonomous "dark factories"
-  [@osmani2026factories], unattended code production remains an illusion for
-  complex systems. Real engineering remains hard.
+  and everyone can just prompt. The fantasy of a fully autonomous "dark factory" where
+  code writes itself without human intervention remains an illusion
+  [@osmani2026factories]. Real engineering remains hard.
 - **Token costs are real**: Multi-turn agent loops burn tokens fast. Every turn re-sends
   your base context (see [Context](#context)), and automated loops that cycle through
   the same failing test multiply that cost. Most harnesses report per-session token
   usage. Look at it weekly, and trim whatever context the model never needed.
 - **Review fatigue and rubber-stamping**: Automated tools generate hundreds of plausible
-  lines in seconds. The bottleneck shifts from writing code to auditing it. GitClear's
-  analysis of over 150 million lines of AI-assisted code found marked increases in code
-  churn and duplicate logic when review fatigue sets in [@gitclear2024]. If tired
-  engineers rubber-stamp massive diffs, subtle technical debt rapidly pollutes the
-  repository.
+  lines in seconds. The bottleneck shifts from writing code to auditing it. Large-scale
+  code quality data reveals marked increases in code churn and duplicate logic when
+  review fatigue sets in [@gitclear2024]. If tired engineers rubber-stamp massive diffs,
+  subtle technical debt rapidly pollutes the repository.
 - **The "set it and forget it" trap**: A repository harness is not a static setup.
   As codebases evolve, libraries update, and model capabilities shift, your rules,
   skills, and deterministic gates require continuous maintenance.
