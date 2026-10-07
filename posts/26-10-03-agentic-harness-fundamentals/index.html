@@ -462,7 +462,7 @@ div.csl-indent {
 </div>
 <p>Ask a fresh coding agent to add a swap pricer to a quant codebase. Thirty seconds later you get clean, plausible code. It stores notionals as <code>float</code>, reaches for Pandas where the rest of the repository uses Polars, and passes curves around as bare dictionaries instead of the <code>YieldCurve</code> type you defined. None of it is wrong in the abstract. All of it is wrong for your system.</p>
 <p>The model is not the problem. The harness is. Every AI coding tool ships with one: Cursor, Claude Code, and Antigravity each supply a default system prompt and a standard tool set. Those defaults are generic. They contain no context about your architecture, business requirements, deprecated libraries, or the edge cases you spent weeks solving.</p>
-<p>Operating with default settings costs real time and tokens. The model drifts, introduces subtle regressions, and burns context tokens on repetitive corrections. Both Addy Osmani <span class="citation" data-cites="osmani2025">(<a href="#ref-osmani2025" role="doc-biblioref">Osmani 2025</a>)</span> and Alfonso Graziano <span class="citation" data-cites="graziano2026">(<a href="#ref-graziano2026" role="doc-biblioref">Graziano 2026</a>)</span> emphasize that an agent is a model plus its harness. Build that missing harness directly into your repository, and an unpredictable model becomes a reliable engineering tool.</p>
+<p>Operating with default settings costs real time and tokens. The model drifts, introduces subtle regressions, and burns context tokens on repetitive corrections. Engineering leaders like Addy Osmani <span class="citation" data-cites="osmani2025">(<a href="#ref-osmani2025" role="doc-biblioref">Osmani 2025</a>)</span>, Alfonso Graziano <span class="citation" data-cites="graziano2026">(<a href="#ref-graziano2026" role="doc-biblioref">Graziano 2026</a>)</span>, and Mitchell Hashimoto <span class="citation" data-cites="hashimoto2026">(<a href="#ref-hashimoto2026" role="doc-biblioref">Hashimoto 2026</a>)</span> converge on the same conclusion: an agent is a model plus its harness. Build that missing harness directly into your repository, and an unpredictable model becomes a reliable engineering tool.</p>
 <section id="building-blocks" class="level2">
 <h2 class="anchored" data-anchor-id="building-blocks">Building Blocks</h2>
 <p>The harness orchestrates two loops around the model. In the inner loop, the model fetches more context, loads skills, or queries MCP tools to produce a diff. In the outer loop, deterministic checks catch failures and feed errors back for correction.</p>
@@ -586,7 +586,7 @@ div.csl-indent {
 <p>Tooling comes first because every later step leans on it: <code>AGENTS.md</code> mandates the check command, and skills execute it. Once that foundation is set, the model helps expand the harness by scaffolding custom skills and writing bespoke verification scripts. Those new tools wire straight back into the primary check command, compounding the harness over time.</p>
 <section id="tooling-first" class="level3">
 <h3 class="anchored" data-anchor-id="tooling-first">1. Tooling First</h3>
-<p>Deterministic tooling is your most reliable investment and offers the highest ROI.</p>
+<p>Deterministic tooling is your most reliable investment and offers the highest ROI. As Hamel Husain argues in his analysis of evaluation systems, fiddling with prompts without automated assertions is an exercise in futility <span class="citation" data-cites="husain2024">(<a href="#ref-husain2024" role="doc-biblioref">Husain 2024</a>)</span>. You need concrete gates that catch regressions instantly.</p>
 <p>Configuring linters, formatters, and type checkers by hand can take time. Do not do it manually. Use pre-made templates, or define desired standards and prompt the model to generate the configuration.</p>
 <p>Create a single script command (like <code>poe code-quality</code> or <code>make check</code>) that runs everything. Then wire it in three places:</p>
 <ul>
@@ -636,7 +636,7 @@ div.csl-indent {
 <p>A new hype wave appears every week. Approach published skills with care:</p>
 <ul>
 <li><strong>Security risks</strong>: Community skills often contain executable scripts and shell commands. As Simon Willison warns in his analysis of the “lethal trifecta”, connecting models to private files and active tools creates severe prompt-injection risks <span class="citation" data-cites="willison2024">(<a href="#ref-willison2024" role="doc-biblioref">Willison 2024</a>)</span>. Always audit the underlying code before running them.</li>
-<li><strong>Skill bloat</strong>: Overloading the environment with 100 skills degrades tool selection. Routing fails when descriptions overlap.</li>
+<li><strong>Skill bloat</strong>: Overloading the environment with 100 skills degrades tool selection. As Eugene Yan documents in his analysis of production LLM patterns, routing accuracy drops sharply as tool counts grow and descriptions overlap <span class="citation" data-cites="yan2023">(<a href="#ref-yan2023" role="doc-biblioref">Yan 2023</a>)</span>.</li>
 </ul>
 <p>Experiment, evaluate what works, and keep your skill inventory lean.</p>
 </section>
@@ -689,6 +689,12 @@ GitHub Next. 2025. <span>“<span class="nocase">AGENTS.md</span>: An Open Conve
 <div id="ref-graziano2026" class="csl-entry" role="listitem">
 Graziano, Alfonso. 2026. <span>“How to Set up Your Repository for <span>AI</span> Coding Agents.”</span> O’Reilly Media. <a href="https://ainativesoftware.engineering/harness">https://ainativesoftware.engineering/harness</a>.
 </div>
+<div id="ref-hashimoto2026" class="csl-entry" role="listitem">
+Hashimoto, Mitchell. 2026. <span>“My <span>AI</span> Adoption Journey.”</span> <a href="https://mitchellh.com/writing/my-ai-adoption-journey">https://mitchellh.com/writing/my-ai-adoption-journey</a>.
+</div>
+<div id="ref-husain2024" class="csl-entry" role="listitem">
+Husain, Hamel. 2024. <span>“Your <span>AI</span> Product Needs Evals.”</span> <a href="https://hamel.dev/blog/posts/evals/">https://hamel.dev/blog/posts/evals/</a>.
+</div>
 <div id="ref-jimenez2024swebench" class="csl-entry" role="listitem">
 Jimenez, Carlos E., John Yang, Alexander Wettig, et al. 2024. <span>“<span class="nocase">SWE-bench</span>: Can Language Models Resolve Real-World <span>GitHub</span> Issues?”</span> <em>International Conference on Learning Representations (ICLR)</em>. <a href="https://arxiv.org/abs/2310.06770">https://arxiv.org/abs/2310.06770</a>.
 </div>
@@ -706,6 +712,9 @@ Pound, Mike, and Computerphile. 2024. <span>“Why <span>AI</span> Tokens Are so
 </div>
 <div id="ref-willison2024" class="csl-entry" role="listitem">
 Willison, Simon. 2024. <span>“The Lethal Trifecta of <span>AI</span> Agent Security and Prompt Injection.”</span> <a href="https://simonwillison.net/2025/Jun/18/the-lethal-trifecta/">https://simonwillison.net/2025/Jun/18/the-lethal-trifecta/</a>.
+</div>
+<div id="ref-yan2023" class="csl-entry" role="listitem">
+Yan, Eugene. 2023. <span>“Patterns for Building <span>LLM</span>-Based Systems <span>&amp;</span> Products.”</span> <a href="https://eugeneyan.com/writing/llm-patterns/">https://eugeneyan.com/writing/llm-patterns/</a>.
 </div>
 </div>
 
