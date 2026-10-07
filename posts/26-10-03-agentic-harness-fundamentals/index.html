@@ -465,7 +465,7 @@ div.csl-indent {
 <p>Operating with default settings costs real time and tokens. The model drifts, introduces subtle regressions, and burns context tokens on repetitive corrections. Both Addy Osmani <span class="citation" data-cites="osmani2025">(<a href="#ref-osmani2025" role="doc-biblioref">Osmani 2025</a>)</span> and Alfonso Graziano <span class="citation" data-cites="graziano2026">(<a href="#ref-graziano2026" role="doc-biblioref">Graziano 2026</a>)</span> emphasize that an agent is a model plus its harness. Build that missing harness directly into your repository, and an unpredictable model becomes a reliable engineering tool.</p>
 <section id="building-blocks" class="level2">
 <h2 class="anchored" data-anchor-id="building-blocks">Building Blocks</h2>
-<p>The harness orchestrates two loops around the model. In the inner loop, the model loads context rules, skills, or MCP tools to produce a diff. In the outer loop, deterministic checks catch failures and feed errors back for correction.</p>
+<p>The harness orchestrates two loops around the model. In the inner loop, the model fetches more context, loads skills, or queries MCP tools to produce a diff. In the outer loop, deterministic checks catch failures and feed errors back for correction.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -473,13 +473,14 @@ div.csl-indent {
 <div>
 <pre class="mermaid mermaid-js">flowchart LR
     Task["Task"] --&gt; Model["Model"]
+    BaseCtx["Base context&lt;br/&gt;(AGENTS.md)"] --&gt; Model
 
     subgraph AgentLoop["Agentic Loop"]
         Model --&gt; Decision{"Decides action"}
-        Decision -- "rules" --&gt; Context["Context&lt;br/&gt;(AGENTS.md, specs)"]
+        Decision -- "fetch context" --&gt; Ctx["More context&lt;br/&gt;(files, rules)"]
         Decision -- "workflow" --&gt; Skills["Skill"]
         Decision -- "live tool" --&gt; MCP["MCP"]
-        Context --&gt; Model
+        Ctx --&gt; Model
         Skills --&gt; Model
         MCP --&gt; Model
     end
