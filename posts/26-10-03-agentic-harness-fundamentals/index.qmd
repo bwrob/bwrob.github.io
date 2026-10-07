@@ -13,9 +13,9 @@ toc-depth: 3
 ![Agentic Harness cover](cover.webp){width="98%" fig-align="center" .nolightbox}
 
 Ask a fresh coding agent to add a swap pricer to a quant codebase. Thirty seconds later
-you get clean, plausible code. It stores notionals as `float`, reaches for Pandas where
-the rest of the repository uses Polars, and passes curves around as bare dictionaries
-instead of the `YieldCurve` type you defined. None of it is wrong in the abstract. All
+you get clean, plausible code. It stores notionals as `float` and uses Pandas where
+your repository uses Polars. It passes curves around as bare dictionaries instead
+of your `YieldCurve` type. None of it is wrong in the abstract. All
 of it is wrong for your system.
 
 The model is not the problem. The harness is. Every AI coding tool ships with one:
@@ -25,7 +25,7 @@ business requirements, deprecated libraries, or the edge cases you spent weeks s
 
 Operating with default settings costs real time and tokens. The model drifts,
 introduces subtle regressions, and burns context tokens on repetitive corrections.
-An agent is not just the model; it is the model plus its harness [@osmani2025;
+An agent is not just the model. It is the model plus its harness [@osmani2025;
 @graziano2026; @hashimoto2026]. Build that missing harness directly into your
 repository, and an unpredictable model becomes a reliable engineering tool.
 
@@ -70,9 +70,8 @@ Divide your context into two scopes:
 1. **Global scope**: Project purpose, core practices, and non-negotiable boundaries.
    This belongs in a root [`AGENTS.md`](https://agents.md) file [@agentsmd2025].
 2. **Local scope**: Directory-specific conventions and module rules. Harnesses load
-   these only when the model works on matching files: a nested `AGENTS.md` or
-   `CLAUDE.md` inside a subdirectory, or a Cursor rule in `.cursor/rules/*.mdc` with a
-   glob such as `src/pricing/**/*.py`.
+   local rules only for matching files. Examples include a nested `AGENTS.md` in a
+   subdirectory, or a Cursor rule matching `src/pricing/**/*.py`.
 
 ### Skills
 
@@ -124,10 +123,10 @@ Skills come in several distinct flavors across the ecosystem:
   [red-green-refactor cycles](https://github.com/anthropics/skills) or mandate
   spec-plan-execute reviews before touching code.
 - **Risk assessment and pre-flight triage**: Surfacing edge cases and architectural
-  hazards before execution. One framework I run before migrations is Shreyas Doshi's
-  [pre-mortem rubric](https://x.com/shreyas/status/1414441589417873409), sorting
+  hazards before execution. Before migrations, I run Shreyas Doshi's
+  [pre-mortem rubric](https://x.com/shreyas/status/1414441589417873409). It sorts
   threats into tigers (real risks), paper tigers (false alarms), and elephants
-  (unspoken systemic blockers).
+  (unspoken blockers).
 - **Performance profiling and debugging**: Automating diagnostic routines for memory
   and CPU bottlenecks. A profiling skill can instruct the model to run
   [Memray](https://bloomberg.github.io/memray/) for memory allocation tracking or
@@ -197,8 +196,8 @@ def prepare_objects(
 
 This version requires more effort to write. Yet it is much more readable. That clarity
 helps human engineers, and it cuts generation errors further. If generated code passes
-a single quote where a list is expected, or reads an attribute that does not exist,
-`pyrefly` rejects it before any test runs.
+a single quote where the contract expects a list, or reads a missing attribute,
+`pyrefly` rejects it immediately.
 
 ## Bootstrapping the Harness
 
@@ -209,7 +208,7 @@ The key technique is **bootstrapping**. Use the model itself to generate the ini
 harness configuration.
 
 Tooling comes first because every later step leans on it: `AGENTS.md` mandates the
-check command, and skills execute it. Once that foundation is set, the model helps
+check command, and skills execute it. Once you set that foundation, the model helps
 expand the harness by scaffolding custom skills and writing bespoke verification
 scripts. Those new tools wire straight back into the primary check command,
 compounding the harness over time.
@@ -260,10 +259,9 @@ Pricing library for interest-rate swaps. Python 3.13, managed with `uv`.
 - `migrations/` (hand-reviewed only)
 ```
 
-Two elements matter most: what the project is trying to achieve, and the mandate that
-all code must pass the deterministic quality checks from step 1. Never cram twenty
-formatting rules into `AGENTS.md`. Let linters and type checkers enforce mechanical
-standards.
+Two elements matter most: your project goal, and the mandate that all code must pass
+the deterministic quality checks from step 1. Never cram twenty formatting rules into
+`AGENTS.md`. Let linters and type checkers enforce mechanical standards.
 
 ### 3. Spec-Driven Development
 
@@ -334,9 +332,9 @@ A healthy dose of realism is necessary when working with agentic systems:
 - **Developer skills decay**: Outsourcing all debugging and implementation dulls
   technical intuition [@osmani2026decay]. You must understand generated code deeply
   enough to catch subtle algorithmic failures or silent memory leaks during review.
-- **The "solved software" myth**: Marketing pitches claim software production is solved
-  and everyone can just prompt. The fantasy of a fully autonomous "dark factory" where
-  code writes itself without human intervention remains an illusion
+- **The "solved software" myth**: Marketing claims that prompt engineering solves
+  software production. The fantasy of a fully autonomous "dark factory" where code
+  writes itself without human intervention remains an illusion
   [@osmani2026factories]. Real engineering remains hard.
 - **Token costs are real**: Multi-turn agent loops burn tokens fast. Every turn re-sends
   your base context (see [Context](#context)), and automated loops that cycle through
