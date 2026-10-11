@@ -3,11 +3,17 @@
 
 from __future__ import annotations
 
-import argparse
 import sys
 from pathlib import Path
+from typing import Annotated
 
+import typer
 from PIL import Image, ImageOps, ImageSequence
+
+app = typer.Typer(
+    add_completion=False,
+    help="Convert and compress images to WebP format for bwrob.dev.",
+)
 
 
 def optimize_image(  # noqa: PLR0913
@@ -67,81 +73,90 @@ def optimize_image(  # noqa: PLR0913
     return target_dest
 
 
-def main() -> None:
-    """CLI entry point for image optimization."""
-    parser = argparse.ArgumentParser(
-        description="Convert and compress images to WebP format."
-    )
-    parser.add_argument(
-        "images",
-        nargs="+",
-        help="Path(s) to image files or directories to optimize.",
-    )
-    parser.add_argument(
-        "--quality",
-        type=int,
-        default=85,
-        help="WebP quality (1-100, default: 85).",
-    )
-    parser.add_argument(
-        "--cover",
-        action="store_true",
-        help="Resize exactly to 900x600 blog post cover standard.",
-    )
-    parser.add_argument(
-        "--max-dim",
-        type=int,
-        default=None,
-        help="Max width or height in pixels.",
-    )
-    parser.add_argument(
-        "--lossless",
-        action="store_true",
-        help="Encode with lossless WebP compression.",
-    )
-    parser.add_argument(
-        "--keep-original",
-        action="store_true",
-        help="Preserve source image file after conversion.",
-    )
-
-    args = parser.parse_args()
-
-    files: list[Path] = []
+def _collect_image_files(items: list[Path]) -> list[Path]:
+    """Collect supported image files from a list of paths."""
     supported_exts = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tiff"}
-
-    for item in args.images:
-        p = Path(item)
-        if p.is_dir():
+    files: list[Path] = []
+    for item in items:
+        if item.is_dir():
             files.extend(
                 f
-                for f in p.rglob("*")
+                for f in item.rglob("*")
                 if f.is_file() and f.suffix.lower() in supported_exts
             )
-        elif p.is_file():
-            files.append(p)
+        elif item.is_file():
+            files.append(item)
         else:
             print(f"Warning: File not found: {item}", file=sys.stderr)
+    return files
 
+
+@app.command()
+def main(  # noqa: PLR0913
+    images: Annotated[
+        list[Path],
+        typer.Argument(
+            help="Path(s) to image files or directories to optimize.",
+        ),
+    ],
+    *,
+    quality: Annotated[
+        int,
+        typer.Option(
+            "--quality",
+            help="WebP quality (1-100, default: 85).",
+        ),
+    ] = 85,
+    cover: Annotated[
+        bool,
+        typer.Option(
+            "--cover",
+            help="Resize exactly to 900x600 blog post cover standard.",
+        ),
+    ] = False,
+    max_dim: Annotated[
+        int | None,
+        typer.Option(
+            "--max-dim",
+            help="Max width or height in pixels.",
+        ),
+    ] = None,
+    lossless: Annotated[
+        bool,
+        typer.Option(
+            "--lossless",
+            help="Encode with lossless WebP compression.",
+        ),
+    ] = False,
+    keep_original: Annotated[
+        bool,
+        typer.Option(
+            "--keep-original",
+            help="Preserve source image file after conversion.",
+        ),
+    ] = False,
+) -> None:
+    """CLI entry point for image optimization."""
+    files = _collect_image_files(images)
     if not files:
-        print("No eligible image files found to optimize.")
-        sys.exit(1)
+        print("No eligible image files found to optimize.", file=sys.stderr)
+        raise typer.Exit(code=1)
 
-    resize_exact = (900, 600) if args.cover else None
+    resize_exact = (900, 600) if cover else None
 
     for f in files:
         try:
             optimize_image(
                 f,
-                quality=args.quality,
-                max_dim=args.max_dim,
+                quality=quality,
+                max_dim=max_dim,
                 resize_exact=resize_exact,
-                lossless=args.lossless,
-                keep_original=args.keep_original,
+                lossless=lossless,
+                keep_original=keep_original,
             )
         except Exception as e:  # noqa: BLE001
             print(f"Error optimizing {f}: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":
-    main()
+    app()

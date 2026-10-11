@@ -14,6 +14,10 @@ engineering, data systems, and quantitative computing blog built with Quarto.
     and `pyrefly check`.
   - `poe preview`: Launches local Quarto preview on port 3333 via `hap`.
   - `poe publish`: Runs pre-commit checks and publishes to GitHub Pages (`gh-pages`).
+  - `poe render-pdf`: Renders blog posts or curricula to PDF in the `assets/` directory.
+- **CLI & Scripting**: Always use [Typer](https://typer.tiangolo.com/) for Python CLI
+  tools and utility scripts (e.g. in `scripts/`). Never use `argparse`. Ensure all
+  scripts are strictly typed (`typing.Annotated`) and pass `pyrefly check`.
 - **Linters & Formatters**:
   - **`prettier`**: CSS, SCSS, and YAML formatter.
   - **`taplo`**: TOML formatter and linter.

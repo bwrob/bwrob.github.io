@@ -1,6 +1,7 @@
 ---
 bibliography: references.bib
 categories: [Dev Env]
+code-line-numbers: true
 date: "2026-10-03"
 date-modified: "2026-10-07"
 description: "Why default agent instructions fail, the two halves of a repository harness, and the bootstrap order I use to set one up."
@@ -37,7 +38,8 @@ outer loop, deterministic checks catch failures and feed errors back for
 correction.
 
 ```{mermaid}
-flowchart LR
+%%| fig-width: 6.5
+flowchart TD
     Task["Task"] --> Model["Model"]
     BaseCtx["Base context<br/>(AGENTS.md)"] --> Model
 
@@ -137,10 +139,19 @@ Skills come in several distinct flavors across the ecosystem:
   [Twine](https://twine.readthedocs.io/) package verification, or crawling site routes
   with [broken-link checkers](https://github.com/stevenvachon/broken-link-checker).
 
+### Model Context Protocol (MCP)
+
 Where markdown skills define procedural workflows, the **Model Context Protocol (MCP)**
 standardizes live tool execution [@mcp2024]. MCP servers allow the harness to query
-external systems—such as schema inspectors, issue trackers, or documentation
-indices—on demand without bloating base context tokens.
+external systems—such as schema inspectors, issue trackers, or documentation indices—on
+demand without bloating base context tokens.
+
+Pairing MCP with Retrieval-Augmented Generation (RAG) gives the agent targeted memory.
+Instead of dumping entire documentation archives or historical pull requests into your
+base prompt, an internal RAG pipeline indexes reference materials and returns only the
+relevant passages on query. MCP provides the standardized runtime bridge: the model
+invokes a retrieval tool, inspects the retrieved context, and continues execution
+without degrading prompt cache efficiency.
 
 ### Deterministic Tooling
 
