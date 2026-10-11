@@ -9,9 +9,8 @@ engineering, data systems, and quantitative computing blog built with Quarto.
 - **Runtime & Environment**: Python 3.13 managed via [`uv`](https://docs.astral.sh/uv/).
 - **Task Runner**: [Poe the Poet](https://poethepoet.natn.io/) (`poe_tasks.toml`).
   Always use `poe <task>` or `uv run poe <task>` for maintenance operations:
-  - `poe code-quality`: Runs CNAME validation, `ruff format`, `rumdl fmt`,
-    `prettier` (CSS/SCSS), `prettier` (YAML), `taplo` (TOML), `ruff check --fix`,
-    and `pyrefly check`.
+  - `poe code-quality`: Runs `ruff format`, `rumdl fmt`, `prettier` (CSS/SCSS),
+    `prettier` (YAML), `taplo` (TOML), `ruff check --fix`, and `pyrefly check`.
   - `poe preview`: Launches local Quarto preview on port 3333 via `hap`.
   - `poe publish`: Runs pre-commit checks and publishes to GitHub Pages (`gh-pages`).
   - `poe render-pdf`: Renders blog posts or curricula to PDF in the `assets/` directory.

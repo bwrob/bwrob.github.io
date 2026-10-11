@@ -19,7 +19,6 @@ conventions.
 | **`rumdl`**   | Markdown & Quarto      | `flavor = "quarto"`, line-length 88, code tools  | `uv run rumdl fmt` / `check`   |
 | **`ruff`**    | Python files & blocks  | `line-length = 88`, py313, docstring formatting  | `uv run ruff check` / `format` |
 | **`pyrefly`** | Static Type Checker    | Configured via `pyrefly.toml`                    | `uv run pyrefly check`         |
-| **`CNAME`**   | Domain integrity       | Verifies `CNAME` contains `bwrob.dev`            | `poe _check_cname`             |
 
 > [!NOTE]
 > `rumdl` is configured with `code-block-tools` enabled in `pyproject.toml`. Running
@@ -41,13 +40,12 @@ uv run poe code-quality
 
 This task automatically:
 
-1. Validates `CNAME`.
-2. Formats Python files with `ruff format .`.
-3. Formats Quarto & Markdown documents with `rumdl fmt` (including embedded Python
+1. Formats Python files with `ruff format .`.
+2. Formats Quarto & Markdown documents with `rumdl fmt` (including embedded Python
    blocks).
-4. Fixes lint errors with `ruff check --fix --unsafe-fixes .`.
-5. Verifies remaining lint issues with `ruff check .`.
-6. Runs static type checking with `pyrefly check`.
+3. Fixes lint errors with `ruff check --fix --unsafe-fixes .`.
+4. Verifies remaining lint issues with `ruff check .`.
+5. Runs static type checking with `pyrefly check`.
 
 To verify git pre-commit hooks before committing:
 

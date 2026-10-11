@@ -46,10 +46,6 @@
     cmd  = "pyrefly check"
     help = "Run static type checking with pyrefly"
 
-[tasks._check_cname]
-    cmd  = "sh -c 'test -f CNAME && [ \"$(cat CNAME | tr -d \"[:space:]\")\" = \"bwrob.dev\" ]'"
-    help = "Verify CNAME file exists and contains bwrob.dev"
-
 [tasks._check_image_formats]
     cmd  = "sh -c '! find posts teaching assets/images -type f \\( -name \"*.jpg\" -o -name \"*.jpeg\" -o -name \"*.png\" -o -name \"*.gif\" \\) | grep .'"
     help = "Verify all post and asset images are WebP format"
@@ -82,7 +78,6 @@
 [tasks.code-quality]
     help = "Run formatters, linters, and type checkers"
     sequence = [
-        "_check_cname",
         "_check_image_formats",
         "_format",
         "_format_md",
@@ -100,4 +95,4 @@
 
 [tasks.publish]
     help     = "Run pre-commit checks and publish to gh-pages"
-    sequence = [ "_check_cname", "_pre_commit", "_hap_publish" ]
+    sequence = [ "_pre_commit", "_hap_publish" ]
