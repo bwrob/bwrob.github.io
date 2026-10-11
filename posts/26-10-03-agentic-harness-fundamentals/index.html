@@ -430,6 +430,7 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#context" id="toc-context" class="nav-link" data-scroll-target="#context">Context</a></li>
   <li><a href="#skills" id="toc-skills" class="nav-link" data-scroll-target="#skills">Skills</a></li>
+  <li><a href="#model-context-protocol-mcp" id="toc-model-context-protocol-mcp" class="nav-link" data-scroll-target="#model-context-protocol-mcp">Model Context Protocol (MCP)</a></li>
   <li><a href="#deterministic-tooling" id="toc-deterministic-tooling" class="nav-link" data-scroll-target="#deterministic-tooling">Deterministic Tooling</a></li>
   </ul></li>
   <li><a href="#bootstrapping-the-harness" id="toc-bootstrapping-the-harness" class="nav-link" data-scroll-target="#bootstrapping-the-harness">Bootstrapping the Harness</a>
@@ -466,12 +467,12 @@ div.csl-indent {
 <section id="building-blocks" class="level2">
 <h2 class="anchored" data-anchor-id="building-blocks">Building Blocks</h2>
 <p>The harness orchestrates two loops around the model. In the inner loop, the model fetches more context, loads skills, or queries MCP tools to produce a diff. In the outer loop, deterministic checks catch failures and feed errors back for correction.</p>
-<div class="cell" data-layout-align="default">
+<div class="cell" data-fig-width="6.5" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">flowchart TD
     Task["Task"] --&gt; Model["Model"]
     BaseCtx["Base context&lt;br/&gt;(AGENTS.md)"] --&gt; Model
 
@@ -531,7 +532,11 @@ div.csl-indent {
 <li><strong>Performance profiling and debugging</strong>: Automating diagnostic routines for memory and CPU bottlenecks. A profiling skill can instruct the model to run <a href="https://bloomberg.github.io/memray/">Memray</a> for memory allocation tracking or execute <a href="https://github.com/benfred/py-spy">py-spy</a> to sample running processes.</li>
 <li><strong>Operational automation and release lifecycles</strong>: Wrapping domain-specific tools and distribution sequences into verifiable scripts. Examples include running <a href="https://alembic.sqlalchemy.org/">Alembic</a> schema migration checks, orchestrating <a href="https://twine.readthedocs.io/">Twine</a> package verification, or crawling site routes with <a href="https://github.com/stevenvachon/broken-link-checker">broken-link checkers</a>.</li>
 </ul>
+</section>
+<section id="model-context-protocol-mcp" class="level3">
+<h3 class="anchored" data-anchor-id="model-context-protocol-mcp">Model Context Protocol (MCP)</h3>
 <p>Where markdown skills define procedural workflows, the <strong>Model Context Protocol (MCP)</strong> standardizes live tool execution <span class="citation" data-cites="mcp2024">(<a href="#ref-mcp2024" role="doc-biblioref">Anthropic 2024</a>)</span>. MCP servers allow the harness to query external systems—such as schema inspectors, issue trackers, or documentation indices—on demand without bloating base context tokens.</p>
+<p>Pairing MCP with Retrieval-Augmented Generation (RAG) gives the agent targeted memory. Instead of dumping entire documentation archives or historical pull requests into your base prompt, an internal RAG pipeline indexes reference materials and returns only the relevant passages on query. MCP provides the standardized runtime bridge: the model invokes a retrieval tool, inspects the retrieved context, and continues execution without degrading prompt cache efficiency.</p>
 </section>
 <section id="deterministic-tooling" class="level3">
 <h3 class="anchored" data-anchor-id="deterministic-tooling">Deterministic Tooling</h3>
