@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.19">
+<meta name="generator" content="quarto-1.11.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -38,16 +38,17 @@ ul.task-list li input[type="checkbox"] {
 <link href="../assets/logo/favicon.webp" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-f4678996c696dc2faf52d4f029bd3e82.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-4fcca5789713fd2d0ceba1e347cb9687.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15fb270c89c1e23cbee16632c34c86a1.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-22ac5b95479a6078e9b2a57103ce738b.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-24150ff34b4b3d0e50887b98f75dbaaf.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-3d092e0fb9a3f6e248f32ce67733fa1b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-87d3e14d2e2c72c3ffc01da784a1c032.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-f8bfa6542ef3c98a78a59fd5faac8c10.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -80,15 +81,15 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="../css/styles.css">
 <meta property="og:title" content="bwrob.dev">
 <meta property="og:description" content="bwrob personal and professional blog">
-<meta property="og:image" content="https://bwrob.dev/resume/assets/logo/logo_full.webp">
+<meta property="og:image" content="https://bwrob.dev/assets/logo/logo_full.webp">
 <meta property="og:site_name" content="bwrob.dev">
 <meta name="twitter:title" content="bwrob.dev">
 <meta name="twitter:description" content="bwrob personal and professional blog">
-<meta name="twitter:image" content="https://bwrob.dev/resume/assets/logo/logo_full.webp">
+<meta name="twitter:image" content="https://bwrob.dev/assets/logo/logo_full.webp">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
-<body class="nav-fixed resume-page quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed resume-page quarto-dark"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -111,6 +112,7 @@ ul.task-list li input[type="checkbox"] {
       for (let i=0; i < toggles.length; i++) {
         const toggle = toggles[i];
         if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
           if (alternate) {
             toggle.classList.add("alternate");
           } else {
@@ -140,13 +142,19 @@ ul.task-list li input[type="checkbox"] {
       manageTransitions('#quarto-margin-sidebar .nav-link', true);
       // Switch the toggles
       setColorSchemeToggle(alternate)
-      // Hack to workaround the fact that safari doesn't
-      // properly recolor the scrollbar when toggling (#1455)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
       if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
         manageTransitions("body", false);
-        window.scrollTo(0, 1);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
         setTimeout(() => {
-          window.scrollTo(0, 0);
+          window.scrollTo(0, scrollY);
           manageTransitions("body", true);
         }, 40);
       }
@@ -238,6 +246,7 @@ ul.task-list li input[type="checkbox"] {
       // Read the current dark / light value
       let toAlternate = !hasAlternateSentinel();
       toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
       setStyleSentinel(toAlternate);
       toggleGiscusIfUsed(toAlternate, darkModeDefault);
       window.dispatchEvent(new Event('resize'));
@@ -252,7 +261,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
@@ -263,8 +272,7 @@ ul.task-list li input[type="checkbox"] {
     <span class="navbar-title">bwrob.dev</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -317,8 +325,9 @@ ul.task-list li input[type="checkbox"] {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode" aria-label="Toggle dark mode"><i class="bi"></i></button>
 </div>
+            <div id="quarto-search" class="" title="Search"></div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -327,11 +336,12 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active" data-toc-expanded="99">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
   <li><a href="#bartosz-marcin-wróblewski" id="toc-bartosz-marcin-wróblewski" class="nav-link active" data-scroll-target="#bartosz-marcin-wróblewski">Bartosz Marcin Wróblewski</a></li>
+  <li><a href="#technical-profile" id="toc-technical-profile" class="nav-link" data-scroll-target="#technical-profile">Technical Profile</a></li>
   <li><a href="#professional-experience" id="toc-professional-experience" class="nav-link" data-scroll-target="#professional-experience">Professional Experience</a>
   <ul class="collapse">
   <li><a href="#dxc-luxoft" id="toc-dxc-luxoft" class="nav-link" data-scroll-target="#dxc-luxoft">DXC Luxoft</a></li>
@@ -339,11 +349,11 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#bank-of-new-york-mellon" id="toc-bank-of-new-york-mellon" class="nav-link" data-scroll-target="#bank-of-new-york-mellon">Bank of New York Mellon</a></li>
   <li><a href="#credit-suisse" id="toc-credit-suisse" class="nav-link" data-scroll-target="#credit-suisse">Credit Suisse</a></li>
   </ul></li>
-  <li><a href="#academic-experience" id="toc-academic-experience" class="nav-link" data-scroll-target="#academic-experience">Academic Experience</a>
+  <li><a href="#research-teaching" id="toc-research-teaching" class="nav-link" data-scroll-target="#research-teaching">Research &amp; Teaching</a>
   <ul class="collapse">
   <li><a href="#academic-pwr" id="toc-academic-pwr" class="nav-link" data-scroll-target="#academic-pwr">Wrocław University of Science and Technology</a></li>
   <li><a href="#academic-uwr" id="toc-academic-uwr" class="nav-link" data-scroll-target="#academic-uwr">University of Wrocław</a></li>
-  <li><a href="#university-of-warsaw" id="toc-university-of-warsaw" class="nav-link" data-scroll-target="#university-of-warsaw">University of Warsaw</a></li>
+  <li><a href="#university-of-warsaw-impan" id="toc-university-of-warsaw-impan" class="nav-link" data-scroll-target="#university-of-warsaw-impan">University of Warsaw &amp; IMPAN</a></li>
   </ul></li>
   <li><a href="#education" id="toc-education" class="nav-link" data-scroll-target="#education">Education</a>
   <ul class="collapse">
@@ -351,11 +361,16 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#education-uwr" id="toc-education-uwr" class="nav-link" data-scroll-target="#education-uwr">University of Wrocław</a></li>
   <li><a href="#education-pwr" id="toc-education-pwr" class="nav-link" data-scroll-target="#education-pwr">Wrocław University of Science and Technology</a></li>
   </ul></li>
+  <li><a href="#projects-open-source" id="toc-projects-open-source" class="nav-link" data-scroll-target="#projects-open-source">Projects &amp; Open Source</a>
+  <ul class="collapse">
+  <li><a href="#zenith" id="toc-zenith" class="nav-link" data-scroll-target="#zenith">Zenith</a></li>
+  <li><a href="#additional-projects" id="toc-additional-projects" class="nav-link" data-scroll-target="#additional-projects">Additional Projects</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content" tabindex="-1"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
@@ -363,11 +378,21 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="bartosz-marcin-wróblewski" class="level1 page-header-block">
 <h1>Bartosz Marcin Wróblewski</h1>
-<p><strong>Mathematician • Quantitative Analyst • Software Engineer</strong></p>
-<p>Quantitative software developer and mathematician with experience spanning academic research, financial modeling, and software engineering. Combines a strong theoretical foundation with hands-on delivery of production risk systems and valuation software for global financial institutions.</p>
+<p><strong>Mathematician • Quantitative Developer • Software Engineer</strong></p>
+<p>Quantitative software developer and mathematician with ~8 years of industry experience across front-office derivatives valuation, market risk modeling, and software engineering. Combines a strong theoretical foundation in differential equations with hands-on delivery of production valuation engines, risk orchestration platforms, and developer tooling for global financial institutions.</p>
 <div class="hero-links">
 <p><a href="https://www.linkedin.com/in/bartoszmwroblewski/" class="hero-link"><i class="bi bi-linkedin"></i> LinkedIn</a> <a href="https://github.com/bwrob/" class="hero-link"><i class="bi bi-github"></i> GitHub</a> <a href="mailto:bartosz.marcin.wroblewski@gmail.com" class="hero-link"><i class="bi bi-envelope"></i> Contact</a></p>
 </div>
+</section>
+<section id="technical-profile" class="level2">
+<h2 class="anchored" data-anchor-id="technical-profile">Technical Profile</h2>
+<ul>
+<li><strong>Core Expertise:</strong> Quantitative Development, Derivatives Valuation, Risk Engines.</li>
+<li><strong>Python Stack:</strong> Polars, Pydantic, Pandera, NumPy, Pandas, SQLAlchemy, Dagster, Pytest.</li>
+<li><strong>Low-Level &amp; Quant:</strong> C++, QuantLib, Acadia ORE, SWIG, CMake, Boost, F#, C#, COM.</li>
+<li><strong>Risk Platforms:</strong> Acadia ORE, SimCorp Axioma, Murex, Bloomberg, PostgreSQL, DuckDB, AWS.</li>
+<li><strong>Quality &amp; Developer Tooling:</strong> uv, Ruff, Pyrefly, basedpyright, pytest, Tach, complexipy, Zensical, Devin, Codex.</li>
+</ul>
 </section>
 <section id="professional-experience" class="level2">
 <h2 class="anchored" data-anchor-id="professional-experience">Professional Experience</h2>
@@ -377,16 +402,17 @@ ul.task-list li input[type="checkbox"] {
 <div class="resume-header">
 <p><span class="resume-title">Senior Software Developer</span> <span class="resume-date">Sep 2024 – Present</span></p>
 </div>
-<p>Senior engineering consultant in a G-SIB bank’s Risk &amp; Compliance group, supporting a Market Risk system migration.</p>
+<p>Senior engineering consultant in a G-SIB bank’s Risk &amp; Compliance group, supporting a Market Risk and Counterparty Credit Risk (CCR) system migration to Acadia Open Source Risk Engine (ORE).</p>
 <ul>
-<li>Partnered directly with a senior quant to build an internal benchmark pricing model for callable bonds, replacing legacy vendor software.</li>
-<li>Optimized and deployed C++/Python valuation engines for high-throughput portfolio repricing.</li>
-<li>Developed an internal P&amp;L valuation framework to reprice lending portfolios under simulated market shocks.</li>
-<li>Designed the CI/CD testing framework and agent harness to automate model validation and deployment.</li>
-<li>Acted as de facto tech lead, establishing a cross-functional team of quants and software engineers.</li>
+<li>Technical lead for a cross-functional team of 2 software engineers and 3–5 quants, establishing system architecture, coding standards, and automated code review gates.</li>
+<li>Partnered with a senior quant to design and build an internal benchmark pricing model for callable bonds in QuantLib (evaluating 1-factor vs.&nbsp;2-factor short-rate models), replacing legacy vendor software.</li>
+<li>Architected a production <strong>Risk Orchestrator</strong> and valuation adapter to compute full-revaluation scenario P&amp;L across lending and fixed-income portfolios, dynamically routing trades between QuantLib and Acadia ORE (via SWIG C++/Python bindings).</li>
+<li>Co-developed C++ enhancements to the QuantLib pricing layer inside Acadia ORE for portfolio-specific features, including piecewise-constant parameterization and call notice period mechanics.</li>
+<li>Built a fixed-income data translation pipeline (Pydantic, Polars, Pandera) converting raw Bloomberg bond data into canonical portfolio JSON schemas.</li>
+<li>Designed the GitLab CI/CD testing pipeline and a cross-tool AI agent harness bridging Devin and Codex with reusable skills, custom linters, and Zensical documentation standards to ensure analyst contributions adhere to production standards.</li>
 </ul>
 <div class="resume-tech">
-<p><strong>Technologies:</strong> Python, C++, QuantLib, ORE, SWIG, Pydantic, Polars, Pandera, GitLab, Devin.</p>
+<p><strong>Technologies:</strong> Python, C++, QuantLib, Acadia ORE, SWIG, Pydantic, Polars, Pandera, GitLab CI, Zensical, Devin, Codex.</p>
 </div>
 </section>
 <section id="syberry" class="level3">
@@ -394,32 +420,32 @@ ul.task-list li input[type="checkbox"] {
 <div class="resume-header">
 <p><span class="resume-title">Financial Software Engineer</span> <span class="resume-date">Sep 2023 – Sep 2024</span></p>
 </div>
-<p>Software engineering consultant for a multi-strategy hedge fund, building market risk infrastructure for a new <a href="https://www.syberry.com/case-studies/game-changing-financial-platform/">financial platform</a>.</p>
+<p>Software engineering consultant (client engagement) for a multi-strategy hedge fund, building market risk infrastructure for a new <a href="https://www.syberry.com/case-studies/game-changing-financial-platform/">financial platform</a>.</p>
 <ul>
-<li>Integrated the Axioma risk system into the platform to compute cross-asset exposures, VaR, stress testing, and equity factor risk models.</li>
-<li>Liaised directly with Axioma model specialists and engineers to resolve analytics discrepancies and platform integration issues.</li>
-<li>Built Dagster data pipelines to ingest and transform cross-asset portfolio trading data into PostgreSQL.</li>
-<li>Worked directly with the fund’s CRO and risk managers to define technical specifications and business requirements for the engineering team.</li>
+<li>Took ownership of the SimCorp Axioma integration layer, re-architecting serial logic into a concurrent client to compute cross-asset exposures, VaR, stress tests, and equity factor risk models against a high-latency synchronous vendor API.</li>
+<li>Built Dagster data pipelines to ingest, validate, and transform cross-asset portfolio trading data and OTC product bookings into PostgreSQL and DuckDB on AWS.</li>
+<li>Liaised directly with Axioma model specialists and engineers to diagnose analytics discrepancies and resolve platform integration bugs.</li>
+<li>Worked directly with the fund’s CRO and risk managers to define technical specifications and quantitative requirements for the engineering team.</li>
 </ul>
 <div class="resume-tech">
-<p><strong>Technologies:</strong> Python, Axioma, Dagster, Pytest, Pandas, NumPy, SQLAlchemy, PostgreSQL, AWS.</p>
+<p><strong>Technologies:</strong> Python, SimCorp Axioma, Dagster, Pytest, Pandas, NumPy, SQLAlchemy, PostgreSQL, DuckDB, AWS.</p>
 </div>
 </section>
 <section id="bank-of-new-york-mellon" class="level3">
 <h3 class="anchored" data-anchor-id="bank-of-new-york-mellon"><a href="https://www.bnymellon.com/">Bank of New York Mellon</a></h3>
 <div class="resume-header">
-<p><span class="resume-title">Senior Specialist, Model Development</span> <span class="resume-date">Jul&nbsp;2022&nbsp;–&nbsp;Sep&nbsp;2023</span></p>
+<p><span class="resume-title">Senior Specialist, Model Development</span> <span class="resume-date">Jul 2022 – Sep 2023</span></p>
 </div>
 <p>Model development specialist in Middle Office Market Risk. Focused on VaR/SVaR modeling, stress testing frameworks, and portfolio sensitivity analytics.</p>
 <ul>
-<li>Developed and maintained C++ market risk models (VaR, SVaR) and stress testing frameworks.</li>
-<li>Updated stress testing models and executed Market Risk RWA projection runs for the CCAR 2023 submission.</li>
-<li>Designed a reconciliation methodology for OIS and LIBOR interest rate sensitivities for bonds and derivatives between Front Office and Middle Office systems.</li>
-<li>Calibrated and benchmarked Murex vendor pricing models against internal pricing frameworks.</li>
-<li>Re-implemented a legacy C++ volatility surface builder in Python, matching native C++ throughput.</li>
+<li>Developed and maintained C++ market risk models—including a <strong>Filtered Historical Simulation (FHS)</strong> engine—and stress testing frameworks.</li>
+<li>Re-implemented a legacy single-threaded C++ volatility surface builder in Python, replacing a naive root-finder with <strong>Halley’s method</strong> for implied volatility inversion and adding multiprocessing to match native C++ throughput.</li>
+<li>Designed a reconciliation methodology for OIS and LIBOR interest rate sensitivities for bonds and derivatives between Front Office and Middle Office systems across disparate curve conventions.</li>
+<li>Executed Market Risk RWA projection runs for the <strong>CCAR 2023</strong> regulatory submission.</li>
+<li>Calibrated and benchmarked Murex vendor pricing models against internal analytical frameworks in coordination with Model Validation and Risk Management.</li>
 </ul>
 <div class="resume-tech">
-<p><strong>Technologies:</strong> C++, Murex, MS SQL, Python, QuantLib, Excel, VBA.</p>
+<p><strong>Technologies:</strong> C++, Python, QuantLib, Murex, MS SQL, Excel, VBA, GitLab.</p>
 </div>
 </section>
 <section id="credit-suisse" class="level3">
@@ -427,22 +453,21 @@ ul.task-list li input[type="checkbox"] {
 <div class="resume-header">
 <p><span class="resume-title">Quantitative Analyst</span> <span class="resume-date">Nov 2018 – Jun 2022</span></p>
 </div>
-<p>Front-office quantitative analyst in the global QuantStrats department, supporting Credit Derivatives and Longevity trading desks (CDS, Structured Notes, Longevity Swaps).</p>
+<p>Front-office quantitative analyst in the global <strong>QuantStrats</strong> department, supporting Structured Notes, Credit Derivatives (CDS), and Longevity Derivatives trading desks.</p>
 <ul>
-<li>Maintained and expanded the bank-wide in-house valuation library across distributed trading systems.</li>
-<li>Engineered credit curve market object builders and extended the Structured Notes pricing engine.</li>
-<li>Refitted credit curve models from IBOR discounting to OIS in preparation for the LIBOR transition.</li>
-<li>Extended trader pricing sheets with logic to price instruments with compounding rate financing.</li>
-<li>Migrated legacy longevity-based derivatives tools to 64-bit execution environments.</li>
-<li>Provided direct front-office support to traders and Middle Office on ad hoc pricing, risk, and valuation investigations.</li>
+<li>Maintained and expanded the bank-wide in-house valuation library across distributed trading systems (C++, F#, C#, COM), extending the Structured Notes pricing engine and longevity-based derivatives tools.</li>
+<li>Implemented Fixed Income market data and credit curve object builders inside an engineering-owned C# Risk Management System under strict developer code reviews.</li>
+<li>Re-bootstrapped CDS hazard-rate curves under OIS discounting in F# ahead of the LIBOR transition, and extended trader pricing sheets for compounded-in-arrears RFR financing.</li>
+<li>Co-owned and rotated as Runner for the monthly bank-wide <strong>Tactical Collateral-Adjusted Valuation (CAV)</strong> process, managing end-to-end execution and diagnosing cross-system trade evaluation breaks.</li>
+<li>Migrated legacy longevity-based derivatives tools to 64-bit execution environments and provided direct desk support on ad hoc pricing, valuation, and LIBOR transition investigations.</li>
 </ul>
 <div class="resume-tech">
-<p><strong>Technologies:</strong> F#, C++, C#, COM, Excel, VBA, Perforce, TeamCity.</p>
+<p><strong>Technologies:</strong> F#, C++, C#, COM, .NET, Excel, VBA, Perforce, TeamCity.</p>
 </div>
 </section>
 </section>
-<section id="academic-experience" class="level2">
-<h2 class="anchored" data-anchor-id="academic-experience">Academic Experience</h2>
+<section id="research-teaching" class="level2">
+<h2 class="anchored" data-anchor-id="research-teaching">Research &amp; Teaching</h2>
 <p>Teaching and research appointments in mathematics and computer science.</p>
 <section id="academic-pwr" class="level3">
 <h3 class="anchored" data-anchor-id="academic-pwr"><a href="https://wmat.pwr.edu.pl/">Wrocław University of Science and Technology</a></h3>
@@ -451,31 +476,31 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <p>Taught computer science and software development courses for undergraduate Mathematics students (<a href="../teaching/2024-pwr-intro-to-cs/">Introduction to Programming</a>, <a href="../teaching/2025-pwr-programming/">Programming</a>).</p>
 <ul>
-<li>Taught Python core language mechanics, OOP, data structures, virtual environments, closures, decorators, and structured logging.</li>
+<li>Taught Python core language mechanics, OOP, data structures, virtual environments, closures, decorators, structured logging, static analysis (Ruff), and automatic differentiation.</li>
 <li>Taught essential development tools and workflows, including Bash, Git, and LaTeX.</li>
 </ul>
 </section>
 <section id="academic-uwr" class="level3">
 <h3 class="anchored" data-anchor-id="academic-uwr"><a href="https://www.math.uni.wroc.pl/">University of Wrocław</a></h3>
 <div class="resume-header">
-<p><span class="resume-title">PhD Candidate &amp; Junior Researcher</span> <span class="resume-date">2016 – 2019</span></p>
+<p><span class="resume-title">Doctoral Researcher &amp; Teaching Assistant</span> <span class="resume-date">2016 – 2018</span></p>
 </div>
-<p>Researched non-local evolution equations within the Institute of Mathematics (doctoral program incomplete).</p>
+<p>Researched non-local evolution equations and differential equations within the Institute of Mathematics.</p>
 <ul>
 <li>Investigated evolution equations involving non-local unbounded operators (Fractional Laplacian).</li>
 <li>Contributed to NCN research grant <em>Nonlocal Parabolic Problems</em>.</li>
-<li>Taught undergraduate math courses, including Differential Equations, Honors ODEs, and Functional Analysis (<a href="../teaching/">Teaching details</a>).</li>
+<li>Taught undergraduate math courses, including Differential Equations, Honors ODEs, and Nonlinear Functional Analysis (<a href="../teaching/">Teaching details</a>).</li>
 </ul>
 </section>
-<section id="university-of-warsaw" class="level3">
-<h3 class="anchored" data-anchor-id="university-of-warsaw"><a href="https://www.mimuw.edu.pl/en/studies/">University of Warsaw</a></h3>
+<section id="university-of-warsaw-impan" class="level3">
+<h3 class="anchored" data-anchor-id="university-of-warsaw-impan"><a href="https://www.mimuw.edu.pl/en/">University of Warsaw &amp; IMPAN</a></h3>
 <div class="resume-header">
 <p><span class="resume-title">Research Intern &amp; Teaching Assistant</span> <span class="resume-date">2016 – 2017</span></p>
 </div>
-<p>Research internship and teaching assistantship at the Faculty of Mathematics, Informatics and Mechanics (MIMUW).</p>
+<p>Research internship at the Polish Academy of Sciences / WCMCS and teaching assistantship at the Faculty of Mathematics, Informatics and Mechanics (MIMUW).</p>
 <ul>
-<li>Conducted research on fractional Euler alignment systems during the <em>Simons Semester (CrossFields PDEs)</em>.</li>
-<li>Co-authored <a href="https://doi.org/10.1142/S0218202519500055"><em>Regular solutions to the fractional Euler alignment system in the Besov spaces framework</em></a> published in <em>Mathematical Models and Methods in Applied Sciences</em>.</li>
+<li>Conducted research on fractional Euler alignment systems during the Simons Foundation <em>CrossFields PDEs</em> semester at the Banach Center.</li>
+<li>Co-authored <a href="https://doi.org/10.1142/S0218202519500055"><em>Regular solutions to the fractional Euler alignment system in the Besov spaces framework</em></a> published in <em>Mathematical Models and Methods in Applied Sciences</em> (<em>M3AS</em>).</li>
 <li>Taught remedial analysis classes for undergraduate Mathematics students (<a href="../teaching/2016-uw-analysis-1.1/">Analysis 1.1</a>, <a href="../teaching/2017-uw-analysis-1.2/">Analysis 1.2</a>).</li>
 </ul>
 </section>
@@ -498,10 +523,32 @@ ul.task-list li input[type="checkbox"] {
 <p>Thesis: <em>The anomalous diffusion and fractional Laplacian on the half-line</em></p>
 </section>
 <section id="education-pwr" class="level3">
-<h3 class="anchored" data-anchor-id="education-pwr"><a href="https://wmat.pwr.edu.pl">Wrocław University of Science and Technology</a></h3>
+<h3 class="anchored" data-anchor-id="education-pwr"><a href="https://wmat.pwr.edu.pl/">Wrocław University of Science and Technology</a></h3>
 <div class="resume-header">
 <p><span class="resume-title">BSc in Theoretical Mathematics</span> <span class="resume-date">2011 – 2014</span></p>
 </div>
+</section>
+</section>
+<section id="projects-open-source" class="level2">
+<h2 class="anchored" data-anchor-id="projects-open-source">Projects &amp; Open Source</h2>
+<p>Selected open-source developer tools, templates, and technical writing.</p>
+<section id="zenith" class="level3">
+<h3 class="anchored" data-anchor-id="zenith"><a href="https://github.com/bwrob/zenith">Zenith</a></h3>
+<div class="resume-header">
+<p><span class="resume-title">Modern Python Project Template &amp; Agentic Harness</span> <a href="https://bwrob.github.io/zenith/" class="resume-date">Documentation</a></p>
+</div>
+<p>Opinionated Cookiecutter template and interactive CLI setup wizard (<code>uvx zenith-template</code>) for production Python 3.12+ repositories. Enforces sub-2-second Rust-native quality gates (<code>uv</code>, <code>Ruff</code>, <code>Pyrefly</code>, <code>Tach</code>, <code>complexipy</code>, <code>rumdl</code>, <code>Zensical</code>), 100% test coverage, and modular AI agent harnesses.</p>
+<div class="resume-tech">
+<p><strong>Technologies:</strong> Python, Typer, Rich, Cookiecutter, uv, Ruff, Pyrefly, Tach, Zensical, GitHub Actions.</p>
+</div>
+</section>
+<section id="additional-projects" class="level3">
+<h3 class="anchored" data-anchor-id="additional-projects">Additional Projects</h3>
+<ul>
+<li><strong><a href="https://bwrob.dev/">Bwrob.dev</a></strong>: Personal engineering and quantitative finance knowledge base covering derivatives risk management, high-performance Python internals, and developer workflows (Quarto, Python, Polars, Marimo, Typst).</li>
+<li><strong><a href="https://github.com/bwrob/sus-inspector">Sus-Inspector</a></strong>: Terminal-based TUI for deep runtime introspection of complex Python objects, callables, and type hierarchies (Python, Textual, Rich, Pydantic).</li>
+<li><strong><a href="https://github.com/bwrob/debug-dojo">Debug-Dojo</a></strong>: Interactive debugging utility and local developer workbench unifying Python debuggers for high-complexity codebases (Python, Typer, Rich, Pytest).</li>
+</ul>
 
 
 </section>
@@ -521,15 +568,50 @@ document.addEventListener("DOMContentLoaded", function () {
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-      const a = window.document.createElement('a');
-      a.classList.add('top-right');
-      a.classList.add('quarto-color-scheme-toggle');
-      a.href = "";
-      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "Toggle dark mode");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
       const i = window.document.createElement("i");
       i.classList.add('bi');
-      a.appendChild(i);
-      window.document.body.appendChild(a);
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "Toggle dark mode");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
     }
     setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
@@ -608,7 +690,8 @@ document.addEventListener("DOMContentLoaded", function () {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -617,8 +700,69 @@ document.addEventListener("DOMContentLoaded", function () {
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -632,6 +776,7 @@ document.addEventListener("DOMContentLoaded", function () {
         interactiveBorder: 10,
         theme: 'quarto',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;
@@ -794,44 +939,54 @@ document.addEventListener("DOMContentLoaded", function () {
           const lineIds = lines.map((line) => {
             return targetCell + "-" + line;
           })
-          let top = null;
-          let height = null;
-          let parent = null;
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
           if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
             }
+            placeBand(gutterDiv, el, lastEl);
             selectedAnnoteEl = annoteEl;
           }
         };
@@ -929,6 +1084,9 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
   </script>
 <input type="hidden" id="giscus-base-theme" value="dark">
 <input type="hidden" id="giscus-alt-theme" value="light">
