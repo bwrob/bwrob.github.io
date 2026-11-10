@@ -14,12 +14,13 @@ toc-expand: true
 
 # Bartosz Marcin Wróblewski
 
-**Mathematician • Quantitative Analyst • Software Engineer**
+**Mathematician • Quantitative Developer • Software Engineer**
 
-Quantitative software developer and mathematician with experience spanning academic
-research, financial modeling, and software engineering. Combines a strong theoretical
-foundation with hands-on delivery of production risk systems and valuation software for
-global financial institutions.
+Quantitative software developer and mathematician with ~8 years of industry experience
+across front-office derivatives valuation, market risk modeling, and software
+engineering. Combines a strong theoretical foundation in differential equations with
+hands-on delivery of production valuation engines, risk orchestration platforms, and
+developer tooling for global financial institutions.
 
 ::: {.hero-links}
 
@@ -30,6 +31,17 @@ global financial institutions.
 :::
 
 :::
+
+## Technical Profile
+
+- **Core Expertise:** Quantitative Development, Derivatives Valuation, Risk Engines.
+- **Python Stack:** Polars, Pydantic, Pandera, NumPy, Pandas, SQLAlchemy, Dagster,
+  Pytest.
+- **Low-Level & Quant:** C++, QuantLib, Acadia ORE, SWIG, CMake, Boost, F#, C#, COM.
+- **Risk Platforms:** Acadia ORE, SimCorp Axioma, Murex, Bloomberg, PostgreSQL, DuckDB,
+  AWS.
+- **Quality & Developer Tooling:** uv, Ruff, Pyrefly, basedpyright, pytest, Tach,
+  complexipy, Zensical, Devin, Codex.
 
 ## Professional Experience
 
@@ -45,23 +57,30 @@ enterprise software.
 :::
 
 Senior engineering consultant in a G-SIB bank's Risk & Compliance group, supporting a
-Market Risk system migration.
+Market Risk and Counterparty Credit Risk (CCR) system migration to Acadia Open Source
+Risk Engine (ORE).
 
-- Partnered directly with a senior quant to build an internal benchmark pricing model
-  for callable bonds, replacing legacy vendor software.
-- Optimized and deployed C++/Python valuation engines for high-throughput portfolio
-  repricing.
-- Developed an internal P&L valuation framework to reprice lending portfolios under
-  simulated market shocks.
-- Designed the CI/CD testing framework and agent harness to automate model validation
-  and deployment.
-- Acted as de facto tech lead, establishing a cross-functional team of quants and
-  software engineers.
+- Technical lead for a cross-functional team of 2 software engineers and 3–5 quants,
+  establishing system architecture, coding standards, and automated code review gates.
+- Partnered with a senior quant to design and build an internal benchmark pricing model
+  for callable bonds in QuantLib (evaluating 1-factor vs. 2-factor short-rate models),
+  replacing legacy vendor software.
+- Architected a production **Risk Orchestrator** and valuation adapter to compute
+  full-revaluation scenario P&L across lending and fixed-income portfolios, dynamically
+  routing trades between QuantLib and Acadia ORE (via SWIG C++/Python bindings).
+- Co-developed C++ enhancements to the QuantLib pricing layer inside Acadia ORE for
+  portfolio-specific features, including piecewise-constant parameterization and call
+  notice period mechanics.
+- Built a fixed-income data translation pipeline (Pydantic, Polars, Pandera) converting
+  raw Bloomberg bond data into canonical portfolio JSON schemas.
+- Designed the GitLab CI/CD testing pipeline and a cross-tool AI agent harness bridging
+  Devin and Codex with reusable skills, custom linters, and Zensical documentation
+  standards to ensure analyst contributions adhere to production standards.
 
 ::: {.resume-tech}
 
-**Technologies:** Python, C++, QuantLib, ORE, SWIG, Pydantic, Polars, Pandera, GitLab,
-Devin.
+**Technologies:** Python, C++, QuantLib, Acadia ORE, SWIG, Pydantic, Polars, Pandera,
+GitLab CI, Zensical, Devin, Codex.
 
 :::
 
@@ -73,23 +92,24 @@ Devin.
 
 :::
 
-Software engineering consultant for a multi-strategy hedge fund, building market risk
-infrastructure for a new
+Software engineering consultant (client engagement) for a multi-strategy hedge fund,
+building market risk infrastructure for a new
 [financial platform](https://www.syberry.com/case-studies/game-changing-financial-platform/).
 
-- Integrated the Axioma risk system into the platform to compute cross-asset exposures,
-  VaR, stress testing, and equity factor risk models.
-- Liaised directly with Axioma model specialists and engineers to resolve analytics
-  discrepancies and platform integration issues.
-- Built Dagster data pipelines to ingest and transform cross-asset portfolio trading
-  data into PostgreSQL.
+- Took ownership of the SimCorp Axioma integration layer, re-architecting serial logic
+  into a concurrent client to compute cross-asset exposures, VaR, stress tests, and
+  equity factor risk models against a high-latency synchronous vendor API.
+- Built Dagster data pipelines to ingest, validate, and transform cross-asset portfolio
+  trading data and OTC product bookings into PostgreSQL and DuckDB on AWS.
+- Liaised directly with Axioma model specialists and engineers to diagnose analytics
+  discrepancies and resolve platform integration bugs.
 - Worked directly with the fund's CRO and risk managers to define technical
-  specifications and business requirements for the engineering team.
+  specifications and quantitative requirements for the engineering team.
 
 ::: {.resume-tech}
 
-**Technologies:** Python, Axioma, Dagster, Pytest, Pandas, NumPy, SQLAlchemy,
-PostgreSQL, AWS.
+**Technologies:** Python, SimCorp Axioma, Dagster, Pytest, Pandas, NumPy, SQLAlchemy,
+PostgreSQL, DuckDB, AWS.
 
 :::
 
@@ -97,28 +117,29 @@ PostgreSQL, AWS.
 
 ::: {.resume-header}
 
-[Senior Specialist, Model Development]{.resume-title}
-[Jul 2022 -- Sep 2023]{.resume-date}
+[Senior Specialist, Model Development]{.resume-title} [Jul 2022 -- Sep
+2023]{.resume-date}
 
 :::
 
 Model development specialist in Middle Office Market Risk. Focused on VaR/SVaR modeling,
 stress testing frameworks, and portfolio sensitivity analytics.
 
-- Developed and maintained C++ market risk models (VaR, SVaR) and stress testing
-  frameworks.
-- Updated stress testing models and executed Market Risk RWA projection runs for the
-  CCAR 2023 submission.
+- Developed and maintained C++ market risk models—including a **Filtered Historical
+  Simulation (FHS)** engine—and stress testing frameworks.
+- Re-implemented a legacy single-threaded C++ volatility surface builder in Python,
+  replacing a naive root-finder with **Halley's method** for implied volatility
+  inversion and adding multiprocessing to match native C++ throughput.
 - Designed a reconciliation methodology for OIS and LIBOR interest rate sensitivities
-  for bonds and derivatives between Front Office and Middle Office systems.
-- Calibrated and benchmarked Murex vendor pricing models against internal pricing
-  frameworks.
-- Re-implemented a legacy C++ volatility surface builder in Python, matching native C++
-  throughput.
+  for bonds and derivatives between Front Office and Middle Office systems across
+  disparate curve conventions.
+- Executed Market Risk RWA projection runs for the **CCAR 2023** regulatory submission.
+- Calibrated and benchmarked Murex vendor pricing models against internal analytical
+  frameworks in coordination with Model Validation and Risk Management.
 
 ::: {.resume-tech}
 
-**Technologies:** C++, Murex, MS SQL, Python, QuantLib, Excel, VBA.
+**Technologies:** C++, Python, QuantLib, Murex, MS SQL, Excel, VBA, GitLab.
 
 :::
 
@@ -130,28 +151,31 @@ stress testing frameworks, and portfolio sensitivity analytics.
 
 :::
 
-Front-office quantitative analyst in the global QuantStrats department, supporting
-Credit Derivatives and Longevity trading desks (CDS, Structured Notes, Longevity Swaps).
+Front-office quantitative analyst in the global **QuantStrats** department, supporting
+Structured Notes, Credit Derivatives (CDS), and Longevity Derivatives trading desks.
 
 - Maintained and expanded the bank-wide in-house valuation library across distributed
-  trading systems.
-- Engineered credit curve market object builders and extended the Structured Notes
-  pricing engine.
-- Refitted credit curve models from IBOR discounting to OIS in preparation for the
-  LIBOR transition.
-- Extended trader pricing sheets with logic to price instruments with compounding rate
+  trading systems (C++, F#, C#, COM), extending the Structured Notes pricing engine and
+  longevity-based derivatives tools.
+- Implemented Fixed Income market data and credit curve object builders inside an
+  engineering-owned C# Risk Management System under strict developer code reviews.
+- Re-bootstrapped CDS hazard-rate curves under OIS discounting in F# ahead of the LIBOR
+  transition, and extended trader pricing sheets for compounded-in-arrears RFR
   financing.
-- Migrated legacy longevity-based derivatives tools to 64-bit execution environments.
-- Provided direct front-office support to traders and Middle Office on ad hoc pricing,
-  risk, and valuation investigations.
+- Co-owned and rotated as Runner for the monthly bank-wide **Tactical
+  Collateral-Adjusted Valuation (CAV)** process, managing end-to-end execution and
+  diagnosing cross-system trade evaluation breaks.
+- Migrated legacy longevity-based derivatives tools to 64-bit execution environments and
+  provided direct desk support on ad hoc pricing, valuation, and LIBOR transition
+  investigations.
 
 ::: {.resume-tech}
 
-**Technologies:** F#, C++, C#, COM, Excel, VBA, Perforce, TeamCity.
+**Technologies:** F#, C++, C#, COM, .NET, Excel, VBA, Perforce, TeamCity.
 
 :::
 
-## Academic Experience
+## Research & Teaching
 
 Teaching and research appointments in mathematics and computer science.
 
@@ -168,27 +192,28 @@ students ([Introduction to Programming](../teaching/2024-pwr-intro-to-cs/),
 [Programming](../teaching/2025-pwr-programming/)).
 
 - Taught Python core language mechanics, OOP, data structures, virtual environments,
-  closures, decorators, and structured logging.
+  closures, decorators, structured logging, static analysis (Ruff), and automatic
+  differentiation.
 - Taught essential development tools and workflows, including Bash, Git, and LaTeX.
 
 ### [University of Wrocław](https://www.math.uni.wroc.pl/) {#academic-uwr}
 
 ::: {.resume-header}
 
-[PhD Candidate & Junior Researcher]{.resume-title} [2016 -- 2019]{.resume-date}
+[Doctoral Researcher & Teaching Assistant]{.resume-title} [2016 -- 2018]{.resume-date}
 
 :::
 
-Researched non-local evolution equations within the Institute of Mathematics (doctoral
-program incomplete).
+Researched non-local evolution equations and differential equations within the Institute
+of Mathematics.
 
 - Investigated evolution equations involving non-local unbounded operators (Fractional
   Laplacian).
 - Contributed to NCN research grant *Nonlocal Parabolic Problems*.
 - Taught undergraduate math courses, including Differential Equations, Honors ODEs, and
-  Functional Analysis ([Teaching details](../teaching/)).
+  Nonlinear Functional Analysis ([Teaching details](../teaching/)).
 
-### [University of Warsaw](https://www.mimuw.edu.pl/en/studies/)
+### [University of Warsaw & IMPAN](https://www.mimuw.edu.pl/en/)
 
 ::: {.resume-header}
 
@@ -196,14 +221,14 @@ program incomplete).
 
 :::
 
-Research internship and teaching assistantship at the Faculty of Mathematics,
-Informatics and Mechanics (MIMUW).
+Research internship at the Polish Academy of Sciences / WCMCS and teaching assistantship
+at the Faculty of Mathematics, Informatics and Mechanics (MIMUW).
 
-- Conducted research on fractional Euler alignment systems during the *Simons Semester
-  (CrossFields PDEs)*.
+- Conducted research on fractional Euler alignment systems during the Simons Foundation
+  *CrossFields PDEs* semester at the Banach Center.
 - Co-authored
   [*Regular solutions to the fractional Euler alignment system in the Besov spaces framework*](https://doi.org/10.1142/S0218202519500055)
-  published in *Mathematical Models and Methods in Applied Sciences*.
+  published in *Mathematical Models and Methods in Applied Sciences* (*M3AS*).
 - Taught remedial analysis classes for undergraduate Mathematics students
   ([Analysis 1.1](../teaching/2016-uw-analysis-1.1/),
   [Analysis 1.2](../teaching/2017-uw-analysis-1.2/)).
@@ -233,10 +258,47 @@ Thesis:
 
 Thesis: *The anomalous diffusion and fractional Laplacian on the half-line*
 
-### [Wrocław University of Science and Technology](https://wmat.pwr.edu.pl) {#education-pwr}
+### [Wrocław University of Science and Technology](https://wmat.pwr.edu.pl/) {#education-pwr}
 
 ::: {.resume-header}
 
 [BSc in Theoretical Mathematics]{.resume-title} [2011 -- 2014]{.resume-date}
 
 :::
+
+## Projects & Open Source
+
+Selected open-source developer tools, templates, and technical writing.
+
+### [Zenith](https://github.com/bwrob/zenith)
+
+::: {.resume-header}
+
+[Modern Python Project Template & Agentic Harness]{.resume-title}
+[Documentation](https://bwrob.github.io/zenith/){.resume-date}
+
+:::
+
+Opinionated Cookiecutter template and interactive CLI setup wizard
+(`uvx zenith-template`) for production Python 3.12+ repositories. Enforces sub-2-second
+Rust-native quality gates (`uv`, `Ruff`, `Pyrefly`, `Tach`, `complexipy`, `rumdl`,
+`Zensical`), 100% test coverage, and modular AI agent harnesses.
+
+::: {.resume-tech}
+
+**Technologies:** Python, Typer, Rich, Cookiecutter, uv, Ruff, Pyrefly, Tach, Zensical,
+GitHub Actions.
+
+:::
+
+### Additional Projects
+
+- **[Bwrob.dev](https://bwrob.dev/)**: Personal engineering and quantitative finance
+  knowledge base covering derivatives risk management, high-performance Python
+  internals, and developer workflows (Quarto, Python, Polars, Marimo, Typst).
+- **[Sus-Inspector](https://github.com/bwrob/sus-inspector)**: Terminal-based TUI for
+  deep runtime introspection of complex Python objects, callables, and type hierarchies
+  (Python, Textual, Rich, Pydantic).
+- **[Debug-Dojo](https://github.com/bwrob/debug-dojo)**: Interactive debugging utility
+  and local developer workbench unifying Python debuggers for high-complexity codebases
+  (Python, Typer, Rich, Pytest).
