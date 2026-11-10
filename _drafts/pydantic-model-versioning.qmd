@@ -1,0 +1,209 @@
+---
+categories: [Python Recipes, Data Science]
+date: "2026-11-10"
+description: "How to handle schema evolution in distributed systems, building an automated migration pipeline across Pydantic V2 models using custom metaclasses."
+draft: true
+format-links: [html]
+title: "Schema Evolution in Pydantic V2: Metaclass-Driven Model Migrations"
+toc-depth: 3
+---
+
+In distributed architectures, microservices, and event-driven systems, data schemas are
+never static. You might start with `UserV1` containing `{"id": 1, "name": "Alice"}`. Six
+months later, you split `name` into `first_name` and `last_name`, and add a mandatory
+`email` field in `UserV2`.
+
+If you have millions of events persisted in event streams (Kafka), document stores
+(MongoDB, PostgreSQL JSONB), or cache layers (Redis), you cannot migrate all historical
+records instantaneously. Your application must remain backwards-compatible: it must
+ingest payloads created by `UserV1`, seamlessly upgrade them through migration rules,
+and validate them against `UserV2` before they reach domain logic.
+
+Here is how to implement automated, chainable schema migrations in **Pydantic V2** using
+a custom metaclass.
+
+## 1. The Design: Versioned Models and Stepwise Migrations
+
+Instead of writing sprawling `if payload.get("version") == 1:` branches across your
+codebase, each version of a model declares:
+
+1. Its explicit **`schema_version`**.
+2. A static **`update(data)`** method that defines how to transform a dictionary from
+   version $N-1$ into version $N$.
+
+```python
+class UserV1(VersionedBaseModel, schema_version=1):
+    id: str
+    name: str
+
+
+class UserV2(VersionedBaseModel, schema_version=2):
+    id: str
+    full_name: str
+    email: str = "unknown@example.com"
+
+    @staticmethod
+    def update(data: dict) -> dict:
+        """Migrate payload from V1 -> V2."""
+        new_data = data.copy()
+        new_data["full_name"] = new_data.pop("name")
+        return new_data
+
+
+class UserV3(VersionedBaseModel, schema_version=3):
+    id: str
+    first_name: str
+    last_name: str
+    email: str
+
+    @staticmethod
+    def update(data: dict) -> dict:
+        """Migrate payload from V2 -> V3."""
+        new_data = data.copy()
+        names = new_data.pop("full_name").split(" ", 1)
+        new_data["first_name"] = names[0]
+        new_data["last_name"] = names[1] if len(names) > 1 else ""
+        return new_data
+```
+
+When an incoming payload marked with `schema_version = 1` arrives:
+
+```python
+user = UserV3.migrate_and_validate(raw_payload)
+```
+
+The model automatically routes the dictionary through `UserV2.update()` and then
+`UserV3.update()` before instantiating the validated `UserV3` object.
+
+## 2. The Implementation: `VersionedModelMeta`
+
+Because Pydantic V2 uses its own internal `ModelMetaclass` for field compilation, our
+custom metaclass inherits from `ModelMetaclass`:
+
+```python
+import logging
+from typing import Any, ClassVar, Self
+from pydantic import BaseModel
+from pydantic._internal._model_construction import ModelMetaclass
+
+logger = logging.getLogger(__name__)
+
+
+class VersionedModelMeta(ModelMetaclass):
+    """Metaclass that registers models by family name and schema version."""
+
+    # Registry mapping (base_family_name, version) -> Model Class
+    _registry: ClassVar[dict[tuple[str, int], type["VersionedBaseModel"]]] = {}
+
+    def __new__(
+        mcs,
+        name: str,
+        bases: tuple[type, ...],
+        attrs: dict[str, Any],
+        **kwargs: Any,
+    ) -> type:
+        schema_version = kwargs.pop("schema_version", None)
+        cls = super().__new__(mcs, name, bases, attrs, **kwargs)
+
+        # Do not register the abstract base class itself
+        if name == "VersionedBaseModel":
+            return cls
+
+        if schema_version is None:
+            raise TypeError(
+                f"Class {name} inheriting from VersionedBaseModel must declare "
+                f"'schema_version=...' in its class definition."
+            )
+
+        # Determine family name (e.g. 'User' from 'UserV1', 'UserV2')
+        family_name = getattr(cls, "_family_name", None) or name.split("V")[0]
+
+        cls.schema_version = schema_version
+        cls._family_name = family_name
+
+        key = (family_name, schema_version)
+        if key in mcs._registry:
+            raise ValueError(f"Duplicate registration for model family {key}")
+
+        mcs._registry[key] = cls
+        return cls
+```
+
+## 3. The Base Class: Automated Chain Migration
+
+```python
+class VersionedBaseModel(BaseModel, metaclass=VersionedModelMeta):
+    schema_version: ClassVar[int]
+    _family_name: ClassVar[str]
+
+    @classmethod
+    def migrate_and_validate(cls, data: dict[str, Any]) -> Self:
+        """Migrates a raw payload across versions and validates against target model."""
+        payload = data.copy()
+        current_v = payload.get("schema_version", 1)
+        target_v = cls.schema_version
+
+        if current_v > target_v:
+            raise ValueError(
+                f"Cannot downgrade payload from version {current_v} to {target_v}"
+            )
+
+        # Stepwise migration from current_v up to target_v
+        step = current_v
+        while step < target_v:
+            next_version = step + 1
+            next_cls = VersionedModelMeta._registry.get(
+                (cls._family_name, next_version)
+            )
+
+            if not next_cls:
+                raise RuntimeError(
+                    f"Missing migration step: no class found for family "
+                    f"'{cls._family_name}' at version {next_version}"
+                )
+
+            update_fn = getattr(next_cls, "update", None)
+            if not update_fn or not callable(update_fn):
+                raise RuntimeError(
+                    f"Model {next_cls.__name__} has no static 'update' method to migrate from v{step}"
+                )
+
+            logger.info(
+                "Migrating %s payload from v%d to v%d",
+                cls._family_name,
+                step,
+                next_version,
+            )
+            payload = update_fn(payload)
+            payload["schema_version"] = next_version
+            step = next_version
+
+        return cls.model_validate(payload)
+```
+
+## 4. Usage in Production
+
+```python
+# Raw legacy payload received from a historical event store:
+legacy_payload = {
+    "schema_version": 1,
+    "id": "usr_99",
+    "name": "Guido van Rossum",
+}
+
+# Ingest and validate directly into modern UserV3:
+user = UserV3.migrate_and_validate(legacy_payload)
+
+print(user)
+# UserV3(id='usr_99', first_name='Guido', last_name='van Rossum', email='unknown@example.com')
+```
+
+### Key Advantages
+
+1. **Decoupled Evolution**: Adding `UserV4` requires only writing `UserV4` and defining
+   how it upgrades from `UserV3`. You never touch historical migration functions for
+   `V1 → V2`.
+2. **Explicit Contracts**: Every schema transition is tested in isolation with simple
+   unit tests asserting dictionary inputs and outputs.
+3. **Auditability**: Incoming payloads carry their source `schema_version`, making
+   schema drift and deprecation lifecycles completely observable.

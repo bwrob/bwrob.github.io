@@ -1,0 +1,234 @@
+---
+categories: [Dev Env, Performance]
+date: "2026-11-10"
+description: "Why modern hybrid CPU architectures break standard Python multiprocessing pools, and how to build dynamic CPU affinity promotion across P-cores and E-cores."
+draft: true
+format-links: [html]
+title: "P-Cores, E-Cores, and Multiprocessing: Dynamic CPU Affinity in Python"
+toc-depth: 3
+---
+
+Most modern desktop and laptop CPUs (such as Intel 12th–14th Gen, Core Ultra, and Apple
+Silicon) no longer feature uniform, symmetrical cores. Instead, they use a
+**heterogeneous hybrid topology**:
+
+1. **Performance Cores (P-Cores)**: High IPC, high clock speeds, hyperthreaded.
+2. **Efficiency Cores (E-Cores)**: Lower clock speeds, smaller caches, single-threaded,
+   optimized for throughput-per-watt.
+
+When you spin up a standard Python multiprocessing pool:
+
+```python
+from concurrent.futures import ProcessPoolExecutor
+
+with ProcessPoolExecutor() as executor:
+    results = executor.map(heavy_computation, jobs)
+```
+
+The Python runtime and the OS scheduler treat every logical CPU thread as
+interchangeable. If a long-running, CPU-bound calculation gets pinned to an E-core, your
+overall batch completion is bottlenecked by the slowest straggler. Conversely, burning
+hot P-core cycles on trivial lightweight jobs wastes thermal headroom and power.
+
+Here is how to detect hybrid CPU topology in Python and implement
+**dynamic core affinity promotion**—starting tasks on E-cores and promoting them to
+P-cores if they exceed a runtime threshold.
+
+## 1. Detecting Hybrid Topology via Logical Vs. Physical Cores
+
+Because P-cores feature Hyper-Threading (2 logical threads per physical core) while
+E-cores are strictly single-threaded, we can deduce core assignments programmatically
+using `psutil`:
+
+```python
+import os
+import psutil
+
+
+def detect_hybrid_topology() -> tuple[list[int], list[int]]:
+    """Maps logical CPU IDs to P-Cores and E-Cores based on hyperthreading delta."""
+    logical = psutil.cpu_count(logical=True)
+    physical = psutil.cpu_count(logical=False)
+
+    if not logical or not physical or logical == physical:
+        # Symmetrical architecture (AMD standard or servers without E-cores)
+        return list(range(logical or os.cpu_count() or 1)), []
+
+    # Number of hyper-threaded P-cores
+    num_p_cores = logical - physical
+
+    # First 2 * num_p_cores logical IDs are P-cores
+    p_core_ids = list(range(num_p_cores * 2))
+    # Remaining IDs are E-cores
+    e_core_ids = list(range(num_p_cores * 2, logical))
+
+    return p_core_ids, e_core_ids
+
+
+P_CORES, E_CORES = detect_hybrid_topology()
+```
+
+On a 16-core / 24-thread CPU (8 P-cores + 8 E-cores), this immediately isolates logical
+IDs `0-15` as P-cores and `16-23` as E-cores.
+
+## 2. Dynamic Affinity Promotion: the Strategy
+
+Rather than statically partitioning workers into two separate pools, we implement a
+**self-promoting worker pattern**:
+
+1. **Start Cool**: Workers initialize and pin their affinity to **E-cores**
+   (`cpu_affinity(E_CORES)`).
+2. **Track Task Duration**: The parent orchestrator tracks how long each running task
+   has been active.
+3. **Dynamic Threshold**: We maintain a rolling median of task completion times. If a
+   task runs longer than $1.5\times$ the rolling threshold, it is identified as a heavy
+   job.
+4. **Hot Migration**: The orchestrator looks up the worker's OS process ID (`PID`) and
+   dynamically elevates its affinity mask to **P-cores**
+   (`psutil.Process(pid).cpu_affinity(P_CORES)`).
+5. **Reset on Finish**: When the worker completes the task, it drops its affinity back
+   to the E-core pool before pulling the next job.
+
+## 3. Implementation: Worker Function with Affinity Control
+
+```python
+import os
+import time
+import psutil
+
+
+def worker_task(
+    name: str, duration: float, shared_pids: dict[str, int]
+) -> str:
+    """Worker task that defaults to E-cores and shares its PID with the parent."""
+    # Reset affinity to E-cores at the beginning of each task
+    try:
+        target = E_CORES if E_CORES else P_CORES
+        psutil.Process().cpu_affinity(target)
+    except Exception:
+        pass
+
+    # Register current PID so parent orchestrator can migrate affinity
+    shared_pids[name] = os.getpid()
+
+    # Simulate actual computation
+    time.sleep(duration)
+
+    # Clean up registration
+    shared_pids.pop(name, None)
+    return f"Completed {name}"
+```
+
+## 4. Orchestrator with Rolling Promotion and Rich Dashboard
+
+```python
+import time
+from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, wait
+from multiprocessing import Manager
+import psutil
+from rich.live import Live
+from rich.table import Table
+
+
+def run_hybrid_orchestrator(tasks: list[tuple[str, float]]) -> None:
+    num_workers = len(P_CORES) + len(E_CORES)
+    completed_durations: list[float] = []
+    active_slots: dict[int, dict | None] = dict.fromkeys(range(num_workers))
+
+    manager = Manager()
+    task_pids = manager.dict()
+
+    with ProcessPoolExecutor(max_workers=num_workers) as executor:
+        futures = {}
+
+        # Submit initial batch
+        for slot in range(min(num_workers, len(tasks))):
+            name, duration = tasks.pop(0)
+            fut = executor.submit(worker_task, name, duration, task_pids)
+            futures[fut] = (name, slot, time.perf_counter())
+            active_slots[slot] = {
+                "name": name,
+                "start": time.perf_counter(),
+                "promoted": False,
+            }
+
+        with Live(refresh_per_second=4) as live:
+            while futures:
+                # Dynamic threshold calculation based on rolling median
+                if len(completed_durations) >= 5:
+                    sorted_d = sorted(completed_durations[-20:])
+                    threshold = sorted_d[len(sorted_d) // 2] * 1.5
+                else:
+                    threshold = 3.0
+
+                # Check active workers for promotion
+                for slot, data in active_slots.items():
+                    if data and not data["promoted"] and E_CORES:
+                        elapsed = time.perf_counter() - data["start"]
+                        if elapsed > threshold:
+                            pid = task_pids.get(data["name"])
+                            if pid:
+                                try:
+                                    psutil.Process(pid).cpu_affinity(P_CORES)
+                                    data["promoted"] = True
+                                except Exception:
+                                    pass
+
+                # Build live UI status table
+                table = Table(
+                    title=f"Hybrid Affinity Monitor | Threshold: {threshold:.2f}s"
+                )
+                table.add_column("Worker", justify="center")
+                table.add_column("Task")
+                table.add_column("Status", justify="center")
+
+                for slot in range(num_workers):
+                    data = active_slots[slot]
+                    if data:
+                        status = (
+                            "[bold red]🔥 P-Core[/]"
+                            if data["promoted"]
+                            else "[blue]🌱 E-Core[/]"
+                        )
+                        table.add_row(f"W-{slot:02d}", data["name"], status)
+                    else:
+                        table.add_row(f"W-{slot:02d}", "[dim]Idle[/]", "-")
+
+                live.update(table)
+
+                # Process finished tasks
+                done, _ = wait(
+                    futures.keys(), timeout=0.1, return_when=FIRST_COMPLETED
+                )
+                for fut in done:
+                    name, slot, start_t = futures.pop(fut)
+                    completed_durations.append(time.perf_counter() - start_t)
+                    active_slots[slot] = None
+
+                    if tasks:
+                        next_name, next_dur = tasks.pop(0)
+                        new_fut = executor.submit(
+                            worker_task, next_name, next_dur, task_pids
+                        )
+                        futures[new_fut] = (
+                            next_name,
+                            slot,
+                            time.perf_counter(),
+                        )
+                        active_slots[slot] = {
+                            "name": next_name,
+                            "start": time.perf_counter(),
+                            "promoted": False,
+                        }
+```
+
+## 5. Architectural Benefits
+
+1. **Eliminates Stragglers**: In batch workloads with heterogeneous job durations (e.g.
+   calculating Greeks across vanilla vs path-dependent exotic options), long-tail tasks
+   are dynamically detected and handed the CPU's fastest IPC cores.
+2. **Thermal & Power Efficiency**: Lightweight, short-lived tasks run entirely on
+   efficient cores, preserving thermal headroom so P-cores can boost to maximum clock
+   frequencies when heavy work arrives.
+3. **Zero Configuration**: Uses rolling task runtime statistics rather than requiring
+   manual job classification before scheduling.

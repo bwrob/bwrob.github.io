@@ -80,9 +80,11 @@ def parse_args() -> argparse.Namespace:
         help="Target base directory relative to repo root (default: 'posts')",
     )
     parser.add_argument(
+        "--from-drafts",
         "--from-not-posted",
+        dest="from_drafts",
         default=None,
-        help="Seed implementation code from a script/note in _not_posted/",
+        help="Seed implementation code from a draft in _drafts/",
     )
     parser.add_argument(
         "--bilingual",
@@ -128,15 +130,19 @@ def validate_categories(categories: list[str]) -> None:
             print(warning_msg, file=sys.stderr)
 
 
-def load_seed_code(repo_root: Path, from_not_posted: str | None) -> str | None:
-    """Read seed code from _not_posted if specified."""
-    if not from_not_posted:
+def load_seed_code(repo_root: Path, from_drafts: str | None) -> str | None:
+    """Read seed code from _drafts or _not_posted if specified."""
+    if not from_drafts:
         return None
-    candidate = repo_root / "_not_posted" / from_not_posted
+    candidate = repo_root / "_drafts" / from_drafts
     if not candidate.exists():
-        candidate = repo_root / from_not_posted
+        candidate = repo_root / "_not_posted" / from_drafts
     if not candidate.exists():
-        matches = list((repo_root / "_not_posted").rglob(from_not_posted))
+        candidate = repo_root / from_drafts
+    if not candidate.exists():
+        matches = list((repo_root / "_drafts").rglob(from_drafts)) or list(
+            (repo_root / "_not_posted").rglob(from_drafts)
+        )
         if matches and matches[0].is_file():
             candidate = matches[0]
     if candidate.exists() and candidate.is_file():
@@ -144,7 +150,7 @@ def load_seed_code(repo_root: Path, from_not_posted: str | None) -> str | None:
         print(f"📦 Seeded prototype from: {candidate.relative_to(repo_root)}")
         return code
     print(
-        f"Warning: Seed file not found for '{from_not_posted}'",
+        f"Warning: Seed file not found for '{from_drafts}'",
         file=sys.stderr,
     )
     return None
@@ -235,7 +241,7 @@ def main() -> None:
     shutil.copyfile(placeholder_cover, target_post_dir / "cover.webp")
 
     template_text = template_file.read_text(encoding="utf-8")
-    seed_code = load_seed_code(repo_root, args.from_not_posted)
+    seed_code = load_seed_code(repo_root, args.from_drafts)
 
     ctx_en = PostContext(
         title=args.title,

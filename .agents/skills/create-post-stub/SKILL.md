@@ -78,8 +78,8 @@ uv run python .agents/skills/create-post-stub/scripts/scaffold.py \
 
 - **Target Directory**: `--target-dir "teaching/2025-python-academy"` (defaults to
   `posts`).
-- **Incubator Promotion (`_not_posted/`)**: `--from-not-posted "<script.py>"` seeds the
-  prototype implementation directly into the post walkthrough code block.
+- **Draft Promotion (`_drafts/`)**: `--from-drafts "<draft.qmd>"` seeds the
+  draft implementation directly into the post walkthrough code block.
 - **Bilingual Edition**: `--bilingual` scaffolds both `index.qmd` (English) and
   `index-pl.qmd` (Polish) with `.lang-switcher` buttons.
 - **Multi-category**: Pass `--category` multiple times (e.g.

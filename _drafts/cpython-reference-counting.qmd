@@ -1,0 +1,189 @@
+---
+categories: [Performance, Python Recipes]
+date: "2026-11-10"
+description: "A 5-act Socratic investigation into CPython reference counting, PEP 683 immortal objects, compiler constant folding, and evaluation stack mechanics."
+draft: true
+format-links: [html]
+title: "Probing CPython Reference Counting and Immortal Objects: A 5-Act Runtime Investigation"
+toc-depth: 3
+---
+
+Most Python developers know that CPython uses reference counting backed by a
+cycle-detecting garbage collector. The mental model is simple: every time a name
+references an object, the refcount goes up by one; when the name goes out of scope or is
+deleted, it drops by one. When it hits zero, the memory is freed.
+
+Except when you open an interactive terminal and actually start probing the runtime,
+almost every intuitive expectation breaks.
+
+Here is a 5-act runtime investigation challenging intuitive assumptions about Python
+memory, revealing how CPython really manages lifecycles, execution stacks, and object
+ownership.
+
+## Act I: the Illusion of Dynamic Lifecycles
+
+### The Question
+
+> *"How many references exist for a fundamental constant like `1`?"*
+
+Intuition suggests an integer like `1` is just a basic value. If passed into an
+inspection function, it should have a reference count of 1 or 2.
+
+### The Probe
+
+```pycon
+>>> import sys
+>>> sys.getrefcount(1)
+4294967295
+```
+
+### The Revelation (PEP 683 — Immortal Objects)
+
+The number `4294967295` is $2^{32} - 1$ (`UINT32_MAX`). The runtime did not count
+references at all; it returned a saturated sentinel value.
+
+In a high-throughput runtime, tracking every increment and decrement of ubiquitous
+singletons (`None`, `True`, `False`, `()`, small integers in $[-5, 256]$) causes extreme
+cache-line bouncing and CPU churn across threads. Under **PEP 683** (introduced in
+Python 3.12), CPython marks these objects as **immortal**:
+
+- `Py_INCREF` and `Py_DECREF` treat the sentinel as a no-op.
+- The Garbage Collector completely ignores them during cyclic GC sweeps.
+- Their lifecycle spans the entire execution of the process without dynamic memory
+  churn.
+
+## Act II: the Invisible Hand of the Compiler
+
+### The Question
+
+> *"What holds references to a standard variable?"*
+
+Let's pick an integer well outside the small-integer immortal cache—say `1111`—and bind
+it to a single variable `v`. We expect exactly 2 references: one from `v`, and one
+temporary reference created by passing it into `sys.getrefcount()`.
+
+### The Probe
+
+```pycon
+>>> v = 1111
+>>> sys.getrefcount(v)
+4
+```
+
+### The Revelation (Compile-Time Materialization)
+
+The count is 4, not 2. Who else is holding `1111`?
+
+1. `globals()['v']`: The variable name in the module dictionary.
+2. The VM Evaluation Stack: Loading `v` to prepare the function call arguments.
+3. `code.co_consts`: Because `1111` appeared as a literal in source code, Python's
+   compiler instantiated the integer at compile time and stored it inside the code
+   object's constant tuple.
+4. The Interactive Parser / AST Token Cache: The interactive REPL pipeline retains
+   metadata and AST token structures referencing parsed literals.
+
+Python source code is not just instructions—it is an **object graph**. Literals written
+in code exist in memory before evaluation even begins, rooted inside code objects.
+
+## Act III: Isolating Pure Runtime Allocation
+
+### The Question
+
+> *"Can we decouple an object from the compiler's constant table?"*
+
+If we prevent the compiler from seeing the literal `1111` during compilation, will the
+hidden constant references disappear?
+
+### The Probe
+
+```pycon
+>>> v = int("1111")
+>>> sys.getrefcount(v)
+2
+```
+
+### The Revelation (Mortal Heap Lifecycle)
+
+By generating the integer dynamically from a string parse at runtime, the compiler
+cannot pre-allocate `1111` into `co_consts`.
+
+Now the integer is genuinely allocated on the heap at runtime. The reference accounting
+becomes completely transparent and matches our original hypothesis:
+
+$$\text{Refcount} = \underbrace{1}_{\text{Namespace Dict } (v)} + \underbrace{1}_{\text{VM Evaluation Stack}} = 2$$
+
+## Act IV: the Cost of Crossing Function Boundaries
+
+### The Question
+
+> *"What happens when an anonymous object enters a function?"*
+
+If an object has no variable name (`object()`), passing it into a user function should
+only give it a temporary reference inside that function.
+
+### The Probe
+
+```pycon
+>>> def inspect(x):
+...     return sys.getrefcount(x)
+...
+>>> inspect(object())
+2
+```
+
+### The Revelation (Python Stack Frame Overhead)
+
+Where do the 2 references come from?
+
+1. **Caller's Frame**: The caller's operand evaluation stack holds the return value of
+   `object()`.
+2. **Callee's Frame**: Calling a Python function instantiates a new `PyFrameObject`. The
+   argument is bound into the function's local variable slot array
+   (`fastlocals[0] = x`), creating an explicit reference that persists for the
+   function's entire activation.
+
+In a managed runtime, calling a user function is not a simple jump; it allocates a frame
+activation record that roots and retains all arguments for the duration of the scope.
+
+## Act V: the Zero-Cost Abstraction of Borrowed Pointers
+
+### The Question
+
+> *"Can a live object ever be observed with a reference count of 1?"*
+
+If passing an argument into any function requires a reference, it seems mathematically
+impossible for `sys.getrefcount` to ever report 1.
+
+### The Probe
+
+```pycon
+>>> sys.getrefcount(object())
+1
+```
+
+### The Revelation (PEP 590 — Vectorcall & Borrowed References)
+
+`sys.getrefcount` is a built-in C function. Unlike Python functions:
+
+1. It does **not** allocate a `PyFrameObject`.
+2. Modern CPython uses the **Vectorcall protocol** (PEP 590), which passes arguments as
+   a raw C pointer array (`PyObject *const *args`) pointing directly into the caller's
+   evaluation stack.
+3. C extension functions can inspect objects via **borrowed references** without calling
+   `Py_INCREF`.
+
+`object()` is instantiated on the evaluation stack with an initial refcount of 1. The C
+function peeks at `obj->ob_refcnt` via a borrowed pointer, reading `1`. The moment the
+statement finishes, the evaluation stack pops the temporary object, the refcount drops
+from $1 \to 0$, and the memory is reclaimed immediately without ever surviving past that
+single bytecode evaluation.
+
+## Summary Matrix
+
+| Experiment                  | Code                                  | Observed Refcount | Mechanism Revealed                                               |
+| :-------------------------- | :------------------------------------ | :---------------- | :--------------------------------------------------------------- |
+| **I. Immortality**          | `sys.getrefcount(1)`                  | $4,294,967,295$   | PEP 683 saturated sentinel refcount; GC-exempt singletons.       |
+| **II. Static Literals**     | `v = 1111; sys.getrefcount(v)`        | 4                 | `co_consts` tuple + AST parser token cache holding literals.     |
+| **III. Pure Runtime**       | `v = int("1111"); sys.getrefcount(v)` | 2                 | Mortal heap allocation: namespace dictionary + evaluation stack. |
+| **IV. Call Frames**         | `def f(x): return sys.getrefcount(x)` | 2                 | `PyFrameObject` allocation; argument binding into `fastlocals`.  |
+| **V. Ephemeral Lifecycles** | `sys.getrefcount(object())`           | 1                 | Evaluation stack ownership + C Vectorcall borrowed pointers.     |

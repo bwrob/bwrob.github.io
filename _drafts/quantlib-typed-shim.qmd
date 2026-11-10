@@ -1,0 +1,220 @@
+---
+categories: [Financial Markets, Python Recipes]
+date: "2026-11-10"
+description: "Why SWIG-generated C++ bindings lack static typing, how to build a PEP 561 typed shim around QuantLib, and automating .pyi stub generation with stubgen and MonkeyType."
+draft: true
+format-links: [html]
+title: "Type-Safe QuantLib: Adding PEP 561 Stub Shims to SWIG C++ Extensions"
+toc-depth: 3
+---
+
+Quantitative finance relies heavily on high-performance C++ pricing libraries—most
+notably [QuantLib](https://www.quantlib.org/) and Acadia's Open Source Risk Engine
+(ORE). To make these libraries accessible to traders and risk analysts, they expose
+Python bindings generated automatically via
+**SWIG (Simplified Wrapper and Interface Generator)**.
+
+While SWIG makes calling C++ from Python trivial, it has a glaring flaw in modern
+software engineering: **it produces completely unannotated, untyped Python modules**.
+
+Every class, method, and constructor signature in `QuantLib` appears as `Any` to static
+type checkers (`pyrefly`, `pyright`, `mypy`) and language servers (PyLance). If you pass
+a raw `float` where a C++ method expects a `QuoteHandle`, or mistake an `Actual365Fixed`
+day counter for `Thirty360`, Python won't warn you until your script crashes at runtime
+with a cryptic C++ SWIG exception:
+
+```text
+TypeError: Wrong number or type of arguments for overloaded function 'new_BlackScholesMertonProcess'.
+```
+
+Here is how to solve this using the **PEP 561 Typed Shim pattern**, creating an
+ergonomic, fully typed wrapper around legacy C++ extensions.
+
+## 1. The Architecture of a Typed Shim
+
+Instead of modifying the upstream C++ SWIG definitions or monkey-patching installed
+binaries, we create a lightweight wrapper package—let's call it `ql_shim/`:
+
+```text
+ql_shim/
+├── py.typed           # PEP 561 marker indicating typing support
+├── __init__.py        # Runtime delegation to compiled QuantLib
+└── __init__.pyi       # Static type signatures for type checkers
+```
+
+### The Runtime Layer (`__init__.py`)
+
+This file is executed by Python at runtime. It imports the actual compiled objects from
+the untyped third-party library and exposes them as its public API:
+
+```python
+# ql_shim/__init__.py
+from QuantLib import (  # type: ignore[import-untyped]
+    Actual365Fixed,
+    BlackConstantVol,
+    BlackScholesMertonProcess,
+    Date,
+    EuropeanExercise,
+    FlatForward,
+    NullCalendar,
+    Option,
+    PlainVanillaPayoff,
+    QuoteHandle,
+    Settings,
+    SimpleQuote,
+    VanillaOption,
+    YieldTermStructureHandle,
+)
+
+__all__ = [
+    "Actual365Fixed",
+    "BlackConstantVol",
+    "BlackScholesMertonProcess",
+    "Date",
+    "EuropeanExercise",
+    "FlatForward",
+    "NullCalendar",
+    "Option",
+    "PlainVanillaPayoff",
+    "QuoteHandle",
+    "Settings",
+    "SimpleQuote",
+    "VanillaOption",
+    "YieldTermStructureHandle",
+]
+```
+
+### The Static Type Layer (`__init__.pyi`)
+
+This stub file is read **strictly by type checkers**. Type checkers completely ignore
+the runtime `__init__.py` and use `__init__.pyi` to enforce strict contracts:
+
+```python
+# ql_shim/__init__.pyi
+from typing import Self
+
+
+class Date:
+    def __init__(self, day: int, month: int, year: int) -> None: ...
+    def dayOfMonth(self) -> int: ...
+    def month(self) -> int: ...
+    def year(self) -> int: ...
+
+
+class Option:
+    Call: int
+    Put: int
+
+
+class PlainVanillaPayoff:
+    def __init__(self, type: int, strike: float) -> None: ...
+
+
+class EuropeanExercise:
+    def __init__(self, date: Date) -> None: ...
+
+
+class SimpleQuote:
+    def __init__(self, value: float) -> None: ...
+    def value(self) -> float: ...
+
+
+class QuoteHandle:
+    def __init__(self, quote: SimpleQuote) -> None: ...
+
+
+class Settings:
+    evaluationDate: Date
+
+    @classmethod
+    def instance(cls) -> Self: ...
+```
+
+## 2. Generating Stubs: Static Vs. Dynamic Inference
+
+Writing thousands of QuantLib stub signatures by hand is unfeasible. We use two
+automated tools to generate the foundation:
+
+### Method A: Static Generation with `stubgen`
+
+Included with `mypy`, `stubgen` inspects the C-extension module statically:
+
+```bash
+uv run stubgen -m QuantLib -o ./stubs
+```
+
+`stubgen` produces full class hierarchies, enumerations, and method lists, but populates
+untyped arguments with `Any`. This serves as an initial structural scaffold.
+
+### Method B: Runtime Type Tracing with `MonkeyType`
+
+[`MonkeyType`](https://github.com/Instagram/MonkeyType) runs your existing quantitative
+test suite and records the actual runtime types passed into QuantLib C++ functions:
+
+```bash
+# 1. Run option pricing tests under the MonkeyType tracer
+uv run monkeytype run -m pytest tests/
+
+# 2. Generate strictly typed stubs inferred from observed test runs
+uv run monkeytype stub QuantLib > ql_shim/__init__.pyi
+```
+
+This automatically replaces `Any` with concrete types like `ql.Date`, `float`, and
+`ql.QuoteHandle` based on real execution.
+
+## 3. Putting the Shim into Practice: Option Valuation
+
+With the shim in place, our financial valuation code benefits from full IDE
+autocompletion and static verification:
+
+```python
+import ql_shim as ql
+
+
+def price_european_call(
+    spot: float,
+    strike: float,
+    eval_date: ql.Date,
+    maturity_date: ql.Date,
+    vol: float,
+    rate: float,
+    dividend: float,
+) -> float:
+    # Set global valuation date
+    ql.Settings.instance().evaluationDate = eval_date
+
+    # Define contract terms with full type safety
+    payoff = ql.PlainVanillaPayoff(ql.Option.Call, strike)
+    exercise = ql.EuropeanExercise(maturity_date)
+    option = ql.VanillaOption(payoff, exercise)
+
+    # Market data handles
+    day_counter = ql.Actual365Fixed()
+    calendar = ql.NullCalendar()
+
+    spot_handle = ql.QuoteHandle(ql.SimpleQuote(spot))
+    rate_ts = ql.YieldTermStructureHandle(
+        ql.FlatForward(eval_date, rate, day_counter)
+    )
+    div_ts = ql.YieldTermStructureHandle(
+        ql.FlatForward(eval_date, dividend, day_counter)
+    )
+    vol_ts = ql.BlackVolTermStructureHandle(
+        ql.BlackConstantVol(eval_date, calendar, vol, day_counter)
+    )
+
+    # Stochastic process
+    process = ql.BlackScholesMertonProcess(
+        spot_handle, div_ts, rate_ts, vol_ts
+    )
+
+    # Analytic Black-Scholes Engine
+    engine = ql.AnalyticEuropeanEngine(process)
+    option.setPricingEngine(engine)
+
+    return option.NPV()
+```
+
+If a developer passes `eval_date` as a Python `datetime.date` instead of a `ql.Date`,
+the type checker catches the bug in the IDE before the script ever touches a C++ memory
+boundary.

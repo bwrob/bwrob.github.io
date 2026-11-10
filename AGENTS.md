@@ -40,8 +40,8 @@ All technical blog posts reside in `posts/`, and course curricula reside in
   alongside `index.qmd`, paired with a `.lang-switcher` component.
 - **Cover art**: `cover.webp` (900×600 px WebP, ~20–60 KB) co-located directly in the
   post folder.
-- **Incubation Drawer**: Prototype scripts, benchmarks, and scratch notes live in
-  `_not_posted/`. When ready, promote them using `create-post-stub --from-not-posted`.
+- **Drafts Drawer**: Staged drafts, benchmarks, and prototype notes live in
+  `_drafts/`. When ready, promote them using `create-post-stub --from-drafts`.
 
 ### Required Frontmatter (`index.qmd`)
 

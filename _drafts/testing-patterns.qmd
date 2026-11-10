@@ -1,0 +1,272 @@
+---
+categories: [Python Recipes]
+date: "2026-11-10"
+description: "Why brittle mock assertions ruin test suites, how boundary spies and Syrupy stabilize snapshot tests, and the mechanics of runtime class-swizzling for black-box code."
+draft: true
+format-links: [html]
+title: "Pragmatic Test Doubles: Boundary Spies, Syrupy Snapshots, and Runtime Class Swizzling"
+toc-depth: 3
+---
+
+Most unit test suites that rely heavily on `unittest.mock` end up failing for the wrong
+reasons. You refactor an internal helper function, rename a private variable, or change
+the order of two independent queries, and suddenly fifteen unit tests explode with
+`AssertionError: Expected 'query' to be called once, called twice`.
+
+The code still works. The regression tests didn't catch a bug; they caught an
+implementation detail.
+
+When testing complex systems—especially data pipelines, service boundaries, or legacy
+codebases—you generally want to test **outcomes and boundaries**, not internal call
+sequences. Here is how to combine **Boundary Spies**, **Syrupy snapshots**, and (when
+all else fails on legacy third-party objects) **runtime class swizzling**.
+
+## 1. The Trap: Testing Implementation Details
+
+Consider a standard service that processes an incoming customer order:
+
+```python
+class Database:
+    def save(self, data: dict) -> str:
+        print(f"db: saving {data}")
+        return "record_991"
+
+
+class Mailer:
+    def send(self, email: str, subject: str) -> None:
+        print(f"email: sending '{subject}' to {email}")
+
+
+class OrderService:
+    def __init__(self, db: Database, mailer: Mailer) -> None:
+        self.db = db
+        self.mailer = mailer
+
+    def process_order(self, order: dict) -> None:
+        # Internal business calculation
+        subtotal = order["price"] * order["qty"]
+        discount = 0.1 if subtotal > 100 else 0.0
+        final_total = round(subtotal * (1 - discount), 2)
+
+        # External side-effects (boundaries)
+        self.db.save({"order_id": order["id"], "total": final_total})
+        self.mailer.send(order["email"], "Order Confirmed")
+```
+
+If you mock `Database` and `Mailer` completely using naive `MagicMock()` objects, you
+test against an imaginary universe where real methods never run and subtle signature
+mismatches slip silently into production.
+
+Even worse, writing hand-rolled assertions like:
+
+```python
+assert mock_db.save.call_count == 1
+assert mock_db.save.call_args[0][0]["total"] == 90.0
+assert mock_mailer.send.call_args[0][1] == "Order Confirmed"
+```
+
+becomes tedious boilerplate that discourages writing deep integration tests.
+
+## 2. Spying on the Boundary with `wraps=`
+
+Instead of substituting external dependencies with hollow mock objects, use **Spies**. A
+spy wraps a real instance: it executes the real code, but records calls and arguments as
+they cross the boundary.
+
+Python's `unittest.mock.MagicMock` has built-in support for this via the `wraps`
+parameter:
+
+```python
+from unittest.mock import MagicMock
+
+
+def test_order_side_effects() -> None:
+    # 1. Instantiate the real implementations
+    real_db = Database()
+    real_mailer = Mailer()
+
+    # 2. Wrap them in spies
+    spy_db = MagicMock(wraps=real_db)
+    spy_mailer = MagicMock(wraps=real_mailer)
+
+    # 3. Inject the spies into the service
+    service = OrderService(db=spy_db, mailer=spy_mailer)
+
+    # 4. Execute the business logic
+    service.process_order(
+        {"id": 101, "price": 50.0, "qty": 3, "email": "alice@example.com"}
+    )
+
+    # 5. Verify the real methods ran, while inspecting recorded calls
+    assert spy_db.save.called
+    assert spy_mailer.send.called
+```
+
+Because `wraps` executes the actual underlying method, if someone changes
+`Database.save` to take keyword arguments or changes a method name, the test fails
+immediately with a real `TypeError` rather than masking it.
+
+## 3. Snapshot Testing Boundary Traces with Syrupy
+
+Manually asserting mock call structures gets messy fast when an operation produces
+multiple database queries, ledger updates, or event emissions.
+
+Instead of writing 30 lines of granular assertions, capture the boundary trace and
+assert it against a committed snapshot using
+[`syrupy`](https://github.com/tophat/syrupy):
+
+```bash
+uv add --dev syrupy pytest
+```
+
+```python
+import pytest
+
+
+def test_order_flow_snapshot(snapshot) -> None:
+    spy_db = MagicMock(wraps=Database())
+    spy_mailer = MagicMock(wraps=Mailer())
+
+    service = OrderService(db=spy_db, mailer=spy_mailer)
+    service.process_order(
+        {"id": 101, "price": 50.0, "qty": 3, "email": "alice@example.com"}
+    )
+
+    # Bundle the side-effects across all boundaries
+    boundary_interactions = {
+        "database": [str(call) for call in spy_db.mock_calls],
+        "mailer": [str(call) for call in spy_mailer.mock_calls],
+    }
+
+    # Snapshot assertion: compares against committed snapshot file
+    assert boundary_interactions == snapshot
+```
+
+When you run `pytest --snapshot-update`, `syrupy` records the exact serialized calls
+into a `.ambr` snapshot file. Future test runs verify that the side-effects across both
+boundaries remain invariant. If someone modifies how discounts are calculated, the
+snapshot diff shows the exact discrepancy immediately.
+
+### Custom Syrupy Serializers for Pydantic
+
+If your system passes rich domain objects (like Pydantic models or dataclasses) across
+the boundary, standard `str(call)` strings will include dynamic memory addresses or
+cluttered repr strings.
+
+You can register a custom snapshot extension in your `conftest.py`:
+
+```python
+# conftest.py
+import pytest
+from pydantic import BaseModel
+from syrupy.extensions.amber import AmberSnapshotExtension
+
+
+class PydanticSnapshotExtension(AmberSnapshotExtension):
+    def serialize(self, data, **kwargs):
+        if isinstance(data, BaseModel):
+            return data.model_dump(mode="json")
+        return super().serialize(data, **kwargs)
+
+
+@pytest.fixture
+def snapshot(snapshot):
+    return snapshot.use_extension(PydanticSnapshotExtension)
+```
+
+Now any Pydantic model passed across a boundary serializes into clean, human-readable
+JSON in your snapshot review.
+
+## 4. The Nuclear Option: Runtime Class Swizzling (`__class__` Mutation)
+
+What happens when you cannot inject a spy cleanly through the constructor?
+
+You might be working with a third-party SDK or a legacy framework where objects
+instantiate their own internal dependencies internally (e.g.
+`self.client = VendorClient()`). Refactoring the library might be impossible or out of
+scope.
+
+In Python, every heap-allocated object contains a pointer to its class in `__class__`.
+Because Python classes are mutable at runtime, you can dynamically "swizzle" an
+instance's class to intercept method calls without touching the library's source code:
+
+```python
+import functools
+from typing import Any
+
+
+class AuditMixin:
+    """Intercepts and logs every public method call."""
+
+    def __getattribute__(self, name: str) -> Any:  # noqa: ANN401
+        attr = super().__getattribute__(name)
+
+        # Ignore dunder and private methods
+        if name.startswith("_") or not callable(attr):
+            return attr
+
+        @functools.wraps(attr)
+        def wrapper(*args, **kwargs):
+            print(f"[TRACE] Called: {name}({args}, {kwargs})")
+            result = attr(*args, **kwargs)
+            print(f"[TRACE] Return: {result}")
+            return result
+
+        return wrapper
+
+
+def inject_spy(instance: Any) -> Any:  # noqa: ANN401
+    """Dynamically mixes AuditMixin into an existing instance at runtime."""
+    original_cls = instance.__class__
+    new_cls_name = f"Spied{original_cls.__name__}"
+
+    # Construct a new ephemeral class on the fly inheriting from AuditMixin
+    new_cls = type(new_cls_name, (AuditMixin, original_cls), {})
+
+    # Swizzle the class pointer on the live instance
+    instance.__class__ = new_cls
+    return instance
+```
+
+### Swizzling in Action
+
+```python
+class LegacyClient:
+    def fetch_records(self, table: str) -> list[str]:
+        return [f"row_1 from {table}", f"row_2 from {table}"]
+
+
+client = LegacyClient()
+
+# Client behaves normally
+assert client.fetch_records("users") == [
+    "row_1 from users",
+    "row_2 from users",
+]
+
+# Dynamically inject the spy
+inject_spy(client)
+
+# Now every method call is intercepted dynamically
+records = client.fetch_records("transactions")
+# [TRACE] Called: fetch_records(('transactions',), {})
+# [TRACE] Return: ['row_1 from transactions', 'row_2 from transactions']
+```
+
+> [!WARNING]
+> Runtime class swizzling is a surgical tool for test harnesses and legacy debugging.
+> Never use `__class__` mutation in core business logic—it interferes with static type
+> checkers (`pyrefly`, `mypy`), confuses runtime caching, and breaks object identity
+> assumptions.
+
+## Summary: the Double Hierarchy
+
+When structuring test doubles in Python, reach for techniques in this order:
+
+1. **Pure Dependency Injection**: Pass real objects wherever possible.
+2. **Boundary Spies (`wraps=`)**: Wrap external endpoints (DB, network, message broker)
+   to ensure real signatures and error conditions execute.
+3. **Syrupy Snapshots**: Capture interaction sets across those boundary spies rather
+   than writing fragile, manual mock assertions.
+4. **Isa-Swizzling (`__class__` Mutation)**: Reserve dynamic mixin injection as an
+   instrumentation escape hatch when dealing with opaque third-party or legacy code.
