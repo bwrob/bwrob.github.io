@@ -1,58 +1,73 @@
 ---
 categories: [Financial Markets, Python Recipes]
 date: "2026-11-10"
-description: "Why SWIG-generated C++ bindings lack static typing, how to build a PEP 561 typed shim around QuantLib, and automating .pyi stub generation with stubgen and MonkeyType."
+date-modified: "2026-11-10"
+description: "Why SWIG-generated C++ bindings lack static typing, how to build a PEP 561 typed shim around QuantLib, and the reality of stubgen and MonkeyType for C extensions."
 draft: true
 format-links: [html]
 title: "Type-Safe QuantLib: Adding PEP 561 Stub Shims to SWIG C++ Extensions"
-toc-depth: 3
+toc-depth: 2
 ---
 
 Quantitative finance relies heavily on high-performance C++ pricing libraries—most
 notably [QuantLib](https://www.quantlib.org/) and Acadia's Open Source Risk Engine
-(ORE). To make these libraries accessible to traders and risk analysts, they expose
-Python bindings generated automatically via
-**SWIG (Simplified Wrapper and Interface Generator)**.
+(ORE). To make these engines accessible in Python, upstream maintainers generate
+bindings using SWIG (Simplified Wrapper and Interface Generator).
 
-While SWIG makes calling C++ from Python trivial, it has a glaring flaw in modern
-software engineering: **it produces completely unannotated, untyped Python modules**.
+While SWIG connects Python to compiled C++ routines, it leaves a major gap in
+modern Python codebases: **it generates completely untyped Python wrappers**.
 
-Every class, method, and constructor signature in `QuantLib` appears as `Any` to static
-type checkers (`pyrefly`, `pyright`, `mypy`) and language servers (PyLance). If you pass
-a raw `float` where a C++ method expects a `QuoteHandle`, or mistake an `Actual365Fixed`
-day counter for `Thirty360`, Python won't warn you until your script crashes at runtime
-with a cryptic C++ SWIG exception:
+Inspect the installed `QuantLib-Python` wheel (version 1.44) and you will find no
+`py.typed` marker file and no `.pyi` stubs. Every constructor and method signature
+in `QuantLib.py` is defined with unannotated `*args`. Static type checkers like
+`pyrefly`, `mypy`, and `pyright` cannot verify your calls.
+
+If you pass a Python `datetime.date` where QuantLib expects a `ql.Date`, or pass a
+raw string into an overloaded payoff constructor, your type checker stays silent.
+The error only appears at runtime as a cryptic SWIG exception:
 
 ```text
-TypeError: Wrong number or type of arguments for overloaded function 'new_BlackScholesMertonProcess'.
+TypeError: Wrong number or type of arguments for overloaded function 'new_Date'.
+  Possible C/C++ prototypes are:
+    Date::Date()
+    Date::Date(Day,Month,Year)
+    Date::Date(Day,Month,Year,Hour,Minute,Second,Millisecond,Microsecond)
+    Date::Date(BigInteger)
 ```
 
-Here is how to solve this using the **PEP 561 Typed Shim pattern**, creating an
-ergonomic, fully typed wrapper around legacy C++ extensions.
+Finding this out during an overnight batch risk run across thousands of trades is
+expensive. Here is how to eliminate this failure mode using the **PEP 561 typed shim
+pattern**, creating an ergonomic, fully typed interface over legacy C++ extensions.
 
-## 1. The Architecture of a Typed Shim
+## The Architecture of a Typed Shim
 
-Instead of modifying the upstream C++ SWIG definitions or monkey-patching installed
-binaries, we create a lightweight wrapper package—let's call it `ql_shim/`:
+Instead of modifying upstream C++ SWIG interface files (`.i`) or patching installed
+wheels in your virtual environment, wrap the library in a dedicated local package—such
+as `ql_shim/`:
 
 ```text
 ql_shim/
-├── py.typed           # PEP 561 marker indicating typing support
+├── py.typed           # PEP 561 marker signaling typing support
 ├── __init__.py        # Runtime delegation to compiled QuantLib
 └── __init__.pyi       # Static type signatures for type checkers
 ```
 
+The empty `py.typed` file tells PEP 561-compliant type checkers that this package
+provides inline type information.
+
 ### The Runtime Layer (`__init__.py`)
 
-This file is executed by Python at runtime. It imports the actual compiled objects from
-the untyped third-party library and exposes them as its public API:
+Python executes `__init__.py` at runtime. It imports the compiled objects from
+the untyped third-party library and exposes them through `__all__`:
 
 ```python
 # ql_shim/__init__.py
-from QuantLib import (  # type: ignore[import-untyped]
+from QuantLib import (
     Actual365Fixed,
+    AnalyticEuropeanEngine,
     BlackConstantVol,
     BlackScholesMertonProcess,
+    BlackVolTermStructureHandle,
     Date,
     EuropeanExercise,
     FlatForward,
@@ -68,8 +83,10 @@ from QuantLib import (  # type: ignore[import-untyped]
 
 __all__ = [
     "Actual365Fixed",
+    "AnalyticEuropeanEngine",
     "BlackConstantVol",
     "BlackScholesMertonProcess",
+    "BlackVolTermStructureHandle",
     "Date",
     "EuropeanExercise",
     "FlatForward",
@@ -86,12 +103,12 @@ __all__ = [
 
 ### The Static Type Layer (`__init__.pyi`)
 
-This stub file is read **strictly by type checkers**. Type checkers completely ignore
-the runtime `__init__.py` and use `__init__.pyi` to enforce strict contracts:
+Type checkers look for `__init__.pyi`. When present, they read the stub file and
+completely ignore `__init__.py`.
 
 ```python
 # ql_shim/__init__.pyi
-from typing import Self
+from typing import ClassVar
 
 
 class Date:
@@ -102,16 +119,25 @@ class Date:
 
 
 class Option:
-    Call: int
-    Put: int
+    Call: ClassVar[int]
+    Put: ClassVar[int]
 
 
 class PlainVanillaPayoff:
-    def __init__(self, type: int, strike: float) -> None: ...
+    def __init__(self, type: int, strike: float) -> None: ...  # noqa: A002
+    def strike(self) -> float: ...
 
 
 class EuropeanExercise:
     def __init__(self, date: Date) -> None: ...
+
+
+class Actual365Fixed:
+    def __init__(self) -> None: ...
+
+
+class NullCalendar:
+    def __init__(self) -> None: ...
 
 
 class SimpleQuote:
@@ -123,51 +149,151 @@ class QuoteHandle:
     def __init__(self, quote: SimpleQuote) -> None: ...
 
 
+class YieldTermStructureHandle:
+    def __init__(self, term_structure: FlatForward) -> None: ...
+
+
+class FlatForward:
+    def __init__(
+        self, referenceDate: Date, forward: float, dayCounter: Actual365Fixed
+    ) -> None: ...
+
+
+class BlackVolTermStructureHandle:
+    def __init__(self, vol: BlackConstantVol) -> None: ...
+
+
+class BlackConstantVol:
+    def __init__(
+        self,
+        referenceDate: Date,
+        calendar: NullCalendar,
+        volatility: float,
+        dayCounter: Actual365Fixed,
+    ) -> None: ...
+
+
+class BlackScholesMertonProcess:
+    def __init__(
+        self,
+        s0: QuoteHandle,
+        dividendTS: YieldTermStructureHandle,
+        riskFreeTS: YieldTermStructureHandle,
+        volTS: BlackVolTermStructureHandle,
+    ) -> None: ...
+
+
+class AnalyticEuropeanEngine:
+    def __init__(self, process: BlackScholesMertonProcess) -> None: ...
+
+
 class Settings:
     evaluationDate: Date
 
-    @classmethod
-    def instance(cls) -> Self: ...
+    @staticmethod
+    def instance() -> Settings: ...
+
+
+class VanillaOption:
+    def __init__(
+        self, payoff: PlainVanillaPayoff, exercise: EuropeanExercise
+    ) -> None: ...
+    def setPricingEngine(self, engine: AnalyticEuropeanEngine) -> None: ...
+    def NPV(self) -> float: ...
 ```
 
-## 2. Generating Stubs: Static Vs. Dynamic Inference
+Two architectural details in this stub require attention:
 
-Writing thousands of QuantLib stub signatures by hand is unfeasible. We use two
-automated tools to generate the foundation:
+1. **Why `__init__.pyi` must not import classes from `QuantLib`**: A stub can import
+   types from typed packages (like `typing.ClassVar`). But if `__init__.pyi` wrote
+   `from QuantLib import Date`, the type checker would resolve `Date` back to
+   QuantLib's unannotated SWIG wrapper where `__init__(self, *args)` accepts
+   anything. The stub must define the class contracts directly.
+2. **Matching parameter names despite linter shadowing**: In `PlainVanillaPayoff`,
+   the first parameter is named `type`. Python linters flag this as shadowing the
+   builtin `type`. However, the stub must preserve `type` because SWIG supports
+   keyword arguments by name: `PlainVanillaPayoff(type=ql.Option.Call, strike=130.0)`.
+   If you rename the parameter in the stub to `option_type`, type-checked keyword calls
+   will fail.
+3. **Runtime-accurate constants and singletons**: `ql.Option.Call` is an integer
+   constant (`1`), so the stub declares it as `ClassVar[int]`. Similarly,
+   `Settings.instance()` is a static method returning the singleton `Settings`
+   instance where `evaluationDate` is modified directly.
 
-### Method A: Static Generation with `stubgen`
+## Automated Stubs: Static Vs. Runtime Generation
 
-Included with `mypy`, `stubgen` inspects the C-extension module statically:
+Writing stubs by hand for thousands of QuantLib classes is tedious. Can existing
+tooling generate them automatically?
+
+### Static Scraping with `stubgen`
+
+`stubgen` (shipped with `mypy`) can inspect compiled C extensions and SWIG modules:
 
 ```bash
-uv run stubgen -m QuantLib -o ./stubs
+uv run --with mypy stubgen -p QuantLib
 ```
 
-`stubgen` produces full class hierarchies, enumerations, and method lists, but populates
-untyped arguments with `Any`. This serves as an initial structural scaffold.
-
-### Method B: Runtime Type Tracing with `MonkeyType`
-
-[`MonkeyType`](https://github.com/Instagram/MonkeyType) runs your existing quantitative
-test suite and records the actual runtime types passed into QuantLib C++ functions:
-
-```bash
-# 1. Run option pricing tests under the MonkeyType tracer
-uv run monkeytype run -m pytest tests/
-
-# 2. Generate strictly typed stubs inferred from observed test runs
-uv run monkeytype stub QuantLib > ql_shim/__init__.pyi
-```
-
-This automatically replaces `Any` with concrete types like `ql.Date`, `float`, and
-`ql.QuoteHandle` based on real execution.
-
-## 3. Putting the Shim into Practice: Option Valuation
-
-With the shim in place, our financial valuation code benefits from full IDE
-autocompletion and static verification:
+On QuantLib 1.44, this generates 1.1 MB of stubs across `QuantLib.pyi` and
+`_QuantLib.pyi`. But when you inspect the generated signatures:
 
 ```python
+# Generated by stubgen in out/QuantLib/QuantLib.pyi
+class Date:
+    thisown: Incomplete
+
+    def __init__(self, *args) -> None: ...
+    def dayOfMonth(self): ...
+```
+
+`stubgen` reflects SWIG's generic `*args` fallback and populates return types with
+`Incomplete`. It provides a useful catalog of class and method names, but it does
+not provide parameter type safety.
+
+### Why `MonkeyType` Cannot Trace C Extensions
+
+A common suggestion is using runtime tracers like
+[`MonkeyType`](https://github.com/Instagram/MonkeyType) to record concrete types
+during test runs:
+
+```bash
+# Tracing tests with MonkeyType
+uv run --with QuantLib --with monkeytype --with pytest monkeytype run -m pytest
+```
+
+If you then run the intuitive command:
+
+```bash
+uv run --with monkeytype monkeytype stub QuantLib
+```
+
+It immediately fails:
+
+```text
+No traces found for module QuantLib
+```
+
+This failure happens for two structural reasons:
+
+- **SWIG architecture**: The root `QuantLib` package is a thin loader (`__init__.py`).
+  The actual classes live in `QuantLib.QuantLib` and compiled `_QuantLib`.
+- **C-extension boundary**: MonkeyType hooks into Python execution via `sys.setprofile`.
+  When execution enters compiled `.so` extension functions (`_QuantLib.Date_swiginit`),
+  Python's profiler sees no Python stack frames or argument values.
+
+MonkeyType is designed to trace **your application code**—for instance, tracing your
+internal pricing functions to generate stubs for your own modules—not to infer the
+internals of a compiled third-party C extension.
+
+The practical workflow is a hybrid: use `stubgen` to discover available method names,
+then curate strictly typed signatures in your shim for the domain slice your models
+actually use.
+
+## Putting the Shim into Practice: Option Valuation
+
+With `ql_shim/` in place, pricing an option looks like idiomatic, type-safe Python:
+
+```python
+# pricing.py
 import ql_shim as ql
 
 
@@ -180,15 +306,15 @@ def price_european_call(
     rate: float,
     dividend: float,
 ) -> float:
-    # Set global valuation date
+    # 1. Set global valuation date
     ql.Settings.instance().evaluationDate = eval_date
 
-    # Define contract terms with full type safety
+    # 2. Define payoff and exercise terms
     payoff = ql.PlainVanillaPayoff(ql.Option.Call, strike)
     exercise = ql.EuropeanExercise(maturity_date)
     option = ql.VanillaOption(payoff, exercise)
 
-    # Market data handles
+    # 3. Market data handles
     day_counter = ql.Actual365Fixed()
     calendar = ql.NullCalendar()
 
@@ -203,18 +329,70 @@ def price_european_call(
         ql.BlackConstantVol(eval_date, calendar, vol, day_counter)
     )
 
-    # Stochastic process
+    # 4. Black-Scholes process and analytic engine
     process = ql.BlackScholesMertonProcess(
         spot_handle, div_ts, rate_ts, vol_ts
     )
-
-    # Analytic Black-Scholes Engine
     engine = ql.AnalyticEuropeanEngine(process)
     option.setPricingEngine(engine)
 
     return option.NPV()
 ```
 
-If a developer passes `eval_date` as a Python `datetime.date` instead of a `ql.Date`,
-the type checker catches the bug in the IDE before the script ever touches a C++ memory
-boundary.
+Running this with standard market inputs:
+
+```python
+if __name__ == "__main__":
+    npv = price_european_call(
+        spot=127.62,
+        strike=130.0,
+        eval_date=ql.Date(8, 5, 2015),
+        maturity_date=ql.Date(15, 1, 2016),
+        vol=0.20,
+        rate=0.001,
+        dividend=0.0163,
+    )
+    print(f"Calculated NPV: {npv:.4f}")
+    # Output: Calculated NPV: 6.7493
+```
+
+## Catching Regressions Before Runtime
+
+Now consider what happens when a developer mistakenly passes a standard Python
+`datetime.date` into `price_european_call`:
+
+```python
+# bad_call.py
+import datetime
+import ql_shim as ql
+from pricing import price_european_call
+
+today = datetime.date(2015, 5, 8)
+maturity = ql.Date(15, 1, 2016)
+
+price = price_european_call(
+    spot=127.62,
+    strike=130.0,
+    eval_date=today,
+    maturity_date=maturity,
+    vol=0.20,
+    rate=0.001,
+    dividend=0.0163,
+)
+```
+
+Without the shim, this passes all linting and crashes during production evaluation.
+With `ql_shim`, running `pyrefly check` catches the defect instantly:
+
+```text
+ERROR Argument `date` is not assignable to parameter `eval_date`
+  with type `Date` in function `pricing.price_european_call`
+  --> bad_call.py:12:15
+   |
+12 |     eval_date=today,
+   |               ^^^^^
+ INFO 1 error
+```
+
+A 50-line typed shim gives you IDE autocompletion, eliminates runtime SWIG crashes,
+and lets static analyzers verify quantitative pipelines without touching upstream C++.

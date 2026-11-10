@@ -1,20 +1,22 @@
 ---
 categories: [Dev Env, Performance]
 date: "2026-11-10"
-description: "Why modern hybrid CPU architectures break standard Python multiprocessing pools, and how to build dynamic CPU affinity promotion across P-cores and E-cores."
+date-modified: "2026-11-10"
+description: "Why modern hybrid CPU architectures break naive multiprocessing pools, how Linux sysfs exposes P/E topology, and how to build dynamic CPU affinity promotion."
 draft: true
 format-links: [html]
 title: "P-Cores, E-Cores, and Multiprocessing: Dynamic CPU Affinity in Python"
-toc-depth: 3
+toc-depth: 2
 ---
 
-Most modern desktop and laptop CPUs (such as Intel 12th–14th Gen, Core Ultra, and Apple
-Silicon) no longer feature uniform, symmetrical cores. Instead, they use a
-**heterogeneous hybrid topology**:
+Most modern desktop and laptop processors no longer feature uniform, symmetrical CPU
+cores. Instead, they use a **heterogeneous hybrid topology**:
 
-1. **Performance Cores (P-Cores)**: High IPC, high clock speeds, hyperthreaded.
-2. **Efficiency Cores (E-Cores)**: Lower clock speeds, smaller caches, single-threaded,
-   optimized for throughput-per-watt.
+- **Performance Cores (P-Cores)**: Large execution engines, high clock frequencies, and
+  high instructions-per-clock (IPC), designed for latency-sensitive single-threaded or
+  heavy compute tasks.
+- **Efficiency Cores (E-Cores)**: Compact physical footprints, narrower instruction
+  pipelines, and lower clocks, optimized for throughput-per-watt.
 
 When you spin up a standard Python multiprocessing pool:
 
@@ -22,74 +24,281 @@ When you spin up a standard Python multiprocessing pool:
 from concurrent.futures import ProcessPoolExecutor
 
 with ProcessPoolExecutor() as executor:
-    results = executor.map(heavy_computation, jobs)
+    results = list(executor.map(compute_task, jobs))
 ```
 
-The Python runtime and the OS scheduler treat every logical CPU thread as
-interchangeable. If a long-running, CPU-bound calculation gets pinned to an E-core, your
-overall batch completion is bottlenecked by the slowest straggler. Conversely, burning
-hot P-core cycles on trivial lightweight jobs wastes thermal headroom and power.
+The Python runtime and the operating system scheduler treat every logical core as
+interchangeable. If your jobs have heterogeneous runtimes—such as a batch containing
+ninety 50 ms lookups and ten 4-second numerical simulations—a heavy job pinned to an
+E-core can hold your entire batch hostage while P-cores sit idle.
 
-Here is how to detect hybrid CPU topology in Python and implement
-**dynamic core affinity promotion**—starting tasks on E-cores and promoting them to
-P-cores if they exceed a runtime threshold.
+Here is how hybrid CPU topology actually works on Linux, why common detection heuristics
+fail, and how to implement **dynamic core affinity promotion** in Python.
 
-## 1. Detecting Hybrid Topology via Logical Vs. Physical Cores
+## 1. Why Naive Topology Detection Fails
 
-Because P-cores feature Hyper-Threading (2 logical threads per physical core) while
-E-cores are strictly single-threaded, we can deduce core assignments programmatically
-using `psutil`:
+A popular heuristic found in many online tutorials attempts to detect P-cores and
+E-cores by comparing logical and physical core counts:
 
 ```python
+# WARNING: Fragile heuristic - do not use in production
+num_p_cores = psutil.cpu_count(logical=True) - psutil.cpu_count(logical=False)
+p_core_ids = list(range(num_p_cores * 2))
+e_core_ids = list(range(num_p_cores * 2, psutil.cpu_count(logical=True)))
+```
+
+This heuristic assumes that every P-core has Simultaneous Multithreading (SMT / Intel
+Hyper-Threading, 2 logical threads per core) and every E-core is single-threaded. That
+assumption breaks across multiple modern platforms:
+
+1. **ARM big.LITTLE and Apple Silicon**: On ARM architectures (and Apple Silicon
+   running Linux via Asahi), neither P-cores nor E-cores use SMT. Every core is
+   single-threaded (`logical == physical`), causing the formula to calculate zero
+   P-cores.
+2. **Intel Arrow Lake (Core Ultra Series 2)**: Intel's desktop Lion Cove P-cores dropped
+   Hyper-Threading entirely. Logical core count equals physical core count.
+3. **Firmware Settings**: If a user disables Hyper-Threading in BIOS for latency or
+   security reasons, the heuristic silently breaks.
+4. **Platform Availability**: `psutil.Process().cpu_affinity()` relies on the Linux
+   `sched_setaffinity(2)` syscall. On macOS (Darwin), CPU affinity masks do not exist;
+   macOS handles thread scheduling via Mach Quality of Service (QoS) classes
+   (`QOS_CLASS_USER_INTERACTIVE` vs `QOS_CLASS_BACKGROUND`), and `psutil` raises an
+   `AttributeError`.
+
+## 2. Direct Topology Detection via Linux Sysfs
+
+On Linux, the kernel exposes hardware topology directly through `sysfs`. Rather than
+guessing thread deltas, we inspect two authoritative interfaces:
+
+1. **ARM `cpu_capacity`**: Linux Energy Aware Scheduling (EAS) exposes
+   `/sys/devices/system/cpu/cpu*/cpu_capacity`. On an Apple M2 Pro under Linux,
+   Blizzard E-cores report a capacity of `561`, while Avalanche P-cores report `1024`.
+2. **Intel Hybrid Sysfs**: Intel hybrid drivers register distinct device paths at
+   `/sys/devices/cpu_core/cpus` (P-cores) and `/sys/devices/cpu_atom/cpus` (E-cores).
+
+We can encapsulate this in a clean, typed detection module:
+
+```python
+from dataclasses import dataclass
+import glob
 import os
+import re
+
+
+@dataclass(frozen=True)
+class CpuTopology:
+    p_cores: list[int]
+    e_cores: list[int]
+    detection_method: str
+
+    @property
+    def is_hybrid(self) -> bool:
+        return bool(self.e_cores and self.p_cores)
+
+    @property
+    def all_cores(self) -> list[int]:
+        return self.p_cores + self.e_cores
+
+
+def _detect_arm_topology() -> CpuTopology | None:
+    """Detects ARM big.LITTLE / Apple Silicon topology via cpu_capacity."""
+    capacity_files = sorted(
+        glob.glob("/sys/devices/system/cpu/cpu[0-9]*/cpu_capacity")
+    )
+    if not capacity_files:
+        return None
+
+    caps: dict[int, int] = {}
+    for path in capacity_files:
+        match = re.search(r"/cpu(\d+)/cpu_capacity", path)
+        if match:
+            cpu_id = int(match.group(1))
+            try:
+                with open(path) as f:
+                    caps[cpu_id] = int(f.read().strip())
+            except OSError:
+                continue
+
+    unique_caps = sorted(set(caps.values()))
+    if len(unique_caps) > 1:
+        max_cap = unique_caps[-1]
+        p_cores = [c for c, cap in caps.items() if cap == max_cap]
+        e_cores = [c for c, cap in caps.items() if cap < max_cap]
+        return CpuTopology(p_cores, e_cores, "arm-cpu-capacity")
+    return None
+
+
+def _parse_cpulist(path: str) -> list[int]:
+    with open(path) as f:
+        raw = f.read().strip()
+    cpus: list[int] = []
+    for part in raw.split(","):
+        if "-" in part:
+            start, end = map(int, part.split("-"))
+            cpus.extend(range(start, end + 1))
+        elif part:
+            cpus.append(int(part))
+    return cpus
+
+
+def _detect_intel_topology() -> CpuTopology | None:
+    """Detects Intel hybrid topology via cpu_core and cpu_atom sysfs paths."""
+    core_path = "/sys/devices/cpu_core/cpus"
+    atom_path = "/sys/devices/cpu_atom/cpus"
+    if os.path.exists(core_path) and os.path.exists(atom_path):
+        try:
+            p_cores = _parse_cpulist(core_path)
+            e_cores = _parse_cpulist(atom_path)
+            if p_cores and e_cores:
+                return CpuTopology(p_cores, e_cores, "intel-sysfs")
+        except OSError:
+            pass
+    return None
+
+
+def detect_cpu_topology() -> CpuTopology:
+    """Detects hybrid P/E core topology using Linux sysfs interfaces."""
+    arm_topo = _detect_arm_topology()
+    if arm_topo:
+        return arm_topo
+
+    intel_topo = _detect_intel_topology()
+    if intel_topo:
+        return intel_topo
+
+    count = os.cpu_count() or 1
+    return CpuTopology(list(range(count)), [], "symmetrical")
+```
+
+On our 10-core test machine (Apple M2 Pro on Linux aarch64), this inspects `sysfs` and
+cleanly maps cores `0-3` as E-cores (capacity 561) and cores `4-9` as P-cores (capacity
+1024).
+
+## 3. The Performance Delta: Measuring P-Cores Vs. E-Cores
+
+How much difference does core placement actually make?
+
+Simulating workloads with `time.sleep()` is useful for testing control flow, but
+sleeping yields the CPU and exercises zero execution pipelines. To measure the physical
+hardware delta, we run a CPU-burning loop (30 million bitwise integer operations) pinned
+first to an E-core and then to a P-core:
+
+```python
+import time
 import psutil
 
 
-def detect_hybrid_topology() -> tuple[list[int], list[int]]:
-    """Maps logical CPU IDs to P-Cores and E-Cores based on hyperthreading delta."""
-    logical = psutil.cpu_count(logical=True)
-    physical = psutil.cpu_count(logical=False)
-
-    if not logical or not physical or logical == physical:
-        # Symmetrical architecture (AMD standard or servers without E-cores)
-        return list(range(logical or os.cpu_count() or 1)), []
-
-    # Number of hyper-threaded P-cores
-    num_p_cores = logical - physical
-
-    # First 2 * num_p_cores logical IDs are P-cores
-    p_core_ids = list(range(num_p_cores * 2))
-    # Remaining IDs are E-cores
-    e_core_ids = list(range(num_p_cores * 2, logical))
-
-    return p_core_ids, e_core_ids
+def burn_work(iterations: int = 30_000_000) -> int:
+    total = 0
+    for i in range(iterations):
+        total += (i ^ (i >> 3)) & 0xFF
+    return total
 
 
-P_CORES, E_CORES = detect_hybrid_topology()
+p = psutil.Process()
+
+# Benchmark on E-Core (core 0)
+p.cpu_affinity([0])
+t0 = time.perf_counter()
+burn_work()
+e_duration = time.perf_counter() - t0
+
+# Benchmark on P-Core (core 4)
+p.cpu_affinity([4])
+t0 = time.perf_counter()
+burn_work()
+p_duration = time.perf_counter() - t0
 ```
 
-On a 16-core / 24-thread CPU (8 P-cores + 8 E-cores), this immediately isolates logical
-IDs `0-15` as P-cores and `16-23` as E-cores.
+<!-- Measured on Linux 6.13 aarch64, Apple M2 Pro, Python 3.13.18 -->
 
-## 2. Dynamic Affinity Promotion: the Strategy
+On this machine, the measured execution times are:
 
-Rather than statically partitioning workers into two separate pools, we implement a
-**self-promoting worker pattern**:
+- **Blizzard E-Core (Core 0)**: **4.05 seconds**
+- **Avalanche P-Core (Core 4)**: **1.77 seconds**
+- **Speedup**: **2.29x faster on the P-Core**
 
-1. **Start Cool**: Workers initialize and pin their affinity to **E-cores**
-   (`cpu_affinity(E_CORES)`).
-2. **Track Task Duration**: The parent orchestrator tracks how long each running task
-   has been active.
-3. **Dynamic Threshold**: We maintain a rolling median of task completion times. If a
-   task runs longer than $1.5\times$ the rolling threshold, it is identified as a heavy
-   job.
-4. **Hot Migration**: The orchestrator looks up the worker's OS process ID (`PID`) and
-   dynamically elevates its affinity mask to **P-cores**
-   (`psutil.Process(pid).cpu_affinity(P_CORES)`).
-5. **Reset on Finish**: When the worker completes the task, it drops its affinity back
-   to the E-core pool before pulling the next job.
+If a long-running calculation is scheduled on an E-core, it runs over 2.2x slower than
+on a P-core. In a batch pipeline with a barrier, that 2.29x slowdown becomes the entire
+batch's critical path.
 
-## 3. Implementation: Worker Function with Affinity Control
+## 4. The Dynamic Affinity Promotion Pattern
+
+Why not simply run everything on P-cores?
+
+If you have a 10-core machine with 4 E-cores and 6 P-cores, restricting your worker pool
+to 6 P-cores leaves 40% of your total CPU silicon completely idle. Conversely, using all
+10 cores with standard round-robin scheduling risks trapping heavy jobs on slow cores.
+
+The **dynamic affinity promotion pattern** balances overall throughput with latency:
+
+1. **Start on E-Cores**: Workers initialize and pin themselves to the E-core pool.
+   Short, lightweight tasks complete quickly on efficient silicon without monopolizing
+   P-core caches.
+2. **Monitor Elapsed Runtime**: The parent orchestrator periodically checks the runtime
+   of in-flight jobs.
+3. **Adaptive Threshold**: A moving median tracks recent task runtimes. If an active
+   task exceeds $1.5\times$ the rolling median, the orchestrator classifies it as a
+   straggler.
+4. **Hot Process Migration**: The orchestrator looks up the worker's OS process ID
+   (`PID`) and migrates its affinity mask to P-cores using
+   `psutil.Process(pid).cpu_affinity(p_cores)`.
+5. **Reset on Next Task**: When the worker completes the heavy job, it resets its
+   affinity back to E-cores before pulling the next task from the queue.
+
+### Why Not Rely on the OS Scheduler?
+
+Modern OS kernels include sophisticated scheduler enhancements: Intel Thread Director
+(ITD) on Linux and Energy Aware Scheduling (EAS) on ARM. Why intervene manually?
+
+The kernel scheduler makes placement decisions based on low-level CPU counters:
+instruction throughput, memory stalls, or SIMD/vector instruction usage. But inside a
+reusable Python `ProcessPoolExecutor`, worker processes persist across multiple tasks.
+A worker process that just finished ten 5 ms tasks looks "idle and lightweight" to the
+operating system right at the moment it receives a 40-million-iteration numerical job.
+
+The application knows job boundaries that the kernel cannot see. Dynamic affinity
+promotion bridges that semantic gap.
+
+## 5. Implementation: Building the Modular Orchestrator
+
+To maintain clean architecture, we decompose the orchestrator into single-responsibility
+components:
+
+### A. The Moving Threshold
+
+```python
+class DynamicThreshold:
+    """Calculates a moving promotion threshold from rolling task runtimes."""
+
+    def __init__(
+        self,
+        min_samples: int = 5,
+        window_size: int = 20,
+        multiplier: float = 1.5,
+        fallback: float = 2.0,
+    ) -> None:
+        self.min_samples = min_samples
+        self.window_size = window_size
+        self.multiplier = multiplier
+        self.fallback = fallback
+        self._history: list[float] = []
+
+    def record(self, duration: float) -> None:
+        self._history.append(duration)
+        if len(self._history) > self.window_size:
+            self._history.pop(0)
+
+    @property
+    def value(self) -> float:
+        if len(self._history) < self.min_samples:
+            return self.fallback
+        sorted_window = sorted(self._history)
+        median = sorted_window[len(sorted_window) // 2]
+        return max(0.5, median * self.multiplier)
+```
+
+### B. The Self-Resetting Worker
 
 ```python
 import os
@@ -98,137 +307,178 @@ import psutil
 
 
 def worker_task(
-    name: str, duration: float, shared_pids: dict[str, int]
-) -> str:
-    """Worker task that defaults to E-cores and shares its PID with the parent."""
-    # Reset affinity to E-cores at the beginning of each task
-    try:
-        target = E_CORES if E_CORES else P_CORES
-        psutil.Process().cpu_affinity(target)
-    except Exception:
-        pass
+    task_name: str,
+    iterations: int,
+    shared_pids: dict[str, int],
+    default_cores: list[int],
+) -> tuple[str, float]:
+    """Worker task that pins to initial cores and executes compute work."""
+    # Reset affinity at task start
+    if hasattr(psutil.Process(), "cpu_affinity") and default_cores:
+        try:
+            psutil.Process().cpu_affinity(default_cores)
+        except OSError:
+            pass
 
-    # Register current PID so parent orchestrator can migrate affinity
-    shared_pids[name] = os.getpid()
+    shared_pids[task_name] = os.getpid()
 
-    # Simulate actual computation
-    time.sleep(duration)
+    # CPU-bound computation
+    t0 = time.perf_counter()
+    total = 0
+    for i in range(iterations):
+        total += (i ^ (i >> 3)) & 0xFF
+    elapsed = time.perf_counter() - t0
 
-    # Clean up registration
-    shared_pids.pop(name, None)
-    return f"Completed {name}"
+    shared_pids.pop(task_name, None)
+    return task_name, elapsed
 ```
 
-## 4. Orchestrator with Rolling Promotion and Rich Dashboard
+### C. The Promotion Checker
 
 ```python
+from dataclasses import dataclass
 import time
-from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, wait
-from multiprocessing import Manager
 import psutil
-from rich.live import Live
+
+
+@dataclass
+class WorkerSlot:
+    task_name: str
+    start_time: float
+    promoted: bool = False
+
+
+def check_promotions(
+    active_slots: dict[int, WorkerSlot | None],
+    task_pids: dict[str, int],
+    threshold: float,
+    p_cores: list[int],
+) -> None:
+    """Promotes long-running tasks from E-cores to P-cores."""
+    now = time.perf_counter()
+    for slot in active_slots.values():
+        if slot and not slot.promoted and (now - slot.start_time) > threshold:
+            pid = task_pids.get(slot.task_name)
+            if pid and hasattr(psutil.Process(), "cpu_affinity"):
+                try:
+                    psutil.Process(pid).cpu_affinity(p_cores)
+                    slot.promoted = True
+                except OSError:
+                    pass
+```
+
+### D. The Orchestrator Loop
+
+```python
+from concurrent.futures import (
+    FIRST_COMPLETED,
+    Future,
+    ProcessPoolExecutor,
+    wait,
+)
+from multiprocessing import Manager
+import time
+from rich.console import Console
 from rich.table import Table
 
 
-def run_hybrid_orchestrator(tasks: list[tuple[str, float]]) -> None:
-    num_workers = len(P_CORES) + len(E_CORES)
-    completed_durations: list[float] = []
-    active_slots: dict[int, dict | None] = dict.fromkeys(range(num_workers))
+def run_hybrid_pool(
+    tasks: list[tuple[str, int]],
+    topology: CpuTopology,
+    max_workers: int = 4,
+) -> None:
+    console = Console()
+    initial_cores = (
+        topology.e_cores if topology.is_hybrid else topology.p_cores
+    )
+    threshold_calc = DynamicThreshold(min_samples=3, fallback=1.5)
+    active_slots: dict[int, WorkerSlot | None] = dict.fromkeys(
+        range(max_workers)
+    )
 
     manager = Manager()
-    task_pids = manager.dict()
+    shared_pids = manager.dict()
+    results: list[tuple[str, float, bool]] = []
 
-    with ProcessPoolExecutor(max_workers=num_workers) as executor:
-        futures = {}
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        futures: dict[Future, tuple[str, int, float]] = {}
 
         # Submit initial batch
-        for slot in range(min(num_workers, len(tasks))):
-            name, duration = tasks.pop(0)
-            fut = executor.submit(worker_task, name, duration, task_pids)
-            futures[fut] = (name, slot, time.perf_counter())
-            active_slots[slot] = {
-                "name": name,
-                "start": time.perf_counter(),
-                "promoted": False,
-            }
+        for slot_idx in range(min(max_workers, len(tasks))):
+            name, iters = tasks.pop(0)
+            fut = executor.submit(
+                worker_task, name, iters, shared_pids, initial_cores
+            )
+            t_start = time.perf_counter()
+            futures[fut] = (name, slot_idx, t_start)
+            active_slots[slot_idx] = WorkerSlot(name, t_start)
 
-        with Live(refresh_per_second=4) as live:
-            while futures:
-                # Dynamic threshold calculation based on rolling median
-                if len(completed_durations) >= 5:
-                    sorted_d = sorted(completed_durations[-20:])
-                    threshold = sorted_d[len(sorted_d) // 2] * 1.5
-                else:
-                    threshold = 3.0
-
-                # Check active workers for promotion
-                for slot, data in active_slots.items():
-                    if data and not data["promoted"] and E_CORES:
-                        elapsed = time.perf_counter() - data["start"]
-                        if elapsed > threshold:
-                            pid = task_pids.get(data["name"])
-                            if pid:
-                                try:
-                                    psutil.Process(pid).cpu_affinity(P_CORES)
-                                    data["promoted"] = True
-                                except Exception:
-                                    pass
-
-                # Build live UI status table
-                table = Table(
-                    title=f"Hybrid Affinity Monitor | Threshold: {threshold:.2f}s"
+        while futures:
+            if topology.is_hybrid:
+                check_promotions(
+                    active_slots,
+                    shared_pids,
+                    threshold_calc.value,
+                    topology.p_cores,
                 )
-                table.add_column("Worker", justify="center")
-                table.add_column("Task")
-                table.add_column("Status", justify="center")
 
-                for slot in range(num_workers):
-                    data = active_slots[slot]
-                    if data:
-                        status = (
-                            "[bold red]🔥 P-Core[/]"
-                            if data["promoted"]
-                            else "[blue]🌱 E-Core[/]"
-                        )
-                        table.add_row(f"W-{slot:02d}", data["name"], status)
-                    else:
-                        table.add_row(f"W-{slot:02d}", "[dim]Idle[/]", "-")
+            done, _ = wait(
+                futures.keys(), timeout=0.05, return_when=FIRST_COMPLETED
+            )
+            for fut in done:
+                name, slot_idx, t_start = futures.pop(fut)
+                task_name, _ = fut.result()
+                total_duration = time.perf_counter() - t_start
+                slot = active_slots[slot_idx]
+                was_promoted = slot.promoted if slot else False
+                active_slots[slot_idx] = None
 
-                live.update(table)
+                threshold_calc.record(total_duration)
+                results.append((name, total_duration, was_promoted))
 
-                # Process finished tasks
-                done, _ = wait(
-                    futures.keys(), timeout=0.1, return_when=FIRST_COMPLETED
-                )
-                for fut in done:
-                    name, slot, start_t = futures.pop(fut)
-                    completed_durations.append(time.perf_counter() - start_t)
-                    active_slots[slot] = None
+                if tasks:
+                    next_name, next_iters = tasks.pop(0)
+                    next_fut = executor.submit(
+                        worker_task,
+                        next_name,
+                        next_iters,
+                        shared_pids,
+                        initial_cores,
+                    )
+                    next_start = time.perf_counter()
+                    futures[next_fut] = (next_name, slot_idx, next_start)
+                    active_slots[slot_idx] = WorkerSlot(next_name, next_start)
 
-                    if tasks:
-                        next_name, next_dur = tasks.pop(0)
-                        new_fut = executor.submit(
-                            worker_task, next_name, next_dur, task_pids
-                        )
-                        futures[new_fut] = (
-                            next_name,
-                            slot,
-                            time.perf_counter(),
-                        )
-                        active_slots[slot] = {
-                            "name": next_name,
-                            "start": time.perf_counter(),
-                            "promoted": False,
-                        }
+    # Render summary table
+    table = Table(title="Execution Summary: Dynamic Core Promotion")
+    table.add_column("Task Name")
+    table.add_column("Wall Time", justify="right")
+    table.add_column("Promoted to P-Core?", justify="center")
+
+    for name, dur, promoted in results:
+        status = (
+            "[bold red]Yes (P-Core)[/]" if promoted else "[blue]No (E-Core)[/]"
+        )
+        table.add_row(name, f"{dur:.2f}s", status)
+
+    console.print(table)
 ```
 
-## 5. Architectural Benefits
+## 6. Practical Trade-Offs and When to Use This
 
-1. **Eliminates Stragglers**: In batch workloads with heterogeneous job durations (e.g.
-   calculating Greeks across vanilla vs path-dependent exotic options), long-tail tasks
-   are dynamically detected and handed the CPU's fastest IPC cores.
-2. **Thermal & Power Efficiency**: Lightweight, short-lived tasks run entirely on
-   efficient cores, preserving thermal headroom so P-cores can boost to maximum clock
-   frequencies when heavy work arrives.
-3. **Zero Configuration**: Uses rolling task runtime statistics rather than requiring
-   manual job classification before scheduling.
+Dynamic CPU affinity promotion is a specialized technique. Before implementing it in
+production, consider the operational trade-offs:
+
+1. **Migration and Cache Penalties**: Calling `sched_setaffinity` forces the kernel to
+   migrate an active process across physical cores. This invalidates L1 and L2 CPU
+   caches, causing a temporary burst of cache misses as working memory is pulled across
+   interconnects into the P-core cache. Avoid setting the promotion threshold so low
+   that tasks flap between core pools.
+2. **Workload Variance**: If all tasks in your pipeline take roughly equal time (e.g.
+   processing uniform 100 KB image tiles), dynamic affinity adds unnecessary
+   coordination overhead. The pattern pays dividends specifically when task execution
+   times follow a heavy-tailed distribution (e.g. Monte Carlo convergence or graph
+   traversals).
+3. **OS Portability**: As noted, this pattern is Linux-specific. On macOS or Windows,
+   core management should be delegated to operating system quality-of-service
+   mechanisms or native thread pools.

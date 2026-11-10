@@ -1,145 +1,279 @@
 ---
 categories: [Dev Env, Python Recipes]
 date: "2026-11-10"
+date-modified: "2026-11-10"
 description: "How CPython bootstraps during startup, the mechanics of site.py, usercustomize, and .pth files, and how to safely inject developer tooling across environments."
 draft: true
 format-links: [html]
 title: "Under the Hood of Python Startup: site.py, usercustomize, and .pth Execution Hooks"
-toc-depth: 3
+toc-depth: 2
 ---
 
 Every time you type `python` in your terminal or launch a script, CPython executes
-several thousand lines of standard library setup code before your first line of code
+several hundred lines of standard library setup code before your first line of code
 ever runs.
 
 Central to this bootstrapping process is the `site` module. While most developers know
-`site` as the component responsible for adding `site-packages` to `sys.path`, it also
-contains powerful—and often overlooked—execution hooks: **`sitecustomize.py`**,
+`site` as the component responsible for adding `site-packages` directories to
+`sys.path`, it also provides execution hooks: **`sitecustomize.py`**,
 **`usercustomize.py`**, and **executable `.pth` files**.
 
-Here is how Python's startup sequence actually works, how to use it to inject developer
-utilities globally, and how to avoid shooting yourself in the foot.
+Understanding how these startup hooks work allows you to inject local developer
+ergonomics—such as pretty tracebacks or profiling listeners—across your workstation
+without touching a single repository file. It also helps you debug baffling startup
+glitches when an environment behaves unexpectedly.
 
 ## 1. The Startup Sequence: from Binary to `__main__`
 
-When the CPython interpreter initializes:
+When you invoke the CPython binary, initialization proceeds through distinct phases
+before reaching your code:
 
-1. **C Runtime Bootstrap**: Initializes core types, builtins (`len`, `range`), and sys
-   structures.
-2. **Import System Activation**: Sets up `sys.meta_path` and `importlib`.
-3. **The `site` Import**: Unless `-S` is passed on the command line (`python -S`),
-   CPython automatically imports `site`.
-4. **Directory Processing (`.pth` Files)**: `site` scans all directories in `sys.path`
-   for files ending in `.pth`.
-5. **Site Customization Hooks**:
-   - Attempts to import `sitecustomize` (system-wide configuration).
-   - If `site.ENABLE_USER_SITE` is true, attempts to import `usercustomize` (per-user
-     configuration).
-6. **User Entrypoint**: Control finally passes to your script or REPL.
+1. **C Runtime Bootstrap**: Initializes core runtime data structures, memory
+   allocators, built-in types (`int`, `dict`), and built-in functions (`len`,
+   `print`).
+2. **Import System Activation**: Bootstraps `_frozen_importlib` and
+   `_frozen_importlib_external`, setting up `sys.meta_path` so standard modules can be
+   located and loaded.
+3. **The `site` Module Import**: Unless you pass the `-S` flag (`python -S`), CPython
+   automatically imports the standard library's `site` module.
+4. **Directory Processing (`.pth` Files)**: `site` iterates through candidate package
+   directories, scanning for files ending in `.pth` to extend `sys.path`.
+5. **System Customization (`sitecustomize`)**: Attempts to import `sitecustomize` to
+   apply prefix-wide or operating-system-level settings.
+6. **User Customization (`usercustomize`)**: If user-site packages are permitted
+   (`site.ENABLE_USER_SITE` is true), attempts to import `usercustomize`.
+7. **User Code Execution**: Control passes to your entrypoint: executing the script,
+   running `-m module`, or presenting the interactive REPL prompt.
 
-## 2. The `.pth` File Execution Hack
+## 2. Executable `.pth` Files: the `import` Loophole
 
-A `.pth` file is normally just a plain text file containing additional directories to
-append to `sys.path`:
-
-```text
-/opt/custom_libs
-/home/user/project/src
-```
-
-However, CPython's `site.py` contains a lesser-known behavior: **any line starting with
-`import` is passed directly to `exec()`**.
+A `.pth` (path configuration) file is normally a plain text file containing additional
+directory paths to append to `sys.path`:
 
 ```text
-# my_tool.pth
-import sys; sys.path.insert(0, '/custom/path')
+/opt/internal_tools/lib
+/home/user/shared_libs
 ```
 
-This feature was originally added so setuptools and editable package installs could run
-complex namespace-package logic. But it also means any `.pth` file can run arbitrary
-Python code at interpreter startup without altering a single project script.
-
-## 3. Injecting per-User Tooling with `usercustomize.py`
-
-Rather than hacking `.pth` files manually, the cleanest, sanctioned mechanism for global
-developer hooks is **`usercustomize.py`**.
-
-Located in your user-specific site-packages directory (e.g.
-`~/.local/lib/python3.13/site-packages/`), CPython automatically imports `usercustomize`
-if it exists.
-
-### Example: Auto-Enabling Rich Tracebacks and Debugging Utilities
-
-If you want `rich.traceback` or custom debugging print helpers available in every Python
-session on your machine without adding imports to every file:
+However, CPython's `site.py` contains a lesser-known feature. If a line in a `.pth` file
+starts with `"import "` or `"import\t"`, CPython executes that line as Python code:
 
 ```python
-import os
-import pathlib
-import site
-
-
-def install_user_customization() -> None:
-    """Safely injects developer conveniences into usercustomize.py."""
-    user_site = site.getusersitepackages()
-    target_dir = pathlib.Path(user_site)
-    target_dir.mkdir(parents=True, exist_ok=True)
-
-    customize_path = target_dir / "usercustomize.py"
-
-    snippet = """
-# --- Auto-injected by Developer Setup ---
-try:
-    from rich import traceback as _tb
-    _tb.install(show_locals=False)
-except ImportError:
-    pass
-
-try:
-    import builtins
-    import icecream
-    builtins.ic = icecream.ic
-except ImportError:
-    pass
-# ----------------------------------------
-"""
-
-    if customize_path.exists():
-        content = customize_path.read_text(encoding="utf-8")
-        if "# --- Auto-injected by Developer Setup ---" in content:
-            print("usercustomize.py already configured.")
-            return
-
-    with customize_path.open("a", encoding="utf-8") as f:
-        f.write("\n" + snippet)
-
-    print(f"Injected hooks into {customize_path}")
+# CPython Lib/site.py (addpackage)
+for line in pth_content.splitlines():
+    if line.startswith(("import ", "import\t")):
+        exec(line)
+        continue
 ```
 
-Now, every time you open `python` or run a test on your machine, `rich` automatically
-formats unhandled exceptions, and `ic()` is available as a builtin—without touching your
-git repository.
+This capability was introduced so packaging tools (like `setuptools`) could implement
+namespace package handling and dynamic path manipulation on import. Because any code
+following `import` is passed directly to `exec()`, a `.pth` file can run arbitrary
+Python code at startup:
 
-## 4. When This Is Useful Vs. When It Is an Antipattern
+```text
+# custom_hook.pth
+import sys; sys.stderr.write("[DEBUG] .pth hook loaded\n")
+```
 
-### Valid Use Cases
+### Python 3.13 Changes and the Fate of PEP 648
 
-- **Local Development Ergonomics**: Pretty tracebacks, IPython integrations, memory
-  profiler hooks.
-- **Corporate Audit / Security Agents**: Corporate environments injecting custom CA
-  bundle paths (`REQUESTS_CA_BUNDLE`) or auditing package imports in development.
-- **Test Instrumentation**: Hooking coverage monitors (`coverage.py` uses `.pth` files
-  to track multiprocessing sub-processes).
+Executable `.pth` files have long been controversial because they introduce hidden side
+effects and security risks. In 2020, **PEP 648** (*Extensible customizations of the
+interpreter at startup*) proposed deprecating `.pth` code execution and replacing it
+with a structured `__sitecustomize__` directory.
 
-### Dangerous Antipatterns
+However, the Python Steering Council **rejected PEP 648**, citing added complexity for
+a narrow set of use cases. As a result, `.pth` code execution remains an active, fully
+supported mechanism in CPython.
 
-- **Implicit Production Dependencies**: Never rely on `usercustomize.py` to make a
-  production service work. If your script crashes with `NameError: name 'ic' is not
-  defined` on CI or in a Docker container, you have leaked local environment state.
-- **Silent Failures**: Always wrap injected startup code in
-  `try...except ImportError: pass`. If an unhandled exception is raised during `site`
-  processing, CPython silently suppresses it (unless running with `-v`), which can lead
-  to mysterious startup behavior.
-- **Virtual Environment Isolation**: By default, standard virtual environments
-  (`python -m venv`) disable the user site-packages directory
-  (`include-system-site-packages = false`) to prevent pollution.
+Python 3.13 did, however, introduce two important changes to `.pth` processing:
+
+1. **UTF-8 Encoding**: `.pth` files are decoded as UTF-8 (specifically `utf-8-sig` to
+   tolerate PowerShell BOM markers). If decoding fails, CPython falls back to
+   `locale.getencoding()` with a warning that locale fallbacks will be deprecated.
+2. **Hidden File Skipping**: Files with hidden filesystem attributes (`stat.UF_HIDDEN`
+   or `FILE_ATTRIBUTE_HIDDEN`) are skipped during scanning.
+
+### Error Handling in `.pth` Files: the Silent Myth
+
+A common misconception is that CPython silently suppresses all errors that occur inside
+`.pth` files. In reality, `site.addpackage()` catches `Exception` and writes an explicit
+traceback to `sys.stderr`:
+
+```text
+Error processing line 1 of /home/user/.../broken.pth:
+
+  Traceback (most recent call last):
+    File "<frozen site>", line 213, in addpackage
+    File "<string>", line 1, in <module>
+  RuntimeError: Something went wrong!
+
+Remainder of file ignored
+```
+
+The interpreter does not crash (exit code remains 0), but the failure is reported to
+`sys.stderr` and the remainder of that `.pth` file is skipped.
+
+## 3. Per-User Hooks with `usercustomize.py`
+
+While `.pth` files are convenient for single-line hacks, the cleanest mechanism for
+workstation-level developer hooks is **`usercustomize.py`**.
+
+Located in your user-specific site-packages directory (which you can query via
+`python -m site --user-site`), CPython automatically attempts to import this module
+during startup.
+
+### How `execusercustomize()` Handles Exceptions
+
+The implementation in `site.py` is straightforward:
+
+```python
+# CPython Lib/site.py
+def execusercustomize():
+    try:
+        try:
+            import usercustomize
+        except ImportError as exc:
+            if exc.name == "usercustomize":
+                pass  # <1>
+            else:
+                raise  # <2>
+    except Exception as err:  # noqa: BLE001
+        if sys.flags.verbose:
+            sys.excepthook(*sys.exc_info())
+        else:
+            sys.stderr.write(
+                "Error in usercustomize; set PYTHONVERBOSE for traceback:\n"
+                f"{err.__class__.__name__}: {err}\n"
+            )
+```
+
+1. If `usercustomize.py` does not exist, the `ImportError` is caught and silently
+   ignored.
+2. If `usercustomize.py` exists but fails to import a dependency, `exc.name` does not
+   match `'usercustomize'`. The exception is re-raised and logged to `sys.stderr`.
+
+Because any unhandled exception in `usercustomize.py` produces an error message on
+`sys.stderr` on every Python invocation, all third-party imports inside
+`usercustomize.py` **must be guarded**:
+
+```python
+# Correct pattern for usercustomize.py
+try:
+    from rich import traceback as _traceback
+
+    _traceback.install(show_locals=False)
+except ImportError:
+    pass  # Safely ignore when rich is not installed in the active environment
+```
+
+### Testing in a Throwaway Sandbox (`PYTHONUSERBASE`)
+
+You should never test startup hooks directly in your real user directory. You can
+redirect user-site packages to a temporary folder using the `PYTHONUSERBASE` environment
+variable:
+
+```bash
+# 1. Create a temporary scratch directory
+SANDBOX=$(mktemp -d)
+export PYTHONUSERBASE="$SANDBOX"
+
+# 2. Identify the isolated user-site directory
+USER_SITE=$(python -c "import site; print(site.getusersitepackages())")
+mkdir -p "$USER_SITE"
+
+# 3. Create a test hook
+cat << 'EOF' > "$USER_SITE/usercustomize.py"
+import sys
+sys.stderr.write(">>> [usercustomize] Hook initialized successfully <<<\n")
+EOF
+
+# 4. Verify startup execution
+python -c "print('Hello from main program!')"
+
+# Clean up
+rm -rf "$SANDBOX"
+```
+
+Running this script produces:
+
+```text
+>>> [usercustomize] Hook initialized successfully <<<
+Hello from main program!
+```
+
+## 4. Production Realities: Virtual Environments, Coverage, and Antipatterns
+
+Startup hooks are powerful, but misusing them creates subtle, hard-to-diagnose bugs.
+
+### Virtual Environments and `ENABLE_USER_SITE`
+
+A frequent source of confusion is whether `usercustomize.py` runs inside virtual
+environments (`venv` or `uv`).
+
+In `site.py`, when a virtual environment is detected (`pyvenv.cfg` exists):
+
+- If `include-system-site-packages = false` (the default in standard virtual
+  environments): `site.py` sets `site.ENABLE_USER_SITE = False`. Per-user site packages
+  and `usercustomize.py` are **completely disabled**.
+- If `include-system-site-packages = true` (e.g. `python -m venv --system-site-packages
+  venv`): `site.ENABLE_USER_SITE` remains enabled, and `usercustomize.py` runs.
+- If you pass the `-s` command line flag or set `PYTHONNOUSERSITE=1`,
+  `site.check_enableusersite()` returns `False`, disabling user site regardless of the
+  environment.
+
+This isolation is intentional: virtual environments exist to provide reproducible,
+isolated dependencies. Allowing user-level packages to leak in by default would defeat
+reproducibility.
+
+### Real-World Use Case: Subprocess Tracking in `coverage.py`
+
+One of the most practical production uses of `.pth` execution hooks is in
+**`coverage.py`** for measuring code coverage across spawned subprocesses.
+
+When a test suite uses `multiprocessing` or `subprocess.Popen`, child Python
+interpreters start fresh. They do not inherit the parent process's memory space or
+active tracing profilers.
+
+To capture coverage in child processes, `coverage.py` leverages a `.pth` file:
+
+1. When `COVERAGE_PROCESS_START` is set in the environment, child processes need to
+   call `coverage.process_startup()`.
+2. A `.pth` file (such as `coverage.process_startup.pth`) placed in `site-packages`
+   contains:
+
+   ```text
+   import coverage; coverage.process_startup()
+   ```
+
+3. When any child Python process boots, `site.py` reads the `.pth` file and executes the
+   import. `coverage.process_startup()` inspects the environment variable and begins
+   recording trace events for that subprocess immediately.
+
+### Antipatterns: Why Mutating `builtins` Is a Trap
+
+It can be tempting to use `usercustomize.py` to inject debugging helpers into
+`builtins`:
+
+```python
+# ANTIPATTERN: Do not do this
+import builtins
+import icecream
+
+builtins.ic = icecream.ic
+```
+
+While convenient during local tinkering, this causes severe issues:
+
+1. **Linter and Type Checker Failures**: Tools like `ruff`, `pyrefly`, and `mypy` run
+   static analysis on source text without executing your local `usercustomize.py`. They
+   will flag `ic` as an undefined variable (`F821`).
+2. **CI and Docker Failures**: Code that runs cleanly on your laptop will fail with
+   `NameError: name 'ic' is not defined` on CI servers and production containers.
+3. **Implicit State Leakage**: When debugging an issue with a teammate, differing
+   `usercustomize.py` configurations make errors impossible to reproduce reliably.
+
+Reserve `usercustomize.py` for unobtrusive developer ergonomics: pretty tracebacks
+(`rich.traceback`), custom exception hooks, or interactive REPL configurations. Keep
+runtime dependencies inside your project's explicit dependency manifests.

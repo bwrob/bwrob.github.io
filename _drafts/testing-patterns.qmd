@@ -1,11 +1,12 @@
 ---
 categories: [Python Recipes]
 date: "2026-11-10"
-description: "Why brittle mock assertions ruin test suites, how boundary spies and Syrupy stabilize snapshot tests, and the mechanics of runtime class-swizzling for black-box code."
+date-modified: "2026-11-10"
+description: "Why brittle mock assertions ruin test suites, how boundary spies and Syrupy stabilize snapshot tests, and the mechanics and limits of runtime class swizzling."
 draft: true
 format-links: [html]
 title: "Pragmatic Test Doubles: Boundary Spies, Syrupy Snapshots, and Runtime Class Swizzling"
-toc-depth: 3
+toc-depth: 2
 ---
 
 Most unit test suites that rely heavily on `unittest.mock` end up failing for the wrong
@@ -26,15 +27,17 @@ all else fails on legacy third-party objects) **runtime class swizzling**.
 Consider a standard service that processes an incoming customer order:
 
 ```python
+from typing import Any
+
+
 class Database:
-    def save(self, data: dict) -> str:
-        print(f"db: saving {data}")
-        return "record_991"
+    def save(self, data: dict[str, Any]) -> str:
+        return f"rec_{data.get('order_id', 0)}"
 
 
 class Mailer:
     def send(self, email: str, subject: str) -> None:
-        print(f"email: sending '{subject}' to {email}")
+        pass
 
 
 class OrderService:
@@ -42,20 +45,25 @@ class OrderService:
         self.db = db
         self.mailer = mailer
 
-    def process_order(self, order: dict) -> None:
-        # Internal business calculation
+    def process_order(self, order: dict[str, Any]) -> None:
         subtotal = order["price"] * order["qty"]
         discount = 0.1 if subtotal > 100 else 0.0
         final_total = round(subtotal * (1 - discount), 2)
 
-        # External side-effects (boundaries)
         self.db.save({"order_id": order["id"], "total": final_total})
         self.mailer.send(order["email"], "Order Confirmed")
 ```
 
 If you mock `Database` and `Mailer` completely using naive `MagicMock()` objects, you
-test against an imaginary universe where real methods never run and subtle signature
-mismatches slip silently into production.
+test against an imaginary universe. A raw mock silently accepts any method name and any
+argument structure:
+
+```python
+from unittest.mock import MagicMock
+
+mock_db = MagicMock()
+mock_db.savve({"bad": "data"})  # Typo in method name succeeds silently!
+```
 
 Even worse, writing hand-rolled assertions like:
 
@@ -65,7 +73,7 @@ assert mock_db.save.call_args[0][0]["total"] == 90.0
 assert mock_mailer.send.call_args[0][1] == "Order Confirmed"
 ```
 
-becomes tedious boilerplate that discourages writing deep integration tests.
+creates tedious, brittle boilerplate that discourages writing deep integration tests.
 
 ## 2. Spying on the Boundary with `wraps=`
 
@@ -73,7 +81,7 @@ Instead of substituting external dependencies with hollow mock objects, use **Sp
 spy wraps a real instance: it executes the real code, but records calls and arguments as
 they cross the boundary.
 
-Python's `unittest.mock.MagicMock` has built-in support for this via the `wraps`
+Python's `unittest.mock.MagicMock` provides built-in support for this via the `wraps`
 parameter:
 
 ```python
@@ -102,9 +110,37 @@ def test_order_side_effects() -> None:
     assert spy_mailer.send.called
 ```
 
-Because `wraps` executes the actual underlying method, if someone changes
-`Database.save` to take keyword arguments or changes a method name, the test fails
-immediately with a real `TypeError` rather than masking it.
+### Signature Validation Mechanics: How `wraps=` Behaves
+
+It is important to understand how `MagicMock(wraps=...)` enforces signatures:
+
+1. **At call time**: The mock itself does not validate signatures ahead of time.
+   Instead, because `wraps` executes the underlying callable, the *real implementation*
+   raises a standard Python `TypeError` if invoked with invalid arguments:
+
+   ```python
+   # Raises TypeError: Database.save() takes 2 positional
+   # arguments but 4 were given
+   spy_db.save("too", "many", "args")
+   ```
+
+2. **Attribute checking**: Because `wraps` delegates missing attribute lookups to the
+   wrapped instance, calling a non-existent method raises `AttributeError`:
+
+   ```python
+   # Raises AttributeError: 'Database' object has no attribute 'delete_records'
+   spy_db.delete_records()
+   ```
+
+3. **Strict ahead-of-time contracts**: If you want signature validation before execution
+   or strict attribute access guards, use `create_autospec` with `spec_set=True`:
+
+   ```python
+   from unittest.mock import create_autospec
+
+   strict_db = create_autospec(real_db, spec_set=True, instance=True)
+   # Raises AttributeError immediately if an attribute is not declared on Database
+   ```
 
 ## 3. Snapshot Testing Boundary Traces with Syrupy
 
@@ -121,6 +157,7 @@ uv add --dev syrupy pytest
 
 ```python
 import pytest
+from unittest.mock import MagicMock
 
 
 def test_order_flow_snapshot(snapshot) -> None:
@@ -132,7 +169,7 @@ def test_order_flow_snapshot(snapshot) -> None:
         {"id": 101, "price": 50.0, "qty": 3, "email": "alice@example.com"}
     )
 
-    # Bundle the side-effects across all boundaries
+    # Bundle side-effects across all boundaries
     boundary_interactions = {
         "database": [str(call) for call in spy_db.mock_calls],
         "mailer": [str(call) for call in spy_mailer.mock_calls],
@@ -143,29 +180,61 @@ def test_order_flow_snapshot(snapshot) -> None:
 ```
 
 When you run `pytest --snapshot-update`, `syrupy` records the exact serialized calls
-into a `.ambr` snapshot file. Future test runs verify that the side-effects across both
-boundaries remain invariant. If someone modifies how discounts are calculated, the
-snapshot diff shows the exact discrepancy immediately.
+into a `.ambr` snapshot file:
+
+```text
+# serializer version: 1
+# name: test_order_flow_snapshot
+  dict({
+    'database': list([
+      "call.save({'order_id': 101, 'total': 135.0})",
+    ]),
+    'mailer': list([
+      "call.send('alice@example.com', 'Order Confirmed')",
+    ]),
+  })
+# ---
+```
+
+Future test runs verify that the side-effects across both boundaries remain invariant.
+If someone modifies how discounts are calculated, the snapshot diff shows the exact
+discrepancy immediately.
 
 ### Custom Syrupy Serializers for Pydantic
 
-If your system passes rich domain objects (like Pydantic models or dataclasses) across
-the boundary, standard `str(call)` strings will include dynamic memory addresses or
-cluttered repr strings.
+If your system passes rich domain objects (like Pydantic models) across boundaries,
+standard `str(call)` strings will include dynamic memory addresses or cluttered repr
+strings.
 
-You can register a custom snapshot extension in your `conftest.py`:
+A common pitfall when customizing Syrupy is returning a raw dictionary from the snapshot
+extension:
+
+```python
+# Fragile: AmberSnapshotExtension.serialize expects a string return value
+class BadExtension(AmberSnapshotExtension):
+    def serialize(self, data, **kwargs):
+        if isinstance(data, BaseModel):
+            return data.model_dump(
+                mode="json"
+            )  # Returns dict, violating API contract!
+        return super().serialize(data, **kwargs)
+```
+
+The correct approach is to convert the model into JSON-compatible primitives and then
+delegate to `super().serialize(data, **kwargs)`:
 
 ```python
 # conftest.py
+from typing import Any
 import pytest
 from pydantic import BaseModel
 from syrupy.extensions.amber import AmberSnapshotExtension
 
 
 class PydanticSnapshotExtension(AmberSnapshotExtension):
-    def serialize(self, data, **kwargs):
+    def serialize(self, data: Any, **kwargs: Any) -> str:
         if isinstance(data, BaseModel):
-            return data.model_dump(mode="json")
+            data = data.model_dump(mode="json")
         return super().serialize(data, **kwargs)
 
 
@@ -174,21 +243,45 @@ def snapshot(snapshot):
     return snapshot.use_extension(PydanticSnapshotExtension)
 ```
 
-Now any Pydantic model passed across a boundary serializes into clean, human-readable
-JSON in your snapshot review.
+Now, asserting directly against a Pydantic model:
 
-## 4. The Nuclear Option: Runtime Class Swizzling (`__class__` Mutation)
+```python
+from datetime import datetime, timezone
 
-What happens when you cannot inject a spy cleanly through the constructor?
+
+def test_pydantic_snapshot(snapshot) -> None:
+    u = User(
+        id=1,
+        name="Neo",
+        joined=datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
+    )
+    assert u == snapshot
+```
+
+generates a clean, deterministic Amber snapshot:
+
+```text
+# serializer version: 1
+# name: test_pydantic_snapshot
+  dict({
+    'id': 1,
+    'joined': '2023-01-01T12:00:00Z',
+    'name': 'Neo',
+  })
+# ---
+```
+
+## 4. The Last Resort: Runtime Class Swizzling (`__class__` Mutation)
+
+What happens when you cannot inject a spy through the constructor?
 
 You might be working with a third-party SDK or a legacy framework where objects
-instantiate their own internal dependencies internally (e.g.
-`self.client = VendorClient()`). Refactoring the library might be impossible or out of
-scope.
+instantiate their dependencies internally (e.g. `self.client = LegacyClient()`).
+Refactoring the library might be impossible or out of scope.
 
 In Python, every heap-allocated object contains a pointer to its class in `__class__`.
 Because Python classes are mutable at runtime, you can dynamically "swizzle" an
-instance's class to intercept method calls without touching the library's source code:
+instance's class to intercept method calls without modifying library source code:
 
 ```python
 import functools
@@ -198,15 +291,14 @@ from typing import Any
 class AuditMixin:
     """Intercepts and logs every public method call."""
 
-    def __getattribute__(self, name: str) -> Any:  # noqa: ANN401
+    def __getattribute__(self, name: str) -> Any:
         attr = super().__getattribute__(name)
 
-        # Ignore dunder and private methods
         if name.startswith("_") or not callable(attr):
             return attr
 
         @functools.wraps(attr)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             print(f"[TRACE] Called: {name}({args}, {kwargs})")
             result = attr(*args, **kwargs)
             print(f"[TRACE] Return: {result}")
@@ -215,12 +307,12 @@ class AuditMixin:
         return wrapper
 
 
-def inject_spy(instance: Any) -> Any:  # noqa: ANN401
+def inject_spy(instance: Any) -> Any:
     """Dynamically mixes AuditMixin into an existing instance at runtime."""
     original_cls = instance.__class__
     new_cls_name = f"Spied{original_cls.__name__}"
 
-    # Construct a new ephemeral class on the fly inheriting from AuditMixin
+    # Construct an ephemeral class on the fly inheriting from AuditMixin
     new_cls = type(new_cls_name, (AuditMixin, original_cls), {})
 
     # Swizzle the class pointer on the live instance
@@ -237,8 +329,6 @@ class LegacyClient:
 
 
 client = LegacyClient()
-
-# Client behaves normally
 assert client.fetch_records("users") == [
     "row_1 from users",
     "row_2 from users",
@@ -247,26 +337,61 @@ assert client.fetch_records("users") == [
 # Dynamically inject the spy
 inject_spy(client)
 
-# Now every method call is intercepted dynamically
+# Every subsequent method call is intercepted dynamically
 records = client.fetch_records("transactions")
 # [TRACE] Called: fetch_records(('transactions',), {})
 # [TRACE] Return: ['row_1 from transactions', 'row_2 from transactions']
 ```
 
+### Where Swizzling Fails: Memory Layouts and C Extensions
+
+Dynamic class swizzling has strict runtime limitations enforced by CPython:
+
+1. **Classes with `__slots__`**: If a class declares `__slots__`, swizzling it with a
+   dynamic type that has an instance dictionary fails:
+
+   ```python
+   class SlottedClient:
+       __slots__ = ("endpoint",)
+
+       def __init__(self, endpoint: str) -> None:
+           self.endpoint = endpoint
+
+
+   inject_spy(SlottedClient("https://api.example.com"))
+   # TypeError: __class__ assignment: 'SpiedSlottedClient'
+   # object layout differs from 'SlottedClient'
+   ```
+
+   CPython requires identical memory layout (`tp_basicsize`, member offsets, and slot
+   definitions) between the old and new classes.
+
+2. **Built-in and C Extension Types**: You cannot swizzle core C types (like `list`,
+   `dict`, `int`) or C-extension objects:
+
+   ```python
+   inject_spy([1, 2, 3])
+   # TypeError: __class__ assignment only supported for mutable
+   # types or ModuleType subclasses
+   ```
+
 > [!WARNING]
-> Runtime class swizzling is a surgical tool for test harnesses and legacy debugging.
-> Never use `__class__` mutation in core business logic—it interferes with static type
-> checkers (`pyrefly`, `mypy`), confuses runtime caching, and breaks object identity
-> assumptions.
+> Runtime class swizzling is a surgical tool reserved for test suites and legacy
+> debugging. Never use `__class__` mutation in production code—it confuses static type
+> checkers (`pyrefly`, `mypy`), bypasses runtime optimizations, and complicates object
+> identity.
 
-## Summary: the Double Hierarchy
+## 5. When to Reach for Each Test Double
 
-When structuring test doubles in Python, reach for techniques in this order:
+When designing test boundaries in Python, reach for techniques in this order of
+preference:
 
-1. **Pure Dependency Injection**: Pass real objects wherever possible.
-2. **Boundary Spies (`wraps=`)**: Wrap external endpoints (DB, network, message broker)
-   to ensure real signatures and error conditions execute.
-3. **Syrupy Snapshots**: Capture interaction sets across those boundary spies rather
-   than writing fragile, manual mock assertions.
+1. **Pure Dependency Injection**: Pass real objects wherever execution is deterministic
+   and fast.
+2. **Boundary Spies (`wraps=`)**: Wrap external endpoints (databases, HTTP clients,
+   message brokers) so real argument validation and error conditions execute.
+3. **Syrupy Snapshots**: Capture interaction sets across boundary spies rather than
+   writing fragile, manual mock assertions.
 4. **Isa-Swizzling (`__class__` Mutation)**: Reserve dynamic mixin injection as an
-   instrumentation escape hatch when dealing with opaque third-party or legacy code.
+   instrumentation escape hatch when dealing with third-party or legacy code where
+   dependency injection is impossible.
