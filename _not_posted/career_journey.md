@@ -1,0 +1,250 @@
+---
+categories: [Career, Financial Markets]
+date: "2026-11-10"
+date-modified: "2026-11-10"
+description: "Notes on quitting a pure math PhD, surviving COM and Murex, beating naive C++ with Halley's method in Python, and building strict guardrails for quants and coding agents."
+draft: true
+title: "From Besov Spaces to Agent Harnesses: How a Pen-and-Paper Mathematician Learned to Ship Software"
+---
+
+In the autumn of 2018, I had a master's degree in theoretical mathematics, two years of
+doctoral research on non-local evolution equations, a peer-reviewed paper on fractional
+Euler alignment systems in Besov spaces backed by the Simons Foundation—and I sucked at
+computers.
+
+My entire intellectual life up to that point lived on chalkboards and legal pads. I
+cared about functional and harmonic analysis, unbounded fractional Laplacian operators,
+and mathematical hydrodynamics.A computer was just a typewriter that compiled $\LaTeX$
+and occasionally fetched PDFs from arXiv.
+
+When I decided to leave my PhD after two years, it wasn't because I stopped loving
+mathematics. Academic research simply wasn't the life I wanted. I walked away with
+sharp analytical instincts, a thick skin for hard problems, and almost zero practical
+software engineering skills.
+
+Eight years later, I spend my days as the de facto tech lead for a hybrid team of
+quants and software engineers at a global bank, architecting C++ and Python risk
+orchestration engines, maintaining open-source developer tooling like
+[zenith](https://github.com/bwrob/zenith), and teaching software engineering back at my
+alma mater. Here is what the road between those two points actually looked like.
+
+## Act I: F#, COM, and Trial by Code Review (Credit Suisse, 2018–2022)
+
+My entry into industry was a junior front-office QuantStrats program at Credit Suisse in
+Wrocław. By London or New York front-office standards the pay was modest, but for a
+Polish math graduate in 2018 it was more than comfortable—and critically, the onboarding
+was designed for people whose brains were wired for proofs rather than pointers.
+
+We started in **F#**. If you want to teach a pure mathematician to program without
+triggering an existential crisis, give them a statically typed functional language.
+Immutability, algebraic data types, and function composition map directly onto how a
+mathematician already thinks about domains and codomains.
+
+Then reality hit: the bank-wide valuation library was a polyglot beast spanning **F#**,
+**C++**, **C#**, and Microsoft's **COM (Component Object Model)**.
+
+Learning C++ on a live front-office codebase is hard enough. Learning COM in 2019 is
+another sport entirely. COM is the binary glue that lets Excel trader sheets and .NET
+services talk to compiled C++ pricing engines. It is not standard C++, modern learning
+resources barely exist, and a single reference-counting mistake or interface mismatch
+rewards you with a cryptic hexadecimal `HRESULT` and a crashed process.
+
+Two experiences during those first two years turned me from a math grad who could write
+scripts into someone who cared about systems:
+
+1. **The Monthly Tactical CAV Crucible**: One of the junior team's flagship
+   responsibilities was running the monthly bank-wide **Tactical Collateral-Adjusted
+   Valuation (CAV)** process. It was a massive cross-system exercise that pulled
+   persisted trade evaluations from across the bank to compute collateral valuation
+   adjustments. Our ten-person team rotated through two hot-seat roles every month: the
+   *Runner* (lead debugger responsible for keeping the pipeline moving and diagnosing
+   broken upstream feeds) and the *Coordinator* (who managed operational communications
+   and sign-offs), while the rest of the team dissected valuation breaks. Nothing
+   teaches you how distributed financial data fails in the real world faster than being
+   the Runner when upstream evaluations don't reconcile.
+2. **Shipping C# Under Developer Scrutiny**: In my second year, I started contributing
+   fixed-income market data and credit curve builders to a Risk Management System (RMS)
+   written in **C#**. Unlike scratch quant scripts, the RMS was owned by a dedicated
+   software engineering team. Quants were allowed to commit business logic directly, but
+   every pull request had to pass uncompromising code reviews from career software
+   engineers. Having my code torn apart over naming, coupling, exception handling, and
+   testability was the single best engineering education I could have asked for.
+
+After my first year and a half, I settled into a dedicated desk split: two-thirds of my
+time with **Structured Notes** and one-third with **Longevity Derivatives**. I refitted
+credit curve models from IBOR discounting to OIS in F# ahead of the LIBOR transition,
+wired compounding-rate financing into trader pricing sheets, and migrated legacy 32-bit
+longevity derivatives tools to 64-bit execution environments.
+
+## Act II: Murex Red Tape and Halley's Method (BNY Mellon, 2022–2023)
+
+By mid-2022, I wanted more autonomy, a broader view of the business, and a step up in
+compensation. Front-office quant openings in Poland had dried up, and you could already
+sense behind the scenes that something was structurally wrong at Credit Suisse. I took a
+Senior Specialist role in Middle Office Market Risk Model Development at BNY Mellon.
+
+Moving from front-office pricing—where you can spend weeks staring at a single exotic
+payoff—to portfolio-wide **Market Risk** was a breath of fresh air. Thinking about how
+an entire book behaves under stress, working on a **C++ Filtered Historical Simulation
+(FHS)** engine, and designing a methodology to reconcile OIS and LIBOR interest rate
+sensitivities between Front Office and Middle Office curve conventions gave me a much
+wider lens on quantitative finance.
+
+The flip side was Middle Office bureaucracy and vendor lock-in. A huge chunk of the role
+revolved around "ongoing performance monitoring" of **Murex** models. Changing a
+discounting setup in Murex took weeks of procedural tickets. Running Market Risk RWA
+projections for the **CCAR** stress test felt less like quantitative engineering and
+more like executing a manual checklist under four-eyes supervision. I missed building
+real production software.
+
+Still, that year marked a major turning point in my stack: it was where I started using
+**Python** seriously.
+
+Up to that point, I disliked Python. Coming from `F#`, `C#`, and `C++`, untyped
+scripting Python felt like building a bridge out of wet cardboard—no compiler, no
+interfaces, no structural guarantees.
+
+Then I was asked to re-implement a legacy **C++ implied volatility surface builder** in
+Python.
+
+Conventional wisdom says rewriting a numerical C++ routine in Python will tank
+throughput. When I opened the legacy C++ source code, however, I found three things: it
+ran on a single thread, it recomputed invariant quantities inside tight loops, and it
+relied on a primitive root-finding algorithm to invert option prices.
+
+In my Python rewrite, I stripped out the redundant allocations, replaced the naive
+root-finder with **Halley's method**—using second-derivative curvature information
+(vega and vomma) for cubic convergence—and wrapped the independent surface slices in
+standard `multiprocessing`.
+
+The Python implementation matched the native C++ throughput. That project cured my
+snobbery about interpreted languages overnight: a better numerical algorithm and basic
+parallelism in Python will beat naive, single-threaded C++ every day of the week.
+
+## Act III: the Greenfield Crucible (Syberry, 2023–2024)
+
+Hungry for real software engineering again, I took a gamble in late 2023 when a software
+consultancy, Syberry, reached out about a greenfield project: building the market risk
+platform for a multi-strategy hedge fund from scratch.
+
+I will be blunt about the personal side first: culturally, that year was brutal. The
+combination of consultancy pressure and a toxic client environment pushed me to the edge
+of burnout and nearly broke me mentally. When my one-year contract came up for renewal,
+I refused to sign the extension—having already quietly signed my next role.
+
+Technically, however, my learning curve went vertical.
+
+I started with small tickets, and within a few weeks I was handed ownership of the
+platform's integration layer with **SimCorp Axioma**. The existing prototype code was
+crude and completely serial. Worse, Axioma's REST API followed a synchronous
+request-response pattern where server-side risk calculations were evaluated lazily,
+meaning naive sequential calls stalled the entire pipeline.
+
+I re-architected the integration layer around concurrent execution, cutting wait times
+dramatically. Every week, I sat on technical calls with Axioma's specialists to debug
+factor-model discrepancies and file upstream bug reports, while working directly with
+the hedge fund's Chief Risk Officer (CRO) to translate cross-asset VaR, stress testing,
+and OTC product booking requirements into concrete engineering specs for our developer
+team. Alongside the API layer, I built `Dagster` pipelines ingesting and transforming
+multi-asset portfolio data into `PostgreSQL` and `DuckDB` on `AWS`.
+
+It was a baptism by fire in modern Python backend engineering—and it proved to me that I
+could hold my own as a pure software engineer, not just a quant who writes code.
+
+## Act IV: Risk Orchestrators and Agent Harnesses (DXC Luxoft, 2024–Present)
+
+In September 2024, I joined DXC Luxoft as a Senior Software Developer consulting for a
+G-SIB bank's Risk & Compliance division. Culturally, it was the exact opposite of the
+previous year: high trust, zero micromanagement, and room to do deep work.
+
+The overarching program at the bank is migrating Market Risk and Counterparty Credit
+Risk (CCR) away from a legacy vendor platform onto **Acadia's Open Source Risk Engine
+(ORE)**.
+
+Ironically, my first assignment wasn't with the software engineering squad—it was
+embedded 1-on-1 with a senior quant in Risk Modeling. Regulators had raised concerns
+about pricing callable bonds with a 1-factor Hull-White model instead of a two-factor
+interest rate model, and the bank wanted to replace an expensive third-party vendor
+benchmark.
+
+Over several months, the two of us built an internal callable-bond benchmark engine on
+top of **QuantLib** and extended the C++ `QuantLib` layer inside `ORE` (exposed to
+Python via `SWIG`) to support the exact features present in the bank's inventory—such
+as time-dependent Hull-White parameterization and call notice periods for callable and
+convertible bonds.
+
+### When a Benchmark Becomes the Production Architecture
+
+We built that benchmark cleanly enough that it didn't stay a validation tool. It grew
+into a production **Risk Orchestrator** library.
+
+When you run market risk on a large lending and fixed-income portfolio, base valuation
+is only the starting line; what matters is computing **scenario P&L** (the delta between
+base and shocked valuations) across thousands of simulated market shocks quickly and
+reliably.
+
+We designed the orchestrator around a single, engine-agnostic contract:
+
+- **Uniform Inputs**: Callers supply one canonical schema for market data, portfolio
+  positions, and run configurations.
+- **Bloomberg-to-Portfolio Translator**: An ingestion layer built with `Pydantic`,
+  `Polars`, and `Pandera` translates raw Bloomberg fixed-income data into our canonical
+  portfolio JSON, injecting domain assumptions and business logic on the fly.
+- **Dynamic Engine Routing**: Based on configuration and product coverage, the adapter
+  transparently routes sub-portfolios either to our custom `QuantLib` engine or into
+  `ORE` via its `SWIG` wrapper.
+
+### Solving the Quant-to-Production Gap with an Agent Harness
+
+Today, I act as the de facto tech lead for a hybrid squad of **2 software engineers and
+3–5 quants**, owning architectural decisions, `GitLab CI`, and code reviews across the
+library.
+
+If you have ever led a hybrid team of quants and software engineers, you know the
+classic friction: quants know the stochastic calculus and bond conventions inside out,
+but they don't always write production-grade Python. And this year, our team shifted
+heavily toward **AI-agent-assisted development** (building a cross-tool harness
+bridging `Devin` and `Codex`).
+
+Give a coding agent—or a busy quant using one—a permissive Python repository, and you
+will drown in `Any` types, untyped dictionaries, and subtle regressions during code
+review.
+
+To keep review quality high without becoming a human linter, I built a deterministic
+**agent harness** around our codebase:
+
+- **Tight Context & Skills**: A concise `AGENTS.md`, domain skills, and specialized
+  subagents so agents understand our valuation contracts before touching code.
+- **Deterministic Gates & Bespoke Linting**: Fast static checks, a custom
+  project-specific linter enforcing our domain invariants, and strict documentation
+  standards powered by `Zensical`.
+
+Remember how I hated Python in 2022 because it lacked the compile-time safety of `F#`,
+`C#`, and `C++`? It turns out I didn't hate Python. I just hated Python without a
+compiler's guardrails.
+
+That realization is what led me to open-source
+**[zenith](https://github.com/bwrob/zenith)** (`uvx zenith-template`)—an opinionated
+template for Python 3.12+ projects that wires up sub-2-second Rust-native quality gates
+(`uv`, `Ruff`, `Pyrefly`, `Tach`, `complexipy`, `rumdl`, `Zensical`), 100% test
+coverage, and a ready-made AI agent harness out of the box.
+
+## Epilogue: Back at the Blackboard
+
+I come from a family of teachers. Back during my PhD in Wrocław and Warsaw, teaching
+undergraduate Differential Equations and Functional Analysis was my favorite part of the
+week. When I left academia for finance in 2018, I assumed that chapter of my life was
+closed—mostly because I felt like an impostor around computers.
+
+In 2024, six years after writing my first line of `F#`, I finally felt competent enough
+in software engineering to walk back into a university classroom.
+
+Returning to [Wrocław University of Science and Technology](../teaching/) as a Teaching
+Assistant—and later running a 10-part internal
+[Python Academy](../teaching/2025-python-academy/) for colleagues—I got to teach
+undergraduate Mathematics students *Introduction to Programming* and *Programming*:
+everything from Python internals, closures, and `Ruff` to Git, Bash, and automatic
+differentiation.
+
+I taught them the exact course I wish someone had taught me in 2018, right before I
+traded Besov spaces for a trading floor.
